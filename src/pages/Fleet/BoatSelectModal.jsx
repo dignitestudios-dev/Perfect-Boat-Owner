@@ -5,7 +5,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 
 const BoatSelectModal = ({ isOpen, setIsOpen }) => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, boats, loadingBoats } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -71,7 +71,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen }) => {
           <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
             Boats List{" "}
             <span className="text-[12px] font-normal text-white/50 ">
-              (723)
+              ({boats?.length})
             </span>
           </h3>
 
@@ -204,59 +204,58 @@ const BoatSelectModal = ({ isOpen, setIsOpen }) => {
               </button>
             </div>
 
-            {Array(5)
-              .fill()
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-                >
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="accent-[#199BD1] mr-2"
-                      checked={selectedBoats[index] || false}
-                      onChange={() => handleSelectBoat(index)}
+            {boats?.map((boat, index) => (
+              <div
+                key={index}
+                className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+              >
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    className="accent-[#199BD1] mr-2"
+                    checked={selectedBoats[index] || false}
+                    onChange={() => handleSelectBoat(index)}
+                  />
+                  <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                    <img
+                      src={boat?.cover}
+                      alt="boat_image"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "15px 0 0 15px",
+                        objectFit: "cover",
+                      }}
+                      className="bg-gray-600"
                     />
-                    <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                      <img
-                        src={AuthMockup}
-                        alt="boat_image"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "15px 0 0 15px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div
-                        className="w-24"
-                        style={{
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                          background:
-                            "linear-gradient(to right, transparent, #001229)",
-                        }}
-                      />
-                    </span>
-                  </div>
-                  <span className="w-full flex justify-start items-center">
-                    Type goes here
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    Boat Name
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    2019 / Toyotta / Class A
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    East California Dock
+                    <div
+                      className="w-24"
+                      style={{
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        background:
+                          "linear-gradient(to right, transparent, #001229)",
+                      }}
+                    />
                   </span>
                 </div>
-              ))}
+                <span className="w-full flex justify-start items-center">
+                  {boat?.boatType}
+                </span>
+                <span className="w-full flex justify-start items-center">
+                  {boat?.name}
+                </span>
+                <span className="w-full flex justify-start items-center">
+                  {boat?.model} / {boat?.make} / {boat?.size}
+                </span>
+                <span className="w-full flex justify-start items-center">
+                  {boat?.location}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

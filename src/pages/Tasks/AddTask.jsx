@@ -15,7 +15,8 @@ const AddTask = () => {
   const [customInput, setCustomInput] = useState(false);
   const [isTaskDropdownOpen, setIsTaskDropdownOpen] = useState(false);
   const [isTaskTypeDropdownOpen, setIsTaskTypeDropdownOpen] = useState(false);
-  const [isAdditionalDropdownOpen, setIsAdditionalDropdownOpen] = useState(false);
+  const [isAdditionalDropdownOpen, setIsAdditionalDropdownOpen] =
+    useState(false);
   const [RecurringDropdown, setRecurringDropdown] = useState(false);
   const [hasAssigned, setHasAssigned] = useState(false);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false); // State for Employee Modal
@@ -328,8 +329,8 @@ const AddTask = () => {
       </div>
 
       <div className="w-full flex mt-16 justify-end items-center gap-6">
-         <div className="w-auto flex justify-between items-center gap-4">
-           <button
+        <div className="w-auto flex justify-between items-center gap-4">
+          <button
             type="button"
             onClick={() => {
               navigate("/dashboard");
@@ -351,12 +352,12 @@ const AddTask = () => {
             // onClick={() => setHasAssigned(false)}
           /> */}
 
-{hasAssigned && (
-  <TaskAssignSucessModal
-    isOpen={hasAssigned}
-    setIsOpen={setHasAssigned}
-  />
-)}
+          {hasAssigned && (
+            <TaskAssignSucessModal
+              isOpen={hasAssigned}
+              setIsOpen={setHasAssigned}
+            />
+          )}
         </div>
       </div>
     </div>

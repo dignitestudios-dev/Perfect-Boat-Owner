@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const EmployeeDetailModal = ({ setIsOpen }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -8,6 +9,8 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
   const [locationFilter, setLocationFilter] = useState(false);
   const jobTitleRef = useRef(null);
   const locationRef = useRef(null);
+
+  const { employees, loadingEmployees } = useContext(GlobalContext);
 
   const jobTitles = ["Manager", "Engineer", "Developer"];
   const locations = [
@@ -147,7 +150,7 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {[...Array(20)].map((_, index) => (
+                {employees?.map((employee, index) => (
                   <tr key={index} className="border-b-[1px] border-white/10">
                     <td className="px-0 py-2">
                       <input
@@ -156,16 +159,16 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
                       />
                     </td>
                     <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      Mark Taylor
+                      {employee?.name}
                     </td>
                     <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      markT@gmail.com
+                      {employee?.email}
                     </td>
                     <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      Dock Manager
+                      {employee?.jobtitle}
                     </td>
                     <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      East California Dock
+                      {employee?.location}
                     </td>
                   </tr>
                 ))}

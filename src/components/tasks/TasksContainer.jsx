@@ -10,9 +10,11 @@ const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
   const [openDropDownFilter, setOpenDropdownFilter] = useState(false);
   const dropDownRef = useRef(null);
-  const [TaskData, setTaskData] = useState([]);
+  const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("");
 
   const toggleModal = (e) => {
     if (dropDownRef.current && !dropDownRef.current.contains(e.target)) {
@@ -23,13 +25,13 @@ const TasksContainer = () => {
   // Fetch tasks from the API
   const getTasks = async () => {
     setLoading(true);
-    setError(null);
     try {
-      const { data } = await axios.get("/owner/task");
+      const { data } = await axios.get(
+        filter !== "" ? `/owner/task?status=${filter}` : `/owner/task`
+      );
       setTaskData(data?.data || []);
     } catch (err) {
       console.error("Error fetching Task data:", err);
-      setError("Failed to fetch tasks. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -37,7 +39,11 @@ const TasksContainer = () => {
 
   useEffect(() => {
     getTasks();
-  }, []);
+  }, [filter]);
+
+  const filteredData = taskData.filter((item) =>
+    item?.task?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   return (
     <div className="h-full w-full flex flex-col gap-6 justify-start items-center">
@@ -45,7 +51,7 @@ const TasksContainer = () => {
         <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
           Tasks{" "}
           <span className="text-[12px] font-normal text-white/50 ">
-            ({TaskData.length})
+            ({taskData?.length})
           </span>
         </h3>
 
@@ -56,6 +62,8 @@ const TasksContainer = () => {
             </span>
             <input
               type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search here"
               className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
             />
@@ -80,19 +88,74 @@ const TasksContainer = () => {
 
         <div className="w-full flex flex-col sm:flex-row justify-between items-center">
           <div className="w-full sm:w-auto flex flex-wrap gap-2 justify-start items-center">
-            <button className="w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] bg-[#1A293D] text-[#fff]/[0.5]">
+            <button
+              onClick={() => setFilter("")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == ""
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
               All
             </button>
-            <button className="w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] bg-[#1A293D] text-[#fff]/[0.5]">
+            <button
+              onClick={() => setFilter("newtask")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == "newtask"
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
+              New
+            </button>
+            <button
+              onClick={() => setFilter("upcomingtask")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == "upcomingtask"
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
+              Upcoming
+            </button>
+            <button
+              onClick={() => setFilter("inprogress")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == "inprogress"
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
               In-Progress
             </button>
-            <button className="w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] bg-[#1A293D] text-[#fff]/[0.5]">
+            <button
+              onClick={() => setFilter("completed")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == "completed"
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
               Completed
             </button>
-            <button className="w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] bg-[#1A293D] text-[#fff]/[0.5]">
+            <button
+              onClick={() => setFilter("recurring")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == "recurring"
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
               Recurring
             </button>
-            <button className="w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] bg-[#1A293D] text-[#fff]/[0.5]">
+            <button
+              onClick={() => setFilter("overdue")}
+              className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
+                filter == "overdue"
+                  ? "bg-[#fff] text-[#001229]"
+                  : "bg-[#1A293D] text-[#fff]"
+              } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
+            >
               Overdue
             </button>
           </div>
@@ -142,59 +205,48 @@ const TasksContainer = () => {
           </button>
         </div>
 
-        {/* <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {loading ? (
-            <p className="text-white">Loading tasks...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            TaskData.map((task) => {
-              const assignedTo = task.assingTo?.[0]?.name || "Unknown";
-              const createdBy = task.assingBy?.name || "Unknown";
-              const dueDate = task?.dueDate || "No due date";
-              const taskType = task?.taskType || "General";
+        <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {!loading ? (
+            filteredData?.length > 0 &&
+            filteredData?.map((task) => {
+              const assignedBy = task?.assignBy
+                ? task?.assignBy?.name
+                : "Unknown"; // Adjust based on the API response structure
 
+              const assignedTo = task?.assignTo
+                ? task?.assignTo[0]?.name
+                : "Unknown";
               return (
                 <TasksCard
+                  _id={task?._id}
                   key={task?._id}
-                  title={task?.title}
-                  taskType={taskType}
-                  createdBy={createdBy}
-                  dueDate={dueDate}
-                  recurringDays={task.recurringDays} // Assuming `recurringDays` is part of the task data
+                  title={task?.task || "No Title"} // Pass the title correctly
+                  taskType={task?.taskType || "No Type"}
+                  createdBy={assignedBy}
                   assignedTo={assignedTo}
-                  status={task.status} // Assuming the status like "In-Progress", "Completed" exists
+                  dueDate={
+                    task?.dueDate
+                      ? new Date(task?.dueDate).toLocaleDateString()
+                      : "No Due Date"
+                  }
+                  recurringDays={
+                    task?.recurring && task?.recurringDays
+                      ? task?.recurringDays
+                      : null
+                  } // Ensure recurringDays is passed properly
+                  status={task?.status || "No Status"}
                 />
               );
             })
+          ) : (
+            <p className="w-full col-span-3 flex justify-center items-center">
+              Loading Tasks....
+            </p>
           )}
-        </div> */}
-        <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-  {TaskData.length > 0 ? (
-    TaskData.map((task) => {
-      const assignedTo = task.assingTo && task.assingTo.length > 0 ? task.assingTo[0]?.name : "Unknown"; // Adjust based on the API response structure
-      return (
-        <TasksCard
-         _id={task._id}
-          key={task._id}
-          title={task.title || "No Title"}  // Pass the title correctly
-          taskType={task.taskType || "No Type"}
-          createdBy={assignedTo}
-          dueDate={task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "No Due Date"}
-          recurringDays={task.recurringDays || "N/A"} // Ensure recurringDays is passed properly
-          status={task.status || "No Status"}
-        />
-      );
-    })
-  ) : (
-    <p>Loading Tasks....</p>
-  )}
-</div>
-
+        </div>
       </div>
     </div>
-    );
-    };
-    
-    export default TasksContainer;
-    
+  );
+};
+
+export default TasksContainer;

@@ -3,6 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
+import axios from "../../axios";
 
 const NewTaskTable = () => {
   const { navigate } = useContext(GlobalContext);
@@ -25,6 +26,33 @@ const NewTaskTable = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const toggleModal = (e) => {
+    if (dropDownRef.current && !dropDownRef.current.contains(e.target)) {
+      setOpenDropdownFilter((prev) => !prev);
+    }
+  };
+
+  // Fetch tasks from the API
+  const getData = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/owner/task/requests?search=${search}`);
+      setData(data?.data || []);
+    } catch (err) {
+      console.error("Error fetching Task data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, [search]);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -93,157 +121,50 @@ const NewTaskTable = () => {
           </span>
         </div>
 
-        <button
-          onClick={() => navigate("/new-tasks-request/1", "New Task Request")}
-          className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-        >
-          <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-            <img
-              src={AuthMockup}
-              alt="boat_image"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "15px 0 0 15px",
-                objectFit: "cover",
-              }}
-            />
-            <div
-              className="w-24"
-              style={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(to right, transparent, #001229)",
-              }}
-            />
-          </span>
-          <span className="w-full flex justify-start items-center">
-            Boat Name
-          </span>
-          <span className="w-full flex justify-start items-center">
-            East California Dock
-          </span>
-          <span className="w-full flex justify-start items-center px-[60px]">
-            David Beckham
-          </span>
-        </button>
-
-        <button
-          onClick={() => navigate("/new-tasks-request/1", "New Task Request")}
-          className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-        >
-          <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-            <img
-              src={AuthMockup}
-              alt="boat_image"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "15px 0 0 15px",
-                objectFit: "cover",
-              }}
-            />
-            <div
-              className="w-24"
-              style={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(to right, transparent, #001229)",
-              }}
-            />
-          </span>
-          <span className="w-full flex justify-start items-center">
-            Boat Name
-          </span>
-          <span className="w-full flex justify-start items-center">
-            East California Dock
-          </span>
-          <span className="w-full flex justify-start items-center px-[60px]">
-            David Beckham
-          </span>
-        </button>
-
-        <button
-          onClick={() => navigate("/new-tasks-request/1", "New Task Request")}
-          className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-        >
-          <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-            <img
-              src={AuthMockup}
-              alt="boat_image"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "15px 0 0 15px",
-                objectFit: "cover",
-              }}
-            />
-            <div
-              className="w-24"
-              style={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(to right, transparent, #001229)",
-              }}
-            />
-          </span>
-          <span className="w-full flex justify-start items-center">
-            Boat Name
-          </span>
-          <span className="w-full flex justify-start items-center">
-            East California Dock
-          </span>
-          <span className="w-full flex justify-start items-center px-[60px]">
-            David Beckham
-          </span>
-        </button>
-
-        <button
-          onClick={() => navigate("/new-tasks-request/1", "New Task Request")}
-          className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-        >
-          <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-            <img
-              src={AuthMockup}
-              alt="boat_image"
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "15px 0 0 15px",
-                objectFit: "cover",
-              }}
-            />
-            <div
-              className="w-24"
-              style={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                right: 0,
-                bottom: 0,
-                background: "linear-gradient(to right, transparent, #001229)",
-              }}
-            />
-          </span>
-          <span className="w-full flex justify-start items-center">
-            Boat Name
-          </span>
-          <span className="w-full flex justify-start items-center">
-            East California Dock
-          </span>
-          <span className="w-full flex justify-start items-center px-[60px]">
-            David Beckham
-          </span>
-        </button>
+        {data?.map((task, key) => {
+          return (
+            <button
+              onClick={() =>
+                navigate(`/new-tasks-request/${task?._id}`, "New Task Request")
+              }
+              className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+            >
+              <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                <img
+                  src={task?.boat?.cover}
+                  alt="boat_image"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "15px 0 0 15px",
+                    objectFit: "cover",
+                  }}
+                />
+                <div
+                  className="w-24"
+                  style={{
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    background:
+                      "linear-gradient(to right, transparent, #001229)",
+                  }}
+                />
+              </span>
+              <span className="w-full flex justify-start items-center">
+                {task?.boat?.name}
+              </span>
+              <span className="w-full flex justify-start items-center">
+                {task?.boat?.location}
+              </span>
+              <span className="w-full flex justify-start items-center px-[60px]">
+                David Beckham
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

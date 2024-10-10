@@ -9,10 +9,15 @@ import Cookies from "js-cookie";
 
 const GlobalLayout = ({ page }) => {
   const { token } = useContext(AuthContext);
+  const { getBoats, getEmployees, getManagers, updateBoats } =
+    useContext(GlobalContext);
   const navigate = useNavigate();
 
   const validateToken = () => {
     if (token) {
+      getBoats();
+      getEmployees();
+      getManagers();
       return true;
     } else {
       navigate("/login");
@@ -23,7 +28,7 @@ const GlobalLayout = ({ page }) => {
 
   useEffect(() => {
     validateToken();
-  }, []);
+  }, [updateBoats]);
   return (
     <div className="w-full h-screen overflow-y-hidden flex justify-start items-start">
       <Sidebar />
