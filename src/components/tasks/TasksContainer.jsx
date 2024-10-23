@@ -1,10 +1,10 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
-import { Link } from "react-router-dom";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import TasksCard from "./TasksCard";
 import { TbCaretDownFilled } from "react-icons/tb";
-import axios from "../../axios"; // Assuming axios instance is set up
+import axios from "../../axios"; 
+import TasksListLoader from "./loaders/TasksListLoader";
 
 const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
@@ -12,7 +12,7 @@ const TasksContainer = () => {
   const dropDownRef = useRef(null);
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
 
@@ -41,9 +41,9 @@ const TasksContainer = () => {
     getTasks();
   }, [filter]);
 
-  const filteredData = taskData.filter((item) =>
+  const filteredData = taskData?.filter((item) =>
     item?.task?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+);
 
   return (
     <div className="h-full w-full flex flex-col gap-6 justify-start items-center">
@@ -208,7 +208,7 @@ const TasksContainer = () => {
         <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {!loading ? (
             filteredData?.length > 0 &&
-            filteredData?.map((task) => {
+            filteredData?.map((task,index) => {
               const assignedBy = task?.assignBy
                 ? task?.assignBy?.name
                 : "Unknown"; // Adjust based on the API response structure
@@ -217,31 +217,11 @@ const TasksContainer = () => {
                 ? task?.assignTo[0]?.name
                 : "Unknown";
               return (
-                <TasksCard
-                  _id={task?._id}
-                  key={task?._id}
-                  title={task?.task || "No Title"} // Pass the title correctly
-                  taskType={task?.taskType || "No Type"}
-                  createdBy={assignedBy}
-                  assignedTo={assignedTo}
-                  dueDate={
-                    task?.dueDate
-                      ? new Date(task?.dueDate).toLocaleDateString()
-                      : "No Due Date"
-                  }
-                  recurringDays={
-                    task?.recurring && task?.recurringDays
-                      ? task?.recurringDays
-                      : null
-                  } // Ensure recurringDays is passed properly
-                  status={task?.status || "No Status"}
-                />
+                <TasksCard data={task} getTasks={()=>getTasks()} key={index}/>
               );
             })
           ) : (
-            <p className="w-full col-span-3 flex justify-center items-center">
-              Loading Tasks....
-            </p>
+          <TasksListLoader/>
           )}
         </div>
       </div>

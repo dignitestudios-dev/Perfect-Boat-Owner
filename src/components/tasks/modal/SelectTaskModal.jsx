@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegEdit, FaCaretDown } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
+import axios from "../../../axios";
+import { getUnixDate } from "../../../data/DateFormat";
+import AssignCompleteModal from "../../../components/tasks/AssignCompleteModal";
+import RequestTaskListLoader from "../loaders/RequestTaskListLoader";
 
 const Dropdown = ({ label, options }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -35,7 +39,63 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
-const SelectTaskModal = ({ handleViewAllClick, setIsOpen }) => {
+const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) => {
+
+  const statusColors = {
+    "newtask": "#FF007F",
+    "overdue": "#FF3B30", 
+    "default": "#FFCC00", 
+    "in-progress":"#36B8F3",
+    "completed":"#1FBA46"
+  };
+
+  const [taskData, setTaskData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedTasks, setSelectedTasks] = useState([])
+  const [openAssignSuccess, setOpenAssignSuccess] = useState(false)
+
+  const handleOpenAssignSuccess = () =>{
+    setOpenAssignSuccess(!openAssignSuccess)
+    setIsOpen(false)
+  }
+
+  // Fetch tasks from the API
+  const getTasks = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/owner/task`);
+      setTaskData(data?.data || []);
+    } catch (err) {
+      console.error("Error fetching Task data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredData = taskData?.filter((item) =>
+    item?.task?.toLowerCase()?.includes(search?.toLowerCase())
+  );
+
+  useEffect(() => {
+    getTasks();
+  }, []);
+
+  const handleSelectTask = (taskId, taskName) => {
+    const isSelected = selectedTasks?.some((task) => task?.id === taskId);
+    if (isSelected) {
+      setSelectedTasks(selectedTasks?.filter((task) => task?.id !== taskId));
+    } else {
+      setSelectedTasks([...selectedTasks, { id: taskId, name: taskName }]);
+    }
+};
+
+const handleTaskSubmit = () =>{
+  passSelectedTask(selectedTasks); 
+  handleOpenAssignSuccess()
+  // setIsOpen(false);
+}
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -67,11 +127,11 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen }) => {
               <span className="text-white text-[13px] font-medium">Select All</span>
             </div>
             <button
-              onClick={() => setIsOpen(false)}
-              className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
-            >
-              Done
-            </button>
+                onClick={() => handleTaskSubmit()}
+                className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
+              >
+                Done
+              </button>
           </div>
           <div className="relative h-full overflow-auto">
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -95,30 +155,44 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen }) => {
                   <Dropdown label="Status" options={["Pending", "In Progress", "Completed"]} />
                 </div>
               </div>
-              {[...Array(7)].map((_, index) => (
-                <div key={index} className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center">
-                  <span className="flex items-center justify-start mr-2">
-                    <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" />
-                  </span>
-                  <span className="flex items-center justify-start">
-                    Boat A
-                  </span>
-                  <span className="flex items-center justify-start">
-                    Full Inspection
-                  </span>
-                  <span className="flex items-center justify-start">
-                    12-02-2024
-                  </span>
-                  <span className="flex items-center justify-start">
-                    90 days
-                  </span>
-                  <span className="flex items-center justify-start">
-                    <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                      In-Progress
+              {loading?(<RequestTaskListLoader/>):(
+                <>
+                {filteredData?.map((task, index) => {
+                const isMultiSelected = selectedTasks?.some((selected) => selected.id === task._id);
+                return (
+                  <div key={index} className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center">
+                    <span className="flex items-center justify-start mr-2">
+                      <input 
+                      checked={isMultiSelected}
+                      onChange={() => handleSelectTask(task?._id, task?.task)}
+                       type="checkbox" className="w-4 h-4 accent-[#199BD1]" />
                     </span>
-                  </span>
-                </div>
-              ))}
+                    <p className=" flex items-center justify-start">
+                      {task?.boat?.name}
+                    </p>
+                    <p className="flex items-center justify-start">
+                      {task?.taskType?.length > 15 ? task?.taskType?.slice(0,15) + "..." : task?.taskType}
+                    </p>
+                    <span className="flex items-center justify-start">
+                    {getUnixDate(task?.dueDate)}
+                    </span>
+                    <span className="flex items-center justify-start">
+                    {task?.reoccuringDays} Days
+                    </span>
+                    <span className="flex items-center justify-start">
+                      <span className="w-auto h-[27px] rounded-full flex items-center justify-center
+                       bg-[#FFCC00]/[0.12] px-2"
+                       style={{ color: statusColors[task?.status] || statusColors["default"] }}>
+                      {task?.status}
+                      </span>
+                    </span>
+                  </div>
+                )
+              }
+              )}
+                </>
+              )}
+              
               {/* Add more rows as needed */}
             </div>
           </div>
@@ -131,6 +205,7 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen }) => {
             </button>
           </div>
         </div>
+        <AssignCompleteModal isOpen={openAssignSuccess} setIsOpen={handleOpenAssignSuccess}/>
       </div>
     </div>
   );

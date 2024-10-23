@@ -3,8 +3,11 @@ import { FiSearch, FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { FaCaretDown } from "react-icons/fa";
+import MiniListLoader from "../global/MiniListLoader";
+import LocationType from "../global/headerDropdowns/LocationType";
+import JobType from "../global/headerDropdowns/JobType";
 
-const EmployeeTable = ({ data }) => {
+const EmployeeTable = ({ data, loading }) => {
   const { navigate } = useContext(GlobalContext);
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -16,6 +19,12 @@ const EmployeeTable = ({ data }) => {
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
+
+  const [search, setSearch] = useState("");
+
+  const filteredData = data?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229] ">
@@ -32,6 +41,7 @@ const EmployeeTable = ({ data }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
+          onChange={(e)=>setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -45,97 +55,21 @@ const EmployeeTable = ({ data }) => {
           + Add Employee
         </button>
       </div>
-      {data?.length > 0 ? (
+      {loading?(
+        <MiniListLoader/>
+      ):(
+        <>
+        {data?.length > 0 ? (
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
             <span className="w-full flex justify-start items-center">Name</span>
             <span className="w-full flex justify-start items-center">
               Email
             </span>
-            <span className="w-full flex justify-start items-center relative">
-              Job Title
-              <FaCaretDown
-                className={`ml-2 cursor-pointer ${
-                  jobTitleDropdownOpen ? "rotate-180" : "rotate-0"
-                }`}
-                onClick={toggleJobTitleDropdown}
-              />
-              {jobTitleDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Dock Guard
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Manager
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Engineer
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Captain
-                  </label>
-                </div>
-              )}
-            </span>
-            <span className="w-full flex justify-start items-center relative">
-              Location
-              <FaCaretDown
-                className={`ml-2 cursor-pointer ${
-                  locationDropdownOpen ? "rotate-180" : "rotate-0"
-                }`}
-                onClick={toggleLocationDropdown}
-              />
-              {locationDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    East California Dock
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    West Marina Bay
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    South Beach Port
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    North Harbor
-                  </label>
-                </div>
-              )}
-            </span>
+            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
           </div>
-          {data?.slice(0, 4)?.map((manager, key) => {
+          {filteredData?.slice(0, 4)?.map((manager, key) => {
             return (
               <div
                 key={key}
@@ -162,6 +96,8 @@ const EmployeeTable = ({ data }) => {
           Reminder! show the texts that is in the UI later while integration.
           Click on this to show the tasks table
         </div>
+      )}
+        </>
       )}
       <div className="w-full h-auto flex justify-center items-center">
         <Link

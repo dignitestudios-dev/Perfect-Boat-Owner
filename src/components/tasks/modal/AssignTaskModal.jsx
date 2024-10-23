@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SelectTaskModal from "../Tasks/SelectTaskModal"; // Import the SelectTaskModal component
+import SelectTaskModal from "../../../components/tasks/modal/SelectTaskModal";
 
-const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect }) => {
+const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks }) => {
   const [selectedOption, setSelectedOption] = useState("");
-  const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false); // New state for SelectTaskModal
+  const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
+  
   const navigate = useNavigate();
 
   if (!isOpen) return null;
@@ -15,9 +16,13 @@ const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect }) => {
     if (value === "new") {
       navigate("/add-task");
     } else if (value === "existing") {
-      setIsSelectTaskModalOpen(true); // Open SelectTaskModal
+      setIsSelectTaskModalOpen(true);
     }
   };
+
+  const passSelectedTask =(values)=>{
+    setTasks(values)
+  }
 
   return (
     <>
@@ -75,6 +80,7 @@ const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect }) => {
       {isSelectTaskModalOpen && (
         <SelectTaskModal
           setIsOpen={setIsSelectTaskModalOpen}
+          passSelectedTask={(values)=>passSelectedTask(values)}
         />
       )}
     </>

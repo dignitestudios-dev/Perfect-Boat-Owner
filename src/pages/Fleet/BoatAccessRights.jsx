@@ -7,13 +7,20 @@ import { IoIosSearch } from "react-icons/io";
 import BoatAccessList from "./BoatAccessList";
 
 const BoatAccessRights = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, managers } = useContext(GlobalContext);
   const [jobFilter, setJobFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [isBoatAccessModalOpen, setIsBoatAccessModalOpen] = useState(false);
+  const [managerId, setManagerId] = useState("")
+  const [managerName, setManagerName] = useState("")
   const jobRef = useRef(null);
   const locationRef = useRef(null);
+
+  const filteredData = managers?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   const toggleJobModal = (e) => {
     if (jobRef.current && !jobRef.current.contains(e.target)) {
@@ -27,7 +34,9 @@ const BoatAccessRights = () => {
     }
   };
 
-  const openBoatAccessModal = () => {
+  const openBoatAccessModal = (id, name) => {
+    setManagerName(name)
+    setManagerId(id)
     setIsBoatAccessModalOpen(true);
   };
 
@@ -60,6 +69,8 @@ const BoatAccessRights = () => {
               <IoIosSearch className="text-white/50 text-lg" />
             </span>
             <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
               type="text"
               placeholder="Search here"
               className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white"
@@ -185,28 +196,29 @@ const BoatAccessRights = () => {
               <div className="w-full h-[calc(100vh-300px)] overflow-x-auto">
                 <div className="w-full h-full overflow-y-auto">
                   <div className="w-full h-auto min-w-[800px]">
-                    {Array.from({ length: 10 }).map((_, index) => (
+                    {filteredData?.map((item, index) => (
                       <div
                         key={index}
-                        className="w-full h-10 grid grid-cols-5 border-b cursor-pointer border-[#fff]/[0.14] py-1 text-[11px] font-medium text-white items-center"
+                        className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] 
+                        py-1 text-[11px] font-medium text-white items-center"
                       >
                         <span
-                          onClick={() => navigate("/employees/1", "Employees")}
+                          // onClick={() => navigate("/employees/1", "Employees")}
                           className="flex items-center justify-start cursor-pointer"
                         >
-                          Mike Smith
+                          {item?.name}
                         </span>
                         <span className="flex items-center justify-start">
-                          Doc Manager
+                          {item?.jobtitle}
                         </span>
                         <span className="flex items-center justify-start">
-                          New York Dock
+                          {item?.location || "---"}
                         </span>
                         <span className="flex items-center justify-start">
-                          View Only
+                          {item?.managerAccess}
                         </span>
                         <button
-                          onClick={openBoatAccessModal}
+                          onClick={()=>openBoatAccessModal(item?._id, item?.name)}
                           className="w-[74px] h-[27px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-full py-1"
                         >
                           View Details
@@ -221,10 +233,7 @@ const BoatAccessRights = () => {
         </div>
       </div>
 
-      <BoatAccessList
-  isOpen={isBoatAccessModalOpen}
-  setIsOpen={setIsBoatAccessModalOpen}
-/>
+      <BoatAccessList managerId={managerId} managerName={managerName} isOpen={isBoatAccessModalOpen} setIsOpen={setIsBoatAccessModalOpen}/>
     </div>
   );
 };

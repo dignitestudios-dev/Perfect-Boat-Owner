@@ -1,12 +1,12 @@
 import React, { useContext, useRef } from "react";
-import { GlobalContext } from "../../contexts/GlobalContext";
+import { GlobalContext } from "../../../contexts/GlobalContext";
 import { FaUsersViewfinder } from "react-icons/fa6";
 import { TbUsers } from "react-icons/tb";
 import { FaTimes } from "react-icons/fa"; // Import FaTimes for the close icon
-import { CheckMark } from "../../assets/export";
+import { HiOutlineNewspaper } from "react-icons/hi2";
 
 
-const TaskCompletedModal = ({ isOpen, setIsOpen }) => {
+const TaskAssignSucessModal = ({ isOpen, setIsOpen }) => {
   const { navigate } = useContext(GlobalContext);
   const modalRef = useRef();
 
@@ -29,7 +29,7 @@ const TaskCompletedModal = ({ isOpen, setIsOpen }) => {
     >
       <div
         ref={modalRef}
-        className="relative bg-[#02203A] w-[418px] h-[257px] flex flex-col gap-5 justify-start items-center p-8 shadow-lg rounded-[8px]"
+        className="relative bg-[#02203A] w-[418px] h-[195px] flex flex-col gap-5 justify-start items-center p-8 shadow-lg rounded-lg    "
       >
         {/* Close button */}
         <button
@@ -40,14 +40,13 @@ const TaskCompletedModal = ({ isOpen, setIsOpen }) => {
         </button>
 
         {/* Modal content */}
-        <img src={CheckMark} alt="success" />
-
+        <HiOutlineNewspaper
+        className="mx-auto text-[#36B8F3] bg-[#1A293D] p-2 w-[64.17px] h-[64.17px] rounded-full" />
         <div className="w-auto flex flex-col justify-center items-center gap-3">
           <div className="w-full h-auto flex flex-col justify-center items-center gap-1">
             <span className="text-[16px] leading-[21.6px] text-white font-normal text-center">
-              Great job! You've successfully marked this task as completed. Your Progress is sailing smoothly.
+              You've successfully assigned a task.
             </span>
-            
           </div>
         </div>
       </div>
@@ -55,4 +54,4 @@ const TaskCompletedModal = ({ isOpen, setIsOpen }) => {
   );
 };
 
-export default TaskCompletedModal;
+export default TaskAssignSucessModal;

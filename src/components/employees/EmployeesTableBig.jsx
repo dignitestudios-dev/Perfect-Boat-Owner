@@ -7,16 +7,23 @@ import { FaCaretDown, FaRegEdit } from "react-icons/fa";
 import DeleteAccount from "../global/DeleteAccount";
 import DeactivateAccountModal from "../../pages/Employees/DeactivateAccountModal";
 import DeleteAccountModal from "../global/DeleteAccountModal";
+import ManagerListLoader from "../managers/ManagerListLoader";
 
-const EmployeesTableBig = ({data}) => {
+const EmployeesTableBig = ({data, loading}) => {
   const { navigate } = useContext(GlobalContext);
   const [jobFilter, setJobFilter] = useState(false);
   const jobRef = useRef(null);
   const [locationFilter, setLocationFilter] = useState(false);
   const locationRef = useRef(null);
+  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
+  const [employeeId, setEmployeeId] = useState()
+
+  const filteredData = data.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   const toggleJobModal = (e) => {
     if (jobRef.current && !jobRef.current.contains(e.target)) {
@@ -29,11 +36,12 @@ const EmployeesTableBig = ({data}) => {
     }
   };
 
-  const handleEditClick = () => {
-    navigate("/edit-employee");
+  const handleEditClick = (id) => {
+    navigate(`/edit-employee/${id}`);
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (id) => {
+    setEmployeeId(id)
     setIsModalOpen(true);
   };
 
@@ -49,7 +57,7 @@ const EmployeesTableBig = ({data}) => {
   const handleDelete = () => {
     console.log("Called")
     setIsAccountDeleteModalOpen(true); // Open the delete modal
-    setIsModalOpen(false); // Close the delete modal when deactivate modal opens
+    // setIsModalOpen(false); // Close the delete modal when deactivate modal opens
 
   };
 
@@ -65,6 +73,7 @@ const EmployeesTableBig = ({data}) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
+          onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -175,13 +184,15 @@ const EmployeesTableBig = ({data}) => {
             </span>
           </div>
 
-          {/* Example Data Rows */}
-          {data?.map((employee, index) => (
+          {loading? (<ManagerListLoader/>):(
+            <>
+            {/* Example Data Rows */}
+          {filteredData?.map((employee, index) => (
           <div className="w-full h-8 grid grid-cols-5 border-b cursor-pointer border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
             <span
               key={index}
               className="w-full flex justify-start items-center"
-              onClick={() => navigate("/employees/1", "Employees")}
+              // onClick={() => navigate("/employees/1", "Employees")}
             >
             {employee?.name}
             </span>
@@ -189,44 +200,47 @@ const EmployeesTableBig = ({data}) => {
             {employee?.email}
             </span>
             <span className="w-full flex justify-start items-center">
-              Dock Guard
+            {employee?.jobtitle}
             </span>
             <span className="w-full flex justify-start items-center">
-            {employee?.location}
+            {employee?.location || "---"}
             </span>
             <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
               <span
                 className="flex justify-start items-center"
-                onClick={handleEditClick}
+                onClick={()=>handleEditClick(employee?._id)}
               >
                 <FaRegEdit />
               </span>
               <span
                 className="flex justify-start items-center"
-                onClick={handleDeleteClick}
+                onClick={()=>handleDeleteClick(employee?._id)}
               >
                 <RiDeleteBinLine />
               </span>
             </div>
           </div>
           ))}
+            </>
+          )}
 
         </div>
         <DeleteAccount 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
         onDeactivate={handleDeactivate} 
-        onDelete={handleDelete} // Pass the handler to open the delete modal
-
+        onDelete={()=>handleDelete()} 
       />
+      
        <DeactivateAccountModal
         isOpen={isDeactivateModalOpen}
         setIsOpen={setIsDeactivateModalOpen}
       />
 
      <DeleteAccountModal
-    isOpen={isAccountDeleteModalOpen}
-    onClose={() => setIsAccountDeleteModalOpen(false)} // Add a way to close the modal
+     employeeId={employeeId}
+     isOpen={isAccountDeleteModalOpen}
+     onClose={() => setIsAccountDeleteModalOpen(false)} 
     />
       </div>
     </div>

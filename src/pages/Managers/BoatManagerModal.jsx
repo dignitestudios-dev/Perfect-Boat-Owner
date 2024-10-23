@@ -21,7 +21,7 @@ const BoatManagerModal = ({ isOpen, setIsOpen }) => {
   return (
     <div
       onClick={handleClickOutside}
-      className={`fixed top-0 left-0 w-screen h-screen transition-all duration-500 z-50 flex items-center justify-center ${
+      className={`fixed top-0 left-0 w-screen h-screen transition-all duration-500 z-[999] flex items-center justify-center ${
         isOpen ? "scale-100" : "scale-0"
       }`}
     >

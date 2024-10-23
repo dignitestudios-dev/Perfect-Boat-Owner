@@ -141,7 +141,7 @@ const PaymentForm = () => {
               />
             </div>
           </div>
-          {error && <p className="text-red-500 text-sm">{error.message}</p>}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
       </div>
 

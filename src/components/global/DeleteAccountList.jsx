@@ -1,22 +1,24 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import EmployeeDetailModal from "../../pages/Employees/EmployeeDetailModal";
 import AssignManagerModal from "../../pages/Managers/AssignManagerModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AccountDeletedModal from "./AccountDeletedModal";
-
-
+import axios from "../../axios";
+import { FiLoader } from "react-icons/fi";
 
 const DeleteAccountList = () => {
+  const location = useLocation();
+  const  {managerId, reasonForDelete}= location.state || {};
+  console.log(managerId, reasonForDelete)
   const [locationFilter, setLocationFilter] = useState(false);
   const [jobFilter, setJobFilter] = useState(false);
-  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false); // State for employee detail modal
-  const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] = useState(false); // State for assign employee modal
-  const [isAccountDeletedModalOpen, setIsAccountDeletedModalOpen] = useState(false); // State for delete modal
+  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false); 
+  const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] = useState(false); 
+  const [isAccountDeletedModalOpen, setIsAccountDeletedModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate();
-
-  
 
   const locationRef = useRef(null);
   const jobRef = useRef(null);
@@ -33,8 +35,8 @@ const DeleteAccountList = () => {
     }
   };
 
-  const handleSubmit = () => {
-    navigate("/employees/add");
+  const handleViewProfile = () => {
+    navigate(`/edit-employee/${managerId}`);
   };
 
   const backSubmit = () => {
@@ -46,15 +48,43 @@ const DeleteAccountList = () => {
     setIsAccountDeletedModalOpen(true);
 };
 
+
+const getDataById = async () => {
+  setLoading(true);
+  try {
+    const response = await axios.get(`/owner/manager/${managerId}`)
+    if(response?.status === 200){
+      console.log(response)
+      setUserData(response?.data?.data)
+    }
+  }
+  catch(err){
+    console.log(err)
+  }
+  finally{
+    setLoading(false)
+  }
+}
+
+useEffect(()=>{
+  getDataById()
+},[])
+
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
       <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
+      {loading ? (
+        <div className="w-full h-[90dvh] flex justify-center items-center">
+          <FiLoader className="text-[30px] animate-spin text-lg mx-auto" />
+        </div>
+      ) : (
+        <>
         <div className="flex w-full items-center justify-between">
           <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
             Delete Account
           </h3>
           <button
-          onClick={handleSubmit}
+          onClick={handleViewProfile}
           className="w-full lg:w-[135px] h-[35px] flex items-center gap-1 rounded-[10px] justify-center bg-[#1A293D] text-[#199BD1] text-[11px] font-bold leading-[14.85px]"
           >
             View Profile
@@ -216,6 +246,7 @@ const DeleteAccountList = () => {
             </div>
           </div>
         </div>
+        </>)}
       </div>
       
 

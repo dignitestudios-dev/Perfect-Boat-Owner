@@ -36,7 +36,8 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
-const AssignedModal = ({ handleViewAllClick, setIsOpen }) => {
+const AssignedModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
+  console.log("🚀 ~ AssignedModal ~ tasksList:", tasksList)
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -63,7 +64,7 @@ const AssignedModal = ({ handleViewAllClick, setIsOpen }) => {
         </div>
           </div>
           <div className="relative h-full overflow-auto">
-            <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+              <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-8 grid grid-cols-6 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center mb-2">
                 <span className="w-full flex justify-start items-center">
                   Boat Name
@@ -84,35 +85,51 @@ const AssignedModal = ({ handleViewAllClick, setIsOpen }) => {
                   Action
                 </span>
               </div>
-              <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                <span className="w-full flex justify-start items-center">
-                  Boat A
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  Full Inspection
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  12-02-2024
-                </span>
-                <span className="w-full flex justify-start items-center ">
-                  90 days
-                </span>
-                <span className="w-full flex justify-start items-center ">
-            <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-              In-Progress
-            </span>
-          </span>
-                <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-                  <span className="flex justify-start items-center">
-                    <FaRegEdit />
+              {tasksList?.length > 0 ? (
+                <>
+                {
+                tasksList?.map((task,index)=>(
+                  <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                  <span className="w-full flex justify-start items-center">
+                    {task?.name}
                   </span>
-                  <span className="flex justify-start items-center">
-                    <RiDeleteBinLine />
+                  <span className="w-full flex justify-start items-center">
+                  {task?.type}
                   </span>
+                  <span className="w-full flex justify-start items-center">
+                  {getUnixDate(task?.dueDate)}
+                  </span>
+                  <span className="w-full flex justify-start items-center ">
+                    {task?.recurringDays}
+                  </span>
+                  <span className="w-full flex justify-start items-center ">
+                    <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
+                    {task?.status}
+                    </span>
+                  </span>
+                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
+                    <span
+                      className="flex justify-start items-center"
+                      onClick={()=>handleEditTaskClick(task?._id)}
+                    >
+                      <FaRegEdit />
+                    </span>
+                    <span className="flex justify-start items-center">
+                      <RiDeleteBinLine />
+                    </span>
+                  </div>
                 </div>
-              </div>
+                ))
+              }
+                </>
+              ):(
+                <div>No record found</div>
+              )}
+              
               {/* Add more rows as needed */}
             </div>
+            
+            
           </div>
           <div className="flex justify-end mt-4">
             <button

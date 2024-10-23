@@ -11,6 +11,11 @@ const BoatsTable = ({data , loading}) => {
   const [locationFilter, setLocationFilter] = useState(false);
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
+  const [search, setSearch] = useState("");
+
+  const filteredData = data.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   const boatTypes = ["Type 1", "Type 2", "Type 3"];
   const locations = [
@@ -43,6 +48,10 @@ const BoatsTable = ({data , loading}) => {
     };
   }, []);
 
+  const handleBoatDetails=(boat) => {
+    console.log("🚀 ~ handleBoatDetails ~ boat:", boat)
+    navigate(`/boats/${boat?._id}`, {state:{boat}})
+  }
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -56,6 +65,7 @@ const BoatsTable = ({data , loading}) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
+          onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -143,10 +153,10 @@ const BoatsTable = ({data , loading}) => {
         ):(
           <Fragment>
             {/* Example rows */}
-        {data?.map((boat, index) => (
+        {filteredData?.map((boat, index) => (
           <div
             key={index}
-            onClick={() => navigate("/boats/1", "Boat")}
+            onClick={() => handleBoatDetails(boat)}
             className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
           >
             <span className="w-[106px] h-[76px] flex justify-start items-center relative">

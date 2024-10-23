@@ -3,8 +3,11 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch, FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../../contexts/GlobalContext";
+import MiniListLoader from "../global/MiniListLoader";
+import TaskType from "../global/headerDropdowns/TaskType";
+import StatusType from "../global/headerDropdowns/StatusType";
 
-const NewTaskTable = ({ data }) => {
+const NewTaskTable = ({ data, loading }) => {
   const { formatTimestampToDate } = useContext(GlobalContext);
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
@@ -16,6 +19,12 @@ const NewTaskTable = ({ data }) => {
   const toggleStatusDropdown = () => {
     setStatusDropdownOpen(!statusDropdownOpen);
   };
+
+  const [search, setSearch] = useState("");
+
+  const filteredData = data?.filter((item) =>
+    item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -32,99 +41,32 @@ const NewTaskTable = ({ data }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
+          onChange={(e)=>setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
           />
         </div>
       </div>
-      {data?.length > 0 ? (
+      
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
             <span className="w-full flex justify-start items-center">
               Boat name
             </span>
-            <span className="w-full flex justify-start items-center relative">
-              Task Type
-              <FaCaretDown
-                className={`ml-2 cursor-pointer ${
-                  taskTypeDropdownOpen ? "rotate-180" : "rotate-0"
-                }`}
-                onClick={toggleTaskTypeDropdown}
-              />
-              {taskTypeDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Maintenance
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Cleaning
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Inspection
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Repair
-                  </label>
-                </div>
-              )}
-            </span>
+            <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}/>
             <span className="w-full flex justify-start items-center">
               Due Date
             </span>
-            <span className="w-full flex justify-start items-center relative">
-              Status
-              <FaCaretDown
-                className={`ml-2 cursor-pointer ${
-                  statusDropdownOpen ? "rotate-180" : "rotate-0"
-                }`}
-                onClick={toggleStatusDropdown}
-              />
-              {statusDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    In-Progress
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Completed
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Overdue
-                  </label>
-                </div>
-              )}
-            </span>
+            <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}/>
           </div>
-
-          {data?.slice(0, 4)?.map((task, key) => {
+          {loading ? (
+          <MiniListLoader />
+        ) : (
+          <>
+          {data?.length > 0 ?(
+            <>
+            {filteredData?.slice(0, 4)?.map((task, key) => {
             return (
               <div
                 key={key}
@@ -145,15 +87,15 @@ const NewTaskTable = ({ data }) => {
                   </span>
                 </span>
               </div>
-            );
+              );
           })}
+            </>
+          ):(
+            <p>Ready to dive into action? Stay tuned for upcoming tasks requests by your team.</p>
+          )}
+          </>
+          )}
         </div>
-      ) : (
-        <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
-          Reminder! show the texts that is in the UI later while integration.
-          Click on this to show the tasks table
-        </div>
-      )}
 
       <div className="w-full h-auto flex justify-center items-center">
         <Link

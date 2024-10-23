@@ -2,18 +2,37 @@ import React, { useContext, useRef, useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import { AuthMockup } from "../../assets/export";
-import SelectBoatsModal from "./SelectBoatsModal";
+import RequestTaskListLoader from "../../components/tasks/loaders/RequestTaskListLoader";
+import axios from "../../axios";
+import BoatManagerAccessModal from "./BoatManagerAccessModal";
+import { FiLoader } from "react-icons/fi";
+import { ErrorToast } from "../../components/global/Toaster";
 
-const BoatAccessList = ({ isOpen, setIsOpen }) => {
-  const { navigate } = useContext(GlobalContext);
+const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
+  
+  const { navigate, boats } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
+  
+  const [search,setSearch] = useState("")
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
-  const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false); // State for modal visibility
+  const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false); 
+  const [passSelectedBoat,SetPassSelectedBoat] = useState(false)
+  const [loadingManager, setLoadingManager] = useState(false)
+  const [managersBoat, setManagersBoat] = useState([])
+  const [assignLoading, setAssignLoading] = useState(false)
+  const [isBoatManagerAccessOpen, setIsBoatManagerAccessOpen] = useState(false);
+
+  const filteredData = managersBoat?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
+
+  const filteredBoats = boats?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   const handleOpenSelectBoatsModal = () => {
     setIsSelectBoatsModalOpen(true);
@@ -23,12 +42,22 @@ const BoatAccessList = ({ isOpen, setIsOpen }) => {
     setIsSelectBoatsModalOpen(false);
   };
 
+  const handleClose = () =>{
+    setIsBoatManagerAccessOpen(false)
+    setIsSelectBoatsModalOpen(false)
+    setIsOpen(false)
+  }
+
   const toggleBoatTypeModal = () => {
     setBoatTypeFilter((prev) => !prev);
   };
 
   const toggleLocationFilter = () => {
     setLocationFilter((prev) => !prev);
+  };
+
+  const openBoatManagerAccessModal = () => {
+
   };
 
   const handleClickOutside = (event) => {
@@ -49,11 +78,56 @@ const BoatAccessList = ({ isOpen, setIsOpen }) => {
     setSelectAll(!selectAll);
   };
 
-  const handleSelectBoat = (index) => {
-    const updatedSelection = [...selectedBoats];
-    updatedSelection[index] = !updatedSelection[index];
-    setSelectedBoats(updatedSelection);
+  const handleSelectBoat = (boats) => {
+    const isSelected = selectedBoats.some((boat) => boat?._id === boats._id);
+    if (isSelected) {
+      setSelectedBoats(selectedBoats.filter((boat) => boat?._id !== boats._id));
+    } else {
+      setSelectedBoats([
+        ...selectedBoats, boats
+      ]);
+    }
   };
+
+  const getManagerById = async () => {
+    setLoadingManager(true);
+    try {
+      const { data } = await axios.get(`/owner/manager/${managerId}/boat`);
+      setManagersBoat(data?.data);
+      setSelectedBoats(data?.data)
+    } catch (err) {
+      console.log("🚀 ~ getManagerById ~ err:", err)
+    } finally {
+      setLoadingManager(false);
+    }
+  };
+
+  const handleAssignBoats =async()=>{
+    setAssignLoading(true)
+    try{
+      const obj = {
+        boats: selectedBoats?.map(item=>item._id)
+      }
+      const response = await axios.put(`/owner/manager/${managerId}/boat`,obj)
+      if(response.status === 200){
+        setIsBoatManagerAccessOpen(true);
+        setIsSelectBoatsModalOpen(false); 
+      }
+    }
+    catch(err){
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err)
+      ErrorToast(err?.response?.data?.message)
+    }
+    finally{
+      setAssignLoading(false)
+    }
+  }
+
+  useEffect(()=>{
+    if(managerId){
+      getManagerById()
+    }
+  },[managerId])
 
   useEffect(() => {
     if (isOpen) {
@@ -73,7 +147,7 @@ const BoatAccessList = ({ isOpen, setIsOpen }) => {
       <div className="w-[100%] h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="relative w-full h-full bg-[#001229] rounded-2xl p-4 lg:p-6">
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={() => {setIsOpen(false); setIsSelectBoatsModalOpen(false);}}
             className="absolute top-4 right-4 text-white text-lg"
           >
             ✕
@@ -88,17 +162,30 @@ const BoatAccessList = ({ isOpen, setIsOpen }) => {
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
               />
             </div>
-            <button
+            {isSelectBoatsModalOpen ? (
+              <button
+              disabled={assignLoading}
+              onClick={handleAssignBoats}
+              className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
+            >
+            <div className="flex items-center"><span className="mr-1">Done</span>{assignLoading &&(
+              <FiLoader className="animate-spin text-lg mx-auto" />)}</div> 
+            </button>
+            ):(
+              <button
               onClick={handleOpenSelectBoatsModal}
               className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
             >
               Change
             </button>
+            )}
           </div>
           <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">
             <div className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
@@ -175,59 +262,133 @@ const BoatAccessList = ({ isOpen, setIsOpen }) => {
               </button>
             </div>
 
-            {Array(5)
-              .fill()
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-                >
-                  <div className="flex items-center">
-                    <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                      <img
-                        src={AuthMockup}
-                        alt="boat_image"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "15px 0 0 15px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div
-                        className="w-24"
-                        style={{
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                          background:
-                            "linear-gradient(to right, transparent, #001229)",
-                        }}
-                      />
+            {loadingManager?(
+              <RequestTaskListLoader/>
+            ):(
+              <>
+              {isSelectBoatsModalOpen ?(
+                <>
+                {filteredBoats?.map((boat, index) => {
+                   const isMultiSelected = selectedBoats.some((selected) => selected._id === boat._id);
+                   return(
+                    <div
+                    key={index}
+                    className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  >
+                    <div className="flex items-center">
+                    <input type="checkbox" className="accent-[#199BD1] mr-2 cursor-pointer" 
+                      checked={isMultiSelected} onChange={() => handleSelectBoat(boat)}
+                    />
+                      <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                        <img
+                          src={boat?.images[0]}
+                          alt="boat_image"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "15px 0 0 15px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <div
+                          className="w-24"
+                          style={{
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            background:
+                              "linear-gradient(to right, transparent, #001229)",
+                          }}
+                        />
+                      </span>
+                    </div>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.boatType}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.name}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                    {boat?.model} / {boat?.make} / {boat?.size}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                    {boat?.location}
                     </span>
                   </div>
-                  <span className="w-full flex justify-start items-center">
-                    Type goes here
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    Boat Name
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    2019 / Toyotta / Class A
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    East California Dock
-                  </span>
-                </div>
-              ))}
-            {isSelectBoatsModalOpen && (
-              <SelectBoatsModal
+                  )
+                })}
+              </>
+              ):(
+                <>
+                {filteredData?.map((boat, index) => {
+                  return(
+                    <div
+                    key={index}
+                    className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  >
+                    <div className="flex items-center">
+                      <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                        <img
+                          src={boat?.boatImage}
+                          alt="boat_image"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "15px 0 0 15px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <div
+                          className="w-24"
+                          style={{
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            background:
+                              "linear-gradient(to right, transparent, #001229)",
+                          }}
+                        />
+                      </span>
+                    </div>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.boatType}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.name}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                    {boat?.model} / {boat?.make} / {boat?.size}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                    {boat?.location}
+                    </span>
+                  </div>
+                  )
+                })}
+                </>
+                )}
+              </>
+            )}
+            
+            <BoatManagerAccessModal
+            handleClose={()=>handleClose()}
+            manager={managerName}
+            isOpen={isBoatManagerAccessOpen}
+            setIsOpen={setIsBoatManagerAccessOpen}
+            />
+
+            {/* {isSelectBoatsModalOpen && (
+              <SelectBoatsModal isOpen={isSelectBoatsModalOpen} setIsOpen={handleCloseSelectBoatsModal}/>
+              <BoatSelectModal
+              SetPassSelectedBoat={SetPassSelectedBoat} isMultiple={true}
                 isOpen={isSelectBoatsModalOpen}
                 setIsOpen={handleCloseSelectBoatsModal}
               />
-            )}
+            )} */}
           </div>
         </div>
       </div>

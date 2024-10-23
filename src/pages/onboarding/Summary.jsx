@@ -54,7 +54,11 @@ const Summary = () => {
         <h1 className="w-full justify-start items-start text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
           Summary
         </h1>
-        <div className="w-full flex flex-col justify-start items-start gap-8">
+        {summaryLoading ? (
+          <SummaryLoader />
+        ) : (
+          <>
+          <div className="w-full flex flex-col justify-start items-start gap-8">
           <div className="w-full flex flex-col justify-start items-start gap-1">
             <div className="w-auto h-8 flex justify-start items-center gap-2">
               <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
@@ -157,6 +161,8 @@ const Summary = () => {
             )}
           </div>
         </div>
+          </>
+        )}
       </div>
       <div className="w-1/2 lg:flex hidden relative h-full">
         <span className="w-20 h-full bg-gradient-to-r from-black/70 via-black/30 to-black/0  absolute top-0 -left-4"></span>

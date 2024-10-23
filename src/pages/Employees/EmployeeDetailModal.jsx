@@ -3,7 +3,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
-const EmployeeDetailModal = ({ setIsOpen }) => {
+const EmployeeDetailModal = ({ setIsOpen, SetPassSelectedEmployee, setInputError }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -11,6 +11,7 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
   const locationRef = useRef(null);
 
   const { employees, loadingEmployees } = useContext(GlobalContext);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   const jobTitles = ["Manager", "Engineer", "Developer"];
   const locations = [
@@ -35,6 +36,21 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
       setLocationFilter(false);
     }
   };
+
+  
+  const handleSelectEmployee = (employeeId, employeeName) => {
+    setInputError({})
+    if (selectedEmployee?.id === employeeId) {
+      setSelectedEmployee(null);
+    } else {
+      setSelectedEmployee({id: employeeId, name: employeeName});
+    }
+  };
+
+  const handleEmployeeSelection = () =>{
+    SetPassSelectedEmployee(selectedEmployee)
+    setIsOpen(false)
+  }
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -69,7 +85,7 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
                 />
               </div>
               <button
-                onClick={() => console.log("Search triggered")} // Implement search functionality here
+                onClick={() => handleEmployeeSelection()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
               >
                 Done
@@ -150,34 +166,39 @@ const EmployeeDetailModal = ({ setIsOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {employees?.map((employee, index) => (
-                  <tr key={index} className="border-b-[1px] border-white/10">
-                    <td className="px-0 py-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                    </td>
-                    <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      {employee?.name}
-                    </td>
-                    <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      {employee?.email}
-                    </td>
-                    <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      {employee?.jobtitle}
-                    </td>
-                    <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                      {employee?.location}
-                    </td>
-                  </tr>
-                ))}
+                {employees?.map((employee, index) =>{
+                  const isSelected = selectedEmployee?.id === employee._id;
+                  return (
+                    <tr key={index} className="border-b-[1px] border-white/10">
+                      <td className="px-0 py-2">
+                        <input
+                          type="checkbox"
+                          className="w-3 h-3 accent-[#199BD1]"
+                          checked={isSelected}
+                          onChange={() => handleSelectEmployee(employee._id, employee.name)}
+                        />
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {employee?.name}
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {employee?.email}
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {employee?.jobtitle}
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {employee?.location}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
           <div className="flex justify-end mt-4">
             <button
-              onClick={() => setIsOpen(false)} // Close the modal when "Done" is clicked
+              onClick={()=>setIsOpen(false)}
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >
               Done

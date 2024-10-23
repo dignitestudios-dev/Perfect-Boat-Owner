@@ -35,7 +35,7 @@ const Sidebar = () => {
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 z-40 h-screen overflow-y-auto`}
       >
-        <Link to="/" className="">
+        <Link to="/dashboard" className="">
           <img src={Logo} alt="perfectboat_logo" className=" " />
         </Link>
 

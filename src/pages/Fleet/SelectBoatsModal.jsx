@@ -271,9 +271,9 @@
                
             </div>
             <BoatManagerAccessModal
-  isOpen={isBoatManagerAccessOpen}
-  setIsOpen={setIsBoatManagerAccessOpen}
-/>
+            isOpen={isBoatManagerAccessOpen}
+            setIsOpen={setIsBoatManagerAccessOpen}
+            />
             </div>
         </div>
         </div>

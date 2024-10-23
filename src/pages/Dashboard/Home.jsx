@@ -29,11 +29,11 @@ const Home = () => {
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
       <DashboardStats data={dashboardData?.dashboard} />
-      <DashboardTasksTable data={dashboardData?.task} />
-      <NewTaskTable data={dashboardData?.taskRequest} />
-      <DashboardBoats data={dashboardData?.boat} />
-      <ManagersTable data={dashboardData?.manager} />
-      <EmployeeTable data={dashboardData?.employees} />
+      <DashboardTasksTable data={dashboardData?.task} loading={loading}/>
+      <NewTaskTable data={dashboardData?.taskRequest} loading={loading}/>
+      <DashboardBoats data={dashboardData?.boat} loading={loading}/>
+      <ManagersTable data={dashboardData?.manager} loading={loading}/>
+      <EmployeeTable data={dashboardData?.employees} loading={loading}/>
     </div>
   );
 };

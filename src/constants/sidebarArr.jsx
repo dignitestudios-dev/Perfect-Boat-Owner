@@ -64,7 +64,7 @@ export const sidebarArr = [
       },
       {
         title: "Add Employee",
-        url: "/employees/add",
+        url: "/add-employee",
       },
     ],
   },

@@ -4,11 +4,13 @@ import SelectPaymentMethod from "./SelectPaymentMethod";
 import { AuthMockup } from "../../assets/export";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { FiLoader } from "react-icons/fi";
 
 const SelectPackage = () => {
   const { navigate } = useContext(GlobalContext);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectLoading, setSelectLoading] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
   console.log("🚀 ~ SelectPackage ~ subscriptions:", subscriptions);
 
@@ -27,12 +29,10 @@ const SelectPackage = () => {
     getPackage();
   }, []);
 
-  const [selectLoading, setSelectLoading] = useState(false);
-
-  const selectPlan = async () => {
+  const selectPlan = async (subId) => {
     try {
       const obj = {
-        subscriptionPlanId: subscriptions[0]?._id,
+        subscriptionPlanId: subId,
       };
       setSelectLoading(true);
       const response = await axios.post("/owner/subscription/selectPlan", obj);
@@ -103,10 +103,13 @@ const SelectPackage = () => {
                 </div>
 
                 <button
-                  onClick={() => selectPlan()}
+                  onClick={() => selectPlan(subscriptions[0]?._id)}
                   className="outline-none bg-[#55C9FA] text-white rounded-full w-[126px] h-[44px] flex items-center font-[550] justify-center"
                 >
-                  Buy now
+                <div className="flex items-center">
+                  <span className="mr-1">Buy now </span>
+                  {selectLoading && (<FiLoader className="animate-spin text-lg mx-auto" />)}
+                  </div>
                 </button>
 
                 <ul className="w-full px-8 text-[16px] text-white font-normal flex flex-col gap-4 justify-start items-start list-disc">

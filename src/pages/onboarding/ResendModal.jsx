@@ -1,9 +1,24 @@
 import React from 'react';
 import { MdAccessTime } from "react-icons/md";
+import { SuccessToast } from '../../components/global/Toaster';
+import axios from '../../axios';
 
-const ResendModal = ({ isOpen, onClose }) => {
+const ResendModal = ({ isOpen, onClose, id }) => {
   if (!isOpen) return null;
 
+  const resendCredentials = async()=>{
+    try{
+      const response = await axios.get(`/owner/manager/${id}/credentials/send`)
+      if(response.status === 200){
+        console.log("🚀 ~ resendCredentials ~ response:", response)
+        onClose()
+        SuccessToast("Credentials Send")
+      }
+    }catch(err){
+    console.log("🚀 ~ resendCredentials ~ err:", err)
+
+    }
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50">
       <div className="relative bg-[#02203A] rounded-lg shadow-md w-full max-w-md">
@@ -30,7 +45,7 @@ const ResendModal = ({ isOpen, onClose }) => {
               Cancel
             </button>
             <button
-              onClick={onClose}
+              onClick={resendCredentials}
               type="button"
               className="text-[#199BD1] font-bold	 py-2 px-4 rounded-lg text-[16px]"
             >

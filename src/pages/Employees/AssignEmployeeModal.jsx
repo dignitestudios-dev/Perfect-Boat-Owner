@@ -1,6 +1,6 @@
 import React from "react";
 
-const AssignEmployeeModal = ({ isOpen, onClose }) => {
+const AssignEmployeeModal = ({ isOpen, onClose, managerName }) => {
   if (!isOpen) return null;
 
   return (
@@ -34,7 +34,7 @@ const AssignEmployeeModal = ({ isOpen, onClose }) => {
             </svg>
           </span>
         </div>
-        <p className="text-white mb-6 text-[16px]">You have successfully assigned employees to *Manager Name*</p>
+        <p className="text-white mb-6 text-[16px]">You have successfully assigned employees to {managerName}</p>
       </div>
     </div>
   );

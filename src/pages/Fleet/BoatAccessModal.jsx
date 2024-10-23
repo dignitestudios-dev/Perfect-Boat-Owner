@@ -1,13 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Fragment } from "react";
 import { FaCaretDown, FaSearch } from "react-icons/fa";
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
+import axios from "../../axios";
+import BoatsLoader from "../../components/fleet/BoatsLoader";
+import MiniListLoader from "../../components/global/MiniListLoader";
 
-const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDetailModalOpen }) => {
+const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDetailModalOpen, boatId }) => {
+  console.log("🚀 ~ BoatAccessModal ~ boatId:", boatId)
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
+  const [loadingBoats, setLoadingBoats] = useState(false);
+  const [boats, setBoats] = useState([]);
+  console.log("🚀 ~ BoatAccessModal ~ boats:", boats)
   const jobTitleRef = useRef(null);
   const locationRef = useRef(null);
+
+  const filteredData = boats?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  );
 
   const jobTitles = ["Manager", "Engineer", "Developer"];
   const locations = ["East California Dock", "West California Dock", "South California Dock"];
@@ -36,6 +47,22 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
     };
   }, []);
 
+  const getBoats = async () => {
+    setLoadingBoats(true);
+    try {
+      const { data } = await axios.get(`/owner/boat/${boatId}`);
+      setBoats(data?.data?.boatAccess);
+    } catch (err) {
+      console.log("🚀 ~ getBoats ~ err:", err)
+    } finally {
+      setLoadingBoats(false);
+    }
+  };
+
+  useEffect(()=>{
+    if(boatId){ getBoats()}
+  },[boatId])
+
   return (
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-black/75 z-[999]">
@@ -43,7 +70,9 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
           <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
             <div className="flex flex-col mb-4">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Boats Access To Managers</h3>
+                <h3 className="text-lg font-semibold">
+                  Boats Access To Managers
+                </h3>
                 <button
                   onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                   className="text-lg font-bold"
@@ -94,7 +123,10 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                         } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
                       >
                         {jobTitles.map((title, index) => (
-                          <div key={index} className="w-full flex justify-start items-start">
+                          <div
+                            key={index}
+                            className="w-full flex justify-start items-start"
+                          >
                             <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
                               {title}
                             </span>
@@ -117,7 +149,10 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                         } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
                       >
                         {locations.map((location, index) => (
-                          <div key={index} className="w-full flex justify-start items-start">
+                          <div
+                            key={index}
+                            className="w-full flex justify-start items-start"
+                          >
                             <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
                               {location}
                             </span>
@@ -127,16 +162,22 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                  {[...Array(20)].map((_, index) => (
-                    <tr key={index} className="border-b border-[#2A394C]">
-                      <td className="px-4 py-2">Mark Taylor</td>
-                      <td className="px-4 py-2">markT@gmail.com</td>
-                      <td className="px-4 py-2">Dock Manager</td>
-                      <td className="px-4 py-2">East California Dock</td>
-                    </tr>
-                  ))}
-                </tbody>
+                {loadingBoats ? (
+                  <Fragment>
+                    <MiniListLoader/>
+                  </Fragment>
+                ) : (
+                  <tbody>
+                    {filteredData?.map((manager, index) => (
+                      <tr key={index} className="border-b border-[#2A394C]">
+                        <td className="px-4 py-2">{manager?.name}</td>
+                        <td className="px-4 py-2">{manager?.email}</td>
+                        <td className="px-4 py-2">{manager?.jobtitle || "---"}</td>
+                        <td className="px-4 py-2">{manager?.location || "---"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
               </table>
             </div>
             <div className="flex justify-end mt-4">
@@ -150,7 +191,6 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
           </div>
         </div>
       </div>
-      
     </>
   );
 };

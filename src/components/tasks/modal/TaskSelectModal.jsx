@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaRegEdit, FaCaretDown } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
+import { getUnixDate } from "../../../data/DateFormat";
+
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
 
 const Dropdown = ({ label, options }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -35,7 +44,13 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
-const TaskSelectModal = ({ handleViewAllClick, setIsOpen }) => {
+const TaskSelectModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
+  console.log("🚀 ~ TaskSelectModal ~ tasksList:", tasksList)
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredData = tasksList?.filter((item) =>
+    item?.task?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  );
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -55,6 +70,8 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen }) => {
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -76,16 +93,21 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen }) => {
                 </div>
                 <span className="flex items-center justify-start">Action</span>
               </div>
-              {[...Array(7)].map((_, index) => (
+              {filteredData?.length > 0 ?(
+                <>
+                {filteredData?.map((item, index) => (
                 <div key={index} className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center">
                   <span className="flex items-center justify-start mr-2"></span>
-                  <span className="flex items-center justify-start">Boat A</span>
-                  <span className="flex items-center justify-start">Full Inspection</span>
-                  <span className="flex items-center justify-start">12-02-2024</span>
-                  <span className="flex items-center justify-start">90 days</span>
+                  <span className="flex items-center justify-start">{item?.task}</span>
                   <span className="flex items-center justify-start">
-                    <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                      In-Progress
+                    {item?.taskType?.length > 15 ? item?.taskType?.slice(0, 24) + "..." : item?.taskType}
+                  </span>
+                  <span className="flex items-center justify-start">{getUnixDate(item?.dueDate)}</span>
+                  <span className="flex items-center justify-start">{item?.reoccuringDays}</span>
+                  <span className="flex items-center justify-start">
+                    <span style={{ color: statusColors[item?.status] || statusColors["default"] }}
+                    className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
+                    {item?.status}
                     </span>
                   </span>
                   <div className="flex text-[15px] text-white/40  items-center gap-2">
@@ -98,6 +120,11 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen }) => {
                   </div>
                 </div>
               ))}
+                </>
+              ):(
+                <div> No data found</div>
+              )}
+              
               {/* Add more rows as needed */}
             </div>
           </div>

@@ -13,7 +13,7 @@ const theme = {
   },
 };
 
-const DateModal = ({ isOpen, setIsOpen }) => {
+const DateModal = ({ isOpen, setIsOpen, setDueDate }) => {
   const today = moment();
   const [date, setDate] = useState(today.toDate());
   const dateRef = useRef();
@@ -23,6 +23,16 @@ const DateModal = ({ isOpen, setIsOpen }) => {
       setIsOpen(false);
     }
   };
+
+  const handleDueDate=()=>{
+    const formattedDate = date.toISOString().slice(0, 10);
+    setDueDate({ normal: formattedDate }); 
+    
+    const unixTimestamp = Math.floor(date.getTime() / 1000);
+    setDueDate((prev) => ({ ...prev, unix: unixTimestamp })); 
+    
+    setIsOpen(false);
+  }
 
   return (
     <div
@@ -87,7 +97,9 @@ const DateModal = ({ isOpen, setIsOpen }) => {
             </Application>
           </div>
 
-          <button className="w-3/4 h-14 px-4 ml-11 rounded-lg flex justify-center items-center text-md font-medium bg-[#199BD1] text-white">
+          <button onClick={handleDueDate}
+           className="w-3/4 h-14 px-4 ml-11 rounded-lg flex justify-center items-center text-md font-medium
+            bg-[#199BD1] text-white">
             Save
           </button>
         </div>

@@ -1,22 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoMdWarning } from "react-icons/io";
 import axios from '../../axios'; // Adjust import path as necessary
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { FiLoader } from "react-icons/fi";
 
 
 const DeletedModal = ({ isOpen, onClose, _id, refreshTasks }) => {
   if (!isOpen) return null;
+  const [deleteLoad,setDeleteLoad] = useState(false)
 
   // Function to handle the deletion API call
   const handleDelete = async () => {
+    setDeleteLoad(true)
     try {
-        const response = await axios.delete(`/owner/task/${_id}`); // 
-        console.log("Task deleted successfully:", response.data);
+        const response = await axios.delete(`/owner/task/${_id}`);
         SuccessToast("Deleted successfully");
       refreshTasks(); // 
       onClose(); // 
     } catch (error) {
       console.error("Error deleting task:", error);
+    }
+    finally{
+      setDeleteLoad(false)
     }
   };
 
@@ -46,10 +51,12 @@ const DeletedModal = ({ isOpen, onClose, _id, refreshTasks }) => {
               Cancel
             </button>
             <button
-              onClick={handleDelete} // 
+            disabled={deleteLoad}
+              onClick={handleDelete} 
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
             >
-              Delete
+             <div className="flex items-center"><span className="mr-1">Delete</span>{deleteLoad &&(
+          <FiLoader className="animate-spin text-lg mx-auto" />)}</div> 
             </button>
           </div>
         </div>

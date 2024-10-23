@@ -1,15 +1,55 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import EmployeeDetailModal from "../Managers/ManagerDetailModal"; // Update with the correct path
 import AssignManagerModal from "../Managers/AssignManagerModal";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AssignManager = () => {
+  const { managers, loadingManagers } = useContext(GlobalContext);
+  const [search, setSearch] = useState("");
+  const filteredData = managers?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+);
+
   const [locationFilter, setLocationFilter] = useState(false);
   const [jobFilter, setJobFilter] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false); // State for employee detail modal
   const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] =
-    useState(false); // State for assign employee modal
+    useState(false); // State for assign employee modal 
+
+  const [passSelectedManager, SetPassSelectedManager] = useState("")
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+  const handleSelectEmployee = (employeeId, employeeName) => {
+      const isSelected = selectedEmployees.some((employee) => employee?.id === employeeId);
+      if (isSelected) {
+        setSelectedEmployees(selectedEmployees.filter((employee) => employee?.id !== employeeId));
+      } else {
+        setSelectedEmployees([...selectedEmployees, 
+          { id: employeeId, name: employeeName }]);
+      }
+  };
+
+  const handleAssignEmployees =async()=>{
+    setAssignLoading(true)
+    try{
+      const obj = {
+        employees: selectedEmployees?.map(item=>item.id)
+      }
+      const response = await axios.put(`/owner/manager/${passSelectedManager?.id}/employees/assign`,obj)
+      if(response.status === 200){
+        setIsAssignEmployeeModalOpen(true) 
+      }
+    }
+    catch(err){
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err)
+      ErrorToast(err?.response?.data?.message)
+    }
+    finally{
+      setAssignLoading(false)
+    }
+  }
 
   const locationRef = useRef(null);
   const jobRef = useRef(null);
@@ -61,6 +101,7 @@ const AssignManager = () => {
               <IoIosSearch className="text-white/50 text-lg" />
             </span>
             <input
+              onChange={(e) => setSearch(e.target.value)}
               type="text"
               placeholder="Search here"
               className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white"
@@ -144,33 +185,44 @@ const AssignManager = () => {
             </div>
 
             {/* Table Content */}
-            {Array(10)
-              .fill()
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="w-full h-10 grid grid-cols-10 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
-                >
-                  <div className="flex items-center col-span-1 px-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                  </div>
-                  <span className="col-span-2 flex items-center px-2">
-                    Mike Smith
-                  </span>
-                  <span className="flex items-center px-2 col-span-3">
-                    mikesmith@gmail.com
-                  </span>
-                  <span className="flex items-center px-2 col-span-2">
-                    Dock Guard
-                  </span>
-                  <span className="flex items-center px-2 col-span-2">
-                    East California Dock
-                  </span>
-                </div>
-              ))}
+            <>
+  {filteredData && filteredData.length > 0 ? (
+    filteredData.map((employee, index) => {
+      const isMultiSelected = selectedEmployees.some((selected) => selected.id === employee._id);
+      return (
+        <div
+          key={index}
+          className="w-full h-10 grid grid-cols-10 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
+        >
+          <div className="flex items-center col-span-1 px-2">
+            <input
+              checked={isMultiSelected}
+              onChange={() => handleSelectEmployee(employee?._id, employee?.name)}
+              type="checkbox"
+              className="w-3 h-3 accent-[#199BD1]"
+            />
+          </div>
+          <span className="col-span-2 flex items-center px-2">
+            {employee.name}
+          </span>
+          <span className="flex items-center px-2 col-span-3">
+            {employee.email}
+          </span>
+          <span className="flex items-center px-2 col-span-2">
+            {employee.position}
+          </span>
+          <span className="flex items-center px-2 col-span-2">
+            {employee.location}
+          </span>
+        </div>
+      );
+    })
+  ) : (
+    <div className="w-full h-10 grid grid-cols-10 border-b text-center">
+      No Record Found
+    </div>
+  )}
+</>
           </div>
         </div>
 

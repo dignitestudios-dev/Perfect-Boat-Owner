@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { GlobalContext } from "../../contexts/GlobalContext";
+import { GlobalContext } from "../../../contexts/GlobalContext";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 

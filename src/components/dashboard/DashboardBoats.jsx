@@ -3,8 +3,12 @@ import { FiSearch, FiChevronDown } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { Link } from "react-router-dom";
 import { FaCaretDown } from "react-icons/fa";
+import MiniListLoader from "../global/MiniListLoader";
+import BoatType from "../global/headerDropdowns/BoatType";
+import LocationType from "../global/headerDropdowns/LocationType";
 
-const DashboardBoats = ({ data }) => {
+const DashboardBoats = ({ data, loading }) => {
+  
   const { navigate, formatTimestampToDate } = useContext(GlobalContext);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -16,6 +20,12 @@ const DashboardBoats = ({ data }) => {
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
+
+  const [search, setSearch] = useState("");
+
+  const filteredData = data?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -32,6 +42,7 @@ const DashboardBoats = ({ data }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
+          onChange={(e)=>setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -45,97 +56,21 @@ const DashboardBoats = ({ data }) => {
           + Add Boat
         </button>
       </div>
-      {data?.length > 0 ? (
+      {loading?(
+        <MiniListLoader/>
+      ):(
+        <>
+        {data?.length > 0 ? (
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
-            <span className="w-full flex justify-start items-center relative">
-              Boat Type
-              <FaCaretDown
-                className={`ml-2 cursor-pointer ${
-                  boatTypeDropdownOpen ? "rotate-180" : "rotate-0"
-                }`}
-                onClick={toggleBoatTypeDropdown}
-              />
-              {boatTypeDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Sailboat
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Motorboat
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Yacht
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    Catamaran
-                  </label>
-                </div>
-              )}
-            </span>
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/>
             <span className="w-full flex justify-start items-center">Name</span>
             <span className="w-full flex justify-start items-center">
               Model / Make / Size
             </span>
-            <span className="w-full flex justify-start items-center relative">
-              Location
-              <FaCaretDown
-                className={`ml-2 cursor-pointer ${
-                  locationDropdownOpen ? "rotate-180" : "rotate-0"
-                }`}
-                onClick={toggleLocationDropdown}
-              />
-              {locationDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    East California Dock
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    West Marina Bay
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    South Beach Port
-                  </label>
-                  <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox text-[#199BD1] mr-2"
-                    />
-                    North Harbor
-                  </label>
-                </div>
-              )}
-            </span>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
           </div>
-          {data?.slice(0, 4)?.map((boat, key) => {
+          {filteredData?.slice(0, 4)?.map((boat, key) => {
             return (
               <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
                 <span className="w-full capitalize flex justify-start items-center">
@@ -159,6 +94,8 @@ const DashboardBoats = ({ data }) => {
           Reminder! show the texts that is in the UI later while integration.
           Click on this to show the tasks table
         </div>
+      )}
+        </>
       )}
 
       <div className="w-full h-auto flex justify-center items-center">

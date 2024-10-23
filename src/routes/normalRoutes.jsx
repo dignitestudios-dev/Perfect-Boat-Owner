@@ -1,14 +1,14 @@
 import GlobalLayout from "../layouts/GlobalLayout";
 import Home from "../pages/Dashboard/Home";
+import Tasks from "../pages/Tasks/Tasks";
+import AddTask from "../pages/Tasks/AddTask";
+import TaskDetail from "../pages/Tasks/TaskDetail";
+import TaskCompleted from "../pages/Tasks/TaskCompleted";
 import AddEmployee from "../pages/Employees/AddEmployee";
 import Employees from "../pages/Employees/Employees";
 import AddFleet from "../pages/Fleet/AddFleet";
 import AddManager from "../pages/Managers/AddManager";
 import Managers from "../pages/Managers/Managers";
-import Tasks from "../pages/Tasks/Tasks";
-import EditTask from "../pages/Tasks/EditTask";
-import AddTask from "../pages/Tasks/AddTask";
-import TaskDetail from "../pages/Tasks/TaskDetail";
 import NewTasksRequests from "../pages/Tasks/NewTasksRequests";
 import NewTaskRequestPage from "../pages/Tasks/NewTaskRequestPage";
 import Boats from "../pages/Fleet/Boats";
@@ -38,7 +38,6 @@ import SelectPaymentMethod from "../pages/onboarding/SelectPaymentMethod";
 import WelcomeAboard from "../pages/onboarding/WelcomeAboard";
 import AddEmployeeExternal from "../pages/Employees/AddEmployeeExternal";
 import OnboardLayout from "../layouts/OnboardLayout";
-import TaskCompleted from "../pages/Tasks/TaskCompleted";
 import Publish from "../pages/TidesTalesAndGuide/Publish";
 import Preview from "../pages/TidesTalesAndGuide/Preview";
 import UpdateBlog from "../pages/TidesTalesAndGuide/UpdateBlog";
@@ -50,8 +49,14 @@ import SelectPackage from "../pages/onboarding/SelectPackage";
 import AddCard from "../pages/onboarding/AddCard";
 import Summary from "../pages/onboarding/Summary";
 import UpdatePassword from "../pages/onboarding/UpdatePassword";
+import CsvUploader from "../pages/Dashboard/CsvUploader";
 
 export const normalRoutes = [
+  // {
+  //   title: "For Csv",
+  //   url: "/add-csv",
+  //   page: <OnboardLayout page={<CsvUploader />} />,
+  // },
   {
     title: "Add a Manager External",
     url: "/add-manager-onboard",
@@ -87,16 +92,12 @@ export const normalRoutes = [
     url: "/add-employee-onboard",
     page: <OnboardLayout page={<AddEmployeeExternal />} />,
   },
-  {
-    title: "Add a Fleet",
-    url: "/add-fleet",
-    page: <GlobalLayout page={<AddFleet />} />,
-  },
-  {
-    title: "Add a Manager",
-    url: "/add-manager",
-    page: <GlobalLayout page={<AddManager />} />,
-  },
+  
+  // {
+  //   title: "Add a Manager",
+  //   url: "/add-manager",
+  //   page: <GlobalLayout page={<AddManager />} />,
+  // },
 
   {
     title: "Add a Employee",
@@ -110,16 +111,6 @@ export const normalRoutes = [
     page: <GlobalLayout page={<Home />} />,
   },
   {
-    title: "Managers List",
-    url: "/managers",
-    page: <GlobalLayout page={<Managers />} />,
-  },
-  {
-    title: "Employee List",
-    url: "/employees",
-    page: <GlobalLayout page={<Employees />} />,
-  },
-  {
     title: "All Tasks",
     url: "/tasks",
     page: <GlobalLayout page={<Tasks />} />,
@@ -128,11 +119,6 @@ export const normalRoutes = [
     title: "Task Detail",
     url: "/tasks/:id",
     page: <GlobalLayout page={<TaskDetail />} />,
-  },
-  {
-    title: "Edit Task",
-    url: "/edit-task/:id",
-    page: <GlobalLayout page={<EditTask />} />,
   },
   {
     title: "Add Task",
@@ -150,9 +136,57 @@ export const normalRoutes = [
     page: <GlobalLayout page={<NewTaskRequestPage />} />,
   },
   {
+    title: "Task Completed",
+    url: "/task-completed",
+    page: <GlobalLayout page={<TaskCompleted />} />,
+  },
+  
+  {
+    title: "Managers List",
+    url: "/managers",
+    page: <GlobalLayout page={<Managers />} />,
+  },
+  {
+    title: "Edit Manager",
+    url: "/edit-manager",
+    page: <GlobalLayout page={<EditManager />} />,
+  },
+  {
+    title: "Assign Manager",
+    url: "/manager/assign-manager",
+    page: <GlobalLayout page={<AssignManager />} />,
+  },
+  {
+    title: "AddManagerpage",
+    url: "/managers/add",
+    page: <GlobalLayout page={<AddManagerpage />} />,
+  },
+
+  {
+    title: "Assign Employees",
+    url: "/employees/assign-employees",
+    page: <GlobalLayout page={<AssignEmployee />} />,
+  },
+  {
+    title: "Employee List",
+    url: "/employees",
+    page: <GlobalLayout page={<Employees />} />,
+  },
+  {
+    title: "Edit Employee",
+    url: "/edit-employee/:id",
+    page: <GlobalLayout page={<EditEmployee />} />,
+  }, 
+  
+  {
     title: "Boat",
     url: "/boats",
     page: <GlobalLayout page={<Boats />} />,
+  },
+  {
+    title: "Add a Fleet",
+    url: "/add-fleet",
+    page: <GlobalLayout page={<AddFleet />} />,
   },
   {
     title: "Boat Details",
@@ -164,6 +198,12 @@ export const normalRoutes = [
     url: "/boats-access",
     page: <GlobalLayout page={<BoatAccess />} />,
   },
+  {
+    title: "Boat Access Rights",
+    url: "/managers/boats-access-rights",
+    page: <GlobalLayout page={<BoatAccessRights />} />,
+  },
+
   {
     title: "Terms Of Services",
     url: "/terms-of-services",
@@ -193,29 +233,14 @@ export const normalRoutes = [
     title: "Notifications",
     url: "/notifications",
     page: <GlobalLayout page={<Notifications />} />,
-  },
+  },  
 
-  {
-    title: "Assign Employees",
-    url: "/employees/assign-employees",
-    page: <GlobalLayout page={<AssignEmployee />} />,
-  },
-  {
-    title: "Assign Manager",
-    url: "/manager/assign-manager",
-    page: <GlobalLayout page={<AssignManager />} />,
-  },
-
-  {
-    title: "Add Employee",
-    url: "/employees/add",
-    page: <GlobalLayout page={<AddEmployee />} />,
-  },
-  {
-    title: "Boat Access Rights",
-    url: "/managers/boats-access-rights",
-    page: <GlobalLayout page={<BoatAccessRights />} />,
-  },
+  // {
+  //   title: "Add Employee",
+  //   url: "/employees/add",
+  //   page: <GlobalLayout page={<AddEmployee />} />,
+  // },
+  
   // {
   //   title: "Add Manager",
   //   url: "/managers/add",
@@ -226,11 +251,7 @@ export const normalRoutes = [
     url: "/blog/createnewblog",
     page: <GlobalLayout page={<CreateNewBlog />} />,
   },
-  {
-    title: "AddManagerpage",
-    url: "/managers/add",
-    page: <GlobalLayout page={<AddManagerpage />} />,
-  },
+  
   {
     title: "Profile",
     url: "/profile",
@@ -275,30 +296,11 @@ export const normalRoutes = [
     page: <GlobalLayout page={<AssignReportedTask />} />,
   },
   {
-    title: "Edit Employee",
-    url: "/edit-employee",
-    page: <GlobalLayout page={<EditEmployee />} />,
-  },
-  {
-    title: "Edit Employee",
-    url: "/employees/1",
-    page: <GlobalLayout page={<EditEmployee />} />,
-  },
-  {
-    title: "Edit Manager",
-    url: "/edit-manager",
-    page: <GlobalLayout page={<EditManager />} />,
-  },
-  {
     title: "Select Payment Method",
     url: "/payment-method",
     page: <SelectPaymentMethod />,
   },
-  {
-    title: "Task Completed",
-    url: "/task-completed",
-    page: <GlobalLayout page={<TaskCompleted />} />,
-  },
+  
   {
     title: "Publish Blog",
     url: "/publish",

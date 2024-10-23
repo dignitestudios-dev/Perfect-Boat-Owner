@@ -1,17 +1,18 @@
 import React, { useContext, useRef } from "react";
-import { GlobalContext } from "../../contexts/GlobalContext";
+import { GlobalContext } from "../../../contexts/GlobalContext";
 import { FaUsersViewfinder } from "react-icons/fa6";
 import { TbUsers } from "react-icons/tb";
 import { FaTimes } from "react-icons/fa"; // Import FaTimes for the close icon
-import { HiOutlineNewspaper } from "react-icons/hi2";
+import { CheckMark } from "../../../assets/export";
 
 
-const TaskAssignSucessModal = ({ isOpen, setIsOpen }) => {
+const TaskCompletedModal = ({ isOpen, setIsOpen }) => {
   const { navigate } = useContext(GlobalContext);
   const modalRef = useRef();
 
   const closeModal = () => {
     setIsOpen(false);
+    navigate("/tasks")
   };
 
   const handleClickOutside = (e) => {
@@ -29,7 +30,7 @@ const TaskAssignSucessModal = ({ isOpen, setIsOpen }) => {
     >
       <div
         ref={modalRef}
-        className="relative bg-[#02203A] w-[418px] h-[195px] flex flex-col gap-5 justify-start items-center p-8 shadow-lg rounded-lg    "
+        className="relative bg-[#02203A] w-[418px] h-[257px] flex flex-col gap-5 justify-start items-center p-8 shadow-lg rounded-[8px]"
       >
         {/* Close button */}
         <button
@@ -40,13 +41,14 @@ const TaskAssignSucessModal = ({ isOpen, setIsOpen }) => {
         </button>
 
         {/* Modal content */}
-        <HiOutlineNewspaper
-        className="mx-auto text-[#36B8F3] bg-[#1A293D] p-2 w-[64.17px] h-[64.17px] rounded-full" />
+        <img src={CheckMark} alt="success" />
+
         <div className="w-auto flex flex-col justify-center items-center gap-3">
           <div className="w-full h-auto flex flex-col justify-center items-center gap-1">
             <span className="text-[16px] leading-[21.6px] text-white font-normal text-center">
-              You've successfully assigned a task.
+              Great job! You've successfully marked this task as completed. Your Progress is sailing smoothly.
             </span>
+            
           </div>
         </div>
       </div>
@@ -54,4 +56,4 @@ const TaskAssignSucessModal = ({ isOpen, setIsOpen }) => {
   );
 };
 
-export default TaskAssignSucessModal;
+export default TaskCompletedModal;

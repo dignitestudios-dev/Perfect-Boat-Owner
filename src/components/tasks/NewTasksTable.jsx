@@ -4,6 +4,8 @@ import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 import axios from "../../axios";
+import { ErrorToast } from "../global/Toaster";
+import RequestTaskListLoader from "./loaders/RequestTaskListLoader";
 
 const NewTaskTable = () => {
   const { navigate } = useContext(GlobalContext);
@@ -31,6 +33,10 @@ const NewTaskTable = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
+  const filteredData = data.filter((item) =>
+    item?.note?.toLowerCase()?.includes(search?.toLowerCase())
+  );
+
   const toggleModal = (e) => {
     if (dropDownRef.current && !dropDownRef.current.contains(e.target)) {
       setOpenDropdownFilter((prev) => !prev);
@@ -41,10 +47,11 @@ const NewTaskTable = () => {
   const getData = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/owner/task/requests?search=${search}`);
+      const { data } = await axios.get(`/owner/task/requests?search=${""}`);
       setData(data?.data || []);
     } catch (err) {
       console.error("Error fetching Task data:", err);
+      ErrorToast(err?.response?.data?.message)
     } finally {
       setLoading(false);
     }
@@ -58,7 +65,7 @@ const NewTaskTable = () => {
     <div className="w-full h-auto flex flex-col gap-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
         New Task Request List{" "}
-        <span className="text-[12px] font-normal text-white/50 ">(723)</span>
+        <span className="text-[12px] font-normal text-white/50 ">({data.length})</span>
       </h3>
 
       <div className="w-full h-auto flex justify-between items-center">
@@ -67,6 +74,7 @@ const NewTaskTable = () => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -75,7 +83,8 @@ const NewTaskTable = () => {
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
-        <div className="w-full grid grid-cols-4 text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
+        <div className="w-full grid grid-cols-4 text-[11px] py-2 border-b border-[#fff]/[0.14] 
+        font-medium leading-[14.85px] text-white/50 justify-start items-start">
           <span className="w-full flex justify-start items-center">
             Boat Image
           </span>
@@ -121,11 +130,16 @@ const NewTaskTable = () => {
           </span>
         </div>
 
-        {data?.map((task, key) => {
+        {loading? (
+        <RequestTaskListLoader/>
+        ):(
+          <>
+          {filteredData?.map((task, key) => {
           return (
             <button
+            key={key}
               onClick={() =>
-                navigate(`/new-tasks-request/${task?._id}`, "New Task Request")
+                navigate(`/new-tasks-request/${task?._id}`, { state: {task} })
               }
               className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
             >
@@ -165,6 +179,9 @@ const NewTaskTable = () => {
             </button>
           );
         })}
+          </>
+        )}
+
       </div>
     </div>
   );

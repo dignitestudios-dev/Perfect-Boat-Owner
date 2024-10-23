@@ -32,7 +32,7 @@ const DeleteAccount = ({ isOpen, onClose, onDeactivate, onDelete }) => {
             Deactivate
           </button>
           <button
-            onClick={onDelete}
+            onClick={()=>onDelete()}
             type="button"
             className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]"
           >

@@ -4,12 +4,14 @@ import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 
-const BoatSelectModal = ({ isOpen, setIsOpen }) => {
+const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, setInputError }) => {
   const { navigate, boats, loadingBoats } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  const [selectedBoat, setSelectedBoat] = useState(null);
   const [selectedBoats, setSelectedBoats] = useState([]);
+  
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
 
@@ -39,11 +41,36 @@ const BoatSelectModal = ({ isOpen, setIsOpen }) => {
     setSelectAll(!selectAll);
   };
 
-  const handleSelectBoat = (index) => {
-    const updatedSelection = [...selectedBoats];
-    updatedSelection[index] = !updatedSelection[index];
-    setSelectedBoats(updatedSelection);
+  const handleSelectBoat = (boatId, boatName, boatType, make, location) => {
+    setInputError({})
+    if(isMultiple){
+      const isSelected = selectedBoats.some((boat) => boat?.id === boatId);
+      if (isSelected) {
+        setSelectedBoats(selectedBoats.filter((boat) => boat?.id !== boatId));
+      } else {
+        setSelectedBoats([...selectedBoats, 
+          { id: boatId, name: boatName, type:boatType, make:make , location }]);
+      }
+    }else{
+      if (selectedBoat?.id === boatId) {
+        setSelectedBoat(null);
+      } else {
+        setSelectedBoat({ id: boatId, name: boatName });
+      }
+    }
   };
+
+  const handleBoatSelection = () =>{
+    if (isMultiple) {
+      SetPassSelectedBoat(selectedBoats);
+      setIsOpen(false);
+    } else {
+      if (selectedBoat) {
+        SetPassSelectedBoat(selectedBoat);
+        setIsOpen(false);
+      }
+    }
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -87,13 +114,14 @@ const BoatSelectModal = ({ isOpen, setIsOpen }) => {
               />
             </div>
             <button
-              onClick={() => console.log("Search triggered")} // Implement search functionality here
+              onClick={() => handleBoatSelection()}
               className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
             >
               Done
             </button>
           </div>
           <div className="mt-4">
+            {isMultiple &&
             <label className="flex items-center text-white/50">
               <input
                 type="checkbox"
@@ -102,7 +130,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen }) => {
                 onChange={handleSelectAll}
               />
               Select All
-            </label>
+            </label>}
           </div>
 
           <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">
@@ -204,58 +232,68 @@ const BoatSelectModal = ({ isOpen, setIsOpen }) => {
               </button>
             </div>
 
-            {boats?.map((boat, index) => (
-              <div
-                key={index}
-                className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-              >
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="accent-[#199BD1] mr-2"
-                    checked={selectedBoats[index] || false}
-                    onChange={() => handleSelectBoat(index)}
-                  />
-                  <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                    <img
-                      src={boat?.cover}
-                      alt="boat_image"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "15px 0 0 15px",
-                        objectFit: "cover",
-                      }}
-                      className="bg-gray-600"
+            {boats?.map((boat, index) => {
+              const isSelected = selectedBoat?.id === boat._id;
+              const isMultiSelected = selectedBoats.some((selected) => selected.id === boat._id);
+
+              return (
+                <div
+                  key={index}
+                  className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium 
+                  leading-[14.85px] text-white justify-start items-center"
+                > 
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="accent-[#199BD1] mr-2 cursor-pointer"
+                      checked={isMultiple ? isMultiSelected : isSelected}
+                      onChange={
+                        () => handleSelectBoat(boat?._id, boat?.name, boat?.boatType,
+                           `${boat?.make}, ${boat?.model}, ${boat?.size}`, boat?.location)
+                      }
                     />
-                    <div
-                      className="w-24"
-                      style={{
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        background:
-                          "linear-gradient(to right, transparent, #001229)",
-                      }}
-                    />
+                    <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                      <img
+                        src={boat?.cover}
+                        alt="boat_image"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "15px 0 0 15px",
+                          objectFit: "cover",
+                        }}
+                        className="bg-gray-600"
+                      />
+                      <div
+                        className="w-24"
+                        style={{
+                          content: '""',
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          background:
+                            "linear-gradient(to right, transparent, #001229)",
+                        }}
+                      />
+                    </span>
+                  </div>
+                  <span className="w-full flex justify-start items-center">
+                    {boat?.boatType}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {boat?.name}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {boat?.model} / {boat?.make} / {boat?.size}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {boat?.location}
                   </span>
                 </div>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.boatType}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.name}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.model} / {boat?.make} / {boat?.size}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.location}
-                </span>
-              </div>
-            ))}
+              )
+            }
+            )}
           </div>
         </div>
       </div>

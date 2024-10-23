@@ -6,7 +6,7 @@ import { FaTimes } from "react-icons/fa"; // Import FaTimes for the close icon
 import { CheckMark } from "../../assets/export";
 
 
-const BoatManagerAccessModal = ({ isOpen, setIsOpen }) => {
+const BoatManagerAccessModal = ({ isOpen, setIsOpen, manager, handleClose }) => {
   const { navigate } = useContext(GlobalContext);
   const modalRef = useRef();
 
@@ -33,7 +33,7 @@ const BoatManagerAccessModal = ({ isOpen, setIsOpen }) => {
       >
         {/* Close button */}
         <button
-          onClick={closeModal}
+          onClick={()=>handleClose()}
           className="absolute top-4 right-4 text-[#199BD1]  text-xl font-bold mb-8"
         >
             ✕
@@ -45,11 +45,8 @@ const BoatManagerAccessModal = ({ isOpen, setIsOpen }) => {
         <div className="w-auto flex flex-col justify-center items-center gap-3">
           <div className="w-full h-auto flex flex-col justify-center items-center gap-1">
             <span className="text-[16px] leading-[21.6px] text-white font-normal text-center">
-              "You have successfully selected the boats for manager (managers name ) access".
-
+              "You have successfully selected the boats for manager {manager}'s access".
             </span>
-     
-
           </div>
         </div>
       </div>
