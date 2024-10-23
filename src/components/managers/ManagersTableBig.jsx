@@ -37,7 +37,7 @@ const ManagerTableBig = ({data, loading}) => {
   };
 
   const handleEditClick = (managerData) => {
-    navigate("/edit-manager", { state: managerData });
+    navigate(`/edit-manager/${managerData?._id}`, { state: managerData });
   };
 
   const handleDeleteClick = (managerID) => {
@@ -253,7 +253,7 @@ const ManagerTableBig = ({data, loading}) => {
               isOpen={isModalOpen}
               onClose={handleCloseModal}
               onDeactivate={handleDeactivate}
-              onDelete={()=>handleDelete()} // Pass the handler to open the delete modal
+              onDelete={()=>handleDelete()}
             />
             <DeactivateAccountModal
               isOpen={isDeactivateModalOpen}
@@ -263,7 +263,7 @@ const ManagerTableBig = ({data, loading}) => {
             <DeleteManagerAccountModal
             managerId={managerId}
               isOpen={isAccountDeleteModalOpen}
-              onClose={() => setIsAccountDeleteModalOpen(false)} // Add a way to close the modal
+              onClose={() => setIsAccountDeleteModalOpen(false)}
             />
     </div>
   );

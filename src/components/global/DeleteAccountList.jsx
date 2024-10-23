@@ -2,21 +2,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import EmployeeDetailModal from "../../pages/Employees/EmployeeDetailModal";
 import AssignManagerModal from "../../pages/Managers/AssignManagerModal";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import AccountDeletedModal from "./AccountDeletedModal";
 import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
+import { ErrorToast } from "./Toaster";
+
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
 
 const DeleteAccountList = () => {
   const location = useLocation();
-  const  {managerId, reasonForDelete}= location.state || {};
-  console.log(managerId, reasonForDelete)
+  const  {reasonForDelete}= location.state || {};
+  const {id} = useParams()
+  console.log(reasonForDelete)
   const [locationFilter, setLocationFilter] = useState(false);
   const [jobFilter, setJobFilter] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false); 
   const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] = useState(false); 
   const [isAccountDeletedModalOpen, setIsAccountDeletedModalOpen] = useState(false);
   const [loading, setLoading] = useState(false)
+  const [userData, setUserData] = useState("")
+  console.log("🚀 ~ DeleteAccountList ~ userData:", userData)
+  const [deleteLoad, setDeleteLoad] =useState(false)
+  const [passSelectedEmployee,SetPassSelectedEmployee] = useState("")
+  console.log("🚀 ~ DeleteAccountList ~ passSelectedEmployee:", passSelectedEmployee)
+  const [inputError, setInputError] = useState({});
+
 
   const navigate = useNavigate();
 
@@ -36,25 +53,38 @@ const DeleteAccountList = () => {
   };
 
   const handleViewProfile = () => {
-    navigate(`/edit-employee/${managerId}`);
+    navigate(`/edit-employee/${id}`);
   };
 
   const backSubmit = () => {
     navigate("/employees");
 };
-  const handleDelete = () => {
-    // Handle the delete action here
-    // For now, just show the delete confirmation modal
+
+const handleDelete = async () => {
+  setDeleteLoad(true)
+try {
+  const obj = {
+      reason: reasonForDelete,
+  }
+  const response = await axios.delete(`owner/employees/${id}`,obj);
+  if(response?.status === 200){
     setIsAccountDeletedModalOpen(true);
+  }
+} catch (error) {
+  ErrorToast(error?.response?.data?.message)
+console.error("Error deleting task:", error);
+}
+finally{
+setDeleteLoad(false)
+}
 };
 
 
 const getDataById = async () => {
   setLoading(true);
   try {
-    const response = await axios.get(`/owner/manager/${managerId}`)
+    const response = await axios.get(`/owner/employees/${id}`)
     if(response?.status === 200){
-      console.log(response)
       setUserData(response?.data?.data)
     }
   }
@@ -91,7 +121,7 @@ useEffect(()=>{
           </button>
         </div>
         <p className="text-[16px]">
-          Before deleting the account of *employee name*, please reassign the
+          Before deleting the account of {userData?.employee?.name}, please reassign the
           following tasks that are currently assigned to this employee to
           another employee.
         </p>
@@ -155,95 +185,28 @@ useEffect(()=>{
               </span>
             </div>
 
-            {/* Table Content */}
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat A</span>
-              <span className="w-full flex justify-start items-center">Maintenance</span>
-              <span className="w-full flex justify-start items-center">12-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                  In-Progress
+            {userData?.tasks?.length > 0 ? (
+              <>
+              {userData?.tasks?.map((task,index)=>(
+              <div key={index} className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
+              <span className="w-full flex justify-start items-center">{task?.boatName}</span>
+              <span className="w-full flex justify-start items-center">{task?.taskType}</span>
+              <span className="w-full flex justify-start items-center">{task?.dueDate}</span>
+              <span className="w-full flex justify-start items-center">{task?.reoccuringDays}</span>
+              <span className="w-full flex justify-start items-center"
+              >
+                <span
+                style={{ color: statusColors[task?.status] || statusColors["default"] }}
+                 className="w-[100px] h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2">
+                {task?.status}
                 </span>
               </span>
             </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat B</span>
-              <span className="w-full flex justify-start items-center">Cleaning</span>
-              <span className="w-full flex justify-start items-center">15-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#00CC99]/[0.12] text-[#00CC99] px-2">
-                  Completed
-                </span>
-              </span>
-            </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat C</span>
-              <span className="w-full flex justify-start items-center">Inspection</span>
-              <span className="w-full flex justify-start items-center">20-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FF5733]/[0.12] text-[#FF5733] px-2">
-                  Overdue
-                </span>
-              </span>
-            </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat D</span>
-              <span className="w-full flex justify-start items-center">Repair</span>
-              <span className="w-full flex justify-start items-center">25-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                  In-Progress
-                </span>
-              </span>
-            </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat D</span>
-              <span className="w-full flex justify-start items-center">Repair</span>
-              <span className="w-full flex justify-start items-center">25-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                  In-Progress
-                </span>
-              </span>
-            </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat D</span>
-              <span className="w-full flex justify-start items-center">Repair</span>
-              <span className="w-full flex justify-start items-center">25-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                  In-Progress
-                </span>
-              </span>
-            </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat D</span>
-              <span className="w-full flex justify-start items-center">Repair</span>
-              <span className="w-full flex justify-start items-center">25-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                  In-Progress
-                </span>
-              </span>
-            </div>
-            <div className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-full flex justify-start items-center">Boat D</span>
-              <span className="w-full flex justify-start items-center">Repair</span>
-              <span className="w-full flex justify-start items-center">25-2-2023</span>
-              <span className="w-full flex justify-start items-center">90 days</span> {/* Recurring */}
-              <span className="w-full flex justify-start items-center">
-                <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                  In-Progress
-                </span>
-              </span>
-            </div>
+            ))}
+              </>
+            ):(
+              <p className="mt-2">No task assigned to this employee</p>
+            )}
           </div>
         </div>
         </>)}
@@ -259,17 +222,26 @@ useEffect(()=>{
           Back
         </button>
         <button
-          onClick={handleDelete} // Trigger delete action
-
-          className="w-[235px] h-[54px] bg-[#199BD1] text-[#FFFFFF] font-medium rounded-lg"
-        >
-          Delete Account
-        </button>
+          disabled={deleteLoad}
+            onClick={handleDelete}
+            className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center
+             justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+          >
+            <div className="flex items-center">
+                    <span className="mr-1">Delete Account</span>
+                    {deleteLoad && (
+                      <FiLoader className="animate-spin text-lg mx-auto" />
+                    )}
+                  </div>
+            
+          </button>
       </div>
 
       {/* EmployeeDetailModal Component */}
       {isBoatModalOpen && (
-        <EmployeeDetailModal setIsOpen={setIsBoatModalOpen} />
+        <EmployeeDetailModal setIsOpen={setIsBoatModalOpen}
+         SetPassSelectedEmployee={SetPassSelectedEmployee} 
+         setInputError={SetPassSelectedEmployee} />
       )}
 
       {/* AssignManagerModal Component */}
@@ -283,6 +255,7 @@ useEffect(()=>{
        {/* AccountDeletedModal Component */}
        {isAccountDeletedModalOpen && (
                 <AccountDeletedModal
+                userId={id}
                     isOpen={isAccountDeletedModalOpen}
                     setIsOpen={setIsAccountDeletedModalOpen}
                 />

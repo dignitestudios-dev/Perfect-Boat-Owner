@@ -14,6 +14,9 @@ const AuthProvider = ({ children }) => {
       Cookies.set("token", data?.data?.token);
       Cookies.set("name", data?.data?.userRecord?.name);
       Cookies.set("email", data?.data?.userRecord?.email);
+      Cookies.set("phoneNumber", data?.data?.userRecord?.phoneNumber);
+      Cookies.set("profilePicture", data?.data?.userRecord?.profilePicture);
+      
 
       setToken(data?.data?.token);
       setName(data?.data?.userRecord?.name);

@@ -2,37 +2,34 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
+  
   const navigate = useNavigate();
-  const [selectedReasons, setSelectedReasons] = useState([]);
-
+  
+  const [selectedReason, setSelectedReason] = useState(null);
+  const [reasonError, setReasonError] = useState(null)
+  
   const reasons = [
     "Account Deletion reason goes here1",
     "Account Deletion reason goes here2",
     "Account Deletion reason goes here3",
   ];
-
+  
   const handleCheckboxChange = (reason) => {
-    setSelectedReasons(reason);
+    setReasonError(null)
+    setSelectedReason(reason);
   };
-
-  // const handleDelete = () => {
-  //   // Handle the delete logic here, using selectedReasons
-  //   console.log("Selected Reasons:", selectedReasons);
-  //   onClose(); // Close the modal after deletion
-  // };
-
-  if (!isOpen) return null;
-
-
+  
   const handleSubmit = () => {
-    if (!selectedReasons) {
-      alert("Please select a reason");
+    if (!selectedReason) {
+      setReasonError("Please select a reason");
       return;
     }
-    navigate("/deletemanageraccount", {
-      state: { employeeId, reasonForDelete: selectedReasons },
+    navigate(`/delete-account/${employeeId}`, {
+      state: {reasonForDelete: selectedReason },
     });
   };
+  
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
@@ -48,7 +45,7 @@ const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded-full outline-none border-2 border-white appearance-none checked:bg-[#199BD1] checked:border-transparent relative checked:before:absolute checked:before:content-['✔'] checked:before:text-white checked:before:text-xs checked:before:left-1/2 checked:before:transform checked:before:-translate-x-1/2 checked:before:-translate-y-[1px]"
-                checked={selectedReasons === reason}
+                checked={selectedReason === reason}
                 onChange={() => handleCheckboxChange(reason)}
               />
               <span className="ml-2 text-[14px] leading-[16.3px]">{reason}</span>
@@ -61,6 +58,9 @@ const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
           <button onClick={onClose} type="button" className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]">Cancel</button>
           <button onClick={handleSubmit} type="button" className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]">Confirm Delete</button>
         </div>
+        <div className="flex justify-end gap-2">
+        {reasonError&& <p className="text-red-500">{reasonError}</p>}
+      </div>
       </div>
     </div>
   );

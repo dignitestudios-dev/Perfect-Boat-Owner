@@ -91,8 +91,7 @@ const DashboardBoats = ({ data, loading }) => {
         </div>
       ) : (
         <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
-          Reminder! show the texts that is in the UI later while integration.
-          Click on this to show the tasks table
+          No boats on the horizon? Add boat to keep track of its maintenance!
         </div>
       )}
         </>

@@ -5,11 +5,18 @@ import { FiEdit, FiEdit2 } from "react-icons/fi";
 import PhoneEditModal from "../../components/global/PhoneEditModal";
 import VerifyPhoneEditOtp from "../../components/global/VerifyPhoneEditOtp";
 import PhoneUpdateSuccess from "../../components/global/PhoneUpdateSuccess";
+import Cookies from "js-cookie";
 
 const UserManagementPage = () => {
   const [edit, setEdit] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [phoneUpdated, setPhoneUpdated] = useState(false);
+  const name = Cookies.get("name");
+  console.log("🚀 ~ UserManagementPage ~ name:", name)
+  const [firstName, lastName] = name.split(" ");
+  const email = Cookies.set("email");
+  const phoneNumber = Cookies.set("phoneNumber");
+  const profilePicture = Cookies.set("profilePicture");
 
   return (
     <div className="w-full flex flex-col gap-6 px-5 pb-5 md:px-0">
@@ -46,16 +53,27 @@ const UserManagementPage = () => {
             )} */}
           </div>
           <div className="w-full h-auto flex justify-start items-start gap-4">
-            <AddFleetInput
-              label={"First Name"}
-              disabled={true}
-              state={"Mike"}
-            />
-            <AddFleetInput
-              label={"Last Name"}
-              disabled={true}
-              state={"Smith"}
-            />
+          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+      <label className="text-[16px] font-medium leading-[21.6px]">First Name</label>
+      <div className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center`}>
+        <input
+          disabled
+          className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+          value={name}
+        />
+      </div>
+    </div>
+            
+    <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+      <label className="text-[16px] font-medium leading-[21.6px]">Last Name</label>
+      <div className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center`}>
+        <input
+          disabled
+          className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+          value={name}
+        />
+      </div>
+    </div>
           </div>
           <div className="w-full h-auto flex justify-start items-start gap-4">
             <AddFleetInput

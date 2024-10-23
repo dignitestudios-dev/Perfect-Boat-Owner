@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios";
 
@@ -16,7 +16,9 @@ export const GlobalContextProvider = ({ children }) => {
 
   const [managers, setManagers] = useState([]);
   const [loadingManagers, setLoadingManagers] = useState(false);
+  const [updateManager, setUpdateManager] = useState(false);
 
+  
   const getManagers = async () => {
     setLoadingManagers(true);
     try {
@@ -27,10 +29,14 @@ export const GlobalContextProvider = ({ children }) => {
       setLoadingManagers(false);
     }
   };
+  useEffect(()=>{
+    getManagers()
+  },[updateManager])
 
   const [employees, setEmployees] = useState([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
-
+  const [updateEmployee, setUpdateEmployee] = useState(false);
+ 
   const getEmployees = async () => {
     setLoadingEmployees(true);
     try {
@@ -41,13 +47,14 @@ export const GlobalContextProvider = ({ children }) => {
       setLoadingEmployees(false);
     }
   };
+  useEffect(()=>{
+    getEmployees()
+  },[updateEmployee])
 
   const [boats, setBoats] = useState([]);
   const [loadingBoats, setLoadingBoats] = useState(false);
-  const [updateBoats, setUpdateBoats] = useState(false);
-  const updateBoat = () => {
-    setUpdateBoats((prev) => !prev);
-  };
+  const [updateBoat, setUpdateBoat] = useState(false);
+ 
 
   const getBoats = async () => {
     setLoadingBoats(true);
@@ -59,6 +66,10 @@ export const GlobalContextProvider = ({ children }) => {
       setLoadingBoats(false);
     }
   };
+  useEffect(()=>{
+    getBoats()
+  },[updateBoat])
+
   return (
     <GlobalContext.Provider
       value={{
@@ -66,6 +77,7 @@ export const GlobalContextProvider = ({ children }) => {
         navigate,
         formatTimestampToDate,
         getManagers,
+        setUpdateManager,
         getEmployees,
         getBoats,
         loadingBoats,
@@ -73,8 +85,6 @@ export const GlobalContextProvider = ({ children }) => {
         loadingManagers,
         managers,
         boats,
-        updateBoat,
-        updateBoats,
         employees,
       }}
     >

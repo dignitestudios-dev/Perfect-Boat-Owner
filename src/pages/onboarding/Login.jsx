@@ -38,6 +38,7 @@ const Login = () => {
           if (response?.data?.data?.isSubscribed === true) {
             navigate("/dashboard");
             SuccessToast("Logged in successfully");
+            
           } else {
             navigate("/select-package");
             SuccessToast("Please purchase a plan to continue.");

@@ -3,7 +3,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { FaRegEdit, FaCaretDown } from "react-icons/fa"; // Import dropdown icon
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ResetPassModal from "../../components/onboarding/ResetPassModal"; // Adjust the import path as needed
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 import ManagerDetailModal from "../Managers/ManagerDetailModal"; // Adjust the import path as needed
@@ -69,6 +69,7 @@ const Dropdown = ({ options, label }) => {
 const EditManager = () => {
   const { navigate } = useContext(GlobalContext);
   const navigateTo = useNavigate();
+  const {id} = useParams()
 
   const location = useLocation();
   const { state } = location;
@@ -83,8 +84,7 @@ const EditManager = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignedModalOpen, setIsAssignedModalOpen] = useState(false);
-  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
-    useState(false);
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] = useState(false);
   const [isResendModalOpen, setIsResendModalOpen] = useState(false);
   const [isAssignDetailModalOpen, setIsAssignDetailModalOpen] = useState(false);
   const [isResetPassModalOpen, setIsResetPassModalOpen] = useState(false);
@@ -124,39 +124,41 @@ const EditManager = () => {
 
   useEffect(() => {
     // Prefill the form with values from the `state`
+    getDataById();
     if (state) {
-      setManagerName(state.name);
-      setManagerId(state._id);
-      setValue("name", state.name);
-      setValue("email", state.email);
-      setValue("jobtitle", state.jobtitle);
-      setValue("location", state.location);
-      setValue("phone", state.phoneNumber);
-      getDataById();
+      setManagerName(state?.name);
+      setManagerId(state?._id);
+      setValue("name", state?.name);
+      setValue("email", state?.email);
+      setValue("jobtitle", state?.jobtitle);
+      setValue("location", state?.location);
+      setValue("phone", state?.phoneNumber);
     }
-  }, [state, setValue]);
+  }, [id,state, setValue]);
 
   const getDataById = async () => {
     setLoading(true);
     try {
-      const [employeeResponse, boatResponse] = await Promise.all([
-        axios.get(`/owner/manager/${state._id}/employees`),
-        axios.get(`/owner/manager/${state._id}/boat`),
-      ]);
+      const {data} = await axios.get(`/owner/manager/${id}`);
 
-      if (employeeResponse.data.success) {
-        console.log("employee", employeeResponse.data?.data);
-        setEmployeesList(employeeResponse.data?.data);
-        let employeeData = employeeResponse.data?.data.map((item) => ({
-          id: item._id,
-          name: item.name,
+      console.log("🚀 ~ getDataById ~ data:", data)
+      
+      if(data?.success){
+        setBoatList(data?.data?.BoatAccess);
+        setEmployeesList(data?.data?.Employees);
+        let employeeData = data?.data?.Employees?.map((item) => ({
+          id: item?._id,
+          name: item?.name,
         }));
 
         SetPassSelectedEmployee(employeeData);
-      }
-
-      if (boatResponse.data.success) {
-        setBoatList(boatResponse.data?.data);
+        setManagerName(data?.data?.managers?.name);
+      setManagerId(data?.data?.managers?._id);
+      setValue("name", data?.data?.managers?.name);
+      setValue("email", data?.data?.managers?.email);
+      setValue("jobtitle", data?.data?.managers?.jobtitle);
+      setValue("location", data?.data?.managers?.location);
+      setValue("phone", data?.data?.managers?.phoneNumber);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message || "Something went wrong");
@@ -196,6 +198,11 @@ const EditManager = () => {
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
+      {loading ? (
+            <div className="w-full h-[90dvh] bg-[#1A293D] flex justify-center items-center">
+              <FiLoader className="text-[30px] animate-spin text-lg mx-auto" />
+            </div>
+          ) : (
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full h-auto bg-[#1A293D] text-white flex flex-col justify-start items-start">
           <div className="w-full flex flex-col justify-start items-start gap-6 p-6 rounded-[18px] bg-[#001229]">
@@ -498,6 +505,7 @@ const EditManager = () => {
           )}
         </div>
       </form>
+    )}
       <ResetPassModal
         id={managerId}
         isOpen={isResetPassModalOpen}

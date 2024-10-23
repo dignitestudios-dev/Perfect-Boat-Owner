@@ -94,8 +94,7 @@ const ManagersTable = ({ data,loading }) => {
         </div>
       ) : (
         <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
-          Reminder! show the texts that is in the UI later while integration.
-          Click on this to show the tasks table
+          Your crew awaits! No managers yet? Let’s add one and navigate smoothly.
         </div>
       )}
         </>

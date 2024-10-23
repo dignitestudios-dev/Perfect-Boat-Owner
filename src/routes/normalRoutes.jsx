@@ -148,7 +148,7 @@ export const normalRoutes = [
   },
   {
     title: "Edit Manager",
-    url: "/edit-manager",
+    url: "/edit-manager/:id",
     page: <GlobalLayout page={<EditManager />} />,
   },
   {
@@ -323,12 +323,12 @@ export const normalRoutes = [
   },
   {
     title: "Deleted Account",
-    url: "/deleteaccount",
+    url: "/delete-account/:id",
     page: <GlobalLayout page={<DeleteAccountList />} />,
   },
   {
     title: "Deleted Manager Account",
-    url: "/deletemanageraccount",
+    url: "/delete-manager-account/:id",
     page: <GlobalLayout page={<DeleteManagerAccount />} />,
   },
   {

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeleteManagerAccountModal = ({ isOpen, onClose, managerId }) => {
-  console.log(managerId)
+  
   const navigate = useNavigate();
   
   const [selectedReason, setSelectedReason] = useState(null);
+  const [reasonError, setReasonError] = useState(null)
   
   const reasons = [
     "Account Deletion reason goes here1",
@@ -14,16 +15,17 @@ const DeleteManagerAccountModal = ({ isOpen, onClose, managerId }) => {
   ];
   
   const handleCheckboxChange = (reason) => {
+    setReasonError(null)
     setSelectedReason(reason);
   };
   
   const handleSubmit = () => {
     if (!selectedReason) {
-      alert("Please select a reason");
+      setReasonError("Please select a reason");
       return;
     }
-    navigate("/deleteaccount", {
-      state: { managerId, reasonForDelete: selectedReason },
+    navigate(`/delete-manager-account/${managerId}`, {
+      state: {reasonForDelete: selectedReason },
     });
   };
   
@@ -54,6 +56,9 @@ const DeleteManagerAccountModal = ({ isOpen, onClose, managerId }) => {
       <div className="flex justify-end gap-2 mt-4">
         <button onClick={onClose} type="button" className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]">Cancel</button>
         <button onClick={handleSubmit} type="button" className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]">Confirm Delete</button>
+      </div>
+      <div className="flex justify-end gap-2">
+        {reasonError&& <p className="text-red-500">{reasonError}</p>}
       </div>
     </div>
   </div>

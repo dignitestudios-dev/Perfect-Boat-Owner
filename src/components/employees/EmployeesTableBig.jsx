@@ -188,7 +188,7 @@ const EmployeesTableBig = ({data, loading}) => {
             <>
             {/* Example Data Rows */}
           {filteredData?.map((employee, index) => (
-          <div className="w-full h-8 grid grid-cols-5 border-b cursor-pointer border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
+          <div className="w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
             <span
               key={index}
               className="w-full flex justify-start items-center"
@@ -205,15 +205,15 @@ const EmployeesTableBig = ({data, loading}) => {
             <span className="w-full flex justify-start items-center">
             {employee?.location || "---"}
             </span>
-            <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
+            <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
               <span
-                className="flex justify-start items-center"
+                className="flex justify-start items-center cursor-pointer"
                 onClick={()=>handleEditClick(employee?._id)}
               >
                 <FaRegEdit />
               </span>
               <span
-                className="flex justify-start items-center"
+                className="flex justify-start items-center cursor-pointer"
                 onClick={()=>handleDeleteClick(employee?._id)}
               >
                 <RiDeleteBinLine />
