@@ -203,7 +203,7 @@ const EditManager = () => {
               <FiLoader className="text-[30px] animate-spin text-lg mx-auto" />
             </div>
           ) : (
-      <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+      <form className="w-full h-auto grid grid-cols-1 justify-start items-start gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full h-auto bg-[#1A293D] text-white flex flex-col justify-start items-start">
           <div className="w-full flex flex-col justify-start items-start gap-6 p-6 rounded-[18px] bg-[#001229]">
             <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
@@ -534,7 +534,7 @@ const EditManager = () => {
       )}
 
       {isAssignDetailModalOpen && (
-        <AssignEmployeeDetailModal setIsOpen={setIsAssignDetailModalOpen} />
+        <AssignEmployeeDetailModal setIsOpen={setIsAssignDetailModalOpen}  employeesList={employeesList}/>
       )}
 
       <BoatsRightsModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />

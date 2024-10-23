@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import EmployeeDetailModal from "../../pages/Employees/EmployeeDetailModal";
 import AssignManagerModal from "../../pages/Managers/AssignManagerModal";
@@ -7,6 +7,7 @@ import AccountDeletedModal from "./AccountDeletedModal";
 import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "./Toaster";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const statusColors = {
   "newtask": "#FF007F",
@@ -20,7 +21,7 @@ const DeleteAccountList = () => {
   const location = useLocation();
   const  {reasonForDelete}= location.state || {};
   const {id} = useParams()
-  console.log(reasonForDelete)
+  const {setUpdateEmployee} = useContext(GlobalContext)
   const [locationFilter, setLocationFilter] = useState(false);
   const [jobFilter, setJobFilter] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false); 
@@ -28,11 +29,10 @@ const DeleteAccountList = () => {
   const [isAccountDeletedModalOpen, setIsAccountDeletedModalOpen] = useState(false);
   const [loading, setLoading] = useState(false)
   const [userData, setUserData] = useState("")
-  console.log("🚀 ~ DeleteAccountList ~ userData:", userData)
+
   const [deleteLoad, setDeleteLoad] =useState(false)
   const [passSelectedEmployee,SetPassSelectedEmployee] = useState("")
-  console.log("🚀 ~ DeleteAccountList ~ passSelectedEmployee:", passSelectedEmployee)
-  const [inputError, setInputError] = useState({});
+  const [inputError, setInputError] = useState("");
 
 
   const navigate = useNavigate();
@@ -61,23 +61,55 @@ const DeleteAccountList = () => {
 };
 
 const handleDelete = async () => {
+  setInputError({})
+  // if(!passSelectedEmployee?.id){
+  //   setInputError("Select Employee")
+  // }
   setDeleteLoad(true)
 try {
+const taskData = {
+  task: userData?.tasks?.map((task)=>task?._id)
+}
+
+const putResponse = await axios.put(`/owner/employees/${passSelectedEmployee.id}/task/assign`, taskData);
+if (putResponse?.status === 200) {
   const obj = {
-      reason: reasonForDelete,
-  }
-  const response = await axios.delete(`owner/employees/${id}`,obj);
-  if(response?.status === 200){
-    setIsAccountDeletedModalOpen(true);
-  }
+    reason: reasonForDelete,
+  };
+  const deleteResponse = await axios.delete(`/owner/manager/${id}`, { data: obj });
+
+if (deleteResponse?.status === 200) {
+  setIsAccountDeletedModalOpen(true);
+  setUpdateEmployee((prev)=>!prev)
+} 
+}
+  
 } catch (error) {
-  ErrorToast(error?.response?.data?.message)
 console.error("Error deleting task:", error);
+ErrorToast(error?.response?.data?.message)
 }
 finally{
 setDeleteLoad(false)
-}
-};
+} };
+
+// const handleDelete = async () => {
+//   setDeleteLoad(true)
+// try {
+//   const obj = {
+//       reason: reasonForDelete,
+//   }
+//   const response = await axios.delete(`owner/employees/${id}`,obj);
+//   if(response?.status === 200){
+//     setIsAccountDeletedModalOpen(true);
+//   }
+// } catch (error) {
+//   ErrorToast(error?.response?.data?.message)
+// console.error("Error deleting task:", error);
+// }
+// finally{
+// setDeleteLoad(false)
+// }
+// };
 
 
 const getDataById = async () => {
@@ -130,15 +162,15 @@ useEffect(()=>{
             Assign Employee
           </label>
           <button
-            onClick={() => setIsBoatModalOpen(true)} // Open the Employee Detail Modal
+            onClick={() => setIsBoatModalOpen(true)} 
             className="w-full h-[52px] bg-[#1A293D] disabled:text-50 outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
           >
-            Click here to assign
+            {passSelectedEmployee?.name || "Click here to assign"}
           </button>
         </div>
 
         <div className="w-full overflow-x-auto mt-4">
-          <div className="min-w-[700px]"> {/* Increased min-width to accommodate the new column */}
+          <div className="min-w-[700px]">
             {/* Table Headings */}
             <div className="w-full grid h-10 grid-cols-5 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
               <span className="w-full flex justify-start items-center">Boat name</span>
@@ -217,7 +249,7 @@ useEffect(()=>{
       <div className="w-full mt-4 flex justify-end gap-4">
         <button
                 onClick={backSubmit}
-                className="w-[235px] h-[54px] bg-[#02203A] text-[#FFFFFF] font-medium rounded-lg"
+                className="w-[235px] h-[54px] bg-[#02203A] rounded-[12px] text-[#FFFFFF] font-medium "
         >
           Back
         </button>

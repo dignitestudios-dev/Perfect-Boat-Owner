@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 
-const AssignEmployeeDetailModal = ({ setIsOpen }) => {
+const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
+  console.log("🚀 ~ AssignEmployeeDetailModal ~ employeesList:", employeesList)
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -77,7 +78,7 @@ const AssignEmployeeDetailModal = ({ setIsOpen }) => {
             <table className="min-w-full mb-4 ">
               <thead className="text-[13px] font-normal leading-[14.85px] text-white/50">
                 <tr>
-                  <th className="px-0 py-2"></th>
+                  {/* <th className="px-0 py-2"></th> */}
                   <th className="px-4 py-2">Employee Name</th>
                   <th className="px-4 py-2">Email</th>
                   <th className="px-4 py-2 relative">
@@ -137,17 +138,24 @@ const AssignEmployeeDetailModal = ({ setIsOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {[...Array(20)].map((_, index) => (
-                  <tr key={index}>
-                    <td className="px-0 py-2">
-                      {/* <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" /> */}
-                    </td>
-                    <td className="px-4 py-2">Mark Taylor</td>
-                    <td className="px-4 py-2">markT@gmail.com</td>
-                    <td className="px-4 py-2">Dock Manager</td>
-                    <td className="px-4 py-2">East California Dock</td>
-                  </tr>
-                ))}
+                {employeesList?.map((manager, index) =>{
+                  return (
+                    <tr key={index} className="border-b-[1px] border-white/10">
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {manager?.name}
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {manager?.email}
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {manager?.jobtitle}
+                      </td>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        {manager?.location}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

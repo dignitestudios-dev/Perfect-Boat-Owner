@@ -57,7 +57,7 @@ const DeleteManagerAccount = () => {
         boats: userData?.BoatAccess?.map((boat)=>boat?._id)
       }
 
-      const putResponse = await axios.put(`/owner/manager/${id}/boat`, boatData);
+      const putResponse = await axios.put(`/owner/manager/${passSelectedManager?.id}/boat`, boatData);
       if (putResponse?.status === 200) {
         const obj = {
           reason: reasonForDelete,
@@ -134,7 +134,7 @@ const DeleteManagerAccount = () => {
                   className="w-full h-[52px] bg-[#1A293D] disabled:text-50 outline-none px-3 focus:border-[1px]
                          focus:border-[#55C9FA] rounded-xl"
                 >
-                  Click Here To Select Manager
+                  {passSelectedManager?.name || "Click Here To Select Manager"}
                 </button>
               </div>
 
