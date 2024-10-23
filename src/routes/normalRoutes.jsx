@@ -52,11 +52,11 @@ import UpdatePassword from "../pages/onboarding/UpdatePassword";
 import CsvUploader from "../pages/Dashboard/CsvUploader";
 
 export const normalRoutes = [
-  // {
-  //   title: "For Csv",
-  //   url: "/add-csv",
-  //   page: <OnboardLayout page={<CsvUploader />} />,
-  // },
+  {
+    title: "For Csv",
+    url: "/add-csv",
+    page: <OnboardLayout page={<CsvUploader />} />,
+  },
   {
     title: "Add a Manager External",
     url: "/add-manager-onboard",
@@ -92,7 +92,7 @@ export const normalRoutes = [
     url: "/add-employee-onboard",
     page: <OnboardLayout page={<AddEmployeeExternal />} />,
   },
-  
+
   // {
   //   title: "Add a Manager",
   //   url: "/add-manager",
@@ -140,7 +140,7 @@ export const normalRoutes = [
     url: "/task-completed",
     page: <GlobalLayout page={<TaskCompleted />} />,
   },
-  
+
   {
     title: "Managers List",
     url: "/managers",
@@ -176,8 +176,8 @@ export const normalRoutes = [
     title: "Edit Employee",
     url: "/edit-employee/:id",
     page: <GlobalLayout page={<EditEmployee />} />,
-  }, 
-  
+  },
+
   {
     title: "Boat",
     url: "/boats",
@@ -233,14 +233,14 @@ export const normalRoutes = [
     title: "Notifications",
     url: "/notifications",
     page: <GlobalLayout page={<Notifications />} />,
-  },  
+  },
 
   // {
   //   title: "Add Employee",
   //   url: "/employees/add",
   //   page: <GlobalLayout page={<AddEmployee />} />,
   // },
-  
+
   // {
   //   title: "Add Manager",
   //   url: "/managers/add",
@@ -251,7 +251,7 @@ export const normalRoutes = [
     url: "/blog/createnewblog",
     page: <GlobalLayout page={<CreateNewBlog />} />,
   },
-  
+
   {
     title: "Profile",
     url: "/profile",
@@ -300,7 +300,7 @@ export const normalRoutes = [
     url: "/payment-method",
     page: <SelectPaymentMethod />,
   },
-  
+
   {
     title: "Publish Blog",
     url: "/publish",
