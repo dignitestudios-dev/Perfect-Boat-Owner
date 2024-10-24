@@ -13,7 +13,7 @@ const theme = {
   },
 };
 
-const DateModal = ({ isOpen, setIsOpen, setDueDate }) => {
+const DateModal = ({ isOpen, setIsOpen, setDueDate, setInputError }) => {
   const today = moment();
   const [date, setDate] = useState(today.toDate());
   const dateRef = useRef();
@@ -30,7 +30,7 @@ const DateModal = ({ isOpen, setIsOpen, setDueDate }) => {
     
     const unixTimestamp = Math.floor(date.getTime() / 1000);
     setDueDate((prev) => ({ ...prev, unix: unixTimestamp })); 
-    
+    setInputError({})
     setIsOpen(false);
   }
 

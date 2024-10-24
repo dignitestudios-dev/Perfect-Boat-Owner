@@ -1,25 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { AuthMockup } from "../../assets/export";
-import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { FiEdit, FiEdit2, FiLoader } from "react-icons/fi";
 import PhoneEditModal from "../../components/global/PhoneEditModal";
 import VerifyPhoneEditOtp from "../../components/global/VerifyPhoneEditOtp";
 import PhoneUpdateSuccess from "../../components/global/PhoneUpdateSuccess";
 import Cookies from "js-cookie";
+import axios from "../../axios";
+import { SuccessToast } from "../../components/global/Toaster";
 
 const UserManagementPage = () => {
   const [edit, setEdit] = useState(false);
   const [verifyOtp, setVerifyOtp] = useState(false);
   const [phoneUpdated, setPhoneUpdated] = useState(false);
-  const name = Cookies.get("name");
-  const [firstName, lastName] = name.split(" ");
-  const email = Cookies.get("email");
-  const phoneNumber = Cookies.get("phoneNumber");
-  const profilePicture = Cookies.get("profilePicture");
-  console.log("🚀 ~ UserManagementPage ~ profilePicture:", profilePicture)
+  const [phoneNum,setPhoneNum] = useState("")
+  const [profileData, setProfileData] = useState("")
+  const [profileLoading, setProfileLoading] = useState(false)
+
+  const getUserProfile = async()=>{
+    try{
+      setProfileLoading(true)
+      const response = await axios.get("/owner/profile")
+      if(response.status === 200){
+        setProfileData(response?.data?.data?.user)
+      }
+    }catch(err){
+    console.log("🚀 ~ getUserProfile ~ err:", err)
+    SuccessToast(err?.response?.data?.message)
+    }
+    finally{
+      setProfileLoading(false)
+    }
+  }
+
+  useEffect(()=>{
+    getUserProfile()
+  },[])
 
   return (
     <div className="w-full flex flex-col gap-6 px-5 pb-5 md:px-0">
+      {profileLoading?(
+        <div className="w-full h-[90dvh] flex justify-center items-center">
+        <FiLoader className="text-[30px] animate-spin text-lg mx-auto"/>
+      </div>
+      ):(
       <div className="w-full flex flex-col  gap-8 justify-between items-start">
         <div className="w-full flex justify-between items-start">
           <div className="flex flex-col gap-2">
@@ -42,7 +66,7 @@ const UserManagementPage = () => {
         <div className="w-full flex flex-col justify-start items-start gap-4">
           <div className="w-[120px] h-[120px] rounded-full bg-[#1A293D] flex justify-center items-center relative">
             <img
-              src={profilePicture}
+              src={profileData?.profilePicture || AuthMockup}
               alt="user_image"
               className="w-full h-full rounded-full"
             />
@@ -59,7 +83,7 @@ const UserManagementPage = () => {
         <input
           disabled
           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
-          value={firstName}
+          value={profileData?.name?.split(" ")[0] || ""}  
         />
       </div>
     </div>
@@ -70,36 +94,37 @@ const UserManagementPage = () => {
         <input
           disabled
           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
-          value={lastName}
+          value={profileData?.name?.split(" ")[1] || ""}
         />
       </div>
     </div>
           </div>
           <div className="w-full h-auto flex justify-start items-start gap-4">
           <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-      <label className="text-[16px] font-medium leading-[21.6px]">First Name</label>
+      <label className="text-[16px] font-medium leading-[21.6px]">Email</label>
       <div className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center`}>
         <input
           disabled
           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
-          value={email}
+          value={profileData?.email}
         />
       </div>
     </div>
             
     <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-      <label className="text-[16px] font-medium leading-[21.6px]">Last Name</label>
+      <label className="text-[16px] font-medium leading-[21.6px]">Phone Number</label>
       <div className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center`}>
         <input
           disabled
           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
-          value={phoneNumber}
+          value={profileData?.phoneNumber}
         />
       </div>
     </div>
           </div>
           {edit && (
             <PhoneEditModal
+            setPhoneNumber={setPhoneNum}
               isOpen={edit}
               setIsOpen={setEdit}
               setVerifyOtp={setVerifyOtp}
@@ -107,6 +132,8 @@ const UserManagementPage = () => {
           )}
           {verifyOtp && (
             <VerifyPhoneEditOtp
+            setPhoneNumber={setPhoneNum}
+            phoneNum={phoneNum}
               isOpen={verifyOtp}
               setIsOpen={setVerifyOtp}
               setPhoneUpdated={setPhoneUpdated}
@@ -119,7 +146,7 @@ const UserManagementPage = () => {
             />
           )}
         </div>
-      </div>
+      </div>)}
     </div>
   );
 };

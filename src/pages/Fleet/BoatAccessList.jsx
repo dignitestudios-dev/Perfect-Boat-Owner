@@ -10,7 +10,7 @@ import { ErrorToast } from "../../components/global/Toaster";
 
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   
-  const { navigate, boats } = useContext(GlobalContext);
+  const { navigate, boats, setUpdateBoat } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -111,7 +111,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
       const response = await axios.put(`/owner/manager/${managerId}/boat`,obj)
       if(response.status === 200){
         setIsBoatManagerAccessOpen(true);
-        setIsSelectBoatsModalOpen(false); 
+        setIsSelectBoatsModalOpen(false);
+        setUpdateBoat((prev)=> !prev);
       }
     }
     catch(err){

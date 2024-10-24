@@ -14,6 +14,7 @@ import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { useForm } from "react-hook-form";
 import { getUnixDate } from "./../../data/DateFormat";
+import AssignTaskModal from "../../components/tasks/modal/AssignTaskModal";
 
 const Dropdown = ({ options, label }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,28 +76,31 @@ const EditEmployee = () => {
   const [isResendModalOpen, setIsResendModalOpen] = useState(false);
   const [isDeletedModalOpen, setIsDeletedModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const employeeName = "*Employee Name*";
   const [isLoading, setIsLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [employee, setEmployee] = useState("");
   const [passSelectedManager, SetPassSelectedManager] = useState("");
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [tasks,setTasks] = useState([])
+  console.log("🚀 ~ EditEmployee ~ tasks:", tasks)
+  
+  const { register, handleSubmit, setValue, formState: { errors }} = useForm({
     defaultValues: { manager: passSelectedManager?.name },
   });
 
   const handleViewAllClick = () => {
-    setIsAssignedModalOpen(true); // Open AssignedModal instead of navigating
+    setIsTaskModalOpen(true);
+    // setIsAssignedModalOpen(true); // Open AssignedModal instead of navigating
+  };
+
+  const closeTaskModal = () => {
+    setIsTaskModalOpen(false);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
 
   const handleResetPassClick = () => {
     setIsModalOpen(true);
@@ -127,7 +131,7 @@ const EditEmployee = () => {
         ...data,
         manager: passSelectedManager?.id,
         password: "Test@123",
-        tasks: employee?.tasks?.map((item) => item?.id),
+        tasks: tasks ? tasks?.map((item) => item?.id) : employee?.tasks?.map((item) => item?.id),
       };
 
       const response = await axios.put(
@@ -152,7 +156,6 @@ const EditEmployee = () => {
       const response = await axios.get(`/owner/employees/${id}`);
       if (response.status === 200) {
         const data = response?.data?.data;
-        console.log("🚀 ~ getEmployeeData ~ data:", data);
         setEmployee(response?.data?.data?.employee);
       }
     } catch (err) {
@@ -188,14 +191,14 @@ const EditEmployee = () => {
         </div>
       ) : (
         <form
-          className="w-full h-full"
+          className="w-full h-auto grid grid-cols-1 justify-center items-center gap-4"
           onSubmit={handleSubmit(handleUpdateEmployee)}
         >
           <div className="w-full h-auto bg-[#1A293D] text-white flex flex-col justify-start items-start">
             <div className="w-full flex flex-col justify-start items-start gap-6 p-6 rounded-[18px] bg-[#001229]">
               <div className="w-full h-auto flex flex-col lg:flex-row justify-between items-center gap-3">
                 <h3 className="text-[18px] font-bold leading-[24.3px]">
-                  {isEditing ? `Edit ${employee.name}` : employeeName}
+                  {isEditing ? `Edit ${employee.name}` : employee.name}
                 </h3>
                 <div className="flex gap-4 ml-auto">
                   {isEditing ? (
@@ -328,13 +331,15 @@ const EditEmployee = () => {
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
                 Assigned Manager{" "}
               </h3>
-              <button
+              {isEditing ?(
+                <button
                 type="button"
-                onClick={handleChangeClick} // Update to handle opening ManagerDetailModal
+                onClick={handleChangeClick} 
                 className="text-[14px] font-medium text-[#199bd1]"
               >
                 Change
               </button>
+              ):(<span></span>)}
             </div>
 
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -354,7 +359,7 @@ const EditEmployee = () => {
               </div>
               <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                 <span className="w-full flex justify-start items-center">
-                  {employee?.manager?.name}
+                  {passSelectedManager?.name || employee?.manager?.name}
                 </span>
                 <span className="w-full flex justify-start items-center">
                   {employee?.manager?.email}
@@ -410,7 +415,9 @@ const EditEmployee = () => {
                   Action
                 </span>
               </div>
-              {employee?.tasks?.map((task, index) => (
+              {employee?.tasks?.length > 0 ? (
+                <>
+                {employee?.tasks?.map((task, index) => (
                 <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                   <span className="w-full flex justify-start items-center">
                     {task?.name}
@@ -442,6 +449,12 @@ const EditEmployee = () => {
                   </div>
                 </div>
               ))}
+                </>
+              ):(
+                <p>No tasks on the horizon? Assign tasks to keep the crew engaged
+                and productive!</p>
+              )}
+              
               {/* Add more rows as needed */}
             </div>
           </div>
@@ -485,25 +498,19 @@ const EditEmployee = () => {
           setIsOpen={setIsAssignedModalOpen}
         />
       )}
+      {isTaskModalOpen && (
+        <AssignTaskModal isOpen={isTaskModalOpen} onClose={closeTaskModal} setTasks={setTasks}  />
+      )}
 
       {isManagerDetailModalOpen && (
-        <ManagerDetailModal
-          setIsOpen={setIsManagerDetailModalOpen} // Pass the function to close the modal
-        />
+        <ManagerDetailModal setIsOpen={setIsManagerDetailModalOpen} SetPassSelectedManager={SetPassSelectedManager}/>
       )}
 
       {isResendModalOpen && (
-        <ResendModal
-          id={id}
-          isOpen={isResendModalOpen}
-          onClose={() => setIsResendModalOpen(false)}
-        />
+        <ResendModal id={id} isOpen={isResendModalOpen} onClose={() => setIsResendModalOpen(false)}/>
       )}
 
-      <DeletedModal
-        isOpen={isDeletedModalOpen}
-        onClose={() => setIsDeletedModalOpen(false)}
-      />
+      <DeletedModal isOpen={isDeletedModalOpen} onClose={() => setIsDeletedModalOpen(false)}/>
     </div>
   );
 };

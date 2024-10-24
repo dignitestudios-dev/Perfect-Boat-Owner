@@ -8,9 +8,11 @@ import DeleteAccount from "../global/DeleteAccount";
 import DeactivateAccountModal from "../../pages/Employees/DeactivateAccountModal";
 import DeleteAccountModal from "../global/DeleteAccountModal";
 import ManagerListLoader from "../managers/ManagerListLoader";
+import { ErrorToast } from "../global/Toaster";
+import axios from "../../axios";
 
 const EmployeesTableBig = ({data, loading}) => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const [jobFilter, setJobFilter] = useState(false);
   const jobRef = useRef(null);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -49,9 +51,21 @@ const EmployeesTableBig = ({data, loading}) => {
     setIsModalOpen(false);
   };
 
-  const handleDeactivate = () => {
-    setIsDeactivateModalOpen(true);
-    setIsModalOpen(false); // Close the delete modal when deactivate modal opens
+  const handleDeactivate = async() => {
+
+    try {
+      const obj = { reason: "Deactivate"}
+      const response = await axios.delete(`/owner/employees/${employeeId}?deactivate=true`, {data: obj });
+
+      console.log("🚀 ~ handleDeactivate ~ response:", response)
+      if (response?.status === 200) {
+        setUpdateEmployee((prev) => !prev);
+        setIsDeactivateModalOpen(true);
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+    }
   };
 
   const handleDelete = () => {
@@ -188,11 +202,13 @@ const EmployeesTableBig = ({data, loading}) => {
             <>
             {/* Example Data Rows */}
           {filteredData?.map((employee, index) => (
-          <div className="w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
+          <div
+          onClick={()=>handleEditClick(employee?._id)}
+           className=" cursor-pointer w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
+            font-medium leading-[14.85px] text-white justify-start items-center">
             <span
               key={index}
               className="w-full flex justify-start items-center"
-              // onClick={() => navigate("/employees/1", "Employees")}
             >
             {employee?.name}
             </span>
@@ -208,13 +224,13 @@ const EmployeesTableBig = ({data, loading}) => {
             <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
               <span
                 className="flex justify-start items-center cursor-pointer"
-                onClick={()=>handleEditClick(employee?._id)}
+                onClick={(e)=>{e.stopPropagation(); handleEditClick(employee?._id)}}
               >
                 <FaRegEdit />
               </span>
               <span
                 className="flex justify-start items-center cursor-pointer"
-                onClick={()=>handleDeleteClick(employee?._id)}
+                onClick={(e)=>{e.stopPropagation(); handleDeleteClick(employee?._id)}}
               >
                 <RiDeleteBinLine />
               </span>

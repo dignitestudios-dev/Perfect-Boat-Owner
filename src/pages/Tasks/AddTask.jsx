@@ -70,6 +70,7 @@ const AddTask = () => {
   const [dueDate, setDueDate] = useState({})
   const [customTypeText, setCustomTypeText] = useState("")
   const [inputError, setInputError] = useState({});
+  console.log("🚀 ~ AddTask ~ inputError:", inputError)
 
   const toggleTaskTypeDropdown = () => {
   setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);

@@ -7,15 +7,16 @@ import DeleteAccount from "../global/DeleteAccount";
 import DeactivateAccountModal from "../../pages/Employees/DeactivateAccountModal";
 import DeleteManagerAccountModal from "../global/DeleteManagerAccountModal";
 import ManagerListLoader from "./ManagerListLoader";
+import axios from "../../axios";
+import { ErrorToast } from "../global/Toaster";
+import JobType from "../global/headerDropdowns/JobType";
+import LocationType from "../global/headerDropdowns/LocationType";
 
 
 const ManagerTableBig = ({data, loading}) => {
-  const { navigate } = useContext(GlobalContext);
-  const [jobFilter, setJobFilter] = useState(false);
+  const { navigate,setUpdateManager } = useContext(GlobalContext); 
   const [search, setSearch] = useState("");
-  const jobRef = useRef(null);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const locationRef = useRef(null);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
@@ -25,15 +26,15 @@ const ManagerTableBig = ({data, loading}) => {
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
 
-  const toggleJobModal = (e) => {
-    if (jobRef.current && !jobRef.current.contains(e.target)) {
-      setJobFilter((prev) => !prev);
-    }
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
-  const toggleLocationModal = (e) => {
-    if (locationRef.current && !locationRef.current.contains(e.target)) {
-      setLocationFilter((prev) => !prev);
-    }
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
   const handleEditClick = (managerData) => {
@@ -49,9 +50,22 @@ const ManagerTableBig = ({data, loading}) => {
     setIsModalOpen(false);
   };
 
-  const handleDeactivate = () => {
-    setIsDeactivateModalOpen(true);
-    setIsModalOpen(false); 
+  const handleDeactivate = async () => {
+    try {
+      const obj = { reason: "Deactivate"}
+      const response = await axios.delete(`/owner/manager/${managerId}?deactivate=true`, {data: obj });
+
+      console.log("🚀 ~ handleDeactivate ~ response:", response)
+      if (response?.status === 200) {
+        console.log("if call")
+        setUpdateManager((prev) => !prev);
+        setIsDeactivateModalOpen(true);
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      console.log("error call")
+      ErrorToast(err?.response?.data?.message);
+    }
   };
 
   const handleDelete = () => {
@@ -99,111 +113,8 @@ const ManagerTableBig = ({data, loading}) => {
               <span className="w-full flex justify-start items-center">
                 Email
               </span>
-              <button
-                onClick={toggleJobModal}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Job Title</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={jobRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    jobFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Doc Manager 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Doc Manager 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Doc Manager 3
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Doc Manager 4
-                    </span>
-                  </div>
-                </div>
-              </button>
-
-              <button
-                onClick={toggleLocationModal}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Location</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={locationRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                      Location A
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                      Location B
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                      Location C
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                      Location D
-                    </span>
-                  </div>
-                </div>
-              </button>
+              <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+              <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
               <span className="w-full flex justify-start items-center px-[170px]">
                 Action
               </span>

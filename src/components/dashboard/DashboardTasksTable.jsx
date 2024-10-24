@@ -106,10 +106,10 @@ const DashboardTasksTable = ({ data, loading }) => {
                 })}
               </>
             ) : (
-              <p>
+              <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
                 No tasks on the horizon? Assign tasks to keep the crew engaged
                 and productive!
-              </p>
+              </div>
             )}
           </>
         )}

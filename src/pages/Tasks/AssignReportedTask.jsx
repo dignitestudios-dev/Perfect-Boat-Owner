@@ -18,7 +18,6 @@ import axios from "../../axios";
 const AssignReportedTask = () => {
   const location = useLocation();
   const { task } = location.state || {};
-  console.log("🚀 ~ AssignReportedTask ~ task:", task)
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const { navigate } = useContext(GlobalContext);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -37,6 +36,7 @@ const AssignReportedTask = () => {
   const [displaySelectedTask, setDisplaySelectedTask] = useState("");
   const [passSelectedEmployee, setPassSelectedEmployee] = useState("");
   const [submitLoading,setSubmitLoading] = useState(false);
+  const [inputError, setInputError] = useState({})
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
@@ -183,11 +183,12 @@ const AssignReportedTask = () => {
                     className={`${
                       isTaskTypeDropdownOpen ? "flex" : "hidden"
                     } flex-col justify-start items-start gap-3 transition-all duration-500 py-3 absolute -bottom-40 shadow-xl
-                     left-0 w-full h-40 max-h-40 bg-[#1A293D] rounded-b-2xl`}
+                     left-0 w-full h-40 max-h-40 bg-[#1A293D] rounded-b-2xl z-20`}
                   >
                     <div className="w-full h-auto overflow-y-auto">
                       {Object.keys(taskTypeData).map((taskType, index) => (
                         <button
+                        type="button"
                           key={index}
                           onClick={() => handleTaskTypeSelection(taskType)}
                           className="text-gray-300 w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
@@ -196,6 +197,7 @@ const AssignReportedTask = () => {
                         </button>
                       ))}
                       <button
+                      type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleTaskTypeSelection("custom");
@@ -268,6 +270,7 @@ const AssignReportedTask = () => {
                     {tasks.length > 0 ? (
                       tasks.map((task, index) => (
                         <button
+                        type="button"
                           key={index}
                           onClick={() => handleTaskSelection(task)}
                           className="text-gray-300 w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
@@ -277,7 +280,8 @@ const AssignReportedTask = () => {
                       ))
                     ) : (
                       <span className="text-gray-400 px-5">
-                        No tasks available
+                        No tasks on the horizon? Assign tasks to keep the crew engaged
+                        and productive!
                       </span>
                     )}
                   </div>
@@ -328,6 +332,7 @@ const AssignReportedTask = () => {
                 <IoCalendarOutline className="text-2xl text-white/40" />
                 <span className="text-md font-normal text-white">Due Date</span>
                 <button
+                type="button"
                   onClick={() => setIsCalendarOpen(true)}
                   className="text-xs font-normal text-[#199BD1]"
                 >
@@ -341,6 +346,7 @@ const AssignReportedTask = () => {
                   Recurring Days
                 </span>
                 <button
+                type="button"
                   onClick={toggleRecurringDropdown}
                   className="text-xs flex flex-col justify-start items-start font-normal text-[#199BD1] relative"
                 >
@@ -396,10 +402,10 @@ const AssignReportedTask = () => {
       </form>
       {/* Conditionally render the EmployeeDetailModal */}
       {isEmployeeModalOpen && (
-        <EmployeeDetailModal setIsOpen={setIsEmployeeModalOpen} SetPassSelectedEmployee={setPassSelectedEmployee} />
+        <EmployeeDetailModal setIsOpen={setIsEmployeeModalOpen} SetPassSelectedEmployee={setPassSelectedEmployee} setInputError={setInputError} />
       )}
 
-      <TaskAssignedModal isOpen={isModalOpen} onClose={() => {setIsModalOpen(false);navigate("/tasks")}} /> {/* Render the TaskAssignedModal */}
+      <TaskAssignedModal isOpen={isModalOpen} onClose={() => {setIsModalOpen(false);navigate("/new-tasks-request")}} />
     </div>
   );
 };

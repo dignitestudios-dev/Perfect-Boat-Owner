@@ -81,6 +81,7 @@ export const GlobalContextProvider = ({ children }) => {
         getBoats,
         setUpdateEmployee,
         setUpdateManager,
+        setUpdateBoat,
         loadingBoats,
         loadingEmployees,
         loadingManagers,

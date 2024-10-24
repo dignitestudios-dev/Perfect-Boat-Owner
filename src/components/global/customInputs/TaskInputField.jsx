@@ -47,7 +47,8 @@ const TaskInputField = ({isEdit, handleTaskSelection,toggleTaskDropdown,isTaskDr
                       ))
                     ) : (
                       <span className="text-gray-400 px-5">
-                        No tasks available
+                        No tasks on the horizon? Assign tasks to keep the crew engaged
+                        and productive!
                       </span>
                     )}
                   </div>

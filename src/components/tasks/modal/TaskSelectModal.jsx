@@ -122,7 +122,8 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
               ))}
                 </>
               ):(
-                <div> No data found</div>
+                <div> No tasks on the horizon? Assign tasks to keep the crew engaged
+                and productive!</div>
               )}
               
               {/* Add more rows as needed */}

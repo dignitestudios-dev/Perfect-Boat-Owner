@@ -91,7 +91,10 @@ const NewTaskTable = ({ data, loading }) => {
           })}
             </>
           ):(
-            <p>Ready to dive into action? Stay tuned for upcoming tasks requests by your team.</p>
+            <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] 
+            font-normal leading-[21.6px] text-white">
+              Ready to dive into action? Stay tuned for upcoming tasks requests by your team.
+            </div>
           )}
           </>
           )}

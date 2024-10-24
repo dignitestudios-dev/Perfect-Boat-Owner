@@ -116,7 +116,7 @@ const NewTaskRequestPage = () => {
               {task?.task?.status}
             </span>
             <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-              <span onClick={() => navigate(`/tasks/${task?._id}`, "All Tasks")}
+              <span onClick={() => navigate(`/tasks/${task?.task?._id}`, "All Tasks")}
                className=" flex justify-start items-center cursor-pointer">
                 <FaRegEdit />
               </span>

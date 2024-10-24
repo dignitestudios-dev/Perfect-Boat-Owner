@@ -123,7 +123,8 @@ const AssignedModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
               }
                 </>
               ):(
-                <div>No record found</div>
+                <div>No tasks on the horizon? Assign tasks to keep the crew engaged
+                and productive!</div>
               )}
               
               {/* Add more rows as needed */}

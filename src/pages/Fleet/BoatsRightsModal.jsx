@@ -4,7 +4,7 @@ import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 
-const BoatRightsModal = ({ isOpen, setIsOpen }) => {
+const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
   const { navigate } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -85,12 +85,12 @@ const BoatRightsModal = ({ isOpen, setIsOpen }) => {
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
               />
             </div>
-            <button
+            {/* <button
                 onClick={() => console.log('Search triggered')} // Implement search functionality here
                 className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
               >
                 Done
-              </button>
+              </button> */}
           </div>
           <div className="mt-2">
             {/* <label className="flex items-center text-white/50">
@@ -179,11 +179,11 @@ const BoatRightsModal = ({ isOpen, setIsOpen }) => {
               </button>
             </div>
 
-            {Array(5).fill().map((_, index) => (
+            {boatList?.map((boat, index) => (
               <div
                 key={index}
-                onClick={() => navigate("/boats/1", "Boat")}
-                className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                // onClick={() => navigate(`/boats/${boat?._id}`, "Boat")}
+                className="w-full h-auto grid grid-cols-5  border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
               >
                 <div className="flex items-center">
                   {/* <input
@@ -194,40 +194,30 @@ const BoatRightsModal = ({ isOpen, setIsOpen }) => {
                   />*/}
                   <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                   <img
-                src={AuthMockup}
+                src={boat?.images[0]}
                 alt="boat_image"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '8px',
-                  objectFit: 'cover',
-                }}
+                style={{ width: '100%',  height: '100%', borderRadius: '8px',  objectFit: 'cover',  }}
               />
               <div
-                style={{
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: '70%',
-                  background: 'linear-gradient(to right, transparent, #111111)',
+                style={{ content: '""', position: 'absolute', top: 0, right: 0,
+                  bottom: 0,  left: '70%', background: 'linear-gradient(to right, transparent, #111111)',
                 }}
               />
                   </span> 
                 </div>
                 <span className="w-full flex justify-start items-center">
-                  Type goes here
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  Boat Name
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  2019 / Toyotta / Class A
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  East California Dock
-                </span>
+                      {boat?.boatType}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.name}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.make}, {boat?.model}, {boat?.size}
+                    </span>
+                    <span className="w-full flex justify-start items-center ">
+                      {boat?.location}
+                    </span>
+                    <span className="w-full flex justify-start items-center "></span>
               </div>
             ))}
           </div>

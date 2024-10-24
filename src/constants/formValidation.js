@@ -1,21 +1,22 @@
 export const formValidation = ({ passSelectedEmployee, passSelectedBoat, selectedTaskType, noteText, dueDate }) => {
-    console.log("🚀 ~ formValidation ~ passSelectedBoat:", passSelectedBoat?._id)
-    console.log("🚀 ~ formValidation ~ passSelectedEmployee:", passSelectedEmployee?._id)
+
     let errors = {};
-  
-    if (!passSelectedEmployee?.id) {
+
+    if(passSelectedEmployee && (passSelectedEmployee?.id || passSelectedEmployee?._id)){
+      errors = {};
+    }
+    else{
       errors.employee = "Select Employee";
+      errors.updateEmployee = "Select Employee";
     }
-    if (!passSelectedEmployee?._id) {
-        errors.updateEmployee = "Select Employee";
-      }
-  
-    if (!passSelectedBoat?.id) {
+
+    if(passSelectedBoat && (passSelectedBoat?.id || passSelectedBoat?._id)){
+      errors = {};
+    }
+    else{
       errors.boat = "Select boat";
+      errors.updateBoat = "Select boat";
     }
-    if (!passSelectedBoat?._id) {
-        errors.updateBoat = "Select boat";
-      }
   
     if (!selectedTaskType) {
       errors.task = "Select task";

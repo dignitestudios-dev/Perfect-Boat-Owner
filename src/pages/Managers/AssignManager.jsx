@@ -1,14 +1,19 @@
 import React, { useContext, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
-import EmployeeDetailModal from "../Managers/ManagerDetailModal"; // Update with the correct path
+import ManagerDetailModal from "../Managers/ManagerDetailModal"; // Update with the correct path
 import AssignManagerModal from "../Managers/AssignManagerModal";
 import { GlobalContext } from "../../contexts/GlobalContext";
+import axios from "../../axios";
+import { FiLoader } from "react-icons/fi";
+import { ErrorToast } from "../../components/global/Toaster";
+import { useNavigate } from "react-router-dom";
 
 const AssignManager = () => {
-  const { managers, loadingManagers } = useContext(GlobalContext);
+  const { managers, employees } = useContext(GlobalContext);
+  const navigate = useNavigate()
   const [search, setSearch] = useState("");
-  const filteredData = managers?.filter((item) =>
+  const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
 );
 
@@ -20,6 +25,7 @@ const AssignManager = () => {
 
   const [passSelectedManager, SetPassSelectedManager] = useState("")
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [assignLoading, setAssignLoading] = useState(false)
 
   const handleSelectEmployee = (employeeId, employeeName) => {
       const isSelected = selectedEmployees.some((employee) => employee?.id === employeeId);
@@ -31,7 +37,7 @@ const AssignManager = () => {
       }
   };
 
-  const handleAssignEmployees =async()=>{
+  const handleAssignManager =async()=>{
     setAssignLoading(true)
     try{
       const obj = {
@@ -83,15 +89,17 @@ const AssignManager = () => {
               onClick={() => setIsBoatModalOpen(true)} // Open the Employee Detail Modal
               className="w-full h-[52px] text-gray-400 bg-[#1A293D] text-left disabled:text-50 outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl mb-6"
             >
-              Click here to select manager
+              {passSelectedManager?.name ||"Click here to select manager"}
             </button>
           </div>
 
           <button
-            onClick={() => setIsAssignEmployeeModalOpen(true)} // Open the Assign Manager Modal
+          disabled={assignLoading}
+            onClick={handleAssignManager} 
             className="w-full lg:w-[135px] h-[35px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
           >
-            Assign Manager
+            <div className="flex items-center"><span className="mr-1">Assign Manager</span>{assignLoading &&(
+                <FiLoader className="animate-spin text-lg mx-auto" />)}</div>
           </button>
         </div>
 
@@ -187,8 +195,8 @@ const AssignManager = () => {
             {/* Table Content */}
             <>
   {filteredData && filteredData.length > 0 ? (
-    filteredData.map((employee, index) => {
-      const isMultiSelected = selectedEmployees.some((selected) => selected.id === employee._id);
+    filteredData?.map((employee, index) => {
+      const isMultiSelected = selectedEmployees?.some((selected) => selected?.id === employee?._id);
       return (
         <div
           key={index}
@@ -203,23 +211,23 @@ const AssignManager = () => {
             />
           </div>
           <span className="col-span-2 flex items-center px-2">
-            {employee.name}
+            {employee?.name}
           </span>
           <span className="flex items-center px-2 col-span-3">
-            {employee.email}
+            {employee?.email}
           </span>
           <span className="flex items-center px-2 col-span-2">
-            {employee.position}
+            {employee?.jobtitle}
           </span>
           <span className="flex items-center px-2 col-span-2">
-            {employee.location}
+            {employee?.location}
           </span>
         </div>
       );
     })
   ) : (
     <div className="w-full h-10 grid grid-cols-10 border-b text-center">
-      No Record Found
+      No data found. Add employees and conquer the tasks together!
     </div>
   )}
 </>
@@ -228,14 +236,14 @@ const AssignManager = () => {
 
         {/* EmployeeDetailModal Component */}
         {isBoatModalOpen && (
-          <EmployeeDetailModal setIsOpen={setIsBoatModalOpen} />
+          <ManagerDetailModal setIsOpen={setIsBoatModalOpen} SetPassSelectedManager={SetPassSelectedManager}/>
         )}
 
         {/* AssignManagerModal Component */}
         {isAssignEmployeeModalOpen && (
           <AssignManagerModal
             isOpen={isAssignEmployeeModalOpen}
-            onClose={() => setIsAssignEmployeeModalOpen(false)}
+            onClose={() => {setIsAssignEmployeeModalOpen(false); navigate("/employees")}}
           />
         )}
       </div>

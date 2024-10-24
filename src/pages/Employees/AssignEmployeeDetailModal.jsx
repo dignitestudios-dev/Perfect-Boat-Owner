@@ -3,7 +3,6 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 
 const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
-  console.log("🚀 ~ AssignEmployeeDetailModal ~ employeesList:", employeesList)
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -138,20 +137,20 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                 </tr>
               </thead>
               <tbody>
-                {employeesList?.map((manager, index) =>{
+                {employeesList?.map((employee, index) =>{
                   return (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.name}
+                        {employee?.name}
                       </td>
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.email}
+                        {employee?.email}
                       </td>
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.jobtitle}
+                        {employee?.jobtitle}
                       </td>
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.location}
+                        {employee?.location}
                       </td>
                     </tr>
                   )

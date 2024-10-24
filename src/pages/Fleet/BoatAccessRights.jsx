@@ -5,12 +5,11 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import BoatAccessModal from "./BoatAccessModal";
 import { IoIosSearch } from "react-icons/io";
 import BoatAccessList from "./BoatAccessList";
+import JobType from "../../components/global/headerDropdowns/JobType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const BoatAccessRights = () => {
-  const { navigate, managers } = useContext(GlobalContext);
-  const [jobFilter, setJobFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { managers } = useContext(GlobalContext);
   const [search, setSearch] = useState("");
   const [isBoatAccessModalOpen, setIsBoatAccessModalOpen] = useState(false);
   const [managerId, setManagerId] = useState("")
@@ -22,16 +21,15 @@ const BoatAccessRights = () => {
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
 
-  const toggleJobModal = (e) => {
-    if (jobRef.current && !jobRef.current.contains(e.target)) {
-      setJobFilter((prev) => !prev);
-    }
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
 
-  const toggleLocationModal = (e) => {
-    if (locationRef.current && !locationRef.current.contains(e.target)) {
-      setLocationFilter((prev) => !prev);
-    }
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
   const openBoatAccessModal = (id, name) => {
@@ -85,111 +83,9 @@ const BoatAccessRights = () => {
                 <span className="flex items-center justify-start">
                   Manager Name
                 </span>
-                <button
-                  onClick={toggleJobModal}
-                  className="flex flex-col gap-1 items-start justify-center relative"
-                >
-                  <div className="flex items-start justify-start gap-1">
-                    <span>Job Title</span>
-                    <FaCaretDown />
-                  </div>
-                  <div
-                    ref={jobRef}
-                    className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                      jobFilter ? "scale-100" : "scale-0"
-                    } flex flex-col gap-3 shadow-lg p-3 absolute top-7 left-0`}
-                  >
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white/50 text-[11px] font-medium">
-                        Doc Manager 1
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white/50 text-[11px] font-medium">
-                        Doc Manager 2
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white/50 text-[11px] font-medium">
-                        Doc Manager 3
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white/50 text-[11px] font-medium">
-                        Doc Manager 4
-                      </span>
-                    </div>
-                  </div>
-                </button>
+                <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+                <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
 
-                <button
-                  onClick={toggleLocationModal}
-                  className="flex flex-col gap-1 items-start justify-center relative"
-                >
-                  <div className="flex items-center justify-start gap-1">
-                    <span>Location</span>
-                    <FaCaretDown />
-                  </div>
-                  <div
-                    ref={locationRef}
-                    className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                      locationFilter ? "scale-100" : "scale-0"
-                    } flex flex-col gap-3 shadow-lg p-3 absolute top-7 left-0`}
-                  >
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white text-[11px] font-medium">
-                        Location A
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white text-[11px] font-medium">
-                        Location B
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white text-[11px] font-medium">
-                        Location C
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="w-3 h-3 accent-[#199BD1]"
-                      />
-                      <span className="text-white text-[11px] font-medium">
-                        Location D
-                      </span>
-                    </div>
-                  </div>
-                </button>
                 <span className="flex items-center justify-start">Access</span>
               </div>
 

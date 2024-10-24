@@ -1,11 +1,50 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { CheckMark } from "../../assets/export";
 import AddFleetInput from "../fleet/AddFleetInput";
+import AuthSubmitBtn from "../onboarding/AuthSubmitBtn";
+import axios from "../../axios";
+import { ErrorToast, SuccessToast } from "./Toaster";
 
-const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated }) => {
+const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated, phoneNum, setPhoneNumber }) => {
   const { navigate } = useContext(GlobalContext);
-  const arr = [1, 2, 3, 4, 5, 6];
+  const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [otp, setOtp] = useState(Array(6).fill(""));
+
+  const inputs = useRef([]);
+
+  const handleChange = (e, index) => {
+    const { value } = e.target;
+
+    if (/^\d$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      // Move focus to the next input if it's not the last
+      if (index < otp.length - 1) {
+        inputs.current[index + 1].focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      const newOtp = [...otp];
+      newOtp[index] = ""; // Clear the current field
+      setOtp(newOtp);
+
+      // Move focus to the previous input if it's not the first
+      if (index > 0) {
+        inputs.current[index - 1].focus();
+      }
+    }
+  };
+
+  const getOtpValue = () => {
+    return parseInt(otp.join(""), 10);
+  };
 
   const phoneEditOtpRef = useRef();
   const toggleModal = (e) => {
@@ -14,6 +53,43 @@ const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated }) => {
       !phoneEditOtpRef.current.contains(e.target)
     ) {
       setIsOpen(false);
+    }
+  };
+
+  const handleVerifyOtp = async (otp) => {
+    setLoading(true);
+    try {
+      let obj = { phone: phoneNum?.phone, otp: getOtpValue(), };
+      const response = await axios.put("/owner/profile/verify/phone", obj);
+      if (response?.status === 200) {
+        setPhoneUpdated(true)
+        setIsOpen(false)
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+      // setIsOpen(false)
+      // setPhoneNumber("")
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setResendLoading(true);
+      let obj = { phone: "+17862337361" };
+      const response = await axios.put("/owner/profile/resend/phone", obj);
+
+      if (response.status === 200) {
+        SuccessToast("Otp Resend")
+        setOtp(Array(6).fill(""))
+      } else {
+        ErrorToast(response?.data?.message);
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -37,40 +113,41 @@ const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated }) => {
               Please enter the code that we send to your new phone number.
             </span>
           </div>
-          <div className="w-full flex flex-col justify-start items-start gap-1">
-            <div className="w-full h-auto flex justify-start items-center mt-10 gap-4 my-4 ">
-              {arr.map((item) => {
-                return (
-                  <input
-                    key={item}
-                    className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#fff]/[35%] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
-                  />
-                );
-              })}
-            </div>
-            <div className="w-full h-auto flex   flex-col gap-1 justify-start items-start  ">
-              <div className="w-full lg:w-[434px] flex gap-1 justify-start items-center ">
-                <span className="text-[13px] font-medium text-[#C2C6CB]">
-                  Didn't recieve a code?
-                </span>
-                <button className="outline-none text-[13px] border-none text-[#199BD1] font-bold">
-                  Resend now
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full h-auto flex flex-col gap-8 mt-10">
+          <form  onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}
+          className="w-full h-auto"
+         >
+          <div className="w-full h-auto flex justify-start items-center gap-4 my-4 ">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              type="text"
+              maxLength="1"
+              value={digit}
+              onChange={(e) => handleChange(e, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              ref={(el) => (inputs.current[index] = el)}
+              className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#c2c6cb] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
+            />
+          ))}
+        </div>
+        <div className="w-full h-auto flex  mb-20 flex-col gap-1 justify-start items-start  ">
+          <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
+            <span className="text-[13px] font-medium text-[#C2C6CB]">
+              Didn't recieve a code?
+            </span>
             <button
-              onClick={() => {
-                setIsOpen(false);
-                setPhoneUpdated(true);
-              }}
-              className="w-full  h-[42px] bg-[#199BD1] text-white rounded-[8px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+              type="button"
+              disabled={resendLoading}
+              onClick={handleResendOtp}
+              className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
             >
-              {"Verify"}
+              Resend now
             </button>
+            
           </div>
+        </div>
+        <AuthSubmitBtn text={"Verify"} loader={loading} />
+        </form>
         </div>
       </div>
     </div>

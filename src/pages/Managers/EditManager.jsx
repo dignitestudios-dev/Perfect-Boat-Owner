@@ -74,12 +74,8 @@ const EditManager = () => {
   const location = useLocation();
   const { state } = location;
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, setValue, formState: { errors }} = useForm();
+  
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -140,13 +136,11 @@ const EditManager = () => {
     setLoading(true);
     try {
       const {data} = await axios.get(`/owner/manager/${id}`);
-
-      console.log("🚀 ~ getDataById ~ data:", data)
       
       if(data?.success){
         setBoatList(data?.data?.BoatAccess);
-        setEmployeesList(data?.data?.Employees);
-        let employeeData = data?.data?.Employees?.map((item) => ({
+        setEmployeesList(data?.data?.employees);
+        let employeeData = data?.data?.employees?.map((item) => ({
           id: item?._id,
           name: item?.name,
         }));
@@ -537,7 +531,7 @@ const EditManager = () => {
         <AssignEmployeeDetailModal setIsOpen={setIsAssignDetailModalOpen}  employeesList={employeesList}/>
       )}
 
-      <BoatsRightsModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <BoatsRightsModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} boatList={boatList} />
     </div>
   );
 };

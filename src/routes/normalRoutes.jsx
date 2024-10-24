@@ -142,6 +142,12 @@ export const normalRoutes = [
   },
 
   {
+    title: "Assign Reported Task",
+    url: "/assign-reported-task",
+    page: <GlobalLayout page={<AssignReportedTask />} />,
+  },
+
+  {
     title: "Managers List",
     url: "/managers",
     page: <GlobalLayout page={<Managers />} />,
@@ -290,11 +296,7 @@ export const normalRoutes = [
     ),
   },
 
-  {
-    title: "Assign Reported Task",
-    url: "/assign-reported-task",
-    page: <GlobalLayout page={<AssignReportedTask />} />,
-  },
+  
   {
     title: "Select Payment Method",
     url: "/payment-method",

@@ -20,6 +20,9 @@ import TaskTypeInputField from "../../components/global/customInputs/TaskTypeInp
 import RecurringDaysInputField from "../../components/global/customInputs/RecurringDaysInputField";
 import AssignedEmployeeCard from "../../components/tasks/cards/AssignedEmployeeCard";
 import { formValidation } from "../../constants/formValidation";
+import { AuthMockup } from "../../assets/export";
+import AddFleetInput from "../../components/fleet/AddFleetInput";
+import { useForm } from "react-hook-form";
 
 
 const TaskDetail = () => {
@@ -46,6 +49,8 @@ const TaskDetail = () => {
   const [isEdit, setIsEdit] = useState(false)
   const [updateLoad, setUpdateLoad] =useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const { register, handleSubmit, setValue, formState: { errors }} = useForm();
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
@@ -83,8 +88,7 @@ const TaskDetail = () => {
   };
 
   const handleTaskTypeSelection = (taskType) => {
-    setError({})
-    console.log(taskType)
+    setInputError({})
     if(taskType === "custom"){
       setTaskTypeDropdownOpen(true);
       setCustomInput(true)
@@ -114,10 +118,12 @@ const TaskDetail = () => {
         setDisplaySelectedTask(data?.task || "");
         setPassSelectedBoat(data?.boat || null);
         setPassSelectedEmployee(data?.assignTo[0] || null);
+        setValue("assignBy", data?.assignBy?.name);
         setSelectedDay(data?.reoccuringDays ? `${data?.reoccuringDays} days` : "None");
         setDueDate({ normal: moment(data?.dueDate * 1000).format('YYYY-MM-DD'), unix: data?.dueDate});
       }
     } catch (err) {
+      ErrorToast(err?.response?.data?.message)
       console.log("🚀 ~ getTaskDetail ~ err:", err);
     }
     finally{
@@ -146,20 +152,20 @@ const TaskDetail = () => {
     try {
       setUpdateLoad(true)
       const obj = {
-        boat:passSelectedBoat?._id,
+        boat:passSelectedBoat?._id ? passSelectedBoat?._id : passSelectedBoat?.id,
         task:displaySelectedTask ? displaySelectedTask : selectedTaskType,
         taskType: selectedTaskType,
         dueDate: dueDate?.unix,
         description: noteText,
         reoccuring: true,
         reoccuringDays: +recurringDays,
-        assignTo: [passSelectedEmployee?._id]
+        assignTo: [passSelectedEmployee?._id ? passSelectedEmployee?._id : passSelectedEmployee?.id]
       }
         const response = await axios.put(`/owner/task/${id}`, obj);
-        console.log("Task Updated :", response);
         if(response.status === 200){
           SuccessToast("Task Updated successfully");
           getTaskDetail();
+          setIsEdit(false)
         }
     } catch (error) {
       console.error("Error update task:", error);
@@ -182,7 +188,7 @@ const TaskDetail = () => {
           <div className="w-full flex justify-between items-center h-12">
             <div className="w-auto flex justify-start items-center gap-2">
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-                {isEdit ? "Update Task" : "Task"}
+                {isEdit ? "Edit Task" : "Task"}
               </h3>
               <span className="text-[11px] capitalize bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] ">
                 {taskDetail.status}
@@ -201,15 +207,31 @@ const TaskDetail = () => {
           <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
               {/* Select Boat */}
-              <div>
+              {/* <div>
                 <SelectBoatInputField passSelectedBoat={passSelectedBoat} setIsBoatModalOpen={setIsBoatModalOpen} isEdit={isEdit}/>
                 {inputError.updateBoat && <p className="text-red-500">{inputError.updateBoat}</p>}
+              </div> */}
+              <div className="w-full lg:w-[327px] h-[90px] flex gap-3 justify-start items-center rounded-[12px] bg-[#1A293D] p-2">
+                <img
+                  src={taskDetail?.boat?.cover || AuthMockup}
+                  alt="taskimage"
+                  className="w-[106px] h-[74px] rounded-[12px]"
+                />
+                <div className="w-auto flex flex-col justify-start items-start">
+                  <h3 className="text-[16px] font-medium leading-[21.6px] text-white">
+                    {taskDetail?.boat?.name}
+                  </h3>
+                  <p className="text-[14px] font-normal text-[#199bd1]">
+                    {taskDetail?.boat?.model}/{taskDetail?.boat?.make}/{taskDetail?.boat?.size}
+                  </p>
+                </div>
               </div>
 
               {/* Assign Employee */}
               <div>
-                <SelectEmployeeInputField setIsEmployeeModalOpen={setIsEmployeeModalOpen} passSelectedEmployee={passSelectedEmployee} isEdit={isEdit}/>
-                {inputError.updateEmployee && <p className="text-red-500">{inputError.updateEmployee}</p>}
+              <AddFleetInput label={"Task Created By"} register={register("assignBy")} isDisabled={true} />
+                {/* <SelectEmployeeInputField setIsEmployeeModalOpen={setIsEmployeeModalOpen} passSelectedEmployee={passSelectedEmployee} isEdit={isEdit}/> */}
+                {/* {inputError.updateEmployee && <p className="text-red-500">{inputError.updateEmployee}</p>} */}
               </div>
             </div>
 
@@ -296,12 +318,21 @@ const TaskDetail = () => {
           )}
         </div>
         <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-          <div className="w-auto flex justify-start items-center gap-2">
-            <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-              Assigned Employee{" "}
-            </h3>
+        <div className="w-auto flex justify-start items-center gap-2">
+            <h3 className="text-[18px] font-bold leading-[24.3px] text-white">Assigned Employee</h3>
+            {isEdit ? (
+               <button
+               onClick={() => setIsEmployeeModalOpen(true)}
+               className="w-[42px] h-[42px] rounded-[8px] text-[#55C9FA] flex justify-center items-center"
+             >
+               Change
+             </button>
+            ):(
+              <span></span>
+            )}
+           
           </div>
-          <AssignedEmployeeCard taskDetail={taskDetail}/>
+          <AssignedEmployeeCard taskDetail={taskDetail} />
         </div>
         {isEdit ? (
           <div className="w-full flex justify-end py-4 items-center gap-4">
