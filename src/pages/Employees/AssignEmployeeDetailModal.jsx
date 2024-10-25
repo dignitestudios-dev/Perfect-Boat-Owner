@@ -1,27 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+import JobType from "../../components/global/headerDropdowns/JobType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [jobTitleFilter, setJobTitleFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
+
+  const filteredData = employeesList?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  );
+
   const jobTitleRef = useRef(null);
   const locationRef = useRef(null);
 
-  const jobTitles = ["Manager", "Engineer", "Developer"];
-  const locations = [
-    "East California Dock",
-    "West California Dock",
-    "South California Dock",
-  ];
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
-  const toggleJobTitleFilter = () => {
-    setJobTitleFilter((prev) => !prev);
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
 
-  const toggleLocationFilter = () => {
-    setLocationFilter((prev) => !prev);
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
   const handleClickOutside = (event) => {
@@ -60,6 +61,7 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                   <FiSearch className="text-white/50 text-lg" />
                 </span>
                 <input
+                onChange={(e)=>setSearchTerm(e.target.value)} 
                   type="text"
                   placeholder="Search here"
                   className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -81,63 +83,16 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                   <th className="px-4 py-2">Employee Name</th>
                   <th className="px-4 py-2">Email</th>
                   <th className="px-4 py-2 relative">
-                    <button
-                      onClick={toggleJobTitleFilter}
-                      className="flex items-center gap-1"
-                    >
-                      Job Title
-                      <FaCaretDown />
-                    </button>
-                    <div
-                      ref={jobTitleRef}
-                      className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        jobTitleFilter ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                    >
-                      {jobTitles.map((title, index) => (
-                        <div
-                          key={index}
-                          className="w-full flex justify-start items-start gap-2"
-                        >
-                          {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                          <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                            {title}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                  <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
                   </th>
                   <th className="px-4 py-2 relative">
-                    <button
-                      onClick={toggleLocationFilter}
-                      className="flex items-center gap-1"
-                    >
-                      Location
-                      <FaCaretDown />
-                    </button>
-                    <div
-                      ref={locationRef}
-                      className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        locationFilter ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                    >
-                      {locations.map((location, index) => (
-                        <div
-                          key={index}
-                          className="w-full flex justify-start items-start gap-2"
-                        >
-                          {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                          <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                            {location}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                    
+                  <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {employeesList?.map((employee, index) =>{
+                {filteredData?.map((employee, index) =>{
                   return (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">

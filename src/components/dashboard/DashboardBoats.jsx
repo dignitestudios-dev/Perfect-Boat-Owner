@@ -63,7 +63,7 @@ const DashboardBoats = ({ data, loading }) => {
         {data?.length > 0 ? (
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/>
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/> 
             <span className="w-full flex justify-start items-center">Name</span>
             <span className="w-full flex justify-start items-center">
               Model / Make / Size

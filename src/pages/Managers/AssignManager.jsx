@@ -8,6 +8,8 @@ import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
+import JobType from "../../components/global/headerDropdowns/JobType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const AssignManager = () => {
   const { managers, employees } = useContext(GlobalContext);
@@ -16,6 +18,17 @@ const AssignManager = () => {
   const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
 );
+
+const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
 
   const [locationFilter, setLocationFilter] = useState(false);
   const [jobFilter, setJobFilter] = useState(false);
@@ -60,11 +73,11 @@ const AssignManager = () => {
   const locationRef = useRef(null);
   const jobRef = useRef(null);
 
-  const toggleLocationDropdown = (e) => {
-    if (locationRef.current && !locationRef.current.contains(e.target)) {
-      setLocationFilter((prev) => !prev);
-    }
-  };
+  // const toggleLocationDropdown = (e) => {
+  //   if (locationRef.current && !locationRef.current.contains(e.target)) {
+  //     setLocationFilter((prev) => !prev);
+  //   }
+  // };
 
   const toggleJobDropdown = (e) => {
     if (jobRef.current && !jobRef.current.contains(e.target)) {
@@ -128,67 +141,14 @@ const AssignManager = () => {
               <div className="flex items-center px-2 col-span-3">
                 <span className="text-white/50">Email</span>
               </div>
-              <div className="flex items-center px-2 col-span-2 relative">
-                <span className="text-white/50">Job Title</span>
-                <button onClick={toggleJobDropdown} className="ml-1">
-                  <FaCaretDown className="text-white/50 text-sm" />
-                </button>
-                <div
-                  ref={jobRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    jobFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 absolute top-full left-0 mt-1`}
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium">
-                      Dock Guard
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium">
-                      Boat Captain
-                    </span>
-                  </div>
-                </div>
+              <div className="flex items-center px-2 col-span-2">
+
+            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
               </div>
-              <div className="flex items-center px-2 col-span-2 relative">
-                <span className="text-white/50">Location</span>
-                <button onClick={toggleLocationDropdown} className="ml-1">
-                  <FaCaretDown className="text-white/50 text-sm" />
-                </button>
-                <div
-                  ref={locationRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 absolute top-full left-0 mt-1`}
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium">
-                      East California Dock
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium">
-                      West California Dock
-                    </span>
-                  </div>
-                </div>
+
+              <div className="flex items-center px-2 col-span-1">
+
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
               </div>
             </div>
 
@@ -226,7 +186,7 @@ const AssignManager = () => {
       );
     })
   ) : (
-    <div className="w-full h-10 grid grid-cols-10 border-b text-center">
+    <div className="w-full h-10 grid grid-cols-1 border-b mt-2 text-center">
       No data found. Add employees and conquer the tasks together!
     </div>
   )}

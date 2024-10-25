@@ -15,6 +15,8 @@ import axios from "../../axios";
 import { useForm } from "react-hook-form";
 import { getUnixDate } from "./../../data/DateFormat";
 import AssignTaskModal from "../../components/tasks/modal/AssignTaskModal";
+import TaskType from "../../components/global/headerDropdowns/TaskType";
+import StatusType from "../../components/global/headerDropdowns/StatusType";
 
 const Dropdown = ({ options, label }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +42,7 @@ const Dropdown = ({ options, label }) => {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+      type="button"
         className="text-left w-full flex justify-start items-center gap-1"
         onClick={handleToggle}
       >
@@ -82,7 +85,16 @@ const EditEmployee = () => {
   const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [tasks,setTasks] = useState([])
-  console.log("🚀 ~ EditEmployee ~ tasks:", tasks)
+  const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+
+  const toggleTaskTypeDropdown = () => {
+    setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
+  };
+
+  const toggleStatusDropdown = () => {
+    setStatusDropdownOpen(!statusDropdownOpen);
+  };
   
   const { register, handleSubmit, setValue, formState: { errors }} = useForm({
     defaultValues: { manager: passSelectedManager?.name },
@@ -393,24 +405,14 @@ const EditEmployee = () => {
                 <span className="w-full flex justify-start items-center">
                   Boat Name
                 </span>
-                <div className="w-full flex justify-start items-center">
-                  <Dropdown
-                    label="Task Type"
-                    options={["Inspection", "Maintenance", "Repair"]}
-                  />
-                </div>
+          <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}/>
                 <span className="w-full flex justify-start items-center">
                   Due Date
                 </span>
                 <span className="w-full flex justify-start items-center">
                   Recurring Days
                 </span>
-                <div className="w-full flex justify-start items-center">
-                  <Dropdown
-                    label="Status"
-                    options={["Pending", "In Progress", "Completed"]}
-                  />
-                </div>
+                <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}/>
                 <span className="w-full flex justify-start items-center">
                   Action
                 </span>
@@ -451,7 +453,9 @@ const EditEmployee = () => {
               ))}
                 </>
               ):(
-                <p>No tasks on the horizon? Assign tasks to keep the crew engaged
+                <p className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px]
+                 font-normal leading-[21.6px] text-white">
+                  No tasks on the horizon? Assign tasks to keep the crew engaged
                 and productive!</p>
               )}
               

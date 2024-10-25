@@ -7,6 +7,8 @@ import axios from "../../axios";
 import BoatManagerAccessModal from "./BoatManagerAccessModal";
 import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "../../components/global/Toaster";
+import BoatType from "../../components/global/headerDropdowns/BoatType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   
@@ -20,11 +22,21 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
   const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false); 
-  const [passSelectedBoat,SetPassSelectedBoat] = useState(false)
   const [loadingManager, setLoadingManager] = useState(false)
   const [managersBoat, setManagersBoat] = useState([])
   const [assignLoading, setAssignLoading] = useState(false)
   const [isBoatManagerAccessOpen, setIsBoatManagerAccessOpen] = useState(false);
+  const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+
+  const toggleBoatTypeDropdown = () => {
+    setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
 
   const filteredData = managersBoat?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -38,9 +50,9 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     setIsSelectBoatsModalOpen(true);
   };
 
-  const handleCloseSelectBoatsModal = () => {
-    setIsSelectBoatsModalOpen(false);
-  };
+  // const handleCloseSelectBoatsModal = () => {
+  //   setIsSelectBoatsModalOpen(false);
+  // };
 
   const handleClose = () =>{
     setIsBoatManagerAccessOpen(false)
@@ -48,16 +60,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     setIsOpen(false)
   }
 
-  const toggleBoatTypeModal = () => {
-    setBoatTypeFilter((prev) => !prev);
-  };
-
   const toggleLocationFilter = () => {
     setLocationFilter((prev) => !prev);
-  };
-
-  const openBoatManagerAccessModal = () => {
-
   };
 
   const handleClickOutside = (event) => {
@@ -193,74 +197,16 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
               <span className="w-full flex justify-start items-center">
                 Boat Image
               </span>
-              <button
-                onClick={toggleBoatTypeModal}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Boat Type</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={boatTypeRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    boatTypeFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start">
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start">
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start">
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 3
-                    </span>
-                  </div>
-                </div>
-              </button>
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/>
+              
               <span className="w-full flex justify-start items-center">
                 Name
               </span>
               <span className="w-full flex justify-start items-center">
                 Model/Make/Size
               </span>
-              <button
-                onClick={toggleLocationFilter}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Location</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={locationRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start">
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start">
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start">
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 3
-                    </span>
-                  </div>
-                </div>
-              </button>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+              
             </div>
 
             {loadingManager?(

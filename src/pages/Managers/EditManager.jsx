@@ -15,6 +15,8 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import axios from "../../axios";
 import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 import { FiLoader } from "react-icons/fi";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
+import JobType from "../../components/global/headerDropdowns/JobType";
 
 const Dropdown = ({ options, label }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -91,6 +93,22 @@ const EditManager = () => {
   const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
   const [boatList, setBoatList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationBDropdownOpen, setLocationBDropdownOpen] = useState(false);
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
+  const toggleLocationBDropdown = () => {
+    setLocationBDropdownOpen(!locationBDropdownOpen);
+  };
 
   const handleViewAllClick = () => {
     setIsAssignedModalOpen(true); // Open AssignedModal instead of navigating
@@ -353,23 +371,8 @@ const EditManager = () => {
               <span className="w-full flex justify-start items-center">
                 Email
               </span>
-              <div className="w-full flex justify-start items-center">
-                <Dropdown
-                  label="Job Title"
-                  options={["Doc Manager", "Doc Manager", "Doc Manager"]}
-                />
-              </div>
-
-              <div className="w-full flex justify-start items-center">
-                <Dropdown
-                  label="Location"
-                  options={[
-                    "East California Dock",
-                    "East California Dock",
-                    "East California Dock",
-                  ]}
-                />
-              </div>
+              <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+              <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
             </div>
             {loading ? (
               <ManagerDetailLoader />
@@ -429,14 +432,7 @@ const EditManager = () => {
               </span>
 
               <div className="w-full flex justify-start items-center">
-                <Dropdown
-                  label="Location"
-                  options={[
-                    "East California Dock",
-                    "East California Dock",
-                    "East California Dock",
-                  ]}
-                />
+              <LocationType locationDropdownOpen={locationBDropdownOpen} toggleLocationDropdown={toggleLocationBDropdown}/>
               </div>
             </div>
             {loading ? (

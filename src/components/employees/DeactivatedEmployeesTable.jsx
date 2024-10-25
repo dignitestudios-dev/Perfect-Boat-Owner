@@ -3,6 +3,8 @@ import { TbCaretDownFilled } from "react-icons/tb";
 import { TfiReload } from "react-icons/tfi";
 import ReactivateModal from "./ReactiveModal";
 import axios from "../../axios";
+import { ErrorToast } from "../global/Toaster";
+import ManagerListLoader from "../managers/ManagerListLoader";
 
 const DeactivatedEmployeesTable = () => {
   const [activeTab, setActiveTab] = useState("deleted");
@@ -10,60 +12,62 @@ const DeactivatedEmployeesTable = () => {
   const [openJobTitleDropDown, setOpenJobTitleDropDown] = useState(false);
   const [openLocationDropDown, setOpenLocationDropDown] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+  const [userId, setUserId] = useState()
+  
   const dropDownRef = useRef(null);
 
   // Dummy data for demonstration
-  const deletedUsers = [
-    {
-      name: "Mark Taylor",
-      email: "markT@gmail.com",
-      jobTitle: "Dock Manager",
-      userType: "Employee",
-      location: "East California Dock",
-    },
-    {
-      name: "Lisa Johnson",
-      email: "lisaJ@gmail.com",
-      jobTitle: "Cargo Handler",
-      userType: "Employee",
-      location: "West California Dock",
-    },
-    {
-      name: "James Brown",
-      email: "jamesB@gmail.com",
-      jobTitle: "Warehouse Supervisor",
-      userType: "Manager",
-      location: "East California Dock",
-    },
-    // Add more deleted users...
-  ];
+  // const deletedUsers = [
+  //   {
+  //     name: "Mark Taylor",
+  //     email: "markT@gmail.com",
+  //     jobTitle: "Dock Manager",
+  //     userType: "Employee",
+  //     location: "East California Dock",
+  //   },
+  //   {
+  //     name: "Lisa Johnson",
+  //     email: "lisaJ@gmail.com",
+  //     jobTitle: "Cargo Handler",
+  //     userType: "Employee",
+  //     location: "West California Dock",
+  //   },
+  //   {
+  //     name: "James Brown",
+  //     email: "jamesB@gmail.com",
+  //     jobTitle: "Warehouse Supervisor",
+  //     userType: "Manager",
+  //     location: "East California Dock",
+  //   },
+  //   // Add more deleted users...
+  // ];
 
-  const deactivatedUsers = [
-    {
-      name: "Mike Smith",
-      email: "mikesmith@gmail.com",
-      jobTitle: "Dock Guard",
-      userType: "Employee",
-      location: "East California Dock",
-    },
-    {
-      name: "Sarah Davis",
-      email: "sarahD@gmail.com",
-      jobTitle: "Shipping Coordinator",
-      userType: "Manager",
-      location: "West California Dock",
-    },
-    {
-      name: "David Wilson",
-      email: "davidW@gmail.com",
-      jobTitle: "Inventory Clerk",
-      userType: "Employee",
-      location: "East California Dock",
-    },
-    // Add more deactivated users...
-  ];
+  // const deactivatedUsers = [
+  //   {
+  //     name: "Mike Smith",
+  //     email: "mikesmith@gmail.com",
+  //     jobTitle: "Dock Guard",
+  //     userType: "Employee",
+  //     location: "East California Dock",
+  //   },
+  //   {
+  //     name: "Sarah Davis",
+  //     email: "sarahD@gmail.com",
+  //     jobTitle: "Shipping Coordinator",
+  //     userType: "Manager",
+  //     location: "West California Dock",
+  //   },
+  //   {
+  //     name: "David Wilson",
+  //     email: "davidW@gmail.com",
+  //     jobTitle: "Inventory Clerk",
+  //     userType: "Employee",
+  //     location: "East California Dock",
+  //   },
+  //   // Add more deactivated users...
+  // ];
 
-  const users = activeTab === "deleted" ? deletedUsers : deactivatedUsers;
+  // const users = activeTab === "deleted" ? deletedUsers : deactivatedUsers;
 
   const toggleDropDownFilter = () => {
     setOpenDropDownFilter(!openDropDownFilter);
@@ -77,7 +81,8 @@ const DeactivatedEmployeesTable = () => {
     setOpenLocationDropDown(!openLocationDropDown);
   };
 
-  const handleActionClick = () => {
+  const handleActionClick = (id) => {
+    setUserId(id)
     setIsModalOpen(true);
   };
 
@@ -85,17 +90,41 @@ const DeactivatedEmployeesTable = () => {
     setIsModalOpen(false);
   };
 
+  const handleReactivate = async () =>{
+    
+    try{
+      const response = await axios.put(`/owner/user/activate/${userId}`)
+
+      console.log("🚀 ~ handleReactivate ~ response:", response)
+    if(response.status === 200){
+      setIsModalOpen(false);
+      getUsersData();
+    }
+    }catch(err){
+      ErrorToast(err?.response?.data?.message)
+    }
+  }
+
   const [usersData, setUsersData] = useState([]);
+  const [delUsersData,setDelUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const getUsersData = async () => {
     try {
       setLoading(true);
-
-      const { data } = await axios.get(
-        `/owner/user?isDelete=${activeTab == "deleted" ? true : false}`
-      );
-      setUsersData(data?.data);
+      if(activeTab == "deleted"){
+        const { data } = await axios.get(
+          `/owner/user?isDelete=true`);
+        if(data.success === true){
+          setDelUsersData(data?.data);
+        }
+      }else{
+        const { data } = await axios.get(
+          `/owner/user?isDelete=${false}`);
+        if(data.success === true){
+          setUsersData(data?.data);
+        }
+      }
     } catch (error) {
     } finally {
       setLoading(false);
@@ -176,7 +205,9 @@ const DeactivatedEmployeesTable = () => {
         </button>
       </div>
 
-      {activeTab === "deleted" ? (
+      {loading? (<ManagerListLoader/>):(
+        <>
+        {activeTab === "deleted" ? (
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
             <div className="w-full grid grid-cols-6 h-6 border-white/10 border-b text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start">
@@ -266,7 +297,7 @@ const DeactivatedEmployeesTable = () => {
               </span>
             </div>
 
-            {usersData?.map((user, index) => (
+            {delUsersData?.map((user, index) => (
               <div
                 key={index}
                 className="w-full grid grid-cols-6 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
@@ -404,16 +435,18 @@ const DeactivatedEmployeesTable = () => {
                   {user?.location}
                 </span>
                 <span className="w-full flex justify-start items-center pl-5 text-white cursor-pointer">
-                  <TfiReload onClick={handleActionClick} />
+                  <TfiReload onClick={()=>handleActionClick(user?._id)} />
                 </span>
               </div>
             ))}
           </div>
         </div>
       )}
+        </>
+      )}
 
       {isModalOpen && (
-        <ReactivateModal isOpen={isModalOpen} onClose={handleCloseModal} />
+        <ReactivateModal isOpen={isModalOpen} onClose={handleCloseModal} reactivate={handleReactivate} />
       )}
     </div>
   );

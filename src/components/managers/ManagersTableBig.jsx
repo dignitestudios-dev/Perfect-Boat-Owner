@@ -11,9 +11,10 @@ import axios from "../../axios";
 import { ErrorToast } from "../global/Toaster";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
+import Pagination from "../global/pagination/Pagination";
 
 
-const ManagerTableBig = ({data, loading}) => {
+const ManagerTableBig = ({data, loading, getManagers}) => {
   const { navigate,setUpdateManager } = useContext(GlobalContext); 
   const [search, setSearch] = useState("");
   
@@ -61,6 +62,7 @@ const ManagerTableBig = ({data, loading}) => {
         setUpdateManager((prev) => !prev);
         setIsDeactivateModalOpen(true);
         setIsModalOpen(false);
+        getManagers()
       }
     } catch (err) {
       console.log("error call")

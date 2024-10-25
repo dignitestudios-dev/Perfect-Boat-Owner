@@ -1,7 +1,7 @@
 import React from 'react';
 import { MdAccessTime } from "react-icons/md";
 
-const ReactivateModal = ({ isOpen, onClose }) => {
+const ReactivateModal = ({ isOpen, onClose , reactivate }) => {
   if (!isOpen) return null;
 
   return (
@@ -32,7 +32,7 @@ const ReactivateModal = ({ isOpen, onClose }) => {
             Cancel
           </button>
           <button
-            onClick={onClose}
+            onClick={reactivate}
             type="button"
             className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]"
           >

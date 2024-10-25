@@ -5,11 +5,13 @@ import TasksCard from "./TasksCard";
 import { TbCaretDownFilled } from "react-icons/tb";
 import axios from "../../axios"; 
 import TasksListLoader from "./loaders/TasksListLoader";
+import Pagination from "../global/pagination/Pagination";
 
 const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
   const [openDropDownFilter, setOpenDropdownFilter] = useState(false);
   const dropDownRef = useRef(null);
+  const [pageDetails, setPageDetails] = useState({})
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -23,13 +25,14 @@ const TasksContainer = () => {
   };
 
   // Fetch tasks from the API
-  const getTasks = async () => {
+  const getTasks = async ( pageNumber = 1, rows = 9) => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        filter !== "" ? `/owner/task?status=${filter}` : `/owner/task`
+        filter !== "" ? `/owner/task?status=${filter}` : `/owner/task?page=${pageNumber}&pageSize=${rows}`
       );
-      setTaskData(data?.data || []);
+      setTaskData(data?.data?.data || []);
+      setPageDetails(data?.data?.paginationDetails || []);
     } catch (err) {
       console.error("Error fetching Task data:", err);
     } finally {
@@ -225,6 +228,15 @@ const TasksContainer = () => {
           )}
         </div>
       </div>
+      <div className="w-full flex justify-center pb-4">
+            <Pagination
+              page={pageDetails?.currentPage}
+              totalPages={pageDetails?.totalPages}
+              rowsPerPage={9}
+              // selectedFilter={selectedFilter}
+              onPageChange={getTasks}
+            />
+          </div>
     </div>
   );
 };

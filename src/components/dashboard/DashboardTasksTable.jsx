@@ -13,6 +13,9 @@ const DashboardTasksTable = ({ data, loading }) => {
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [statusFilter , setStatusFilter] = useState("all");
+  const [taskType, setTaskType] = useState("")
+  console.log("🚀 ~ DashboardTasksTable ~ taskType:", taskType)
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -26,10 +29,14 @@ const DashboardTasksTable = ({ data, loading }) => {
 
   const [search, setSearch] = useState("");
 
-  const filteredData = data?.filter((item) =>
-    item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
-
+  // const filteredData = data?.filter((item) => item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) );
+  const filteredData = data?.filter((item) => {
+    const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
+    const taskTypeMatch = taskType ? !taskType || item?.taskType?.toLowerCase() === taskType?.toLowerCase(): true;
+    return matchesSearch && matchesStatus && taskTypeMatch;
+  });
+  
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -65,11 +72,14 @@ const DashboardTasksTable = ({ data, loading }) => {
           <span className="w-full flex justify-start items-center">
             Boat name
           </span>
-          <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}/>
+          <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown} 
+          setTaskType={setTaskType} taskType={taskType}/>
           <span className="w-full flex justify-start items-center">
             Due Date
           </span>
-          <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}/>
+          <StatusType statusDropdownOpen={statusDropdownOpen} statusFilter={statusFilter}
+          toggleStatusDropdown={toggleStatusDropdown} 
+          setStatusFilter={setStatusFilter} setSearch={setSearch}/>
         </div>
         {loading ? (
           <MiniListLoader />

@@ -10,9 +10,9 @@ import { FiDownload, FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
+import { boatType } from "../../data/TaskTypeData";
 
 const AddFleet = () => {
-  const boatType = ["Yatch", "Sail Boat", "Console Cruiser", "Cabin Cruiser"];
 
   const navigate = useNavigate()
   const [selectedBoat, setSelectedBoat] = useState("");
@@ -26,7 +26,6 @@ const AddFleet = () => {
   const [fleetPictures, setFleetPictures] = useState([0])
 
   const [passSelectedManager, SetPassSelectedManager] = useState("")
-  console.log("🚀 ~ AddFleet ~ passSelectedManager:", passSelectedManager)
   const [passSelectedManagers, SetPassSelectedManagers] = useState([])
 
   const {watch, setValue, register, handleSubmit, formState: { errors } }= useForm();
@@ -135,7 +134,7 @@ const AddFleet = () => {
                          duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
                         >
                           <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
-                            {boatType.map((boat, index) => (
+                            {boatType?.map((boat, index) => (
                               <button
                                 type="button"
                                 key={index}

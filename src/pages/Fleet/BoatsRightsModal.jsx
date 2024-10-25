@@ -3,22 +3,25 @@ import { FiSearch } from "react-icons/fi";
 import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
+import BoatType from "../../components/global/headerDropdowns/BoatType";
 
 const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
   const { navigate } = useContext(GlobalContext);
-  const [boatTypeFilter, setBoatTypeFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
 
-  const toggleBoatTypeModal = () => {
-    setBoatTypeFilter((prev) => !prev);
+  const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const toggleBoatTypeDropdown = () => {
+    setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
   };
 
-  const toggleLocationFilter = () => {
-    setLocationFilter((prev) => !prev);
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
   const handleClickOutside = (event) => {
@@ -107,76 +110,12 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
           <div className="w-full flex flex-col gap-1 justify-start items-start mt-4">
             <div className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
               <span className="w-full flex justify-start items-center">Boat Image</span>
-              <button
-                onClick={toggleBoatTypeModal}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Boat Type</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={boatTypeRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    boatTypeFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start gap-2">
-                    {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 3
-                    </span>
-                  </div>
-                </div>
-              </button>
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/> 
+              
               <span className="w-full flex justify-start items-center">Name</span>
               <span className="w-full flex justify-start items-center">Model/Make/Size</span>
-              <button
-                onClick={toggleLocationFilter}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Location</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={locationRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start gap-2">
-                    {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    {/* <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" /> */}
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 3
-                    </span>
-                  </div>
-                </div>
-              </button>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+              
             </div>
 
             {boatList?.map((boat, index) => (

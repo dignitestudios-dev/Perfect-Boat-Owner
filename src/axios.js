@@ -24,9 +24,13 @@ instance.interceptors.response.use(
   },
   function (error) {
     // *For unAuthorized
-    // if (error.response.status === 401) {
-    //   localStorage.clear()
-    // }
+    if (error.response.status === 401) {
+      Cookies.remove("token");
+      Cookies.remove("name");
+      Cookies.remove("email");
+
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );

@@ -10,8 +10,10 @@ import DeleteAccountModal from "../global/DeleteAccountModal";
 import ManagerListLoader from "../managers/ManagerListLoader";
 import { ErrorToast } from "../global/Toaster";
 import axios from "../../axios";
+import JobType from "../global/headerDropdowns/JobType";
+import LocationType from "../global/headerDropdowns/LocationType";
 
-const EmployeesTableBig = ({data, loading}) => {
+const EmployeesTableBig = ({data, loading, getEmployees}) => {
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const [jobFilter, setJobFilter] = useState(false);
   const jobRef = useRef(null);
@@ -22,6 +24,18 @@ const EmployeesTableBig = ({data, loading}) => {
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
   const [employeeId, setEmployeeId] = useState()
+
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
 
   const filteredData = data.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -62,6 +76,7 @@ const EmployeesTableBig = ({data, loading}) => {
         setUpdateEmployee((prev) => !prev);
         setIsDeactivateModalOpen(true);
         setIsModalOpen(false);
+        getEmployees()
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
@@ -112,87 +127,8 @@ const EmployeesTableBig = ({data, loading}) => {
             <span className="w-full flex justify-start items-center">
               Email
             </span>
-            <button
-              onClick={toggleJobModal}
-              className="w-auto flex flex-col gap-1 justify-start items-start relative"
-            >
-              <div className="w-auto flex gap-1 justify-start items-center">
-                <span>Job Title</span>
-                <FaCaretDown />
-              </div>
-              <div
-                ref={jobRef}
-                className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                  jobFilter ? "scale-100" : "scale-0"
-                } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-              >
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                    Doc Manager 1
-                  </span>
-                </div>
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                    Doc Manager 2
-                  </span>
-                </div>
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                    Doc Manager 3
-                  </span>
-                </div>
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                    Doc Manager 4
-                  </span>
-                </div>
-              </div>
-            </button>
-
-            <button
-              onClick={toggleLocationModal}
-              className="w-auto flex flex-col gap-1 justify-start items-start relative"
-            >
-              <div className="w-auto flex gap-1 justify-start items-center">
-                <span>Location</span>
-                <FaCaretDown />
-              </div>
-              <div
-                ref={locationRef}
-                className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                  locationFilter ? "scale-100" : "scale-0"
-                } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-              >
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                    Location A
-                  </span>
-                </div>
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                    Location B
-                  </span>
-                </div>
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                    Location C
-                  </span>
-                </div>
-                <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                    Location D
-                  </span>
-                </div>
-              </div>
-            </button>
+            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
             <span className="w-full flex justify-start items-center px-[170px]">
               Action
             </span>

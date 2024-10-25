@@ -52,3 +52,25 @@ export const taskTypeData = {
     { value: "365", label: "1 year" },
     { value: "custom", label: "Custom" },
   ];
+
+  export const boatType = [
+    "Center Console",
+    "Cabin Cruiser",
+    "Yacht",
+    "Sailboat",
+    "Bowrider",
+    "Jet Boat",
+    "Skiff",
+    "Tender",
+    "Pontoon",
+    "Catamaran",
+    "Wakeboard Boat",
+    "Airboat",
+    "Trawler",
+    "Canoe",
+    "Houseboat",
+    "Personal Watercraft",
+    "Duck Boats",
+    "Ferry Boat",
+    "Tour Boat",
+  ];

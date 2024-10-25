@@ -11,6 +11,7 @@ const NewTaskTable = ({ data, loading }) => {
   const { formatTimestampToDate } = useContext(GlobalContext);
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [statusFilter , setStatusFilter] = useState("all");
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -22,9 +23,15 @@ const NewTaskTable = ({ data, loading }) => {
 
   const [search, setSearch] = useState("");
 
-  const filteredData = data?.filter((item) =>
-    item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = data?.filter((item) =>
+  //   item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
+
+  const filteredData = data?.filter((item) => {
+    const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -54,11 +61,13 @@ const NewTaskTable = ({ data, loading }) => {
             <span className="w-full flex justify-start items-center">
               Boat name
             </span>
-            <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}/>
+            <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+            />
             <span className="w-full flex justify-start items-center">
               Due Date
             </span>
-            <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}/>
+            <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}
+             setStatusFilter={setStatusFilter} statusFilter={statusFilter} />
           </div>
           {loading ? (
           <MiniListLoader />
