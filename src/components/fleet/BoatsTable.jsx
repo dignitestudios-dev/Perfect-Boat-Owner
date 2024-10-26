@@ -4,6 +4,8 @@ import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 import BoatsLoader from "./BoatsLoader";
+import { MdDelete } from "react-icons/md";
+import DeletedModal from "../global/DeletedModal";
 
 const BoatsTable = ({data , loading}) => {
   const { navigate } = useContext(GlobalContext);
@@ -12,6 +14,14 @@ const BoatsTable = ({data , loading}) => {
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
   const [search, setSearch] = useState("");
+
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState("")
+
+  // Function to close modal
+  const handleDeleteConfirm = () => {
+    setDeleteModalOpen(false);
+  };
 
   const filteredData = data.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -54,6 +64,8 @@ const BoatsTable = ({data , loading}) => {
   }
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
+      {/* <DeletedModal isOpen={isDeleteModalOpen} _id={deleteId}
+        onClose={() => setDeleteModalOpen(false)} refreshTasks={handleDeleteConfirm} /> */}
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
         Boats List{" "}
         <span className="text-[12px] font-normal text-white/50 ">(723)</span>
@@ -143,6 +155,9 @@ const BoatsTable = ({data , loading}) => {
               ))}
             </div>
           </button>
+          {/* <span className="w-full flex justify-start items-center">
+            Action
+          </span> */}
         </div>
         {loading ? (
           <Fragment>
@@ -194,6 +209,18 @@ const BoatsTable = ({data , loading}) => {
             <span className="w-full flex justify-start items-center">
             {boat.location}
             </span>
+            {/* <span>
+            <button
+            type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDeleteModalOpen(true);
+                setDeleteId(boat?._id)
+              }}
+            >
+              <MdDelete className="text-[#fff]/[0.5] text-lg" />
+            </button>
+            </span> */}
           </div>
         ))}
          </Fragment>

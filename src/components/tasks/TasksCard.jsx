@@ -79,6 +79,7 @@ const TasksCard = ({ getTasks, data}) => {
               )}
             </div>
             <button
+            type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setDeleteModalOpen(true); // Open modal when delete icon is clicked

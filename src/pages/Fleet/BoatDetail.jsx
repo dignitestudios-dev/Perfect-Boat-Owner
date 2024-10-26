@@ -533,7 +533,7 @@ const BoatDetail = () => {
                           <label
                             htmlFor={`form-image-${index}`}
                             className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
-                      text-3xl flex items-center justify-center cursor-pointer"
+                            text-3xl flex items-center justify-center cursor-pointer"
                           >
                             <img
                               src={
