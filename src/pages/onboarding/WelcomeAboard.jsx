@@ -16,8 +16,17 @@ const WelcomeAboard = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [forms, setForms] = useState([0]);
-  const {getValues, register, handleSubmit, formState: { errors } }= useForm();
-  
+  const {watch, getValues, register, handleSubmit, formState: { errors } }= useForm();
+  const forms1 = watch("forms.0.images");
+  console.log("formsImages---", forms1)
+  const [fleetPictures, setFleetPictures] = useState([0])
+
+  const handleFleetImage =(idx,index,event) => {
+    let setIndex = index+1
+    if(setIndex === forms1?.length && setIndex < 5){
+      setFleetPictures((prev)=> [...prev, prev?.length])
+    }
+  }
 
   const addForm = () => { setForms((prev) => [...prev, prev.length])};
     const removeForm = (index) => {
@@ -203,20 +212,23 @@ const WelcomeAboard = () => {
                             className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
                             text-3xl flex items-center justify-center cursor-pointer"
                           >
-                            {coverImage ? (
-                              <img
-                                src={coverImage}
-                                alt="Uploaded preview"
-                                className="w-full h-full object-cover rounded-xl"
-                              />
-                            ) : (
-                              <FiDownload />
+                            {formsImages && (
+                              <>
+                                {formsImages[idx]?.length > 0 &&
+                                formsImages[imageIndex][0] ? (
+                                  <img src={URL.createObjectURL(formsImages[imageIndex][0])}
+                                    alt={`Uploaded preview ${imageIndex}`}
+                                    className="w-full h-full object-cover rounded-xl"
+                                  />) : (<FiDownload />)}
+                              </>
                             )}
                           </label>
                           <input type="file" className="hidden" id="cover-image"
                           accept="image/*" onChange={(e)=>handleCoverImage(e)}
                           key={imageIndex} name={`forms.${idx}.images.${imageIndex}`}
-                          {...register(`forms.${idx}.images.${imageIndex}`, { required: false })}/>
+                          {...register(`forms.${idx}.images.${imageIndex}`, { required: false,
+                            onChange: (e) => {handleFleetImage(idx,imageIndex, e)}
+                           })}/>
                           <div className="w-auto ml-1 flex gap-2 justify-start items-center">
                             <input type="radio"
                             onChange={() => handleImageSelect(idx,imageIndex)} 

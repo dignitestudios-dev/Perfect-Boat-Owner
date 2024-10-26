@@ -6,13 +6,13 @@ import BoatsLoader from "../../components/fleet/BoatsLoader";
 import MiniListLoader from "../../components/global/MiniListLoader";
 
 const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDetailModalOpen, boatId }) => {
-  console.log("🚀 ~ BoatAccessModal ~ boatId:", boatId)
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [loadingBoats, setLoadingBoats] = useState(false);
   const [boats, setBoats] = useState([]);
-  console.log("🚀 ~ BoatAccessModal ~ boats:", boats)
+  
   const jobTitleRef = useRef(null);
   const locationRef = useRef(null);
 

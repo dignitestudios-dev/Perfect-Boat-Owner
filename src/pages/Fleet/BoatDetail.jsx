@@ -22,7 +22,6 @@ import { FiDownload, FiLoader } from "react-icons/fi";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
-import { boatType } from "../../data/TaskTypeData";
 
 const statusColors = {
   "newtask": "#FF007F",
@@ -33,6 +32,7 @@ const statusColors = {
 };
 
 const BoatDetail = () => {
+  const boatType = ["Yatch", "Sail Boat", "Console Cruiser", "Cabin Cruiser"];
 
   const { navigate } = useContext(GlobalContext);
   const [isEditing, setIsEditing] = useState(false); // New state for edit mode
@@ -93,7 +93,7 @@ const BoatDetail = () => {
   // If this is edit mode, populate the form fields with the boat data
   useEffect(() => {
     getBoats()
-  }, [ ]);
+  }, []);
 
   useEffect(()=>{
     if (boatsData) {
@@ -352,7 +352,7 @@ const BoatDetail = () => {
                          duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
                         >
                           <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
-                            {boatType?.map((boat, index) => (
+                            {boatType.map((boat, index) => (
                               <button
                                 type="button"
                                 key={index}
@@ -849,6 +849,7 @@ const BoatDetail = () => {
           {isMangerModalOpen && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
               <ManagerDetailModal
+              isMultiple={true}
                 boatAccess={boatsData?.boatAccess}
                 isOpen={isMangerModalOpen}
                 setIsOpen={setIsManagerModalOpen}

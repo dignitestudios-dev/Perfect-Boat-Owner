@@ -3,7 +3,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
-const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple}) => {
+const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess, handleManagerModal}) => {
   const { managers, loadingManagers } = useContext(GlobalContext);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,6 +63,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
     if (isMultiple) {
       SetPassSelectedManagers(selectedManagers);
       setIsOpen(false);
+      handleManagerModal(selectedManagers);
     } else {
       if (selectedManager) {
         SetPassSelectedManager(selectedManager)
@@ -82,7 +83,11 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
 
     if (filteredData?.length) {
       if (isMultiple) {
-        setSelectedManagers(filteredData.map(manager => ({ id: manager._id, name: manager.name })));
+        if(boatAccess){
+        setSelectedManagers(boatAccess?.map(manager => ({ id: manager._id, name: manager.name })));
+        }else{
+        setSelectedManagers(managers?.map(manager => ({ id: manager._id, name: manager.name })));
+        }
       } 
     }
   }, [managers, isMultiple]);
@@ -95,6 +100,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Select Manager</h3>
               <button
+              type="button"
                 onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                 className="text-lg font-bold"
               >
@@ -115,6 +121,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
                 />
               </div>
               <button
+              type="button"
                 onClick={() => handleManagerSelection()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
               >
@@ -135,6 +142,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <button
+                    type="button"
                       onClick={toggleJobTitleFilter}
                       className="flex items-center gap-1"
                     >
@@ -165,6 +173,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <button
+                    type="button"
                       onClick={toggleLocationFilter}
                       className="flex items-center gap-1"
                     >
@@ -198,7 +207,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
               <tbody>
                 {filteredData?.map((manager, index) =>{
                   const isSelected = selectedManager?.id === manager._id;
-                  const isMultiSelected = selectedManagers.some((selected) => selected.id === manager._id);
+                  const isMultiSelected = selectedManagers?.some((selected) => selected.id === manager._id);
                   return (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-0 py-2">
@@ -229,6 +238,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
           </div>
           <div className="flex justify-end mt-4">
             <button
+            type="button"
               onClick={()=>setIsOpen(false)}
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >

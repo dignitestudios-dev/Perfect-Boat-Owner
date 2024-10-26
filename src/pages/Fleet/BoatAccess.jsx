@@ -20,20 +20,31 @@ const BoatAccess = () => {
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
   const [boatId, setBoatId] = useState("")
-  const [passSelectedManager,SetPassSelectedManager] = useState(null)
-  
+  const [boatsData, setBoatsData] = useState([])
+  // const [passSelectedManager,SetPassSelectedManager] = useState(null)
+  const [passSelectedManagers, SetPassSelectedManagers] = useState([])
   const [isManagerSuccess, setIsManagerSuccess] = useState(false)
-  console.log("🚀 ~ BoatAccess ~ isManagerSuccess:", isManagerSuccess)
 
   const filteredData = boats?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
 
-  const handleAccessModal =(e,id)=>{
+  const handleAccessModal = async (e,id)=>{
     setBoatId(id)
     e.stopPropagation(); 
     setIsModalOpen(true);
+    getBoats(id)
   }
+
+  const getBoats = async (id) => {
+    try {
+      const { data } = await axios.get(`/owner/boat/${id}`);
+      console.log("data?.data?.boatAccess`` ",data?.data?.boatAccess)
+      setBoatsData(data?.data?.boatAccess);
+    } catch (err) {
+
+    }
+  };
 
   const boatTypes = ["Type 1", "Type 2", "Type 3"];
   const locations = [
@@ -68,33 +79,34 @@ const BoatAccess = () => {
     };
   }, []);
 
-  const handleAssignManager =async()=>{
+  const handleAssignManager =async(managers)=>{
     try{
+      console.log("inside", managers)
       const obj = {
-        managers: [passSelectedManager?.id]
+        managers: managers?.map((item)=> item?.id)
       }
       const response = await axios.put(`/owner/boat/${boatId}/access`,obj)
       if(response.status === 200){
         // setIsManagerDetailModalOpen(false)
-        SetPassSelectedManager(null)
+        SetPassSelectedManagers(null)
         setIsManagerSuccess(true)
+        SuccessToast("Boat access assigned")
       }
     }
     catch(err){
       console.log("🚀 ~ handleAssignEmployees ~ err:", err)
-      SetPassSelectedManager(null)
+      SetPassSelectedManagers(null)
       ErrorToast(err?.response?.data?.message)
     }
     finally{
 
     }
   }
-
-  useEffect(()=>{
-    if(passSelectedManager){
-      handleAssignManager()
-    }
-  },[passSelectedManager])
+  // useEffect(()=>{
+  //   if(passSelectedManagers){
+    // handleAssignManager()
+  //   }
+  // },[passSelectedManagers])
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -252,7 +264,13 @@ const BoatAccess = () => {
         />
       )}{" "}
       {isManagerDetailModalOpen && (
-        <ManagerDetailModal setIsOpen={setIsManagerDetailModalOpen} SetPassSelectedManager={SetPassSelectedManager}/>
+        <ManagerDetailModal 
+        setIsOpen={setIsManagerDetailModalOpen}  handleManagerModal={(managers)=>handleAssignManager(managers)}
+              // boatAccess={boatsData?.boatAccess}
+        // SetPassSelectedManager={SetPassSelectedManager}
+          SetPassSelectedManagers={SetPassSelectedManagers}
+          isMultiple={true} boatAccess={boatsData}
+        />
         // <SelectAllManager setIsOpen={setIsManagerDetailModalOpen} />
       )}
       {isManagerSuccess && (
