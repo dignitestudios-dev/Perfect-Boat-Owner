@@ -13,20 +13,14 @@ const WelcomeAboard = () => {
   
   const boatType = ["Yatch", "Sail Boat", "Console Cruiser", "Cabin Cruiser"];
   const [selectedBoat, setSelectedBoat] = useState([]);
+  const [formImage, setFormImage] = useState("")
 
   const [isOpen, setIsOpen] = useState(false);
   const [forms, setForms] = useState([0]);
-  const {watch, getValues, register, handleSubmit, formState: { errors } }= useForm();
-  const forms1 = watch("forms.0.images");
-  console.log("formsImages---", forms1)
-  const [fleetPictures, setFleetPictures] = useState([0])
-
-  const handleFleetImage =(idx,index,event) => {
-    let setIndex = index+1
-    if(setIndex === forms1?.length && setIndex < 5){
-      setFleetPictures((prev)=> [...prev, prev?.length])
-    }
-  }
+  const {watch, getValues, setValue, register, handleSubmit, formState: { errors } }= useForm();
+  
+  // const isImages = watch("forms.0.images.0");
+  // console.log("🚀 ~ WelcomeAboard ~ isImages:", isImages)
 
   const addForm = () => { setForms((prev) => [...prev, prev.length])};
     const removeForm = (index) => {
@@ -49,8 +43,14 @@ const WelcomeAboard = () => {
 
   const handleCoverImage = (e) => {
     const file = e.target.files[0];
-    const newPreviews = URL.createObjectURL(file);
-    setCoverImage(newPreviews)
+  
+    if (file) {
+      
+      setValue(`forms.${formIndex}.images.${imageIndex}`, [file], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
   }
 
   const [isManagerOpen, setIsManagerOpen] = useState(false);
@@ -205,38 +205,54 @@ const WelcomeAboard = () => {
                       </span>
                     </h3>
                     <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
-                    {[...Array(3)].map((_, imageIndex) => (
-                      <div key={imageIndex}>
-                          <label 
-                          htmlFor="cover-image"
+                    {[...Array(3)].map((_, imageIndex) => {
+                        const formsImage = watch(`forms.${idx}.images.${imageIndex}`);
+                        // console.log("formsImages---", formsImage[idx], " ?? ", formsImage)
+                      return (
+                        <div key={imageIndex}>
+                          <label
+                            htmlFor={`form-${idx}-image-${imageIndex}`}
                             className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
                             text-3xl flex items-center justify-center cursor-pointer"
                           >
-                            {formsImages && (
-                              <>
-                                {formsImages[idx]?.length > 0 &&
-                                formsImages[imageIndex][0] ? (
-                                  <img src={URL.createObjectURL(formsImages[imageIndex][0])}
-                                    alt={`Uploaded preview ${imageIndex}`}
-                                    className="w-full h-full object-cover rounded-xl"
-                                  />) : (<FiDownload />)}
-                              </>
+                            {formsImage && formsImage.length > 0 ? (
+                              <img
+                                src={URL.createObjectURL(formsImage[0])}
+                                alt={`Uploaded preview ${imageIndex}`}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                            ) : (
+                              <FiDownload />
                             )}
                           </label>
-                          <input type="file" className="hidden" id="cover-image"
-                          accept="image/*" onChange={(e)=>handleCoverImage(e)}
-                          key={imageIndex} name={`forms.${idx}.images.${imageIndex}`}
-                          {...register(`forms.${idx}.images.${imageIndex}`, { required: false,
-                            onChange: (e) => {handleFleetImage(idx,imageIndex, e)}
-                           })}/>
+                          <input
+                            type="file"
+                            className="hidden"
+                            id={`form-${idx}-image-${imageIndex}`}
+                            accept="image/*"
+                            onChange={(e) => handleCoverImage(e, idx, imageIndex)}
+                            key={imageIndex}
+                            name={`forms.${idx}.images.${imageIndex}`}
+                            {...register(`forms.${idx}.images.${imageIndex}`, {
+                              required: false,
+                            })}
+                          />
                           <div className="w-auto ml-1 flex gap-2 justify-start items-center">
-                            <input type="radio"
-                            onChange={() => handleImageSelect(idx,imageIndex)} 
-                            className="w-3 h-3 rounded-full accent-white outline-none border-none"/>
-                            <span className="text-[12px] font-medium leading-[16.3px]"> Set as cover photo </span>
+                            <input
+                              type="radio"
+                              onChange={() =>
+                                handleImageSelect(idx, imageIndex)
+                              }
+                              className="w-3 h-3 rounded-full accent-white outline-none border-none"
+                            />
+                            <span className="text-[12px] font-medium leading-[16.3px]">
+                              {" "}
+                              Set as cover photo{" "}
+                            </span>
                           </div>
                         </div>
-                      ))}
+                      ); 
+                    })}
                     </div>
 
                   </>
