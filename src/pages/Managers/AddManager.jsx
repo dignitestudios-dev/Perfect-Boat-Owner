@@ -15,7 +15,6 @@ const AddManager = () => {
       email: "",
       jobtitle: "",
       location: "",
-      assignEmployee: null,
       phone: "",
       password: "Test@123",
     },
