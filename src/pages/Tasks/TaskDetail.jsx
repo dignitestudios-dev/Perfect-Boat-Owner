@@ -24,6 +24,13 @@ import { AuthMockup } from "../../assets/export";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { useForm } from "react-hook-form";
 
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
 
 const TaskDetail = () => {
   const { navigate } = useContext(GlobalContext);
@@ -190,8 +197,10 @@ const TaskDetail = () => {
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
                 {isEdit ? "Edit Task" : "Task"}
               </h3>
-              <span className="text-[11px] capitalize bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] ">
-                {taskDetail.status}
+              <span className="text-[11px] capitalize bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] 
+              font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] "
+              style={{ color: statusColors[taskDetail?.status] || statusColors["default"] }}>
+                {taskDetail?.status}
               </span>
             </div>
             {!isEdit && (
@@ -295,6 +304,7 @@ const TaskDetail = () => {
             isOpen={isCalendarOpen}
             setIsOpen={setIsCalendarOpen}
             setDueDate={setDueDate}
+            setInputError={setInputError}
           />
           {isBoatModalOpen && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
@@ -332,7 +342,7 @@ const TaskDetail = () => {
             )}
            
           </div>
-          <AssignedEmployeeCard taskDetail={taskDetail} />
+          <AssignedEmployeeCard taskDetail={taskDetail} passSelectedEmployee={passSelectedEmployee}/>
         </div>
         {isEdit ? (
           <div className="w-full flex justify-end py-4 items-center gap-4">

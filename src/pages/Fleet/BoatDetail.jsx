@@ -22,6 +22,8 @@ import { FiDownload, FiLoader } from "react-icons/fi";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
+import BoatAccessTable from "../../components/fleet/BoatAccessTable";
+import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 
 const statusColors = {
   "newtask": "#FF007F",
@@ -59,6 +61,7 @@ const BoatDetail = () => {
   const [picturesArray, setPicturesArray] = useState([null,null,null,null,null])
 
   const [selectedBoat, setSelectedBoat] = useState(boatsData?.boatType || "");
+  const [passSelectedManagers, setPassSelectedManagers] = useState([])
   const [formsImages, setFormsImages] = useState([]);
   
   const [coverImage, setCoverImage] = useState(null);
@@ -81,9 +84,9 @@ const BoatDetail = () => {
     try {
       const { data } = await axios.get(`/owner/boat/${id}`);
       setBoatsData(data?.data);
-      const displayArray = await data?.data?.boat.images ? [data?.data?.boat?.cover, ...data?.data?.boat?.images] : [data?.data?.boat?.cover];
+      const displayArray = await data?.data?.boat?.images ? [data?.data?.boat?.cover, ...data?.data?.boat?.images] : [data?.data?.boat?.cover];
       setDisplayArray(displayArray);
-      setFormsImages(displayArray)
+      setFormsImages(displayArray);
     } catch (err) {
     } finally {
       setLoadingBoats(false);
@@ -277,6 +280,28 @@ const BoatDetail = () => {
     }
   };
 
+  const handleAssignManager =async(managers)=>{
+    try{
+      console.log("inside", managers)
+      const obj = {
+        managers: managers?.map((item)=> item?.id)
+      }
+      const response = await axios.put(`/owner/boat/${id}/access`,obj)
+      if(response.status === 200){
+        // setIsManagerDetailModalOpen(false)
+        // setPassSelectedManagers(null)
+        // setIsManagerSuccess(true)
+        SuccessToast("Boat access assigned")
+        getBoats()
+      }
+    }
+    catch(err){
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err)
+      // SetPassSelectedManagers(null)
+      ErrorToast(err?.response?.data?.message)
+    }
+  }
+
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
       {loadingBoats?(
@@ -303,14 +328,16 @@ const BoatDetail = () => {
               >
                 <span>Service History</span>
               </button>
-
-              <button
-                type="button"
-                onClick={() => setIsEditing(!isEditing)}
-                className="w-full md:w-[150px] lg:w-[118px] h-[40px] md:h-[35px] flex justify-center items-center gap-2 bg-[#1A293D] rounded-[10px] text-[#36B8F3] text-[14px] md:text-[13px] font-medium"
-              >
-                <span>Edit Details</span>
-              </button>
+              {!isEditing &&
+               <button
+               type="button"
+               onClick={() => setIsEditing(!isEditing)}
+               className="w-full md:w-[150px] lg:w-[118px] h-[40px] md:h-[35px] flex justify-center items-center gap-2 bg-[#1A293D] rounded-[10px] text-[#36B8F3] text-[14px] md:text-[13px] font-medium"
+             >
+               <span>Edit Details</span>
+             </button>
+              }
+             
               <button
                 type="button"
                 onClick={() => navigate("/add-task", "All Tasks")}
@@ -412,6 +439,7 @@ const BoatDetail = () => {
                   <>
                     <div className="w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 lg:w-[1100px] gap-3 lg:gap-12">
                       <AddFleetInput
+                      isDisabled={!isEditing}
                         label={"Name"}
                         state={"Boat A"}
                         disabled={true}
@@ -460,6 +488,7 @@ const BoatDetail = () => {
                         </div>
                       </div>
                       <AddFleetInput
+                      isDisabled={!isEditing}
                         label={"Model/Make/Size"}
                         state={"2019/Toyotaa/Class A"}
                         disabled={true}
@@ -469,6 +498,7 @@ const BoatDetail = () => {
                         })}
                       />
                       <AddFleetInput
+                      isDisabled={!isEditing}
                         label={"Location"}
                         state={"Orlando Florida"}
                         disabled={true}
@@ -604,238 +634,14 @@ const BoatDetail = () => {
         </div>
 
         {/* Boat Access Table */}
-        <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-          <div className="w-full h-auto flex justify-between items-center">
-            <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-              Boat Access
-              <span className="text-[12px] font-normal text-white/50"></span>
-            </h3>
-          </div>
+        <BoatAccessTable boatsData={boatsData} setIsManagerModalOpen={setIsManagerModalOpen} togglejobFilter={togglejobFilter}
+    jobRef={jobRef} jobFilter={jobFilter} toggleLocationFilter={toggleLocationFilter} locationRef={locationRef}
+      locationFilter={locationFilter}/>
 
-          <div className="w-full h-auto flex justify-between items-center">
-            <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] relative">
-              <p>Manager Name have access to all boats by default</p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setIsManagerModalOpen(true)}
-              className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
-            >
-              View All
-              {/* Display text or employee name here */}
-              {/* Assign Employee */}
-            </button>
-          </div>
-
-          <div className="w-full flex flex-col gap-1 justify-start items-start">
-            <div className="w-full grid grid-cols-4 text-[13px] font-medium leading-[14.85px] text-white/50 justify-start items-start">
-              <span className="w-full flex justify-start items-center">
-                Name
-              </span>
-              <span className="w-full flex justify-start items-center">
-                Email
-              </span>
-              <span className="w-full flex justify-start items-center relative">
-                <button
-                  type="button"
-                  onClick={togglejobFilter}
-                  className="flex items-center gap-1"
-                >
-                  Job Title
-                  <TbCaretDownFilled />
-                </button>
-                <div
-                  ref={jobRef}
-                  className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    jobFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                >
-                  {["Job Title 1", "Job Title 2", "Job Title 3"].map(
-                    (jobTitle, index) => (
-                      <div
-                        key={index}
-                        className="w-full flex justify-start items-start gap-2"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                          {jobTitle}
-                        </span>
-                      </div>
-                    )
-                  )}
-                </div>
-              </span>
-
-              <span className="w-full flex justify-start items-center relative">
-                <button
-                  type="button"
-                  onClick={toggleLocationFilter}
-                  className="flex items-center gap-1"
-                >
-                  Location
-                  <TbCaretDownFilled />
-                </button>
-                <div
-                  ref={locationRef}
-                  className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                >
-                  {["East California Dock", "West Dock", "South Dock"].map(
-                    (location, index) => (
-                      <div
-                        key={index}
-                        className="w-full flex justify-start items-start gap-2"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                          {location}
-                        </span>
-                      </div>
-                    )
-                  )}
-                </div>
-              </span>
-            </div>
-            {boatsData?.boatAccess?.length > 0 ? (
-              <>
-                {boatsData?.boatAccess?.map((manager, index) => {
-                  if (index < 4) {
-                    return (
-                      <div
-                        key={index}
-                        className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-                      >
-                        <span className="w-full flex justify-start items-center">
-                          {manager?.name}
-                        </span>
-                        <span className="w-full flex justify-start items-center">
-                          {manager?.email}
-                        </span>
-                        <span className="w-full flex justify-start items-center">
-                          {manager?.jobtitle || "---"}
-                        </span>
-                        <span className="w-full flex justify-start items-center">
-                          {manager?.location || "---"}
-                        </span>
-                      </div>
-                    );
-                  }
-                })}
-              </>
-            ) : (
-              <p>No record found</p>
-            )}
-          </div>
-        </div>
-
-        <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-          <div className="w-auto flex justify-between items-center gap-2">
-            <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-              Assigned Tasks{" "}
-            </h3>
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
-            >
-              View All
-            </button>
-          </div>
-
-          <div className="w-full flex flex-col gap-1 justify-start items-start">
-            <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium  border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-start">
-              <span className="w-full flex justify-start items-center">
-                Boat Name
-              </span>
-              <span className="w-full flex justify-start items-center">
-                Task Type
-              </span>
-              <div
-                className="w-full flex justify-start items-center cursor-pointer"
-                onClick={handleDateModalOpen} // Handle click to open DateModal
-              >
-                <MdOutlineDateRange className="mr-1 text-lg" />
-                Due Date
-              </div>
-              <span className="w-full flex justify-start items-center">
-                Recurring Days
-              </span>
-              <span className="w-full flex justify-start items-center">
-                Status
-              </span>
-              <span className="w-full flex justify-start items-center">
-                Action
-              </span>
-            </div>
-            {boatsData?.task?.length > 0 ? (
-              <>
-                {boatsData?.task?.map((item, index) => (
-                  <button
-                    type="button"
-                    className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] 
-              font-medium leading-[14.85px] text-white justify-start items-center"
-                  >
-                    <span
-                      className="w-full flex justify-start items-center"
-                      // onClick={() => navigate("/tasks/1", "All Tasks")}
-                    >
-                      {item?.task}
-                    </span>
-                    <span
-                      className="w-full flex justify-start items-center "
-                      // onClick={() => navigate("/tasks/1", "All Tasks")}
-                    >
-                      {item?.taskType?.length > 15
-                        ? item?.taskType?.slice(0, 24) + "..."
-                        : item?.taskType}
-                    </span>
-                    <span
-                      className="w-full flex justify-start items-center"
-                      // onClick={() => navigate("/tasks/1", "All Tasks")}
-                    >
-                      {getUnixDate(item?.dueDate)}
-                    </span>
-                    <span
-                      className="w-full flex justify-start items-center "
-                      // onClick={() => navigate("/tasks/1", "All Tasks")}
-                    >
-                      {item?.reoccuringDays}
-                    </span>
-                    <span
-                      style={{
-                        color:
-                          statusColors[item?.status] || statusColors["default"],
-                      }}
-                      className="text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] "
-                      // onClick={() => navigate("/tasks/1", "All Tasks")}
-                    >
-                      {item?.status}
-                    </span>
-                    <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-                      <span className=" flex justify-start items-center ">
-                        <FaRegEdit />
-                      </span>
-                      <span className=" flex justify-start items-center ">
-                        <RiDeleteBinLine onClick={openDeleteModal} />
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </>
-            ) : (
-              <p>No record found</p>
-            )}
-          </div>
-          {/* <ViewAllTasksModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} /> */}
-          {isModalOpen && (
+      <AssignedTasksTable setIsModalOpen={setIsModalOpen} handleDateModalOpen={handleDateModalOpen} boatsData={boatsData} openDeleteModal={openDeleteModal}/>
+        
+        {/* <ViewAllTasksModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} /> */}
+        {isModalOpen && (
             <TaskSelectModal
               setIsOpen={setIsModalOpen}
               tasksList={boatsData?.task}
@@ -853,20 +659,24 @@ const BoatDetail = () => {
                 boatAccess={boatsData?.boatAccess}
                 isOpen={isMangerModalOpen}
                 setIsOpen={setIsManagerModalOpen}
+                SetPassSelectedManagers={setPassSelectedManagers}
+                handleManagerModal={(managers)=>handleAssignManager(managers)}
               />
             </div>
           )}
-        </div>
+
         <div className="w-full flex justify-end mt-10 items-center gap-4">
-          <button
+          
+          {isEditing ? (
+        <div className="w-full flex justify-end gap-4">
+            <button
             type="button"
-            onClick={() => navigate(-1, "Employees")}
+            onClick={() => setIsEditing(false)}
             className="w-full lg:w-[208px] h-[52px] bg-[#001229] text-[#199BD1] rounded-[12px] 
           flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
           >
             {"Back"}
           </button>
-          {isEditing && (
             <button
               disabled={submitLoading}
               type="submit"
@@ -880,6 +690,16 @@ const BoatDetail = () => {
                 )}
               </div>
             </button>
+            </div>
+          ):(
+            <button
+            type="button"
+            onClick={() => navigate(-1, "Employees")}
+            className="w-full lg:w-[208px] h-[52px] bg-[#001229] text-[#199BD1] rounded-[12px] 
+          flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+          >
+            {"Back"}
+          </button>
           )}
         </div>
       </form>

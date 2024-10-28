@@ -70,7 +70,6 @@ const AddTask = () => {
   const [dueDate, setDueDate] = useState({})
   const [customTypeText, setCustomTypeText] = useState("")
   const [inputError, setInputError] = useState({});
-  console.log("🚀 ~ AddTask ~ inputError:", inputError)
 
   const toggleTaskTypeDropdown = () => {
   setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
@@ -132,8 +131,8 @@ const submitTask = async()=>{
     const response = await axios.post("/owner/task", obj);
     
     if(response.status === 200){
-      SuccessToast("Task Created")
-      navigate("/tasks")
+      // SuccessToast("Task Created")
+      // navigate("/tasks")
       setHasAssigned(true);
     }
   }catch(err){

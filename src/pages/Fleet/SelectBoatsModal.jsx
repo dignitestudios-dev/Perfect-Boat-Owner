@@ -105,7 +105,7 @@
                 </button>
             </div>
             <div className="mt-4">
-                <label className="flex items-center text-white/50">
+                {/* <label className="flex items-center text-white/50">
                 <input
                     type="checkbox"
                     className="accent-[#199BD1] mr-2"
@@ -113,7 +113,7 @@
                     onChange={handleSelectAll}
                 />
                 Select All
-                </label>
+                </label> */}
             </div>
 
             <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">

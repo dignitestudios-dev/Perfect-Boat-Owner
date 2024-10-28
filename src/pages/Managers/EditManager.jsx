@@ -378,7 +378,7 @@ const EditManager = () => {
               <ManagerDetailLoader />
             ) : (
               <>
-                {employeesList?.map((employ, index) => (
+                {employeesList?.slice(0, 4)?.map((employ, index) => (
                   <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                     <span className="w-full flex justify-start items-center">
                       {employ?.name || "--"}

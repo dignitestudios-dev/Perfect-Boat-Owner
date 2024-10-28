@@ -12,6 +12,7 @@ const TaskAssignSucessModal = ({ isOpen, setIsOpen }) => {
 
   const closeModal = () => {
     setIsOpen(false);
+    navigate("/tasks")
   };
 
   const handleClickOutside = (e) => {

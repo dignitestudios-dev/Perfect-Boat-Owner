@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MdAccessTime } from "react-icons/md";
 import { SuccessToast } from '../../components/global/Toaster';
 import axios from '../../axios';
 
 const ResendModal = ({ isOpen, onClose, id }) => {
   if (!isOpen) return null;
+  const [loading, setLoading] = useState(false)
 
   const resendCredentials = async()=>{
+    setLoading(true)
     try{
       const response = await axios.get(`/owner/manager/${id}/credentials/send`)
       if(response.status === 200){
         console.log("🚀 ~ resendCredentials ~ response:", response)
+        setLoading(false)
         onClose()
         SuccessToast("Credentials Send")
       }
     }catch(err){
     console.log("🚀 ~ resendCredentials ~ err:", err)
-
+    setLoading(false)
     }
   }
   return (
@@ -45,11 +48,12 @@ const ResendModal = ({ isOpen, onClose, id }) => {
               Cancel
             </button>
             <button
+            disabled={loading}
               onClick={resendCredentials}
               type="button"
               className="text-[#199BD1] font-bold	 py-2 px-4 rounded-lg text-[16px]"
             >
-              Resend
+              {loading ? "Sending...":"Resend"}
             </button>
           </div>
         </div>
