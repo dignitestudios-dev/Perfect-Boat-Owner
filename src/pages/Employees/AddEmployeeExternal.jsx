@@ -6,14 +6,17 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
+import AddEmployeeModal from "../../components/global/AddEmployeeModal";
+import EmployeeOnboardSuccess from "../../components/global/EmployeeOnboardSuccess";
 const AddEmployeeExternal = () => {
+  const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [data, setData] = useState([
     {
       name: "",
       email: "",
       jobtitle: "",
       location: "",
-      assignManager: null,
+      manager: null,
       phone: "",
       password: "Test@123",
     },
@@ -48,6 +51,7 @@ const AddEmployeeExternal = () => {
         email: "",
         jobtitle: "",
         location: "",
+        manager: null,
         phone: "",
         password: "Test@123",
       },
@@ -66,6 +70,7 @@ const AddEmployeeExternal = () => {
             email: item.email || "",
             jobtitle: item.jobtitle || "",
             location: item.location || "",
+            manager: item.manager || null,
             phone: item.phoneNumber || "",
             password: "Test@123",
           }));
@@ -92,7 +97,7 @@ const AddEmployeeExternal = () => {
       const response = await axios.post("/owner/employees/csv", data);
       console.log("🚀 ~ ~ response:", response);
       if (response.status === 200) {
-        // setIsEmployeeOpen(true);
+        setIsEmployeeOpen(true);
       }
     } catch (error) {
       console.error("Error adding employee:", error);
@@ -170,7 +175,7 @@ const AddEmployeeExternal = () => {
                               onChange={(e) =>
                                 handleChange(index, "name", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
@@ -194,7 +199,7 @@ const AddEmployeeExternal = () => {
                               onChange={(e) =>
                                 handleChange(index, "email", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
@@ -219,7 +224,7 @@ const AddEmployeeExternal = () => {
                               onChange={(e) =>
                                 handleChange(index, "jobtitle", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Job Title"}
                             />
                           </div>
@@ -242,7 +247,7 @@ const AddEmployeeExternal = () => {
                               onChange={(e) =>
                                 handleChange(index, "location", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Location"}
                             />
                           </div>
@@ -267,7 +272,7 @@ const AddEmployeeExternal = () => {
                               onChange={(e) =>
                                 handleChange(index, "phone", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Phone Number"}
                             />
                           </div>
@@ -312,11 +317,13 @@ const AddEmployeeExternal = () => {
                     )}
                   </div>
                 </button>
-                {/* <AddEmployeeModal
-              isOpen={isEmployeeOpen}
-              setIsOpen={setIsEmployeeOpen}
-            />
-            {isImportCSVOpen && (
+                {isEmployeeOpen && (
+                  <EmployeeOnboardSuccess
+                    isOpen={isEmployeeOpen}
+                    setIsOpen={setIsEmployeeOpen}
+                  />
+                )}
+                {/* {isImportCSVOpen && (
               <ImportCSVModal
               isOpen={isImportCSVOpen}
               onClose={() => setIsImportCSVOpen(false)}

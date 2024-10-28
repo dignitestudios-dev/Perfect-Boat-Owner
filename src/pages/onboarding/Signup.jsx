@@ -92,6 +92,7 @@ const Signup = () => {
                 message: "Please enter a valid phone number.",
               },
             })}
+            maxLength="10"
             text={"Phone Number"}
             placeholder={"Type your phone number here"}
             type={"text"}

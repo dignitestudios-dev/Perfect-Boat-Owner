@@ -6,14 +6,15 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
+import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 const AddManager = () => {
+  const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [data, setData] = useState([
     {
       name: "",
       email: "",
       jobtitle: "",
       location: "",
-      assignEmployee: null,
       phone: "",
       password: "Test@123",
     },
@@ -92,7 +93,7 @@ const AddManager = () => {
       const response = await axios.post("/owner/manager/csv", data);
       console.log("🚀 ~ ~ response:", response);
       if (response.status === 200) {
-        // setIsEmployeeOpen(true);
+        setIsEmployeeOpen(true);
       }
     } catch (error) {
       console.error("Error adding employee:", error);
@@ -109,9 +110,9 @@ const AddManager = () => {
           <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
             <div>
               <h1 className="text-[28px] font-bold text-white leading-[37.8px]">
-                Managers
+                Manager
               </h1>
-              <span className="text-[14px] font-normal leading-[21.6px]">
+              {/* <span className="text-[14px] font-normal leading-[21.6px]">
                 Experience the power of simplified fleet management today.
                 Whether you are assigning task or tracking boat maintenance,
                 <br />{" "}
@@ -119,7 +120,7 @@ const AddManager = () => {
                   The Perfect Boat
                 </span>{" "}
                 has you covered at every step of the journey.
-              </span>
+              </span> */}
             </div>
             <button
               className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
@@ -170,7 +171,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "name", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
@@ -194,7 +195,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "email", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
@@ -219,7 +220,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "jobtitle", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Job Title"}
                             />
                           </div>
@@ -242,7 +243,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "location", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Location"}
                             />
                           </div>
@@ -267,7 +268,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "phone", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Phone Number"}
                             />
                           </div>
@@ -312,11 +313,13 @@ const AddManager = () => {
                     )}
                   </div>
                 </button>
-                {/* <AddEmployeeModal
-              isOpen={isEmployeeOpen}
-              setIsOpen={setIsEmployeeOpen}
-            />
-            {isImportCSVOpen && (
+                {isEmployeeOpen && (
+                  <AddEmployeeModal
+                    isOpen={isEmployeeOpen}
+                    setIsOpen={setIsEmployeeOpen}
+                  />
+                )}
+                {/* {isImportCSVOpen && (
               <ImportCSVModal
               isOpen={isImportCSVOpen}
               onClose={() => setIsImportCSVOpen(false)}

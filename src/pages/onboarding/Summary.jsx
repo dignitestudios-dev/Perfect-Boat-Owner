@@ -58,109 +58,109 @@ const Summary = () => {
           <SummaryLoader />
         ) : (
           <>
-          <div className="w-full flex flex-col justify-start items-start gap-8">
-          <div className="w-full flex flex-col justify-start items-start gap-1">
-            <div className="w-auto h-8 flex justify-start items-center gap-2">
-              <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
-                {summary?.subscriptionPlan?.name}
-              </h1>
-              {/* <Link
+            <div className="w-full flex flex-col justify-start items-start gap-8">
+              <div className="w-full flex flex-col justify-start items-start gap-1">
+                <div className="w-auto h-8 flex justify-start items-center gap-2">
+                  <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
+                    {summary?.subscriptionPlan?.name}
+                  </h1>
+                  {/* <Link
                 to="/select-package"
                 className="text-[11px] text-[#199BD1] leading-[24.2px] font-medium  tracking-[-0.24px]"
               >
                 Change
               </Link> */}
-            </div>
-
-            <span className="text-[16px] font-normal leading-5 text-white">
-              {summary?.subscriptionPlan?.description}
-            </span>
-          </div>
-
-          <div className="w-full flex flex-col justify-start items-start gap-4">
-            <div className="w-auto h-8 flex justify-start items-center gap-2">
-              <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
-                Payment Method
-              </h1>
-            </div>
-
-            <div className="w-auto flex flex-col justify-start items-start gap-1">
-              <span className="text-[16px] font-medium leading-5 text-white">
-                Your Debit Card
-              </span>
-              <div className="w-full p-4 bg-[#21344C] rounded-xl border border-[#55C9FA] grid gap-4 grid-cols-1 lg:grid-cols-8">
-                <img
-                  src={MasterCardIcon}
-                  alt="MasterCard"
-                  className="col-span-1 lg:col-span-1"
-                />
-                <span className="col-span-1 lg:col-span-3 text-xl text-white">
-                  ****-****-****-{summary?.card?.number}
-                </span>
-                <div className="col-span-1 lg:col-span-2">
-                  <span className="block text-sm font-medium text-white">
-                    Name On Card
-                  </span>
-                  <span className="block text-sm text-white">
-                    {summary?.card?.name}
-                  </span>
                 </div>
-                <div className="col-span-1 lg:col-span-2">
-                  <span className="block text-sm font-medium text-white">
-                    Expires On
+
+                <span className="text-[16px] font-normal leading-5 text-white">
+                  {summary?.subscriptionPlan?.description}
+                </span>
+              </div>
+
+              <div className="w-full flex flex-col justify-start items-start gap-4">
+                <div className="w-auto h-8 flex justify-start items-center gap-2">
+                  <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
+                    Payment Method
+                  </h1>
+                </div>
+
+                <div className="w-auto flex flex-col justify-start items-start gap-1">
+                  <span className="text-[16px] font-medium leading-5 text-white">
+                    Your Debit Card
                   </span>
-                  <span className="block text-sm text-white">
-                    {summary?.card?.expireOn}
-                  </span>
+                  <div className="w-full p-4 bg-[#21344C] rounded-xl border border-[#55C9FA] grid gap-4 grid-cols-1 lg:grid-cols-8">
+                    <img
+                      src={MasterCardIcon}
+                      alt="MasterCard"
+                      className="col-span-1 lg:col-span-1"
+                    />
+                    <span className="col-span-1 lg:col-span-3 text-xl text-white">
+                      ****-****-****-{summary?.card?.number}
+                    </span>
+                    <div className="col-span-1 lg:col-span-2">
+                      <span className="block text-sm font-medium text-white">
+                        Name On Card
+                      </span>
+                      <span className="block text-sm text-white">
+                        {summary?.card?.name}
+                      </span>
+                    </div>
+                    <div className="col-span-1 lg:col-span-2">
+                      <span className="block text-sm font-medium text-white">
+                        Expires On
+                      </span>
+                      <span className="block text-sm text-white">
+                        {summary?.card?.expireOn}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="w-full flex h-10 relative justify-end items-end gap-2">
-            <span className="text-[16px] font-medium leading-[0px] tracking-[-0.24px] text-white">
-              Total Amount:
-            </span>
-            <span className="text-[24px] font-bold text-white leading-[0px] tracking-[-0.24px]">
-              ${summary?.subscriptionPlan?.price}
-            </span>
-            <span className="text-[10px] font-normal  leading-[0px]  text-white">
-              /year
-            </span>
-          </div>
-        </div>
-        <div className="w-full flex justify-end items-center">
-          <div className="w-full flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="w-full lg:w-[180px] h-[48px] bg-[#02203A] text-[#199BD1] rounded-md text-[16px] font-bold"
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={handleCompleteBuy}
-              disabled={loading}
-              className="w-full lg:w-[180px] h-[48px] bg-[#199BD1] text-white rounded-md text-[16px] font-bold
+              <div className="w-full flex h-10 relative justify-end items-end gap-2">
+                <span className="text-[16px] font-medium leading-[0px] tracking-[-0.24px] text-white">
+                  Total Amount:
+                </span>
+                <span className="text-[24px] font-bold text-white leading-[0px] tracking-[-0.24px]">
+                  ${summary?.subscriptionPlan?.annualPrice}
+                </span>
+                <span className="text-[10px] font-normal  leading-[0px]  text-white">
+                  /year
+                </span>
+              </div>
+            </div>
+            <div className="w-full flex justify-end items-center">
+              <div className="w-full flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="w-full lg:w-[180px] h-[48px] bg-[#02203A] text-[#199BD1] rounded-md text-[16px] font-bold"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCompleteBuy}
+                  disabled={loading}
+                  className="w-full lg:w-[180px] h-[48px] bg-[#199BD1] text-white rounded-md text-[16px] font-bold
             flex items-center justify-center"
-            >
-              <div className="flex items-center">
-                <span className="mr-1">Save</span>
-                {loading && (
-                  <FiLoader className="animate-spin text-lg mx-auto" />
+                >
+                  <div className="flex items-center">
+                    <span className="mr-1">Save</span>
+                    {loading && (
+                      <FiLoader className="animate-spin text-lg mx-auto" />
+                    )}
+                  </div>
+                </button>
+
+                {modalOpen && (
+                  <AccountCreateSuccess
+                    isOpen={modalOpen}
+                    setIsOpen={setModalOpen}
+                  />
                 )}
               </div>
-            </button>
-
-            {modalOpen && (
-              <AccountCreateSuccess
-                isOpen={modalOpen}
-                setIsOpen={setModalOpen}
-              />
-            )}
-          </div>
-        </div>
+            </div>
           </>
         )}
       </div>

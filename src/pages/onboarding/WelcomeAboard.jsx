@@ -12,38 +12,46 @@ import { FaTrashAlt } from "react-icons/fa";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 const WelcomeAboard = () => {
-  
   const boatType = ["Yatch", "Sail Boat", "Console Cruiser", "Cabin Cruiser"];
   const [selectedBoat, setSelectedBoat] = useState([]);
 
-  const [formImage, setFormImage] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [formImage, setFormImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const [forms, setForms] = useState([0]);
-  const {watch, getValues, setValue, register, handleSubmit, formState: { errors } }= useForm();
-  
+  const {
+    watch,
+    getValues,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   // const isImages = watch("forms.0.images.0");
   // console.log("🚀 ~ WelcomeAboard ~ isImages:", isImages)
 
-  const addForm = () => { setForms((prev) => [...prev, prev.length])};
-    const removeForm = (index) => {
-        if(index > 0){
-            setForms((prev) => prev.filter((_, i) => i !== index));
-        }
-      };
+  const addForm = () => {
+    setForms((prev) => [...prev, prev.length]);
+  };
+  const removeForm = (index) => {
+    if (index > 0) {
+      setForms((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
 
-  const handleSelect = (boat,idx) => {
+  const handleSelect = (boat, idx) => {
     const updatedBoats = [...selectedBoat];
-    updatedBoats[idx] = boat
+    updatedBoats[idx] = boat;
     setSelectedBoat(updatedBoats);
     setIsOpen(false); // Close dropdown after selection
   };
 
   const [coverImages, setCoverImages] = useState("");
-  console.log("🚀 ~ WelcomeAboard ~ coverImages:", coverImages)
+  console.log("🚀 ~ WelcomeAboard ~ coverImages:", coverImages);
   const [coverError, setCoverError] = useState(Array(forms.length).fill(null));
-  
+
   const handleImageSelect = (formIndex, imageIndex) => {
     setCoverError(Array(forms.length).fill(null));
     setCoverImages((prevCoverImages) => ({
@@ -61,14 +69,15 @@ const WelcomeAboard = () => {
         shouldDirty: true,
       });
     }
-  }
+  };
 
   const handleRemoveImage = (formIndex, imageIndex) => {
-    
     const currentImages = getValues(`forms.${formIndex}.images`) || [];
-    
-    const updatedImages = currentImages.filter((_, index) => index !== imageIndex);
-    
+
+    const updatedImages = currentImages.filter(
+      (_, index) => index !== imageIndex
+    );
+
     setValue(`forms.${formIndex}.images`, updatedImages, {
       shouldValidate: true,
       shouldDirty: true,
@@ -79,18 +88,16 @@ const WelcomeAboard = () => {
   const [isAddManagerOpen, setIsAddManagerOpen] = useState(false); // State for new modal
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
 
-
   const submitBoatData = async (formData) => {
-    
     const successfulForms = [];
     const formErrors = {};
-    
-    try{
-      setLoading(true)
+
+    try {
+      setLoading(true);
       forms.forEach(async (formIndex) => {
         const data = new FormData();
-        console.log("form =? ", formData.forms[formIndex].name)
-        data.append('name', formData.forms[formIndex].name);
+        console.log("form =? ", formData.forms[formIndex].name);
+        data.append("name", formData.forms[formIndex].name);
         data.append("make", formData.forms[formIndex].make);
         data.append("size", formData.forms[formIndex].size);
         data.append("location", formData.forms[formIndex].location);
@@ -99,7 +106,7 @@ const WelcomeAboard = () => {
 
         if (coverImages[formIndex] === undefined) {
           formErrors[formIndex] = "Please select a cover image.";
-          
+
           setCoverError((prevErrors) => {
             const newErrors = [...prevErrors];
             newErrors[formIndex] = formErrors[formIndex];
@@ -112,42 +119,41 @@ const WelcomeAboard = () => {
           formData.forms[formIndex].images.forEach((fileList, imageIndex) => {
             if (fileList.length > 0 && fileList[0]) {
               if (coverImages[formIndex] === imageIndex) {
-                data.append('cover', fileList[0]);
+                data.append("cover", fileList[0]);
               } else {
-                data.append('pictures', fileList[0]);
+                data.append("pictures", fileList[0]);
               }
             }
           });
         }
 
         try {
-          const response = await axios.post('/owner/boat', data);
+          const response = await axios.post("/owner/boat", data);
           if (response.status === 200) {
             // If successful, push to successfulForms
             successfulForms.push(formIndex);
-            if (formIndex+1 === forms.length) {
-              setIsAddManagerOpen(true)
+            if (formIndex + 1 === forms.length) {
+              setIsAddManagerOpen(true);
             }
           }
         } catch (error) {
-          ErrorToast(error?.response?.data?.message)
+          ErrorToast(error?.response?.data?.message);
         }
 
         // const response = await axios.post('/owner/boat', data)
         // if (response.status === 200) {
         //   successfulForms.push(formIndex);
         // }
-      })
+      });
       if (successfulForms.length > 0) {
-        setForms(prevForms => prevForms.filter((_, index) => !successfulForms.includes(index)));
+        setForms((prevForms) =>
+          prevForms.filter((_, index) => !successfulForms.includes(index))
+        );
       }
-    }
-    
-    catch (error) {
-      ErrorToast(error?.response?.data?.message)
-    }
-    finally{
-      setLoading(false)
+    } catch (error) {
+      ErrorToast(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,7 +176,7 @@ const WelcomeAboard = () => {
             </span>
           </div>
           <button
-          type="button"
+            type="button"
             className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-[11px] font-bold leading-5"
             onClick={() => setIsImportCSVOpen(true)}
           >
@@ -295,7 +301,9 @@ const WelcomeAboard = () => {
                     </h3>
                     <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
                       {[...Array(3)].map((_, imageIndex) => {
-                        const formsImage = watch( `forms.${idx}.images.${imageIndex}`);
+                        const formsImage = watch(
+                          `forms.${idx}.images.${imageIndex}`
+                        );
                         // console.log("formsImages---", formsImage[idx], " ?? ", formsImage)
                         // const imageError = errors?.forms?.[idx]?.images?.[imageIndex];
 
@@ -326,9 +334,12 @@ const WelcomeAboard = () => {
                                   }
                                   key={imageIndex}
                                   name={`forms.${idx}.images.${imageIndex}`}
-                                  {...register(`forms.${idx}.images.${imageIndex}`, {
-                                      required:false
-                                  })}
+                                  {...register(
+                                    `forms.${idx}.images.${imageIndex}`,
+                                    {
+                                      required: false,
+                                    }
+                                  )}
                                 />
                               </label>
                               <div className="absolute top-1 right-2 bg-white p-1 rounded-full">
@@ -343,7 +354,7 @@ const WelcomeAboard = () => {
                             {/* {imageError && ( <p className="text-red-500 text-sm">{imageError.message} </p>)} */}
                             <div className="w-auto mt-2 ml-1 flex gap-2 justify-start items-center">
                               <input
-                              checked={coverImages[idx] === imageIndex}
+                                checked={coverImages[idx] === imageIndex}
                                 type="radio"
                                 onChange={() =>
                                   handleImageSelect(idx, imageIndex)
@@ -355,7 +366,11 @@ const WelcomeAboard = () => {
                                 Set as cover photo{" "}
                               </span>
                             </div>
-                            {coverError[idx] && (<p className="text-red-500 text-sm">{coverError[idx]}</p>)}
+                            {coverError[idx] && (
+                              <p className="text-red-500 text-sm">
+                                {coverError[idx]}
+                              </p>
+                            )}
                           </div>
                         );
                       })}
@@ -391,7 +406,7 @@ const WelcomeAboard = () => {
       </div>
 
       {/* ManagerDetailModal Component */}
-      {isManagerOpen && <ManagerDetailModal setIsOpen={setIsManagerOpen} />}
+      {/* {isManagerOpen && <ManagerDetailModal setIsOpen={setIsManagerOpen} />} */}
 
       {/* AddManagerModal Component */}
       {isAddManagerOpen && (
