@@ -3,11 +3,15 @@ import { AuthMockup, BlogBoat, Html } from "../../assets/export";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import DeleteBlog from "./DeleteBlog";
+import { useLocation } from "react-router-dom";
 
 const BlogDetails = () => {
   const { navigate } = useContext(GlobalContext);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { state } = useLocation();
+
+  const [deleteId, setDeleteId] = useState(null);
 
   const handleDotsClick = (event) => {
     event.stopPropagation();
@@ -18,8 +22,9 @@ const BlogDetails = () => {
     navigate("/updateblog");
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (id) => {
     setIsDeleteModalOpen(true);
+    setDeleteId(id);
   };
 
   const closeDeleteModal = () => {
@@ -31,9 +36,9 @@ const BlogDetails = () => {
       <div className="w-full h-auto flex flex-col gap-4 rounded-[18px] bg-[#001229]">
         <div className="w-full h-[299px] relative rounded-t-[18px]">
           <img
-            src={BlogBoat}
+            src={`${state?.cover}`}
             alt="blogimage"
-            className="w-full h-full rounded-t-[18px]"
+            className="w-full h-full object-contain bg-[#081629] rounded-t-[18px]"
           />
           <button
             onClick={() => navigate("/blogs", "Tides, Tales & Guides")}
@@ -47,10 +52,15 @@ const BlogDetails = () => {
           <div className="w-full h-auto flex flex-col border-b-[1px] border-white/10 justify-start items-start pt-2 pb-12 gap-4 relative">
             <div className="w-full flex items-center justify-between relative">
               <span className="text-[10px] font-medium text-[#199BD1]">
-                Author name | December 20th, 2023
+                {state?.isAdmin ? "Admin" : "Owner"} |{" "}
+                {new Date(state.createdAt).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </span>
               <span className="text-[12px] font-normal text-white/50 mr-[140px]">
-                Navigating the waves of wisdom
+                {state?.imageTitle}
               </span>
               <button onClick={handleDotsClick} className="text-white">
                 <svg
@@ -77,7 +87,7 @@ const BlogDetails = () => {
                     Edit
                   </button>
                   <button
-                    onClick={handleDeleteClick}
+                    onClick={() => handleDeleteClick(state?._id)}
                     className="block w-full text-left px-4 py-2 text-xs hover:bg-[#000]/10"
                   >
                     Delete
@@ -86,15 +96,15 @@ const BlogDetails = () => {
               )}
             </div>
             <h2 className="text-[28px] font-bold text-white leading-[37.7px]">
-              Sailing Serenity: A Windward Voyage Into Maritime Bliss
+              {state?.title}
             </h2>
             <span className="text-[16px] font-normal leading-[21.6px] text-white/80">
-              Discover The Tranquil Tales That Unfold Beyond The Horizon
+              {state?.subTitle}
             </span>
           </div>
 
           <div className="w-full h-auto flex justify-start items-start py-6">
-            <img src={Html} alt="html" />
+            <div dangerouslySetInnerHTML={{ __html: state?.story }} />
           </div>
 
           <div className="w-full flex flex-col mt-10 justify-start items-start gap-3">
@@ -116,7 +126,6 @@ const BlogDetails = () => {
                     Sailing Serenity: A Windward Voyage Into Maritime Bliss
                   </h2>
                 </div>
-                
               </div>
             </div>
           </div>
@@ -124,7 +133,11 @@ const BlogDetails = () => {
       </div>
 
       {/* DeleteBlog Modal */}
-      <DeleteBlog isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
+      <DeleteBlog
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        id={deleteId}
+      />
     </div>
   );
 };

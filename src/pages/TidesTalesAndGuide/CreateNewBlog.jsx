@@ -10,16 +10,33 @@ import {
 import { ImListNumbered } from "react-icons/im";
 import { MdFormatListBulleted } from "react-icons/md";
 import { BiLink, BiUndo, BiRedo, BiChevronDown } from "react-icons/bi";
+import { BlogContext } from "../../contexts/BlogContext";
 
 const CreateNewBlog = () => {
   const { navigate } = useContext(GlobalContext);
+  const {
+    title,
+    setTitle,
+    subTitle,
+    setSubTitle,
+    story,
+    setStory,
+    imageText,
+    setImageText,
+    coverFile,
+    setCoverFile,
+    coverUrl,
+    setCoverUrl,
+  } = useContext(BlogContext);
   const editorRef = useRef(null);
+
   const [htmlContent, setHtmlContent] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSize, setSelectedSize] = useState(16); // Default font size
 
   const handleInput = () => {
     setHtmlContent(editorRef.current.innerHTML);
+    setStory(editorRef.current.innerHTML, title, subTitle);
   };
 
   const applyStyle = (command, value = null) => {
@@ -45,6 +62,18 @@ const CreateNewBlog = () => {
     setSelectedSize(size);
     changeFontSize(size);
     setShowDropdown(false);
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setCoverFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverUrl(reader.result);
+      };
+      reader.readAsDataURL(file); // Convert the image to base64 string
+    }
   };
 
   return (
@@ -198,19 +227,51 @@ const CreateNewBlog = () => {
 
         {/* Upload Cover Photo Section */}
         <h2 className="text-white text-lg text-[16px]">Upload Cover Photo</h2>
-        <div className="w-full flex flex-col items-center justify-center h-[300px] bg-[#1A293D] rounded-[18px]">
-          <FiDownload className="text-white text-4xl" />
+        <div
+          onClick={() => {
+            document.getElementById("blog-cover").click();
+          }}
+          className="w-full flex flex-col items-center justify-center h-[300px] bg-[#1A293D] rounded-[18px]"
+        >
+          {coverUrl ? (
+            <img
+              src={coverUrl}
+              className="w-full h-full object-contain"
+              alt=""
+            />
+          ) : (
+            <FiDownload className="text-white text-4xl" />
+          )}
+          <input
+            type="file"
+            onChange={handleImageChange}
+            className="hidden"
+            id="blog-cover"
+          />
+        </div>
+        <div className="w-full flex items-center justify-center">
+          <input
+            type="text"
+            value={imageText}
+            onChange={(e) => setImageText(e.target.value)}
+            placeholder="Add caption for image (optional)"
+            className="w-60 text-[10px] placeholder:text-[10px] placeholder:font-bold text-gray-300 bg-transparent border-none focus:outline-none my-2"
+          />
         </div>
 
         {/* Title, Subtitle, and Content Section */}
         <div className="mt-4 w-full">
           <input
             type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
             className="w-full text-[28px] placeholder:text-[28px] placeholder:font-bold text-white bg-transparent border-none focus:outline-none mb-2"
           />
           <input
             type="text"
+            value={subTitle}
+            onChange={(e) => setSubTitle(e.target.value)}
             placeholder="Enter Subtitle"
             className="w-full text-lg placeholder:text-[16px] text-white bg-transparent border-none focus:outline-none mb-4"
           />
@@ -220,14 +281,20 @@ const CreateNewBlog = () => {
             ref={editorRef}
             contentEditable
             onInput={handleInput}
-            className="w-full text-white bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2"
+            className="w-full text-white relative bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2"
             // style={{
             //   border: "1px solid #ccc",
             //   borderRadius: "8px",
             //   padding: "10px",
             //   backgroundColor: "#1A293D",
             // }}
-          ></div>
+          >
+            {htmlContent == "" && (
+              <span className="absolute top-0 left-0 text-gray-500 pointer-events-none">
+                Tell your story!
+              </span>
+            )}
+          </div>
 
           {/* Display Generated HTML for Debugging (optional) */}
           {/* <div className="mt-4 text-white">
