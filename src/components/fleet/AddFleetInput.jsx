@@ -8,6 +8,7 @@ const AddFleetInput = ({
   register,
   onInput,
   isDisabled,
+  maxLength,
 }) => {
   return (
     <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -22,6 +23,7 @@ const AddFleetInput = ({
         <input
           disabled={isDisabled}
           type={type}
+          maxLength={maxLength}
           className="w-full h-full bg-transparent autofill:bg-transparent autofill:text-white outline-none text-white placeholder:text-gray-400"
           placeholder={placeholder}
           {...register}

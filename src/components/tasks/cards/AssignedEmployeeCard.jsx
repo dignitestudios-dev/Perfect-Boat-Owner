@@ -22,7 +22,7 @@ const AssignedEmployeeCard = ({taskDetail, passSelectedEmployee}) => {
             </div>
             {taskDetail?.assignTo?.map((employee, index)=>(
               <span key={index} className="w-full h-10 grid grid-cols-5 py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-              <span className="w-[80px] overflow-hidden flex justify-start items-center">
+              <span className="w-[160px] overflow-hidden flex justify-start items-center">
                 {passSelectedEmployee?.name || employee?.name }
               </span>
               <span className="w-[180px] overflow-hidden flex justify-start items-center">

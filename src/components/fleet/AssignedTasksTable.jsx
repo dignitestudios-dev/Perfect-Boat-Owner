@@ -1,9 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaRegEdit } from 'react-icons/fa'
 import { MdOutlineDateRange } from 'react-icons/md'
 import { RiDeleteBinLine } from 'react-icons/ri'
+import { getUnixDate } from '../../data/DateFormat'
+import DeletedModal from '../global/DeletedModal'
+import { useNavigate } from 'react-router-dom'
 
-const AssignedTasksTable = ({setIsModalOpen,handleDateModalOpen, boatsData, openDeleteModal}) => {
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
+
+const AssignedTasksTable = ({setIsModalOpen,handleDateModalOpen, boatsData, openDeleteModal, getBoats}) => {
+  const navigateTo = useNavigate();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const handleDeleteConfirm = () => {
+    setDeleteModalOpen(false);
+    getBoats();
+  };
+
+  const handleEditTaskClick = (taskId) => {
+    navigateTo(`/tasks/${taskId}`);
+  };
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
           <div className="w-auto flex justify-between items-center gap-2">
@@ -89,13 +111,29 @@ const AssignedTasksTable = ({setIsModalOpen,handleDateModalOpen, boatsData, open
                       {item?.status}
                     </span>
                     <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-                      <span className=" flex justify-start items-center ">
-                        <FaRegEdit />
-                      </span>
-                      <span className=" flex justify-start items-center ">
-                        <RiDeleteBinLine onClick={openDeleteModal} />
-                      </span>
-                    </div>
+                        <span
+                          className="flex justify-start items-center"
+                          onClick={() => handleEditTaskClick(item?._id)}
+                        >
+                          <FaRegEdit />
+                        </span>
+                        <span
+                          className="flex justify-start items-center"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteModalOpen(true); // Open modal when delete icon is clicked
+                          }}
+                        >
+                          <RiDeleteBinLine />
+                        </span>
+                      </div>
+                      <DeletedModal
+                        isOpen={isDeleteModalOpen}
+                        _id={item?._id}
+                        onClose={() => setDeleteModalOpen(false)}
+                        refreshTasks={handleDeleteConfirm}
+                      />
                   </button>
                 ))}
               </>

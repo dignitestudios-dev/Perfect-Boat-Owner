@@ -15,8 +15,10 @@ const AddEmployee = () => {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isImportCSVModalOpen, setIsImportCSVModalOpen] = useState(false);
   const [passSelectedManager,SetPassSelectedManager] = useState("")
+  const [selectedManager, setSelectedManager] = useState(null);
   const [tasks,setTasks] = useState([])
-  const [tasksError,setTasksError] = useState([])
+  const [tasksError,setTasksError] = useState("")
+  const [managerError,setManagerError] = useState(null)
 
   const [addLoading, setAddLoading] = useState(false)
   
@@ -25,6 +27,7 @@ const AddEmployee = () => {
   }); 
 
   useEffect(() => {
+    setManagerError(null)
     setValue("manager", passSelectedManager?.name); 
   }, [passSelectedManager?.name, setValue]);
 
@@ -55,7 +58,9 @@ const AddEmployee = () => {
   const handleAddEmployee = async (data) => {
 
     setTasksError("");
-
+    if(!passSelectedManager?.id){
+      setManagerError("Please select manager")
+    }
     if(!tasks || tasks.length === 0){
       setTasksError("At least one task must be assigned")
       return
@@ -150,29 +155,43 @@ const AddEmployee = () => {
               text={"Phone Number"}
               placeholder={"Type your phone number here"}
               type={"text"}
+              maxLength="10"
               label={"Phone Number"}
               register={register("phone", {
                 required: "Please enter your phone number.",
                 pattern: {
-                  value: /^\+?[0-9]{11}$/,
+                  value: /^\+?[0-9]{10}$/,
                   message: "Please enter a valid phone number.",
                 },
               })}
               error={errors.phone}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(
+                  /(?!^\+)[^\d]/g,
+                  ""
+                );
+              }}
             />
           </div>
           <span className="w-full h-[0.5px] bg-white/10"></span>
           <div className="w-full flex flex-col justify-start items-start gap-6"></div>
           <div className="w-full h-auto grid grid-cols-2 gap-12">
             <div className="flex flex-col gap-4">
-              <div onClick={openManagerModal} className="flex flex-col gap-4">
-              <AddFleetInput
-                label={"Assign Managers"}
-                type="text"
-                placeholder="Click here to assign"
-                register={register("manager", { required: "Please select manager" })}
-                error={errors.manager}
-              />
+              <div className="w-full h-auto flex flex-col gap-1 justify-start items-start" >
+              <label className="text-[16px] font-medium leading-[21.6px]">
+                  Assign Managers
+                </label>
+                <button
+                type="button"
+                  onClick={openManagerModal}
+                  className="w-full h-[52px] bg-[#1A293D] disabled:text-white/50 outline-none px-3 
+                  focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+                >
+                  <span className="w-full text-gray-400 flex justify-start">
+                    {passSelectedManager?.name || "Click here to assign"}
+                  </span>
+                </button>
+              {managerError && <p className="text-red-500">{managerError}</p>}
             </div>
 
               <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -206,10 +225,11 @@ const AddEmployee = () => {
         </div>
       </form>
       {isManagerModalOpen && (
-        <ManagerDetailModal setIsOpen={setIsManagerModalOpen} SetPassSelectedManager={SetPassSelectedManager} />
+        <ManagerDetailModal setIsOpen={setIsManagerModalOpen} SetPassSelectedManager={SetPassSelectedManager} 
+        selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
       )}
       {isTaskModalOpen && (
-        <AssignTaskModal isOpen={isTaskModalOpen} onClose={closeTaskModal} setTasks={setTasks}  />
+        <AssignTaskModal isOpen={isTaskModalOpen} onClose={closeTaskModal} setTasks={setTasks} setTasksError={setTasksError} />
       )}
       {isImportCSVModalOpen && (
         <ImportCSVModal

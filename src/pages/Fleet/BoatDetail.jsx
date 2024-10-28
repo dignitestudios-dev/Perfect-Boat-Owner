@@ -24,6 +24,7 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import BoatAccessTable from "../../components/fleet/BoatAccessTable";
 import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
+import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
 
 const statusColors = {
   "newtask": "#FF007F",
@@ -638,15 +639,21 @@ const BoatDetail = () => {
     jobRef={jobRef} jobFilter={jobFilter} toggleLocationFilter={toggleLocationFilter} locationRef={locationRef}
       locationFilter={locationFilter}/>
 
-      <AssignedTasksTable setIsModalOpen={setIsModalOpen} handleDateModalOpen={handleDateModalOpen} boatsData={boatsData} openDeleteModal={openDeleteModal}/>
+      <AssignedTasksTable setIsModalOpen={setIsModalOpen} handleDateModalOpen={handleDateModalOpen} boatsData={boatsData}
+       openDeleteModal={openDeleteModal} getBoats={getBoats}/>
         
         {/* <ViewAllTasksModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} /> */}
-        {isModalOpen && (
+        {/* {isModalOpen && (
             <TaskSelectModal
               setIsOpen={setIsModalOpen}
               tasksList={boatsData?.task}
             />
-          )}
+          )} */}
+
+{isModalOpen && (
+        <ViewAssignedTaskModal setIsOpen={setIsModalOpen} 
+        employeeTasks={boatsData?.task} getEmployeeData={()=>getBoats()} loading={loadingBoats} />
+      )}
           <ServiceHistoryModal
             isOpen={isServiceHistoryModalOpen}
             onClose={() => setServiceHistoryModalOpen(false)}

@@ -86,7 +86,7 @@ console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
   const handleSelectBoat = (boats) => {
     const isSelected = selectedBoats.some((boat) => boat?._id === boats._id);
     if (isSelected) {
-      setSelectedBoats(selectedBoats.filter((boat) => boat?._id !== boats._id));
+      setSelectedBoats(selectedBoats.filter((boat) => boat?._id !== boats._id));  
     } else {
       setSelectedBoats([
         ...selectedBoats, boats

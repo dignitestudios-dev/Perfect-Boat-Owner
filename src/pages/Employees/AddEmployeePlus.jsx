@@ -11,6 +11,8 @@ const AddEmployeePlus = () => {
   const [isTaskDropdownOpen, setIsTaskDropdownOpen] = useState(false);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [selectedManager, setSelectedManager] = useState(null);
+
   const dropdownRef = useRef();
 
   const toggleDropdown = (e) => {
@@ -87,7 +89,7 @@ const AddEmployeePlus = () => {
         </div>
       </div>
       {isManagerModalOpen && (
-        <ManagerDetailModal setIsOpen={setIsManagerModalOpen} />
+        <ManagerDetailModal setIsOpen={setIsManagerModalOpen} selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
       )}
     </div>
   );

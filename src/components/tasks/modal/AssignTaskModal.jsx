@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectTaskModal from "../../../components/tasks/modal/SelectTaskModal";
 
-const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks }) => {
+const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks, setTasksError }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
   
@@ -11,6 +11,7 @@ const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks }) =>
   if (!isOpen) return null;
 
   const handleOptionChange = (e) => {
+    setTasksError("")
     const value = e.target.value;
     setSelectedOption(value);
     if (value === "new") {

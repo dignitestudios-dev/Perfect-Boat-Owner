@@ -17,6 +17,16 @@ import { getUnixDate } from "./../../data/DateFormat";
 import AssignTaskModal from "../../components/tasks/modal/AssignTaskModal";
 import TaskType from "../../components/global/headerDropdowns/TaskType";
 import StatusType from "../../components/global/headerDropdowns/StatusType";
+import SelectTaskModal from "../../components/tasks/modal/SelectTaskModal";
+import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
+
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
 
 const Dropdown = ({ options, label }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,11 +92,25 @@ const EditEmployee = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [employee, setEmployee] = useState("");
+  const [employeeTasks, setEmployeeTasks] = useState([])
   const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [tasks,setTasks] = useState([])
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [selectedManager, setSelectedManager] = useState(null);
+  const [tasksError,setTasksError] = useState("")
+  const [statusFilter , setStatusFilter] = useState("all");
+
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
+
+  // Function to close modal
+  const handleDeleteConfirm = () => {
+    setDeleteModalOpen(false);
+    getEmployeeData()
+  };
+
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -101,8 +125,9 @@ const EditEmployee = () => {
   });
 
   const handleViewAllClick = () => {
-    setIsTaskModalOpen(true);
+    // setIsTaskModalOpen(true);
     // setIsAssignedModalOpen(true); // Open AssignedModal instead of navigating
+    setIsSelectTaskModalOpen(true);
   };
 
   const closeTaskModal = () => {
@@ -127,7 +152,7 @@ const EditEmployee = () => {
   };
 
   const handleEditTaskClick = (taskId) => {
-    navigateTo(`/edit-task/${taskId}`);
+    navigateTo(`/tasks/${taskId}`);
   };
 
   const handleDeleteClick = () => {
@@ -169,6 +194,7 @@ const EditEmployee = () => {
       if (response.status === 200) {
         const data = response?.data?.data;
         setEmployee(response?.data?.data?.employee);
+        setEmployeeTasks(response?.data?.data?.tasks);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
@@ -343,15 +369,17 @@ const EditEmployee = () => {
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
                 Assigned Manager{" "}
               </h3>
-              {isEditing ?(
+              {isEditing ? (
                 <button
-                type="button"
-                onClick={handleChangeClick} 
-                className="text-[14px] font-medium text-[#199bd1]"
-              >
-                Change
-              </button>
-              ):(<span></span>)}
+                  type="button"
+                  onClick={handleChangeClick}
+                  className="text-[14px] font-medium text-[#199bd1]"
+                >
+                  Change
+                </button>
+              ) : (
+                <span></span>
+              )}
             </div>
 
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -405,60 +433,91 @@ const EditEmployee = () => {
                 <span className="w-full flex justify-start items-center">
                   Boat Name
                 </span>
-          <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}/>
+                <TaskType
+                  taskTypeDropdownOpen={taskTypeDropdownOpen}
+                  toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                />
                 <span className="w-full flex justify-start items-center">
                   Due Date
                 </span>
                 <span className="w-full flex justify-start items-center">
                   Recurring Days
                 </span>
-                <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}/>
+                <StatusType
+                  statusDropdownOpen={statusDropdownOpen}
+                  toggleStatusDropdown={toggleStatusDropdown}
+                  setStatusFilter={setStatusFilter}
+                  statusFilter={statusFilter}
+                />
                 <span className="w-full flex justify-start items-center">
                   Action
                 </span>
               </div>
-              {employee?.tasks?.length > 0 ? (
+              {employeeTasks?.length > 0 ? (
                 <>
-                {employee?.tasks?.map((task, index) => (
-                <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                  <span className="w-full flex justify-start items-center">
-                    {task?.name}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {task?.type}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {getUnixDate(task?.dueDate)}
-                  </span>
-                  <span className="w-full flex justify-start items-center ">
-                    {task?.recurringDays}
-                  </span>
-                  <span className="w-full flex justify-start items-center ">
-                    <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                      {task?.status}
-                    </span>
-                  </span>
-                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-                    <span
-                      className="flex justify-start items-center"
-                      onClick={() => handleEditTaskClick(task?._id)}
-                    >
-                      <FaRegEdit />
-                    </span>
-                    <span className="flex justify-start items-center">
-                      <RiDeleteBinLine />
-                    </span>
-                  </div>
-                </div>
-              ))}
+                  {employeeTasks?.map((task, index) => (
+                    <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                      <span className="w-full flex justify-start items-center">
+                        {task?.boatName}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {task?.taskType}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {getUnixDate(task?.dueDate)}
+                      </span>
+                      <span className="w-full flex justify-start items-center ">
+                        {task?.reoccuringDays}
+                      </span>
+                      <span className="w-full flex justify-start items-center ">
+                        <span
+                          style={{
+                            color:
+                              statusColors[task?.status] ||
+                              statusColors["default"],
+                          }}
+                          className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
+                        >
+                          {task?.status}
+                        </span>
+                      </span>
+                      <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
+                        <span
+                          className="flex justify-start items-center"
+                          onClick={() => handleEditTaskClick(task?._id)}
+                        >
+                          <FaRegEdit />
+                        </span>
+                        <span
+                          className="flex justify-start items-center"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteModalOpen(true); // Open modal when delete icon is clicked
+                          }}
+                        >
+                          <RiDeleteBinLine />
+                        </span>
+                      </div>
+                      <DeletedModal
+                        isOpen={isDeleteModalOpen}
+                        _id={task?._id}
+                        onClose={() => setDeleteModalOpen(false)}
+                        refreshTasks={handleDeleteConfirm}
+                      />
+                    </div>
+                  ))}
                 </>
-              ):(
-                <p className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px]
-                 font-normal leading-[21.6px] text-white">
+              ) : (
+                <p
+                  className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px]
+                 font-normal leading-[21.6px] text-white"
+                >
                   No tasks on the horizon? Assign tasks to keep the crew engaged
-                and productive!</p>
+                  and productive!
+                </p>
               )}
-              
+
               {/* Add more rows as needed */}
             </div>
           </div>
@@ -503,18 +562,37 @@ const EditEmployee = () => {
         />
       )}
       {isTaskModalOpen && (
-        <AssignTaskModal isOpen={isTaskModalOpen} onClose={closeTaskModal} setTasks={setTasks}  />
+        <AssignTaskModal
+          isOpen={isTaskModalOpen}
+          onClose={closeTaskModal}
+          setTasks={setTasks}
+          setTasksError={setTasksError}
+        />
       )}
 
       {isManagerDetailModalOpen && (
-        <ManagerDetailModal setIsOpen={setIsManagerDetailModalOpen} SetPassSelectedManager={SetPassSelectedManager}/>
+        <ManagerDetailModal
+          setIsOpen={setIsManagerDetailModalOpen}
+          SetPassSelectedManager={SetPassSelectedManager}
+          selectedManager={selectedManager}
+          setSelectedManager={setSelectedManager}
+        />
       )}
 
       {isResendModalOpen && (
-        <ResendModal id={id} isOpen={isResendModalOpen} onClose={() => setIsResendModalOpen(false)}/>
+        <ResendModal
+          id={id}
+          isOpen={isResendModalOpen}
+          onClose={() => setIsResendModalOpen(false)}
+        />
       )}
 
-      <DeletedModal isOpen={isDeletedModalOpen} onClose={() => setIsDeletedModalOpen(false)}/>
+      {isSelectTaskModalOpen && (
+        <ViewAssignedTaskModal setIsOpen={setIsSelectTaskModalOpen} 
+        employeeTasks={employeeTasks} getEmployeeData={()=>getEmployeeData()} loading={isLoading} />
+      )}
+
+      {/* <DeletedModal isOpen={isDeletedModalOpen} onClose={() => setIsDeletedModalOpen(false)}/> */}
     </div>
   );
 };

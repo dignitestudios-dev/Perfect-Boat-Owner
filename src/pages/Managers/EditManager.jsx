@@ -93,6 +93,7 @@ const EditManager = () => {
   const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
   const [boatList, setBoatList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedManager, setSelectedManager] = useState(null);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -289,6 +290,7 @@ const EditManager = () => {
                     <AddFleetInput
                       label={"Phone Number"}
                       type="text"
+                      maxLength="10"
                       placeholder="Enter Phone Number"
                       register={register("phone", {
                         required: "Please enter your phone number.",
@@ -511,7 +513,9 @@ const EditManager = () => {
 
       {isManagerDetailModalOpen && (
         <ManagerDetailModal
-          setIsOpen={setIsManagerDetailModalOpen} // Pass the function to close the modal
+          setIsOpen={setIsManagerDetailModalOpen} 
+          selectedManager={selectedManager} 
+          setSelectedManager={setSelectedManager}
         />
       )}
 
