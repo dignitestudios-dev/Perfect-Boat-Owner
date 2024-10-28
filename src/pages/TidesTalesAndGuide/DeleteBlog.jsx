@@ -1,7 +1,24 @@
-import React from 'react';
+import React from "react";
 import { MdAccessTime } from "react-icons/md";
+import axios from "../../axios";
+import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { useNavigate } from "react-router-dom";
 
-const DeleteBlog = ({ isOpen, onClose, onConfirm }) => {
+const DeleteBlog = ({ isOpen, onClose, id }) => {
+  const navigate = useNavigate();
+  const handleDeletion = async () => {
+    try {
+      const response = await axios.delete(`/owner/blog/${id}`);
+      if (response.status === 200) {
+        // Update the blogsData to remove the deleted blog
+        SuccessToast("Blog deleted successfully");
+        navigate("/blogs");
+        onClose();
+      }
+    } catch (error) {
+      ErrorToast(error?.response?.data?.message);
+    }
+  };
   if (!isOpen) return null;
 
   return (
@@ -18,8 +35,13 @@ const DeleteBlog = ({ isOpen, onClose, onConfirm }) => {
 
         {/* Content */}
         <div className="flex-1 flex flex-col justify-center">
-          <p className="text-[18px] text-white font-bold text-left mt-[-22px] mb-2">Delete Blog</p>
-          <p className="text-[16px] text-white text-left">Are you sure you want to delete this blog? This action cannot be undone</p>
+          <p className="text-[18px] text-white font-bold text-left mt-[-22px] mb-2">
+            Delete Blog
+          </p>
+          <p className="text-[16px] text-white text-left">
+            Are you sure you want to delete this blog? This action cannot be
+            undone
+          </p>
         </div>
 
         {/* Container for buttons aligned to the bottom right */}
@@ -33,8 +55,7 @@ const DeleteBlog = ({ isOpen, onClose, onConfirm }) => {
           </button>
           <button
             onClick={() => {
-              onConfirm(); // Call onConfirm when "Yes" is clicked
-              onClose(); // Close the modal afterward
+              handleDeletion();
             }}
             type="button"
             className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]"

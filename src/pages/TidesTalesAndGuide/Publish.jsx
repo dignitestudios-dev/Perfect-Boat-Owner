@@ -1,23 +1,95 @@
 import React, { useState, useContext } from "react";
 import PublishModal from "./PublishModal"; // Make sure the path is correct
 import { GlobalContext } from "../../contexts/GlobalContext"; // Adjust the path as needed
-
+import { BlogContext } from "../../contexts/BlogContext";
+import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { useNavigate } from "react-router-dom";
+import axios from "../../axios";
 const Publish = () => {
-  const [selectedOption, setSelectedOption] = useState('everyone');
+  const [selectedOption, setSelectedOption] = useState("everyone");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { navigate } = useContext(GlobalContext); // Use navigate from GlobalContext
+  const navigate = useNavigate();
+  const {
+    setViewers,
+    viewers,
+    title,
+    setTitle,
+    subTitle,
+    setSubTitle,
+    story,
+    setStory,
+    imageText,
+    setImageText,
+    coverFile,
+    setCoverFile,
+    coverUrl,
+    setCoverUrl,
+  } = useContext(BlogContext);
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+    setViewers(event.target.value);
   };
 
-  const handlePublish = () => {
-    console.log("Publishing for:", selectedOption);
-    setIsModalOpen(true);
+  function createHtmlTemplate(content, title, subtitle) {
+    return `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="${subtitle}">
+    <style>
+      /* You can add custom styles here */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    ${content}
+  </body>
+  </html>
+  `;
+  }
+
+  const handlePublish = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append("title", title);
+      formdata.append("cover", coverFile);
+      formdata.append("subTitle", subTitle);
+      formdata.append("imageTitle", imageText);
+      formdata.append("story", createHtmlTemplate(story, title, subTitle));
+      formdata.append("access", viewers);
+      const response = await axios.post(`/owner/blog/`, formdata);
+      if (response.status === 200) {
+        // Update the blogsData to remove the deleted blog
+        SuccessToast("Blog created successfully");
+
+        setIsModalOpen(true);
+
+        setCoverFile(null);
+        setCoverUrl(null);
+        setTitle("");
+        setStory("");
+        setSubTitle("");
+        setImageText("");
+        setViewers("");
+      }
+    } catch (error) {
+      console.log(error);
+      ErrorToast(error?.response?.data?.message);
+    }
   };
 
   const handleCancel = () => {
-    navigate('/blog/createnewblog'); // Redirect to the desired path
+    navigate("/blog/createnewblog"); // Redirect to the desired path
   };
 
   return (
@@ -41,7 +113,9 @@ const Publish = () => {
       {/* Centered Publish Section */}
       <div className="flex justify-center items-center">
         <div className="rounded-[18px] p-6 flex flex-col items-center gap-4 bg-[#0D1B2A]">
-          <h2 className="text-white text-[26px] font-semibold text-center">Publish</h2>
+          <h2 className="text-white text-[26px] font-semibold text-center">
+            Publish
+          </h2>
 
           {/* Radio Options */}
           <div className="bg-[#0D1B2A] w-[756px] h-[167px] rounded-[12px] p-6 flex flex-col justify-center gap-4 border-[#D9D9D9] border">
@@ -51,7 +125,7 @@ const Publish = () => {
                 <input
                   type="radio"
                   value="everyone"
-                  checked={selectedOption === 'everyone'}
+                  checked={selectedOption === "everyone"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />
@@ -61,21 +135,25 @@ const Publish = () => {
                 <input
                   type="radio"
                   value="managers"
-                  checked={selectedOption === 'managers'}
+                  checked={selectedOption === "managers"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />
-                <span className="ml-3 text-white text-[14px]">Only for Managers</span>
+                <span className="ml-3 text-white text-[14px]">
+                  Only for Managers
+                </span>
               </label>
               <label className="flex items-center mt-2">
                 <input
                   type="radio"
                   value="employees"
-                  checked={selectedOption === 'employees'}
+                  checked={selectedOption === "employees"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />
-                <span className="ml-3 text-white text-[14px]">Only for Employees</span>
+                <span className="ml-3 text-white text-[14px]">
+                  Only for Employees
+                </span>
               </label>
             </div>
           </div>
@@ -83,7 +161,9 @@ const Publish = () => {
       </div>
 
       {/* Publish Modal */}
-      <PublishModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      {isModalOpen && (
+        <PublishModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      )}
     </div>
   );
 };
