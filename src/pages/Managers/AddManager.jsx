@@ -6,7 +6,9 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
+import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 const AddManager = () => {
+  const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [data, setData] = useState([
     {
       name: "",
@@ -92,7 +94,7 @@ const AddManager = () => {
       const response = await axios.post("/owner/manager/csv", data);
       console.log("🚀 ~ ~ response:", response);
       if (response.status === 200) {
-        // setIsEmployeeOpen(true);
+        setIsEmployeeOpen(true);
       }
     } catch (error) {
       console.error("Error adding employee:", error);
@@ -312,11 +314,13 @@ const AddManager = () => {
                     )}
                   </div>
                 </button>
-                {/* <AddEmployeeModal
-              isOpen={isEmployeeOpen}
-              setIsOpen={setIsEmployeeOpen}
-            />
-            {isImportCSVOpen && (
+                {isEmployeeOpen && (
+                  <AddEmployeeModal
+                    isOpen={isEmployeeOpen}
+                    setIsOpen={setIsEmployeeOpen}
+                  />
+                )}
+                {/* {isImportCSVOpen && (
               <ImportCSVModal
               isOpen={isImportCSVOpen}
               onClose={() => setIsImportCSVOpen(false)}
