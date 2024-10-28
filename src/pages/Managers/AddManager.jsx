@@ -172,7 +172,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "name", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
@@ -196,7 +196,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "email", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
@@ -221,7 +221,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "jobtitle", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Job Title"}
                             />
                           </div>
@@ -244,7 +244,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "location", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Location"}
                             />
                           </div>
@@ -269,7 +269,7 @@ const AddManager = () => {
                               onChange={(e) =>
                                 handleChange(index, "phone", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Phone Number"}
                             />
                           </div>

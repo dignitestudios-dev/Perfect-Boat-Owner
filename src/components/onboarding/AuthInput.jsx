@@ -30,7 +30,7 @@ const AuthInput = ({
             type={isPassVisible ? "text" : type}
             placeholder={placeholder}
             maxLength={maxLength}
-            className="w-full outline-none  rounded-[12px] placeholder:text-[13px] placeholder:font-normal placeholder:text-[#6B737E] text-white bg-transparent h-full px-3 text-sm font-medium "
+            className="w-full outline-none  rounded-[12px] autofill:bg-transparent autofill:text-white placeholder:text-[13px] placeholder:font-normal placeholder:text-[#6B737E] text-white bg-transparent h-full px-3 text-sm font-medium "
             // value={state}
             // onChange={(e) => setState(e.target.value)}
             {...register}
