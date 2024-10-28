@@ -6,6 +6,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
+import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 const AddEmployeeExternal = () => {
   const [data, setData] = useState([
     {
@@ -13,7 +14,7 @@ const AddEmployeeExternal = () => {
       email: "",
       jobtitle: "",
       location: "",
-      assignManager: null,
+      manager: null,
       phone: "",
       password: "Test@123",
     },
@@ -48,6 +49,7 @@ const AddEmployeeExternal = () => {
         email: "",
         jobtitle: "",
         location: "",
+        manager: null,
         phone: "",
         password: "Test@123",
       },
@@ -66,6 +68,7 @@ const AddEmployeeExternal = () => {
             email: item.email || "",
             jobtitle: item.jobtitle || "",
             location: item.location || "",
+            manager: item.manager || null,
             phone: item.phoneNumber || "",
             password: "Test@123",
           }));
@@ -312,11 +315,13 @@ const AddEmployeeExternal = () => {
                     )}
                   </div>
                 </button>
-                {/* <AddEmployeeModal
-              isOpen={isEmployeeOpen}
-              setIsOpen={setIsEmployeeOpen}
-            />
-            {isImportCSVOpen && (
+                {/* {isEmployeeOpen && (
+                  <AddEmployeeModal
+                    isOpen={isEmployeeOpen}
+                    setIsOpen={setIsEmployeeOpen}
+                  />
+                )} */}
+                {/* {isImportCSVOpen && (
               <ImportCSVModal
               isOpen={isImportCSVOpen}
               onClose={() => setIsImportCSVOpen(false)}

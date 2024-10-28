@@ -41,28 +41,25 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager, onClose }) => {
                 been saved.
               </span>
             </div>
-            {createManager ? (
-              <div></div>
-            ) : (
-              <div className="w-full h-auto flex flex-col gap-1 mt-6">
-                <button
-                  onClick={() => {
-                    navigate("/add-employee-onboard");
-                  }}
-                  className="w-full  h-[42px] bg-[#199BD1] text-white rounded-[8px] flex items-center justify-center text-[11px] font-bold leading-[21.6px] tracking-[-0.24px]"
-                >
-                  {"Add Employee"}
-                </button>
-                <button
-                  onClick={() => {
-                    navigate("/managers");
-                  }}
-                  className="w-full  text-white/50 rounded-[12px] flex items-center justify-center text-[11px] font-bold leading-[21.6px] tracking-[-0.24px]"
-                >
-                  {"Skip"}
-                </button>
-              </div>
-            )}
+
+            <div className="w-full h-auto flex flex-col gap-1 mt-6">
+              <button
+                onClick={() => {
+                  navigate("/welcome-aboard");
+                }}
+                className="w-full  h-[42px] bg-[#199BD1] text-white rounded-[8px] flex items-center justify-center text-[11px] font-bold leading-[21.6px] tracking-[-0.24px]"
+              >
+                {"Add Employee"}
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/managers");
+                }}
+                className="w-full  text-white/50 rounded-[12px] flex items-center justify-center text-[11px] font-bold leading-[21.6px] tracking-[-0.24px]"
+              >
+                {"Skip"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

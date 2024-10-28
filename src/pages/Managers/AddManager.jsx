@@ -109,9 +109,9 @@ const AddManager = () => {
           <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
             <div>
               <h1 className="text-[28px] font-bold text-white leading-[37.8px]">
-                Managers
+                Manager
               </h1>
-              <span className="text-[14px] font-normal leading-[21.6px]">
+              {/* <span className="text-[14px] font-normal leading-[21.6px]">
                 Experience the power of simplified fleet management today.
                 Whether you are assigning task or tracking boat maintenance,
                 <br />{" "}
@@ -119,7 +119,7 @@ const AddManager = () => {
                   The Perfect Boat
                 </span>{" "}
                 has you covered at every step of the journey.
-              </span>
+              </span> */}
             </div>
             <button
               className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
