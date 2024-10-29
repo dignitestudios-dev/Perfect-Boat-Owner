@@ -192,7 +192,7 @@ const WelcomeAboard = () => {
               >
                 <div className="w-full flex flex-col justify-start items-start gap-4">
                   <div className="w-full h-auto flex flex-col justify-start items-start gap-8">
-                    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-12">
+                    <div className="w-full grid grid-cols-1 md:grid-cols-3 justify-start items-start gap-3 lg:gap-12">
                       <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                         <label className="text-[16px] font-medium leading-[21.6px]">
                           Boat Type
@@ -249,7 +249,7 @@ const WelcomeAboard = () => {
                         error={errors?.forms?.[idx]?.make}
                       />
                     </div>
-                    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-12">
+                    <div className="w-full grid grid-cols-1 md:grid-cols-3 justify-start items-start  gap-3 lg:gap-12">
                       <AddFleetInput
                         label="Model"
                         placeholder="Enter Model"
@@ -300,7 +300,7 @@ const WelcomeAboard = () => {
                       </span>
                     </h3>
                     <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
-                      {[...Array(3)].map((_, imageIndex) => {
+                      {[...Array(5)].map((_, imageIndex) => {
                         const formsImage = watch(
                           `forms.${idx}.images.${imageIndex}`
                         );
