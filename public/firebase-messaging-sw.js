@@ -8,7 +8,7 @@ importScripts(
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APP_FIREBASE_KEY,
+  apiKey: "AIzaSyCNULMCZvOCVls44q6r4_bL7ZBj4G-2Oxs",
   authDomain: "perfectboat-1afb7.firebaseapp.com",
   projectId: "perfectboat-1afb7",
   storageBucket: "perfectboat-1afb7.appspot.com",
@@ -21,7 +21,28 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 // Initialize Firebase Messaging
-const messaging = firebase.messaging();
+let messaging = firebase.messaging();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      // Ensure Firebase Messaging has the registration before requesting a token
+      messaging = firebase.messaging();
+      messaging.useServiceWorker(registration);
+
+      // Now request the FCM token
+      return messaging.getToken();
+    })
+    .then((token) => {
+      console.log("FCM Token:", token);
+    })
+    .catch((error) => {
+      console.error("Error getting FCM token:", error);
+    });
+} else {
+  console.warn("Service workers are not supported in this browser.");
+}
 
 // Handle background messages
 messaging.onBackgroundMessage(function (payload) {
