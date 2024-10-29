@@ -77,7 +77,7 @@ const Preview = () => {
       formdata.append("subTitle", subTitle);
       formdata.append("imageTitle", imageText);
       formdata.append("story", createHtmlTemplate(story, title, subTitle));
-      formdata.append("access", viewers);
+      formdata.append("viewer", viewers);
       const response = await axios.post(`/owner/blog/`, formdata);
       if (response.status === 200) {
         // Update the blogsData to remove the deleted blog
