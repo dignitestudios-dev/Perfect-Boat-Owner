@@ -25,6 +25,7 @@ import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import BoatAccessTable from "../../components/fleet/BoatAccessTable";
 import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
+import AssignedModal from "../../components/tasks/modal/AssignedModal";
 
 const statusColors = {
   "newtask": "#FF007F",
@@ -649,10 +650,13 @@ const BoatDetail = () => {
               tasksList={boatsData?.task}
             />
           )} */}
-
-{isModalOpen && (
-        <ViewAssignedTaskModal setIsOpen={setIsModalOpen} 
-        employeeTasks={boatsData?.task} getEmployeeData={()=>getBoats()} loading={loadingBoats} />
+          
+          {isModalOpen && (
+            <AssignedModal tasksList={boatsData?.task}
+            setIsOpen={setIsModalOpen} getEmployeeData={()=>getBoats()} loading={loadingBoats}
+            />
+        // <ViewAssignedTaskModal setIsOpen={setIsModalOpen} 
+        // employeeTasks={boatsData?.task} getEmployeeData={()=>getBoats()} loading={loadingBoats} />
       )}
           <ServiceHistoryModal
             isOpen={isServiceHistoryModalOpen}

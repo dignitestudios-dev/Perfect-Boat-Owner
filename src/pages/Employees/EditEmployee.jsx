@@ -130,6 +130,11 @@ const EditEmployee = () => {
     setIsSelectTaskModalOpen(true);
   };
 
+  const handleAssignNewTask = () => {
+    setIsTaskModalOpen(true);
+    // setIsAssignedModalOpen(true);
+  }
+
   const closeTaskModal = () => {
     setIsTaskModalOpen(false);
   };
@@ -155,6 +160,12 @@ const EditEmployee = () => {
     navigateTo(`/tasks/${taskId}`);
   };
 
+  const handleRemoveTask = (taskID) => {
+    const tasks = employeeTasks?.filter((task)=> task?._id !== taskID)
+    setEmployeeTasks(tasks)
+    setTasks(tasks)
+  }
+
   const handleDeleteClick = () => {
     setIsDeletedModalOpen(true);
   };
@@ -168,7 +179,7 @@ const EditEmployee = () => {
         ...data,
         manager: passSelectedManager?.id,
         password: "Test@123",
-        tasks: tasks ? tasks?.map((item) => item?.id) : employee?.tasks?.map((item) => item?.id),
+        tasks: tasks ? tasks?.map((item) => item?._id) : employeeTasks?.map((item) => item?.id),
       };
 
       const response = await axios.put(
@@ -252,7 +263,7 @@ const EditEmployee = () => {
                   )}
                   <button
                     type="button"
-                    onClick={handleViewAllClick}
+                    onClick={handleAssignNewTask}
                     className="flex items-center gap-2 text-white font-medium bg-[#199BD1] hover:bg-[#002240] px-4 py-2 rounded-lg"
                   >
                     Assign New Task
@@ -455,7 +466,7 @@ const EditEmployee = () => {
               </div>
               {employeeTasks?.length > 0 ? (
                 <>
-                  {employeeTasks?.map((task, index) => (
+                  {employeeTasks?.slice(0,4)?.map((task, index) => (
                     <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
@@ -483,28 +494,29 @@ const EditEmployee = () => {
                       </span>
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
                         <span
-                          className="flex justify-start items-center"
+                          className="flex justify-start items-center cursor-pointer"
                           onClick={() => handleEditTaskClick(task?._id)}
                         >
                           <FaRegEdit />
                         </span>
                         <span
-                          className="flex justify-start items-center"
+                          className="flex justify-start items-center cursor-pointer"
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setDeleteModalOpen(true); // Open modal when delete icon is clicked
+                            handleRemoveTask(task?._id)
+                            // setDeleteModalOpen(true); // Open modal when delete icon is clicked
                           }}
                         >
                           <RiDeleteBinLine />
                         </span>
                       </div>
-                      <DeletedModal
+                      {/* <DeletedModal
                         isOpen={isDeleteModalOpen}
                         _id={task?._id}
                         onClose={() => setDeleteModalOpen(false)}
                         refreshTasks={handleDeleteConfirm}
-                      />
+                      /> */}
                     </div>
                   ))}
                 </>
@@ -588,7 +600,7 @@ const EditEmployee = () => {
       )}
 
       {isSelectTaskModalOpen && (
-        <ViewAssignedTaskModal setIsOpen={setIsSelectTaskModalOpen} 
+        <ViewAssignedTaskModal setIsOpen={setIsSelectTaskModalOpen} handleRemoveTask={(taskID)=>handleRemoveTask(taskID)}
         employeeTasks={employeeTasks} getEmployeeData={()=>getEmployeeData()} loading={isLoading} />
       )}
 

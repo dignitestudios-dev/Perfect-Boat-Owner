@@ -100,12 +100,6 @@ export const normalRoutes = [
   // },
 
   {
-    title: "Add a Employee",
-    url: "/add-employee",
-    page: <GlobalLayout page={<AddEmployee />} />,
-  },
-
-  {
     title: "Home",
     url: "/dashboard",
     page: <GlobalLayout page={<Home />} />,
@@ -167,7 +161,12 @@ export const normalRoutes = [
     url: "/managers/add",
     page: <GlobalLayout page={<AddManagerpage />} />,
   },
-
+  
+  {
+    title: "Add a Employee",
+    url: "/add-employee",
+    page: <GlobalLayout page={<AddEmployee />} />,
+  },
   {
     title: "Assign Employees",
     url: "/employees/assign-employees",

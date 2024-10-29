@@ -2,10 +2,11 @@ import React from "react";
 import { FaRegEdit, FaCaretDown } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
+import DeletedModal from "../../global/DeletedModal";
 
 
 const Dropdown = ({ label, options }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false); 
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -36,8 +37,16 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
-const AssignedModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
+const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
   console.log("🚀 ~ AssignedModal ~ tasksList:", tasksList)
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+
+  const handleDeleteConfirm = () => {
+    setDeleteModalOpen(false);
+    getEmployeeData()
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -118,6 +127,8 @@ const AssignedModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
                       <RiDeleteBinLine />
                     </span>
                   </div>
+                  <DeletedModal isOpen={isDeleteModalOpen} _id={data?._id}
+        onClose={() => setDeleteModalOpen(false)} refreshTasks={handleDeleteConfirm} />
                 </div>
                 ))
               }

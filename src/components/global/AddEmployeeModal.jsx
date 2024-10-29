@@ -20,12 +20,20 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
     >
       <div className=" relative">
         {/* Close button */}
-        <button
+        {createManager ? (
+          <button
+          onClick={() => {setIsOpen(false); navigate("/managers")}}
+          className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8" >
+            ✕
+          </button>
+        ):(
+          <button
           onClick={() => setIsOpen(false)}
           className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
         >
           ✕
         </button>
+        )}
         <div
           ref={employeeRef}
           className="bg-[#02203A] w-[418px] h-auto flex flex-col  gap-5 justify-start items-center p-8 shadow-lg rounded-[8px]"

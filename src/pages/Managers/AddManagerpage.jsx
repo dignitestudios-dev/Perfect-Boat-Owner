@@ -27,7 +27,7 @@ const AddManagerpage = () => {
   const [inputError, setInputError] = useState({});
 
   const locationRef = useRef(null);
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
     defaultValues: { employee: passSelectedEmployee?.name } 
   }); 
 
@@ -99,6 +99,7 @@ const AddManagerpage = () => {
       console.log("Response:", response);
       if(response.status === 200){
         setIsEmployeeOpen(true);
+        reset();
       }
       
     } catch (error) {
@@ -193,7 +194,7 @@ const AddManagerpage = () => {
           </div>
         </div>
         
-        <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229] mt-6">
+        {/* <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229] mt-6">
         <div className="w-full h-auto flex justify-between items-center">
           <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
             Access Boats{" "}
@@ -285,7 +286,7 @@ const AddManagerpage = () => {
           ))}
           
         </div>
-      </div>
+      </div> */}
       
         <div className="w-full flex justify-end mt-10 items-center gap-4">
           <button

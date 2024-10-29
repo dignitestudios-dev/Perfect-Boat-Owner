@@ -18,13 +18,11 @@ const statusColors = {
     "completed":"#1FBA46"
   };
 
-const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false , getEmployeeData}) => {
+const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleRemoveTask}) => {
   const navigateTo = useNavigate();
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [statusFilter , setStatusFilter] = useState("all");
-
-
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -36,16 +34,6 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false , getEmp
   const handleEditTaskClick = (taskId) => {
     navigateTo(`/tasks/${taskId}`);
   };
-
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-
-  // Function to close modal
-  const handleDeleteConfirm = () => {
-    setDeleteModalOpen(false);
-    getEmployeeData()
-  };
-
-
     
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -129,28 +117,22 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false , getEmp
                       </span>
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
                         <span
-                          className="flex justify-start items-center"
+                          className="flex justify-start items-center cursor-pointer"
                           onClick={() => handleEditTaskClick(task?._id)}
                         >
                           <FaRegEdit />
                         </span>
                         <span
-                          className="flex justify-start items-center"
+                          className="flex justify-start items-center cursor-pointer"
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setDeleteModalOpen(true); // Open modal when delete icon is clicked
+                            handleRemoveTask(task?._id) // Open modal when delete icon is clicked
                           }}
                         >
                           <RiDeleteBinLine />
                         </span>
                       </div>
-                      <DeletedModal
-                        isOpen={isDeleteModalOpen}
-                        _id={task?._id}
-                        onClose={() => setDeleteModalOpen(false)}
-                        refreshTasks={handleDeleteConfirm}
-                      />
                     </div>
                   ))}
                 </>

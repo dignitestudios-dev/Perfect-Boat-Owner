@@ -121,11 +121,11 @@ const handleTaskSubmit = () =>{
               />
             </div>
           </div>
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2">
+          <div className="flex justify-end items-center mb-4">
+            {/* <div className="flex items-center gap-2">
               <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" />
               <span className="text-white text-[13px] font-medium">Select All</span>
-            </div>
+            </div> */}
             <button
                 onClick={() => handleTaskSubmit()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
@@ -137,7 +137,7 @@ const handleTaskSubmit = () =>{
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-8 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center mb-2">
                 <span className="flex items-center justify-start mr-2">
-                  <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" />
+                  {/* <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" /> */}
                 </span>
                 <span className="flex items-center justify-start">
                   Boat Name

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useEffect, Fragment } from "react";
+import React, { useContext, useRef, useState, useEffect, Fragment, useCallback } from "react";
 import { FiSearch } from "react-icons/fi";
 import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
@@ -7,25 +7,28 @@ import BoatsLoader from "./BoatsLoader";
 import { MdDelete } from "react-icons/md";
 import DeletedModal from "../global/DeletedModal";
 
-const BoatsTable = ({data , loading}) => {
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
+
+const BoatsTable = ({data , loading, getBoats, pageNumber}) => {
   const { navigate } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
   const [search, setSearch] = useState("");
+  let rows = 15;
 
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState("")
-
-  // Function to close modal
-  const handleDeleteConfirm = () => {
-    setDeleteModalOpen(false);
-  };
-
-  const filteredData = data.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = data.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
 
   const boatTypes = ["Type 1", "Type 2", "Type 3"];
   const locations = [
@@ -59,9 +62,20 @@ const BoatsTable = ({data , loading}) => {
   }, []);
 
   const handleBoatDetails=(boat) => {
-    console.log("🚀 ~ handleBoatDetails ~ boat:", boat)
     navigate(`/boats/${boat?._id}`, {state:{boat}})
   }
+
+  const debouncedGetBoats = useCallback(
+    debounce((pageNumber, rows, search) => getBoats(pageNumber, rows, search), 500),
+    []
+  );
+
+  
+  useEffect(() => {
+    if (search.trim()) {
+      debouncedGetBoats(pageNumber, rows, search);
+    }
+  }, [search, debouncedGetBoats]);
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       {/* <DeletedModal isOpen={isDeleteModalOpen} _id={deleteId}
@@ -168,7 +182,7 @@ const BoatsTable = ({data , loading}) => {
         ):(
           <Fragment>
             {/* Example rows */}
-        {filteredData?.map((boat, index) => (
+        {data?.map((boat, index) => (
           <div
             key={index}
             onClick={() => handleBoatDetails(boat)}

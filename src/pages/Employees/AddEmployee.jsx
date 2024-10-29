@@ -16,8 +16,8 @@ const AddEmployee = () => {
   const [isImportCSVModalOpen, setIsImportCSVModalOpen] = useState(false);
   const [passSelectedManager,SetPassSelectedManager] = useState("")
   const [selectedManager, setSelectedManager] = useState(null);
-  const [tasks,setTasks] = useState([])
-  const [tasksError,setTasksError] = useState("")
+  // const [tasks,setTasks] = useState([])
+  // const [tasksError,setTasksError] = useState("")
   const [managerError,setManagerError] = useState(null)
 
   const [addLoading, setAddLoading] = useState(false)
@@ -57,23 +57,22 @@ const AddEmployee = () => {
 
   const handleAddEmployee = async (data) => {
 
-    setTasksError("");
+    // setTasksError("");
     if(!passSelectedManager?.id){
       setManagerError("Please select manager")
     }
-    if(!tasks || tasks.length === 0){
-      setTasksError("At least one task must be assigned")
-      return
-    }
+    // if(!tasks || tasks.length === 0){
+    //   setTasksError("At least one task must be assigned")
+    //   return
+    // }
   
     try {
       setAddLoading(true)
-    
     const employeeData = {
       ...data,
       password: "Test@123",
       manager: passSelectedManager?.id,
-      tasks: tasks?.map(item=>item?.id)
+      // tasks: tasks?.map(item=>item?.id)
     };
       const response = await axios.post("/owner/employees", employeeData);
       if(response.status === 200){
@@ -194,7 +193,7 @@ const AddEmployee = () => {
               {managerError && <p className="text-red-500">{managerError}</p>}
             </div>
 
-              <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+              {/* <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                 <label className="text-[16px] font-medium leading-[21.6px]">
                   Assign Task
                 </label>
@@ -209,7 +208,7 @@ const AddEmployee = () => {
                   </span>
                 </button>
               {tasksError && <p className="text-red-500">{tasksError}</p>}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -228,9 +227,9 @@ const AddEmployee = () => {
         <ManagerDetailModal setIsOpen={setIsManagerModalOpen} SetPassSelectedManager={SetPassSelectedManager} 
         selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
       )}
-      {isTaskModalOpen && (
+      {/* {isTaskModalOpen && (
         <AssignTaskModal isOpen={isTaskModalOpen} onClose={closeTaskModal} setTasks={setTasks} setTasksError={setTasksError} />
-      )}
+      )} */}
       {isImportCSVModalOpen && (
         <ImportCSVModal
           isOpen={isImportCSVModalOpen}
