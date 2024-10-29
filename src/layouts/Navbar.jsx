@@ -36,7 +36,7 @@ const Navbar = () => {
         >
           {/* Image for profile link */}
           <img
-            src={Cookies.get("profilePicture")}
+            src={`https://ui-avatars.com/api/?name=${Cookies.get("name")}`}
             alt="Profile"
             className="w-[28px] h-[28px] rounded-full cursor-pointer"
             onClick={() => navigate("/profile", "Profile")}
