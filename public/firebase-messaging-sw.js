@@ -8,7 +8,7 @@ importScripts(
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCNULMCZvOCVls44q6r4_bL7ZBj4G-2Oxs",
+  apiKey: import.meta.env.VITE_APP_FIREBASE_KEY,
   authDomain: "perfectboat-1afb7.firebaseapp.com",
   projectId: "perfectboat-1afb7",
   storageBucket: "perfectboat-1afb7.appspot.com",
@@ -25,11 +25,6 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage(function (payload) {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
-  );
-
   // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
