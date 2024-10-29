@@ -255,7 +255,7 @@ const CreateNewBlog = () => {
             value={imageText}
             onChange={(e) => setImageText(e.target.value)}
             placeholder="Add caption for image (optional)"
-            className="w-60 text-[10px] placeholder:text-[10px] placeholder:font-bold text-gray-300 bg-transparent border-none focus:outline-none my-2"
+            className="w-60 text-[10px] placeholder:text-[10px] text-center placeholder:font-bold text-gray-300 bg-transparent border-none focus:outline-none my-2"
           />
         </div>
 

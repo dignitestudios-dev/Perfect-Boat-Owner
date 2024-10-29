@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import getFCMToken from "../../firebase/getFcmToken";
 
 const Login = () => {
   const { navigate } = useContext(GlobalContext);
@@ -25,9 +26,12 @@ const Login = () => {
   const handleLogin = async (formData) => {
     setLoading(true);
     try {
+      const fcmToken = await getFCMToken();
+      console.log(fcmToken);
       let obj = {
         email: formData.email,
         password: formData.password,
+        fcmToken: fcmToken,
         role: "owner",
       };
 
@@ -38,7 +42,6 @@ const Login = () => {
           if (response?.data?.data?.isSubscribed === true) {
             navigate("/dashboard");
             SuccessToast("Logged in successfully");
-            
           } else {
             navigate("/select-package");
             SuccessToast("Please purchase a plan to continue.");

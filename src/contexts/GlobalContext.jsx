@@ -1,6 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios";
+import getFCMToken from "../firebase/getFcmToken";
+import { onMessageListener } from "../firebase/messages";
+import { ErrorToast } from "../components/global/Toaster";
 
 export const GlobalContext = createContext();
 
@@ -18,7 +21,6 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingManagers, setLoadingManagers] = useState(false);
   const [updateManager, setUpdateManager] = useState(false);
 
-  
   const getManagers = async () => {
     setLoadingManagers(true);
     try {
@@ -29,14 +31,14 @@ export const GlobalContextProvider = ({ children }) => {
       setLoadingManagers(false);
     }
   };
-  useEffect(()=>{
-    getManagers()
-  },[updateManager])
+  useEffect(() => {
+    getManagers();
+  }, [updateManager]);
 
   const [employees, setEmployees] = useState([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [updateEmployee, setUpdateEmployee] = useState(false);
- 
+
   const getEmployees = async () => {
     setLoadingEmployees(true);
     try {
@@ -47,14 +49,13 @@ export const GlobalContextProvider = ({ children }) => {
       setLoadingEmployees(false);
     }
   };
-  useEffect(()=>{
-    getEmployees()
-  },[updateEmployee])
+  useEffect(() => {
+    getEmployees();
+  }, [updateEmployee]);
 
   const [boats, setBoats] = useState([]);
   const [loadingBoats, setLoadingBoats] = useState(false);
   const [updateBoat, setUpdateBoat] = useState(false);
- 
 
   const getBoats = async () => {
     setLoadingBoats(true);
@@ -66,9 +67,29 @@ export const GlobalContextProvider = ({ children }) => {
       setLoadingBoats(false);
     }
   };
-  useEffect(()=>{
-    getBoats()
-  },[updateBoat])
+  useEffect(() => {
+    getBoats();
+  }, [updateBoat]);
+
+  const [show, setShow] = useState(false);
+  const [notification, setNotification] = useState({ title: "", body: "" });
+  const [notifications, setNotifications] = useState([]);
+  const [notificationUpdate, setNotificationUpdate] = useState(false);
+
+  onMessageListener()
+    .then((payload) => {
+      setShow(true);
+      setNotification({
+        title: payload.notification.title,
+        body: payload.notification.body,
+      });
+      setNotificationUpdate((prev) => !prev);
+      setTimeout(() => {
+        setShow(false);
+        setNotification({ title: "", body: "" });
+      }, 3000);
+    })
+    .catch((err) => console.log("failed: ", err));
 
   return (
     <GlobalContext.Provider
@@ -88,6 +109,14 @@ export const GlobalContextProvider = ({ children }) => {
         managers,
         boats,
         employees,
+        show,
+        setShow,
+        notification,
+        setNotification,
+        notifications,
+        setNotifications,
+        notificationUpdate,
+        setNotificationUpdate,
       }}
     >
       {children}

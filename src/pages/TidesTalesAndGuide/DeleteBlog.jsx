@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 const DeleteBlog = ({ isOpen, onClose, id }) => {
   const navigate = useNavigate();
-  const handleDeletion = async () => {
+  const handleDeletion = async (e) => {
+    e.stopPropagation();
     try {
       const response = await axios.delete(`/owner/blog/${id}`);
       if (response.status === 200) {
@@ -54,8 +55,8 @@ const DeleteBlog = ({ isOpen, onClose, id }) => {
             No
           </button>
           <button
-            onClick={() => {
-              handleDeletion();
+            onClick={(e) => {
+              handleDeletion(e);
             }}
             type="button"
             className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]"

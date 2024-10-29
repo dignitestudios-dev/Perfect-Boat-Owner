@@ -8,6 +8,7 @@ import EmailVerificationSuccessModal from "../../components/onboarding/EmailVeri
 import { AuthContext } from "../../contexts/AuthContext";
 import axios from "../../axios.js";
 import { ErrorToast, SuccessToast } from "./../../components/global/Toaster";
+import getFCMToken from "../../firebase/getFcmToken.js";
 
 const OnboardVerifyOtp = () => {
   const { navigate } = useContext(GlobalContext);
@@ -56,9 +57,11 @@ const OnboardVerifyOtp = () => {
   const handleVerifyOtp = async (otp) => {
     setLoading(true);
     try {
+      const fcmToken = await getFCMToken();
       let obj = {
         email: otpEmail,
         otp: getOtpValue(),
+        fcmToken: fcmToken,
       };
       const response = await axios.post("/auth/otp/verify/email", obj);
       if (response?.status === 200) {

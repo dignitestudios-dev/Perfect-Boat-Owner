@@ -2,8 +2,9 @@ import React, { useContext, useState } from "react";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { GoKebabHorizontal } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
+import DeleteBlog from "../../pages/TidesTalesAndGuide/DeleteBlog";
 
-const BlogsCard = ({ setDeleteModalOpen, blog }) => {
+const BlogsCard = ({ blog }) => {
   const navigate = useNavigate();
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -12,14 +13,17 @@ const BlogsCard = ({ setDeleteModalOpen, blog }) => {
     setDropdownVisible((prev) => !prev);
   };
 
-  const handleEditClick = (event) => {
+  const handleEditClick = (event, id, blog) => {
     event.stopPropagation();
-    navigate(`/updateblog/${blog?._id}`);
+    navigate(`/updateblog/${blog?._id}`, { state: blog });
   };
 
-  const handleDeleteClick = (event) => {
-    event.stopPropagation();
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const handleDeleteClick = (e, id) => {
+    e.stopPropagation();
     setDeleteModalOpen(true);
+    setDeleteId(id);
   };
 
   const parseHTML = (html) => {
@@ -39,6 +43,11 @@ const BlogsCard = ({ setDeleteModalOpen, blog }) => {
           alt="blog_image"
           className="w-full h-full object-cover"
         />
+        <DeleteBlog
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          id={deleteId}
+        />
         <div className="absolute top-4 right-3">
           <button onClick={handleDotsClick} className="text-white text-lg">
             <GoKebabHorizontal className="rotate-90" />
@@ -46,13 +55,15 @@ const BlogsCard = ({ setDeleteModalOpen, blog }) => {
           {dropdownVisible && (
             <div className="absolute right-0 mt-2 w-32 bg-[#1A293D] text-white rounded-md shadow-lg">
               <button
-                onClick={handleEditClick}
+                onClick={(e) => handleEditClick(e, blog?._id, blog)}
                 className="block w-full text-left px-4 py-2 text-xs hover:bg-[#000]/10"
               >
                 Edit
               </button>
               <button
-                onClick={handleDeleteClick}
+                onClick={(e) => {
+                  handleDeleteClick(e, blog?._id);
+                }}
                 className="block w-full text-left px-4 py-2 text-xs hover:bg-[#000]/10"
               >
                 Delete

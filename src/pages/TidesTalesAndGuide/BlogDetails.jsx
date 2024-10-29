@@ -18,8 +18,8 @@ const BlogDetails = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
-  const handleEditClick = () => {
-    navigate("/updateblog");
+  const handleEditClick = (id, blog) => {
+    navigate(`/updateblog/${id}`, { state: blog });
   };
 
   const handleDeleteClick = (id) => {
@@ -53,7 +53,7 @@ const BlogDetails = () => {
             <div className="w-full flex items-center justify-between relative">
               <span className="text-[10px] font-medium text-[#199BD1]">
                 {state?.isAdmin ? "Admin" : "Owner"} |{" "}
-                {new Date(state.createdAt).toLocaleDateString("en-US", {
+                {new Date(state?.createdAt).toLocaleDateString("en-US", {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
@@ -81,7 +81,7 @@ const BlogDetails = () => {
               {dropdownVisible && (
                 <div className="absolute right-0 top-[calc(100%+0.5rem)] mt-2 w-32 bg-[#1A293D] text-white rounded-md shadow-lg">
                   <button
-                    onClick={handleEditClick}
+                    onClick={() => handleEditClick(state?._id, state)}
                     className="block w-full text-left px-4 py-2 text-xs hover:bg-[#000]/10"
                   >
                     Edit
@@ -107,7 +107,7 @@ const BlogDetails = () => {
             <div dangerouslySetInnerHTML={{ __html: state?.story }} />
           </div>
 
-          <div className="w-full flex flex-col mt-10 justify-start items-start gap-3">
+          {/* <div className="w-full flex flex-col mt-10 justify-start items-start gap-3">
             <h3 className="text-[20px] font-medium leading-[27px]">
               Explore More Maritime Musings
             </h3>
@@ -128,7 +128,7 @@ const BlogDetails = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

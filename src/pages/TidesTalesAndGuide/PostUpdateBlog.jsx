@@ -1,24 +1,106 @@
-import React, { useState, useContext } from "react";
-import BlogUpdatedModal from "./BlogUpdatedModal"; // Import BlogUpdatedModal
+import React, { useState, useContext, useEffect } from "react";
+import PublishModal from "./PublishModal"; // Make sure the path is correct
 import { GlobalContext } from "../../contexts/GlobalContext"; // Adjust the path as needed
-import BlogUpdateModal from "./BlogUpdatedModal";
-
+import { BlogContext } from "../../contexts/BlogContext";
+import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../../axios";
+import { FiLoader } from "react-icons/fi";
 const PostUpdateBlog = () => {
-  const [selectedOption, setSelectedOption] = useState('everyone');
+  const [selectedOption, setSelectedOption] = useState("everyone");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { navigate } = useContext(GlobalContext); // Use navigate from GlobalContext
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const {
+    setViewers,
+    viewers,
+    title,
+    setTitle,
+    subTitle,
+    setSubTitle,
+    story,
+    setStory,
+    imageText,
+    setImageText,
+    coverFile,
+    setCoverFile,
+    coverUrl,
+    setCoverUrl,
+  } = useContext(BlogContext);
+
+  const [loading, setLoading] = useState(false);
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+    setViewers(event.target.value);
   };
 
-  const handlePublish = () => {
-    console.log("Publishing for:", selectedOption);
-    setIsModalOpen(true); // Open the BlogUpdatedModal
+  useEffect(() => {
+    setViewers(selectedOption);
+  }, []);
+
+  function createHtmlTemplate(content, title, subtitle) {
+    return `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="${subtitle}">
+    <style>
+      /* You can add custom styles here */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: transparent;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    ${content}
+  </body>
+  </html>
+  `;
+  }
+
+  const handlePublish = async () => {
+    try {
+      setLoading(true);
+      const formdata = new FormData();
+      formdata.append("title", title);
+      {
+        coverFile && formdata.append("cover", coverFile);
+      }
+      formdata.append("subTitle", subTitle);
+      formdata.append("imageTitle", imageText);
+      formdata.append("story", createHtmlTemplate(story, title, subTitle));
+      formdata.append("viewer", viewers);
+      const response = await axios.put(`/owner/blog/${id}`, formdata);
+      if (response.status === 200) {
+        // Update the blogsData to remove the deleted blog
+        SuccessToast("Blog updated successfully");
+
+        setIsModalOpen(true);
+
+        setCoverFile(null);
+        setCoverUrl(null);
+        setTitle("");
+        setStory("");
+        setSubTitle("");
+        setImageText("");
+        setViewers("");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      ErrorToast(error?.response?.data?.message);
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
-    navigate('/blog/createnewblog'); // Redirect to the desired path
+    navigate("/blog/createnewblog"); // Redirect to the desired path
   };
 
   return (
@@ -32,17 +114,20 @@ const PostUpdateBlog = () => {
           Cancel
         </button>
         <button
-          className="text-white bg-[#199BD1] ml-2 px-6 py-2 rounded-lg hover:bg-[#147BA1]"
+          className="text-white bg-[#199BD1] ml-2 px-3 flex justify-center items-center gap-1 py-2 rounded-lg hover:bg-[#147BA1]"
           onClick={handlePublish}
         >
-          Update Now
+          Publish Now
+          {loading && <FiLoader className="animate-spin text-lg ml-1" />}
         </button>
       </div>
 
       {/* Centered Publish Section */}
       <div className="flex justify-center items-center">
         <div className="rounded-[18px] p-6 flex flex-col items-center gap-4 bg-[#0D1B2A]">
-          <h2 className="text-white text-[26px] font-semibold text-center">Publish</h2>
+          <h2 className="text-white text-[26px] font-semibold text-center">
+            Publish
+          </h2>
 
           {/* Radio Options */}
           <div className="bg-[#0D1B2A] w-[756px] h-[167px] rounded-[12px] p-6 flex flex-col justify-center gap-4 border-[#D9D9D9] border">
@@ -52,7 +137,7 @@ const PostUpdateBlog = () => {
                 <input
                   type="radio"
                   value="everyone"
-                  checked={selectedOption === 'everyone'}
+                  checked={selectedOption === "everyone"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />
@@ -61,75 +146,36 @@ const PostUpdateBlog = () => {
               <label className="flex items-center mt-2">
                 <input
                   type="radio"
-                  value="managers"
-                  checked={selectedOption === 'managers'}
+                  value="manager"
+                  checked={selectedOption === "manager"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />
-                <span className="ml-3 text-white text-[14px]">Only for Managers</span>
+                <span className="ml-3 text-white text-[14px]">
+                  Only for Managers
+                </span>
               </label>
               <label className="flex items-center mt-2">
                 <input
                   type="radio"
                   value="employees"
-                  checked={selectedOption === 'employees'}
+                  checked={selectedOption === "employees"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />
-                <span className="ml-3 text-white text-[14px]">Only for Employees</span>
-              </label>
-            </div>
-          </div>
-          <div className="bg-[#0D1B2A] w-[756px] h-[167px] rounded-[12px] p-6 flex flex-col justify-center gap-4 border-[#D9D9D9] border">
-            <span className="text-[16px] text-white">Allow comments form....</span>
-            <div className="flex flex-col">
-              <label className="flex">
-                <input
-                  type="radio"
-                  value="everyone"
-                  checked={selectedOption === 'everyone'}
-                  onChange={handleOptionChange}
-                  className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
-                />
-                <span className="ml-3 text-white text-[14px]">Everyone</span>
-              </label>
-              <label className="flex items-center mt-2">
-                <input
-                  type="radio"
-                  value="managers"
-                  checked={selectedOption === 'managers'}
-                  onChange={handleOptionChange}
-                  className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
-                />
-                <span className="ml-3 text-white text-[14px]">Only for Managers</span>
-              </label>
-              <label className="flex items-center mt-2">
-                <input
-                  type="radio"
-                  value="employees"
-                  checked={selectedOption === 'employees'}
-                  onChange={handleOptionChange}
-                  className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
-                />
-                <span className="ml-3 text-white text-[14px]">Only for Employees</span>
-              </label>
-              <label className="flex items-center mt-2">
-                <input
-                  type="radio"
-                  value="employees"
-                  checked={selectedOption === 'employees'}
-                  onChange={handleOptionChange}
-                  className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
-                />
-                <span className="ml-3 text-white text-[14px]">No one (Disable Comments)</span>
+                <span className="ml-3 text-white text-[14px]">
+                  Only for Employees
+                </span>
               </label>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Blog Updated Modal */}
-      <BlogUpdatedModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      {/* Publish Modal */}
+      {isModalOpen && (
+        <PublishModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      )}
     </div>
   );
 };

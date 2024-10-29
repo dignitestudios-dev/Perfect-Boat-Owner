@@ -33,7 +33,9 @@ export const BlogsContainer = ({ data, loading, onDeleteBlog }) => {
   return (
     <div className="h-auto w-full flex flex-col justify-start items-center">
       <div className="w-full h-[237px] rounded-t-[18px] flex flex-col gap-1 items-center justify-center bg-gradient text-white">
-        <h2 className="text-[36px] font-bold leading-[48.6px]">Tides, Tales & Guides</h2>
+        <h2 className="text-[36px] font-bold leading-[48.6px]">
+          Tides, Tales & Guides
+        </h2>
         <p className="text-[20px] font-medium leading-[27px] text-center">
           Set Sail Through Stories: Where Every Wave Carries A Tale
         </p>
@@ -59,18 +61,13 @@ export const BlogsContainer = ({ data, loading, onDeleteBlog }) => {
 
         <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Map through the data array and pass individual blog objects to BlogsCard */}
-          {data?.map((blog,index) => (
-              <BlogsCard 
-                key={index} 
-                blog={blog} 
-                setDeleteModalOpen={() => openDeleteModal(blog._id)} // Pass function to open modal with blog ID
-              />
-            )
-          )}
+          {data?.map((blog, index) => (
+            <BlogsCard key={index} blog={blog} />
+          ))}
         </div>
 
         {/* Render DeleteBlog modal with onConfirm to handle deletion */}
-        <DeleteBlog isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={handleDeleteBlog} />
+        {/* <DeleteBlog isOpen={isDeleteModalOpen} onClose={closeDeleteModal} onConfirm={handleDeleteBlog} /> */}
       </div>
     </div>
   );
