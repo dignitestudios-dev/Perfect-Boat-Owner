@@ -53,7 +53,7 @@ const RecurringDaysInputField = ({toggleRecurringDropdown,selectedDay,RecurringR
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleSelectDay(customRecurring,customRecurring+"days");
+                          handleSelectDay(customRecurring,customRecurring+" days");
                         }}
                         className="w-[95%] h-[42px] rounded-md bg-[#119bd1] text-white flex items-center 
                             justify-center text-sm font-medium"

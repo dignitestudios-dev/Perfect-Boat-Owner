@@ -21,7 +21,20 @@ const statusLiteColors = {
   "completed":"#1FBA46"
 };
 
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task"
+};
+
 const TasksCard = ({ getTasks, data}) => {
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
 
   const { navigate } = useContext(GlobalContext);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -52,7 +65,7 @@ const TasksCard = ({ getTasks, data}) => {
              bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
              style={{ color: statusColors[data?.status] || statusColors["default"] }}
              >
-              {data?.status}
+              {getFormattedStatus(data?.status)}
             </span>
           </div>
           <div className="w-auto flex flex-col justify-start items-start gap-1">

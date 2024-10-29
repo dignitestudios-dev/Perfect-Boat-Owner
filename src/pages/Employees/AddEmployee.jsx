@@ -10,7 +10,7 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
 
 const AddEmployee = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isImportCSVModalOpen, setIsImportCSVModalOpen] = useState(false);
@@ -60,6 +60,7 @@ const AddEmployee = () => {
     // setTasksError("");
     if(!passSelectedManager?.id){
       setManagerError("Please select manager")
+      return;
     }
     // if(!tasks || tasks.length === 0){
     //   setTasksError("At least one task must be assigned")
@@ -76,6 +77,7 @@ const AddEmployee = () => {
     };
       const response = await axios.post("/owner/employees", employeeData);
       if(response.status === 200){
+        setUpdateEmployee((prev)=>!prev)
         SuccessToast("Employee Created")
         navigate("/employees","Employee List")
       }

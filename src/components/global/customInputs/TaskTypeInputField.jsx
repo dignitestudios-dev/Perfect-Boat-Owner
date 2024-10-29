@@ -46,7 +46,7 @@ const TaskTypeInputField = ({toggleTaskTypeDropdown,selectedTaskType,isTaskTypeD
                           onClick={() => handleTaskTypeSelection(taskType)}
                           className="text-gray-300 w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
                         >
-                          {taskType}
+                          {taskType?.replace(/([A-Z])/g, ' $1')?.trim()}
                         </button>
                       ))}
                       <button

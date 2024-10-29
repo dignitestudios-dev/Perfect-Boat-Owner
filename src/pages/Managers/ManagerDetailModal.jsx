@@ -3,8 +3,9 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
-const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess,
+const ManagerDetailModal = ({managerId="", setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess,
    handleManagerModal, selectedManager, setSelectedManager}) => {
+   console.log("🚀 ~ selectedManager:", selectedManager)
   const { managers, loadingManagers } = useContext(GlobalContext);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,8 +16,8 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
   const [selectedManagers, setSelectedManagers] = useState([managers]);
 
   const filteredData = managers?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-);
+    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) && item._id !== managerId
+  );
 
   const jobTitles = ["Manager", "Engineer", "Developer"];
   const locations = [
@@ -51,9 +52,11 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
         setSelectedManagers([...selectedManagers, { id: managerId, name: managerName }]);
       }
     }else{
+      
       if (selectedManager?.id === managerId) {
         setSelectedManager(null);
       } else {
+    console.log("🚀 ~ handleSelectManager ~ managerId:", managerId)
         setSelectedManager({id: managerId, name: managerName});
       }
     }

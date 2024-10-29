@@ -295,7 +295,7 @@ const EditManager = () => {
                       register={register("phone", {
                         required: "Please enter your phone number.",
                         pattern: {
-                          value: /^\+?[0-9]{11}$/,
+                          value: /^\+?[0-9]{10}$/,
                           message: "Please enter a valid phone number.",
                         },
                       })}

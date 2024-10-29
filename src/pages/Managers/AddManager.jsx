@@ -190,13 +190,14 @@ const AddManager = () => {
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
                             <input
-                              type="text"
+                              type="email"
                               value={form?.email}
                               onChange={(e) =>
                                 handleChange(index, "email", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Name"}
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400
+                               autofill:bg-transparent autofill:text-white"
+                              placeholder={"Enter Email"}
                             />
                           </div>
                           {/* {errors.length && (
@@ -265,9 +266,13 @@ const AddManager = () => {
                             <input
                               type="text"
                               value={form?.phone}
-                              onChange={(e) =>
-                                handleChange(index, "phone", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                // Allow only digits and restrict to 10 digits
+                                if (/^\d{0,10}$/.test(value)) {
+                                  handleChange(index, "phone", value);
+                                }
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Phone Number"}
                             />

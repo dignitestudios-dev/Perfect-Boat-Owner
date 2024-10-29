@@ -265,7 +265,7 @@ const TaskDetail = () => {
             <div className="w-full grid grid-cols-1 gap-12 mt-4">
               <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                 <label className="text-[16px] font-medium leading-[21.6px]">
-                  Note
+                  Add Note
                 </label>
                 <textarea
                   disabled={!isEdit}

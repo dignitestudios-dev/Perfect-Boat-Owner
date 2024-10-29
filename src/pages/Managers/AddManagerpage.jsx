@@ -13,7 +13,7 @@ import BoatSelectModal from "../Fleet/BoatSelectModal";
 import { FiLoader } from "react-icons/fi";
 
 const AddManagerpage = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, setUpdateManager } = useContext(GlobalContext);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -92,12 +92,13 @@ const AddManagerpage = () => {
         name: data.name,
         password: "Test@123",
         phone: data.phone,
-        assignEmployees: [passSelectedEmployee?.id],
-        accessBoat: passSelectedBoat?.map(item =>item.id),
+        ...(passSelectedEmployee?.id && { assignEmployees: [passSelectedEmployee.id] }),
+        // accessBoat: passSelectedBoat?.map(item =>item.id),
       };
       const response = await axios.post("/owner/manager", managerData);
       console.log("Response:", response);
       if(response.status === 200){
+        setUpdateManager((prev)=> !prev);
         setIsEmployeeOpen(true);
         reset();
       }
@@ -159,7 +160,7 @@ const AddManagerpage = () => {
                label={"Phone Number"}
                register={register(`phone`, {required: "Please enter your phone number.",
                  pattern: {
-                   value: /^\+?[0-9]{11}$/,
+                   value: /^\+?[0-9]{10}$/,
                    message: "Please enter a valid phone number.",
                  },})}
                text={"Phone Number"}
@@ -187,7 +188,7 @@ const AddManagerpage = () => {
                 label={"Assign Employee"}
                 type="text"
                 placeholder="Click here to assign"
-                register={register("employee", { required: "Please select employee" })}
+                register={register("employee")}
                 error={errors.employee}
               />
             </div>

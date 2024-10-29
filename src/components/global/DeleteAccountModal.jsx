@@ -9,9 +9,14 @@ const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
   const [reasonError, setReasonError] = useState(null)
   
   const reasons = [
-    "Account Deletion reason goes here1",
-    "Account Deletion reason goes here2",
-    "Account Deletion reason goes here3",
+    "Role Change",
+    "Performance Issues",
+    "Contract Expiration",
+    "End of Project",
+    "Compliance Reasons",
+    "Redundancy",
+    "Misconduct",
+    "Mutual Agreement"
   ];
   
   const handleCheckboxChange = (reason) => {

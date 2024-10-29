@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import AccountDeletedModal from "./AccountDeletedModal";
-import EmployeeDetailModal from "../../pages/Managers/ManagerDetailModal"
+import ManagerDetailModal from "../../pages/Managers/ManagerDetailModal"
 import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "./Toaster";
@@ -20,6 +20,7 @@ const DeleteManagerAccount = () => {
     const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] = useState(false);
     const [isAccountDeletedModalOpen, setIsAccountDeletedModalOpen] = useState(false);
     const [passSelectedManager, SetPassSelectedManager] = useState("");
+    const [selectedManager, setSelectedManager] = useState("")
     
     const [loading, setLoading] = useState(false)
     const [deleteLoad,setDeleteLoad] = useState(false)
@@ -84,7 +85,6 @@ const DeleteManagerAccount = () => {
           const response = await axios.get(`/owner/manager/${id}`)
           if(response?.status === 200){
             setUserData(response?.data?.data)
-            
           }
         }
         catch(err){
@@ -245,17 +245,19 @@ const DeleteManagerAccount = () => {
 
         {/* EmployeeDetailModal Component */}
         {isBoatModalOpen && (
-        <EmployeeDetailModal SetPassSelectedManager={SetPassSelectedManager} isMultiple= {false} setIsOpen={setIsBoatModalOpen} />
+        <ManagerDetailModal managerId={id} SetPassSelectedManager={SetPassSelectedManager}
+         isMultiple= {false} setIsOpen={setIsBoatModalOpen} setSelectedManager={setSelectedManager} selectedManager={selectedManager} />
         )}
 
         {/* AssignManagerModal Component */}
-        {isAssignEmployeeModalOpen && (
+        {/* {isAssignEmployeeModalOpen && (
           <AssignManagerModal
+          managerId={id}
             isOpen={isAssignEmployeeModalOpen}
             onClose={() => setIsAssignEmployeeModalOpen(false)}
             SetPassSelectedManager={SetPassSelectedManager}
           />
-        )}
+        )} */}
 
         {/* AccountDeletedModal Component */}
         {isAccountDeletedModalOpen && (

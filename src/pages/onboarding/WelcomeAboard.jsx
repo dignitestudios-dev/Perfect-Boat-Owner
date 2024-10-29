@@ -10,9 +10,9 @@ import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { FaTrashAlt } from "react-icons/fa";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { boatType } from "../../data/TaskTypeData";
 
 const WelcomeAboard = () => {
-  const boatType = ["Yatch", "Sail Boat", "Console Cruiser", "Cabin Cruiser"];
   const [selectedBoat, setSelectedBoat] = useState([]);
 
   const [formImage, setFormImage] = useState("");
@@ -49,7 +49,6 @@ const WelcomeAboard = () => {
   };
 
   const [coverImages, setCoverImages] = useState("");
-  console.log("🚀 ~ WelcomeAboard ~ coverImages:", coverImages);
   const [coverError, setCoverError] = useState(Array(forms.length).fill(null));
 
   const handleImageSelect = (formIndex, imageIndex) => {
@@ -89,12 +88,13 @@ const WelcomeAboard = () => {
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
 
   const submitBoatData = async (formData) => {
+    setLoading(true); 
     const successfulForms = [];
     const formErrors = {};
-
+  
     try {
-      setLoading(true);
-      forms.forEach(async (formIndex) => {
+      // Use `for...of` loop to handle async code correctly
+      for (const formIndex of forms) {
         const data = new FormData();
         console.log("form =? ", formData.forms[formIndex].name);
         data.append("name", formData.forms[formIndex].name);
@@ -103,18 +103,19 @@ const WelcomeAboard = () => {
         data.append("location", formData.forms[formIndex].location);
         data.append("boatType", selectedBoat[formIndex]);
         data.append("model", formData.forms[formIndex].model);
-
+  
+        // Handle cover image validation
         if (coverImages[formIndex] === undefined) {
           formErrors[formIndex] = "Please select a cover image.";
-
           setCoverError((prevErrors) => {
             const newErrors = [...prevErrors];
             newErrors[formIndex] = formErrors[formIndex];
             return newErrors;
           });
-          return;
+          continue; // Skip this form if there's an error
         }
-
+  
+        // Handle other images
         if (formData.forms[formIndex].images) {
           formData.forms[formIndex].images.forEach((fileList, imageIndex) => {
             if (fileList.length > 0 && fileList[0]) {
@@ -126,25 +127,20 @@ const WelcomeAboard = () => {
             }
           });
         }
-
+  
         try {
           const response = await axios.post("/owner/boat", data);
           if (response.status === 200) {
-            // If successful, push to successfulForms
             successfulForms.push(formIndex);
             if (formIndex + 1 === forms.length) {
-              setIsAddManagerOpen(true);
+              setIsAddManagerOpen(true); // Open modal if it's the last form
             }
           }
         } catch (error) {
           ErrorToast(error?.response?.data?.message);
         }
-
-        // const response = await axios.post('/owner/boat', data)
-        // if (response.status === 200) {
-        //   successfulForms.push(formIndex);
-        // }
-      });
+      }
+  
       if (successfulForms.length > 0) {
         setForms((prevForms) =>
           prevForms.filter((_, index) => !successfulForms.includes(index))
@@ -153,7 +149,7 @@ const WelcomeAboard = () => {
     } catch (error) {
       ErrorToast(error?.response?.data?.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loader after all forms are processed
     }
   };
 
@@ -198,7 +194,7 @@ const WelcomeAboard = () => {
                           Boat Type
                         </label>
                         <div className="group  w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl hover:rounded-b-none hover:rounded-t-xl relative">
-                          <span className="text-gray-400">
+                          <span className="text-white">
                             {selectedBoat.length > 0
                               ? selectedBoat[idx]
                               : "--Select--"}
@@ -211,7 +207,7 @@ const WelcomeAboard = () => {
                          duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
                           >
                             <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
-                              {boatType.map((boat, index) => (
+                              {boatType?.map((boat, index) => (
                                 <button
                                   type="button"
                                   key={index}
