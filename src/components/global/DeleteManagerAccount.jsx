@@ -53,11 +53,11 @@ const DeleteManagerAccount = () => {
     const handleDelete = async () => {
         setDeleteLoad(true)
     try {
-      const boatData = {
-        boats: userData?.BoatAccess?.map((boat)=>boat?._id)
+      const employeeData = {
+        employees: userData?.employees?.map((employee)=>employee?._id)
       }
 
-      const putResponse = await axios.put(`/owner/manager/${passSelectedManager?.id}/boat`, boatData);
+      const putResponse = await axios.put(`/owner/manager/${passSelectedManager?.id}/employees/assign`, employeeData);
       if (putResponse?.status === 200) {
         const obj = {
           reason: reasonForDelete,

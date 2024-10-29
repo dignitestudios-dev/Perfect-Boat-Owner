@@ -44,7 +44,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
 
   const filteredBoats = boats?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+);
+console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
 
   const handleOpenSelectBoatsModal = () => {
     setIsSelectBoatsModalOpen(true);
@@ -85,7 +86,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   const handleSelectBoat = (boats) => {
     const isSelected = selectedBoats.some((boat) => boat?._id === boats._id);
     if (isSelected) {
-      setSelectedBoats(selectedBoats.filter((boat) => boat?._id !== boats._id));
+      setSelectedBoats(selectedBoats.filter((boat) => boat?._id !== boats._id));  
     } else {
       setSelectedBoats([
         ...selectedBoats, boats
@@ -117,6 +118,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
         setIsBoatManagerAccessOpen(true);
         setIsSelectBoatsModalOpen(false);
         setUpdateBoat((prev)=> !prev);
+        getManagerById()
       }
     }
     catch(err){
@@ -228,7 +230,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                     />
                       <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                         <img
-                          src={boat?.images[0]}
+                          src={boat?.cover}
                           alt="boat_image"
                           style={{
                             width: "100%",

@@ -3,7 +3,8 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
-const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess, handleManagerModal}) => {
+const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess,
+   handleManagerModal, selectedManager, setSelectedManager}) => {
   const { managers, loadingManagers } = useContext(GlobalContext);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,7 +12,6 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
   const [locationFilter, setLocationFilter] = useState(false);
   const jobTitleRef = useRef(null);
   const locationRef = useRef(null);
-  const [selectedManager, setSelectedManager] = useState(null);
   const [selectedManagers, setSelectedManagers] = useState([managers]);
 
   const filteredData = managers?.filter((item) =>

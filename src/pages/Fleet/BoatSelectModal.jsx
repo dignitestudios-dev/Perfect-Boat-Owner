@@ -120,8 +120,8 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
               Done
             </button>
           </div>
-          <div className="mt-4">
-            {isMultiple &&
+          <div className="mt-4 mb-2">
+            {/* {isMultiple &&
             <label className="flex items-center text-white/50">
               <input
                 type="checkbox"
@@ -130,7 +130,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
                 onChange={handleSelectAll}
               />
               Select All
-            </label>}
+            </label>} */}
           </div>
 
           <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">

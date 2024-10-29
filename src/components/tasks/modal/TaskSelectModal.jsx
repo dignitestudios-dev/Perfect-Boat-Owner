@@ -51,6 +51,7 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
   const filteredData = tasksList?.filter((item) =>
     item?.task?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">

@@ -22,6 +22,7 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
   const [managerId, setManagerId] = useState("")
+  const [deactivateLoading, setDeactivateLoading] = useState(false)
 
   const filteredData = data.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -53,6 +54,7 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
 
   const handleDeactivate = async () => {
     try {
+      setDeactivateLoading(true)
       const obj = { reason: "Deactivate"}
       const response = await axios.delete(`/owner/manager/${managerId}?deactivate=true`, {data: obj });
 
@@ -67,6 +69,9 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
     } catch (err) {
       console.log("error call")
       ErrorToast(err?.response?.data?.message);
+    }
+    finally{
+      setDeactivateLoading(false)
     }
   };
 
@@ -167,6 +172,7 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
               onClose={handleCloseModal}
               onDeactivate={handleDeactivate}
               onDelete={()=>handleDelete()}
+              deactivateLoading={deactivateLoading}
             />
             <DeactivateAccountModal
               isOpen={isDeactivateModalOpen}

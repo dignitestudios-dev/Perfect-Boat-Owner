@@ -133,7 +133,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                   />*/}
                   <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                   <img
-                src={boat?.images[0]}
+                src={boat?.cover}
                 alt="boat_image"
                 style={{ width: '100%',  height: '100%', borderRadius: '8px',  objectFit: 'cover',  }}
               />

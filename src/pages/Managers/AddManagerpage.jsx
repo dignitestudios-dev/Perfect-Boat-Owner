@@ -163,10 +163,11 @@ const AddManagerpage = () => {
                  },})}
                text={"Phone Number"}
                placeholder={"Type phone number here"}
+               maxLength="10"
                type={"text"}
                error={errors?.phone}
                onInput={(e) => {
-                 e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, ""); // Allow only digits
+                 e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, "");
                }}
               />
             </div>

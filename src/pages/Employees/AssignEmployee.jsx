@@ -21,6 +21,7 @@ const AssignEmployee = () => {
 );
 const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
 const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+const [selectedManager, setSelectedManager] = useState(null);
 
 const toggleJobTitleDropdown = () => {
   setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -168,7 +169,8 @@ const toggleLocationDropdown = () => {
 
         {/* EmployeeDetailModal Component */}
         {isBoatModalOpen && (
-          <ManagerDetailModal setIsOpen={setIsBoatModalOpen} SetPassSelectedManager={SetPassSelectedManager}/>
+          <ManagerDetailModal setIsOpen={setIsBoatModalOpen} SetPassSelectedManager={SetPassSelectedManager}
+          selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
         )}
 
         {/* AssignEmployeeModal Component */}

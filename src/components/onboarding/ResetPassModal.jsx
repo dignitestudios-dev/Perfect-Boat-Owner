@@ -6,9 +6,12 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
   
   if (!isOpen) return null;
   const [password, setPassword] = useState({ new: "", confirm: "" });
-  console.log("🚀 ~ ResetPasswordModal ~ password:", password)
+  const [formErrors, setFormErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false)
   
   const handleChange = (e) => {
+    setFormErrors({})
     const { name, value } = e.target;
     setPassword((prevPassword) => ({
       ...prevPassword,
@@ -17,7 +20,19 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
   };
 
   const handleResetPassword=async()=>{
+    const errors = {};
+    if (!password.new) {
+      errors.new = "New password is required";
+    }
+    if (!password.confirm) {
+      errors.confirm = "Confirm password is required";
+    }
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
     try{
+      setLoading(true)
       const obj = {
         newPassword:password.new,
         confirmPassword:password.confirm
@@ -29,10 +44,11 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
       }
     }
     catch(err){
+      setErrorMessage(err?.response?.data?.message)
     console.log("🚀 ~ handleResetPassword ~ err:", err)
 
     }finally{
-
+      setLoading(false)
     }
   }
 
@@ -48,6 +64,9 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
             ✕
           </button>
         </div>
+        <div className='flex justify-start items-center w-full'>
+        <p className="text-red-500 text-sm -mt-3 mb-1">{errorMessage}</p>
+        </div>
         <div>
           <label className="block mb-2 text-[16px]">New Password</label>
           <input
@@ -57,6 +76,7 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
             type="password"
             className="w-[485px] h-[52px] p-2 mb-4 bg-[#1A293D] rounded-xl"
           />
+           {formErrors.new && <p className="text-red-500 text-sm -mt-3 mb-1">{formErrors.new}</p>}
         </div>
         <div>
           <label className="block mb-2 text-[16px]">Confirm Password</label>
@@ -67,12 +87,14 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
             type="password"
             className="w-[485px] h-[52px] p-2 mb-8 bg-[#1A293D] rounded-xl focus:outline-none"
           />
+          {formErrors.confirm && <p className="text-red-500 text-sm -mt-6 mb-3">{formErrors.confirm}</p>}
         </div>
         <button
+        disabled={loading}
           className="w-[485px] h-[54px] text-[16px] py-2 bg-[#199BD1] rounded-xl text-md font-medium"
           onClick={handleResetPassword}
         >
-          Reset Password
+          {loading ? "Resetting..." : "Reset Password"}
         </button>
       </div>
     </div>

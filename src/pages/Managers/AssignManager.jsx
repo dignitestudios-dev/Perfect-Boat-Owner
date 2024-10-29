@@ -39,6 +39,8 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [passSelectedManager, SetPassSelectedManager] = useState("")
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [assignLoading, setAssignLoading] = useState(false)
+  const [selectedManager, setSelectedManager] = useState(null);
+
 
   const handleSelectEmployee = (employeeId, employeeName) => {
       const isSelected = selectedEmployees.some((employee) => employee?.id === employeeId);
@@ -196,7 +198,8 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
 
         {/* EmployeeDetailModal Component */}
         {isBoatModalOpen && (
-          <ManagerDetailModal setIsOpen={setIsBoatModalOpen} SetPassSelectedManager={SetPassSelectedManager}/>
+          <ManagerDetailModal setIsOpen={setIsBoatModalOpen} SetPassSelectedManager={SetPassSelectedManager} 
+          selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
         )}
 
         {/* AssignManagerModal Component */}

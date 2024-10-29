@@ -83,7 +83,7 @@ const TasksCard = ({ getTasks, data}) => {
               onClick={(e) => {
                 e.stopPropagation();
                 setDeleteModalOpen(true); // Open modal when delete icon is clicked
-              }}
+              }} 
             >
               <MdDelete className="text-[#fff]/[0.5] text-lg" />
             </button>

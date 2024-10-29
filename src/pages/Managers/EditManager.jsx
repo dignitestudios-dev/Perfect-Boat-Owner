@@ -93,6 +93,7 @@ const EditManager = () => {
   const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
   const [boatList, setBoatList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedManager, setSelectedManager] = useState(null);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -289,6 +290,7 @@ const EditManager = () => {
                     <AddFleetInput
                       label={"Phone Number"}
                       type="text"
+                      maxLength="10"
                       placeholder="Enter Phone Number"
                       register={register("phone", {
                         required: "Please enter your phone number.",
@@ -378,7 +380,7 @@ const EditManager = () => {
               <ManagerDetailLoader />
             ) : (
               <>
-                {employeesList?.map((employ, index) => (
+                {employeesList?.slice(0, 4)?.map((employ, index) => (
                   <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                     <span className="w-full flex justify-start items-center">
                       {employ?.name || "--"}
@@ -511,7 +513,9 @@ const EditManager = () => {
 
       {isManagerDetailModalOpen && (
         <ManagerDetailModal
-          setIsOpen={setIsManagerDetailModalOpen} // Pass the function to close the modal
+          setIsOpen={setIsManagerDetailModalOpen} 
+          selectedManager={selectedManager} 
+          setSelectedManager={setSelectedManager}
         />
       )}
 

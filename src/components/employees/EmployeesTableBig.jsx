@@ -27,6 +27,7 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [deactivateLoading, setDeactivateLoading] = useState(false)
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -66,20 +67,21 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
   };
 
   const handleDeactivate = async() => {
-
+    setDeactivateLoading(true)
     try {
       const obj = { reason: "Deactivate"}
       const response = await axios.delete(`/owner/employees/${employeeId}?deactivate=true`, {data: obj });
 
-      console.log("🚀 ~ handleDeactivate ~ response:", response)
       if (response?.status === 200) {
         setUpdateEmployee((prev) => !prev);
         setIsDeactivateModalOpen(true);
         setIsModalOpen(false);
         getEmployees()
+        setDeactivateLoading(false)
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
+      setDeactivateLoading(false)
     }
   };
 
@@ -182,6 +184,7 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
         onClose={handleCloseModal} 
         onDeactivate={handleDeactivate} 
         onDelete={()=>handleDelete()} 
+        deactivateLoading={deactivateLoading}
       />
       
        <DeactivateAccountModal
