@@ -8,7 +8,7 @@ importScripts(
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APP_FIREBASE_KEY,
+  apiKey: "AIzaSyCNULMCZvOCVls44q6r4_bL7ZBj4G-2Oxs",
   authDomain: "perfectboat-1afb7.firebaseapp.com",
   projectId: "perfectboat-1afb7",
   storageBucket: "perfectboat-1afb7.appspot.com",
