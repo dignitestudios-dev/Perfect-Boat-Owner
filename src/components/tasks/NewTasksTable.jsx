@@ -30,6 +30,7 @@ const NewTaskTable = () => {
   }, []);
 
   const [data, setData] = useState([]);
+  console.log("🚀 ~ NewTaskTable ~ data:", data)
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 

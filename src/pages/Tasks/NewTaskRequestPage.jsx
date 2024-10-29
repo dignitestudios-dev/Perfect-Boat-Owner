@@ -102,7 +102,7 @@ const NewTaskRequestPage = () => {
               {task?.task?.taskType}
             </span>
             <span className="w-full flex justify-start items-center">
-              {moment(task?.task?.taskType).format('YYYY-MM-DD')}
+              {moment(task?.task?.taskType)?.format('YYYY-MM-DD')}
             </span>
             <span className="w-full flex justify-start items-center"
             >
@@ -217,6 +217,7 @@ const NewTaskRequestPage = () => {
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleDeleteConfirm}
+        _id={task?._id}
       />
     </div>
   );

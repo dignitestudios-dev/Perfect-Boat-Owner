@@ -78,7 +78,7 @@ const AssignedTasksTable = ({setIsModalOpen,handleDateModalOpen, boatsData, open
                       className="w-full flex justify-start items-center"
                       // onClick={() => navigate("/tasks/1", "All Tasks")}
                     >
-                      {item?.task}
+                      {item?.boat?.name}
                     </span>
                     <span
                       className="w-full flex justify-start items-center "
