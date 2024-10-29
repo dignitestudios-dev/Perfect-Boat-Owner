@@ -7,28 +7,28 @@ import BoatsLoader from "./BoatsLoader";
 import { MdDelete } from "react-icons/md";
 import DeletedModal from "../global/DeletedModal";
 
-const debounce = (func, delay) => {
-  let timeout;
-  return (...args) => {
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
-};
+// const debounce = (func, delay) => {
+//   let timeout;
+//   return (...args) => {
+//     if (timeout) clearTimeout(timeout);
+//     timeout = setTimeout(() => {
+//       func(...args);
+//     }, delay);
+//   };
+// };
 
-const BoatsTable = ({data , loading, getBoats, pageNumber}) => {
+const BoatsTable = ({data , loading}) => {
   const { navigate } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
   const [search, setSearch] = useState("");
-  let rows = 15;
+  // let rows = 15;
 
-  // const filteredData = data.filter((item) =>
-  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  // );
+  const filteredData = data.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  );
 
   const boatTypes = ["Type 1", "Type 2", "Type 3"];
   const locations = [
@@ -65,17 +65,18 @@ const BoatsTable = ({data , loading, getBoats, pageNumber}) => {
     navigate(`/boats/${boat?._id}`, {state:{boat}})
   }
 
-  const debouncedGetBoats = useCallback(
-    debounce((pageNumber, rows, search) => getBoats(pageNumber, rows, search), 500),
-    []
-  );
+  // const debouncedGetBoats = useCallback(
+  //   debounce((pageNumber, rows, search) => getBoats(pageNumber, rows, search), 500),
+  //   []
+  // );
 
   
-  useEffect(() => {
-    if (search.trim()) {
-      debouncedGetBoats(pageNumber, rows, search);
-    }
-  }, [search, debouncedGetBoats]);
+  // useEffect(() => {
+  //   if (search.trim()) {
+  //     debouncedGetBoats(pageNumber, rows, search);
+  //   }
+  // }, [search, debouncedGetBoats]);
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       {/* <DeletedModal isOpen={isDeleteModalOpen} _id={deleteId}

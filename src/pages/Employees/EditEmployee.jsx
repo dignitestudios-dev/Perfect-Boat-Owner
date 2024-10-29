@@ -487,7 +487,7 @@ const EditEmployee = () => {
                               statusColors[task?.status] ||
                               statusColors["default"],
                           }}
-                          className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
+                          className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
                         >
                           {task?.status}
                         </span>

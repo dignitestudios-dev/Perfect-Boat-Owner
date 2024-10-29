@@ -21,7 +21,7 @@ const Pagination = ({page, totalPages, rowsPerPage, onPageChange, selectedFilter
           <button
             key={i}
             className={`relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle 
-              font-sans text-xs font-medium uppercase ${i === +page ? 'bg-[#03070b] text-white' : 'text-[#001229]'} 
+              font-sans text-xs font-medium uppercase ${i === +page ? 'bg-[#03070b] text-white' : 'text-white'} 
               transition-all hover:bg-[#001229] hover:text-white active:bg-[#001229] disabled:pointer-events-none 
               disabled:opacity-50 disabled:shadow-none`}
             type="button"
@@ -109,8 +109,8 @@ const Pagination = ({page, totalPages, rowsPerPage, onPageChange, selectedFilter
     <div className="flex items-center gap-4">
     <button
       disabled={+page === 1}
-      className="flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray-900 uppercase
-       align-middle transition-all rounded-lg select-none hover:bg-gray-500 active:bg-gray-900/20 
+      className="flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white uppercase
+       align-middle transition-all rounded-lg select-none hover:bg-gray-900 active:bg-gray-900/20 
        disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       type="button"
       onClick={() => handlePageClick(+page - 1)}
@@ -128,8 +128,8 @@ const Pagination = ({page, totalPages, rowsPerPage, onPageChange, selectedFilter
 
     <button
       disabled={+page === totalPages}
-      className="flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray-900 
-      uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-500 active:bg-gray-900/20
+      className="flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-white 
+      uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900 active:bg-gray-900/20
        disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       type="button"
       onClick={() => handlePageClick(+page + 1)}
