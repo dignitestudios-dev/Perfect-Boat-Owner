@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { FiX } from "react-icons/fi";
+import React, { useContext, useEffect, useState } from "react";
+import { FiLoader, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { BlogBoat } from "../../assets/export";
 import DateModal from "../../components/tasks/DateModal";
@@ -36,6 +36,8 @@ const Preview = () => {
     navigate("/blog/createnewblog"); // Navigate to the /blog/createnewblog route when X is clicked
   };
 
+  const [loading, setLoading] = useState(false);
+
   const parseHTML = (html) => {
     const div = document.createElement("div");
     div.innerHTML = html;
@@ -71,6 +73,7 @@ const Preview = () => {
 
   const handlePublish = async () => {
     try {
+      setLoading(true);
       const formdata = new FormData();
       formdata.append("title", title);
       formdata.append("cover", coverFile);
@@ -82,6 +85,7 @@ const Preview = () => {
       if (response.status === 200) {
         // Update the blogsData to remove the deleted blog
         SuccessToast("Blog created successfully");
+        setLoading(false);
 
         setCoverFile(null);
         setCoverUrl(null);
@@ -93,8 +97,15 @@ const Preview = () => {
       }
     } catch (error) {
       ErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (coverFile == null) {
+      navigate("/blog/createnewblog");
+    }
+  }, []);
 
   return (
     <div className="h-full w-full p-6 flex flex-col gap-4 bg-[#0D1B2A] text-white">
@@ -130,8 +141,8 @@ const Preview = () => {
                 <span className="font-bold capitalize">{viewers}</span>
               </p>
               <button
-                onClick={handlePublish}
-                className="bg-[#199BD1] text-white px-6 py-2 rounded-lg h-[32px] mb-4 mr-2"
+                onClick={() => navigate("/publish")}
+                className="bg-[#199BD1] text-white px-3  py-2 rounded-lg h-[32px] mb-4 mr-2"
               >
                 Publish Now
               </button>

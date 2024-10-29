@@ -5,6 +5,7 @@ import { BlogContext } from "../../contexts/BlogContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
 import axios from "../../axios";
+import { FiLoader } from "react-icons/fi";
 const Publish = () => {
   const [selectedOption, setSelectedOption] = useState("everyone");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,6 +27,8 @@ const Publish = () => {
     setCoverUrl,
   } = useContext(BlogContext);
 
+  const [loading, setLoading] = useState(false);
+
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
     setViewers(event.target.value);
@@ -44,10 +47,8 @@ const Publish = () => {
       /* You can add custom styles here */
       body {
         font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 20px;
-        background-color: #f4f4f4;
-        color: #333;
+        background-color: transparent;
+        color: #fff;
       }
     </style>
   </head>
@@ -60,6 +61,7 @@ const Publish = () => {
 
   const handlePublish = async () => {
     try {
+      setLoading(true);
       const formdata = new FormData();
       formdata.append("title", title);
       formdata.append("cover", coverFile);
@@ -81,10 +83,12 @@ const Publish = () => {
         setSubTitle("");
         setImageText("");
         setViewers("");
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
       ErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
@@ -103,10 +107,11 @@ const Publish = () => {
           Cancel
         </button>
         <button
-          className="text-white bg-[#199BD1] ml-2 px-6 py-2 rounded-lg hover:bg-[#147BA1]"
+          className="text-white bg-[#199BD1] ml-2 px-3 flex justify-center items-center gap-1 py-2 rounded-lg hover:bg-[#147BA1]"
           onClick={handlePublish}
         >
           Publish Now
+          {loading && <FiLoader className="animate-spin text-lg ml-1" />}
         </button>
       </div>
 
@@ -134,8 +139,8 @@ const Publish = () => {
               <label className="flex items-center mt-2">
                 <input
                   type="radio"
-                  value="managers"
-                  checked={selectedOption === "managers"}
+                  value="manager"
+                  checked={selectedOption === "manager"}
                   onChange={handleOptionChange}
                   className="form-radio text-[#199BD1] bg-[#001229] focus:ring-[#199BD1] focus:ring-2 h-5 w-5"
                 />

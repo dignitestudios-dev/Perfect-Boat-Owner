@@ -8,6 +8,7 @@ import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
+import getFCMToken from "../../firebase/getFcmToken";
 
 const VerifyOtp = () => {
   const { navigate } = useContext(GlobalContext);

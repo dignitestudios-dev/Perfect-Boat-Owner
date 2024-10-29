@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [token, setToken] = useState(() => Cookies.get("token"));
   const [name, setName] = useState(Cookies.get("name"));
   const [email, setEmail] = useState(Cookies.get("email"));
@@ -14,6 +14,7 @@ const AuthProvider = ({ children }) => {
       Cookies.set("token", data?.data?.token);
       Cookies.set("name", data?.data?.userRecord?.name);
       Cookies.set("email", data?.data?.userRecord?.email);
+      Cookies.set("profilePicture", data?.data?.userRecord?.profilePicture);
 
       setToken(data?.data?.token);
       setName(data?.data?.userRecord?.name);
@@ -25,7 +26,7 @@ const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     // Cookies.clear();
     setToken(null);
-    navigate("/login")
+    navigate("/login");
   };
 
   useEffect(() => {

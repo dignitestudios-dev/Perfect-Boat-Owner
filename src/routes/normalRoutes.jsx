@@ -296,7 +296,6 @@ export const normalRoutes = [
     ),
   },
 
-  
   {
     title: "Select Payment Method",
     url: "/payment-method",
@@ -315,12 +314,12 @@ export const normalRoutes = [
   },
   {
     title: "Update Blog",
-    url: "/updateblog",
+    url: "/updateblog/:id",
     page: <GlobalLayout page={<UpdateBlog />} />,
   },
   {
     title: "Update Blog Post",
-    url: "/postupdateblog",
+    url: "/updatepublish/:id",
     page: <GlobalLayout page={<PostUpdateBlog />} />,
   },
   {
