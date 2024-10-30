@@ -1,11 +1,11 @@
-import React, { useContext, useRef, useState, useEffect, Fragment, useCallback } from "react";
+import React, { useContext, useState, Fragment, useCallback } from "react";
 import { FiSearch } from "react-icons/fi";
-import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 import BoatsLoader from "./BoatsLoader";
-import { MdDelete } from "react-icons/md";
-import DeletedModal from "../global/DeletedModal";
+
+import BoatType from "../global/headerDropdowns/BoatType";
+import LocationType from "../global/headerDropdowns/LocationType";
 
 // const debounce = (func, delay) => {
 //   let timeout;
@@ -19,47 +19,23 @@ import DeletedModal from "../global/DeletedModal";
 
 const BoatsTable = ({data , loading}) => {
   const { navigate } = useContext(GlobalContext);
-  const [boatTypeFilter, setBoatTypeFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const boatTypeRef = useRef(null);
-  const locationRef = useRef(null);
+
+  const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType,setLocationType] = useState("all")
+  const [boatType, setBoatType] = useState("all")
+
+  const toggleBoatTypeDropdown = () => {
+    setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
   const [search, setSearch] = useState("");
   // let rows = 15;
 
-  const filteredData = data.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
-
-  const boatTypes = ["Type 1", "Type 2", "Type 3"];
-  const locations = [
-    "East California Dock",
-    "West California Dock",
-    "South California Dock",
-  ];
-
-  const toggleBoatTypeModal = () => {
-    setBoatTypeFilter((prev) => !prev);
-  };
-
-  const toggleLocationModal = () => {
-    setLocationFilter((prev) => !prev);
-  };
-
-  const handleClickOutside = (event) => {
-    if (boatTypeRef.current && !boatTypeRef.current.contains(event.target)) {
-      setBoatTypeFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const handleBoatDetails=(boat) => {
     navigate(`/boats/${boat?._id}`, {state:{boat}})
@@ -83,7 +59,7 @@ const BoatsTable = ({data , loading}) => {
         onClose={() => setDeleteModalOpen(false)} refreshTasks={handleDeleteConfirm} /> */}
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
         Boats List{" "}
-        <span className="text-[12px] font-normal text-white/50 ">(723)</span>
+        <span className="text-[12px] font-normal text-white/50 ">({data?.length})</span>
       </h3>
 
       <div className="w-full h-auto flex justify-between items-center">
@@ -112,64 +88,14 @@ const BoatsTable = ({data , loading}) => {
           <span className="w-full flex justify-start items-center">
             Boat Image
           </span>
-          <button
-            onClick={toggleBoatTypeModal}
-            className="w-auto flex flex-col gap-1 justify-start items-start relative"
-          >
-            <div className="w-auto flex gap-1 justify-start items-center">
-              <span>Boat Type</span>
-              <FaCaretDown />
-            </div>
-            <div
-              ref={boatTypeRef}
-              className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                boatTypeFilter ? "scale-100" : "scale-0"
-              } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-            >
-              {boatTypes.map((type, index) => (
-                <div
-                  key={index}
-                  className="w-full flex justify-start items-start gap-2"
-                >
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                    {type}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </button>
+          <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+            boatType={boatType} setBoatType={setBoatType}/> 
           <span className="w-full flex justify-start items-center">Name</span>
           <span className="w-full flex justify-start items-center">
             Model/Make/Size
           </span>
-          <button
-            onClick={toggleLocationModal}
-            className="w-auto flex flex-col gap-1 justify-start items-start relative"
-          >
-            <div className="w-auto flex gap-1 justify-start items-center">
-              <span>Location</span>
-              <FaCaretDown />
-            </div>
-            <div
-              ref={locationRef}
-              className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                locationFilter ? "scale-100" : "scale-0"
-              } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-            >
-              {locations.map((location, index) => (
-                <div
-                  key={index}
-                  className="w-full flex justify-start items-start gap-2"
-                >
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                  <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                    {location}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </button>
+          <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
           {/* <span className="w-full flex justify-start items-center">
             Action
           </span> */}
@@ -191,7 +117,7 @@ const BoatsTable = ({data , loading}) => {
           >
             <span className="w-[106px] h-[76px] flex justify-start items-center relative">
               <img
-                src={AuthMockup}
+                src={boat?.cover ||AuthMockup}
                 alt="boat_image"
                 style={{
                   width: "100%",

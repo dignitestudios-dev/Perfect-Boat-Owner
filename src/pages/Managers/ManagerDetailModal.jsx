@@ -3,9 +3,8 @@ import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
-const ManagerDetailModal = ({managerId="", setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess,
-   handleManagerModal, selectedManager, setSelectedManager}) => {
-   console.log("🚀 ~ selectedManager:", selectedManager)
+const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess,
+   handleManagerModal, selectedManager, setSelectedManager, selectedManagers, setSelectedManagers}) => {
   const { managers, loadingManagers } = useContext(GlobalContext);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,10 +12,11 @@ const ManagerDetailModal = ({managerId="", setIsOpen, SetPassSelectedManager, Se
   const [locationFilter, setLocationFilter] = useState(false);
   const jobTitleRef = useRef(null);
   const locationRef = useRef(null);
-  const [selectedManagers, setSelectedManagers] = useState([managers]);
+  
+  console.log("🚀 ~ selectedManagers:", selectedManagers?.length)
 
   const filteredData = managers?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) && item._id !== managerId
+    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
   const jobTitles = ["Manager", "Engineer", "Developer"];
@@ -52,11 +52,9 @@ const ManagerDetailModal = ({managerId="", setIsOpen, SetPassSelectedManager, Se
         setSelectedManagers([...selectedManagers, { id: managerId, name: managerName }]);
       }
     }else{
-      
       if (selectedManager?.id === managerId) {
         setSelectedManager(null);
       } else {
-    console.log("🚀 ~ handleSelectManager ~ managerId:", managerId)
         setSelectedManager({id: managerId, name: managerName});
       }
     }
@@ -83,13 +81,13 @@ const ManagerDetailModal = ({managerId="", setIsOpen, SetPassSelectedManager, Se
   }, []);
 
   useEffect(() => {
-
     if (filteredData?.length) {
       if (isMultiple) {
         if(boatAccess){
         setSelectedManagers(boatAccess?.map(manager => ({ id: manager._id, name: manager.name })));
         }else{
-        setSelectedManagers(managers?.map(manager => ({ id: manager._id, name: manager.name })));
+          if(selectedManagers.length === 0)
+            setSelectedManagers(managers?.map(manager => ({ id: manager._id, name: manager.name })));
         }
       } 
     }

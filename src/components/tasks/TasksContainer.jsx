@@ -6,6 +6,7 @@ import { TbCaretDownFilled } from "react-icons/tb";
 import axios from "../../axios"; 
 import TasksListLoader from "./loaders/TasksListLoader";
 import Pagination from "../global/pagination/Pagination";
+import DateModal from "./DateModal";
 
 const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
@@ -15,8 +16,21 @@ const TasksContainer = () => {
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [dueDate, setDueDate] = useState({})
+  console.log("🚀 ~ TasksContainer ~ dueDate:", dueDate)
+  const [inputError, setInputError] = useState({});
+
+
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+  const [sortDate,setSortDate] = useState("")
+  const [sortFilter,setSortFilter] = useState("")
+  console.log("🚀 ~ TasksContainer ~ sortFilter:", sortFilter)
+
+  const handleCheckboxChange = (sort) => {  
+    setSortFilter(sort);
+  };
 
   const toggleModal = (e) => {
     if (dropDownRef.current && !dropDownRef.current.contains(e.target)) {
@@ -25,12 +39,18 @@ const TasksContainer = () => {
   };
 
   // Fetch tasks from the API
-  const getTasks = async ( pageNumber = 1, rows = 9) => {
+  const getTasks = async ( pageNumber = 1, rows = 9 ) => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        filter !== "" ? `/owner/task?status=${filter}` : `/owner/task?page=${pageNumber}&pageSize=${rows}`
-      );
+      const searchFilter = filter ? `&filter=${filter}` : "";
+      // const sortByFilter = sortDate ? `&startDate=${sortDate}&endDate=${sortDate}` : "";
+      const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
+
+    const { data } = await axios.get(`/owner/task?page=${pageNumber}&pageSize=${rows}${searchFilter}${sortByFilter}`);
+
+      // const { data } = await axios.get(
+      //   filter !== "" ? `/owner/task?status=${filter}` : `/owner/task?page=${pageNumber}&pageSize=${rows}`
+      // );
       setTaskData(data?.data?.data || []);
       setPageDetails(data?.data?.paginationDetails || []);
     } catch (err) {
@@ -42,7 +62,7 @@ const TasksContainer = () => {
 
   useEffect(() => {
     getTasks();
-  }, [filter]);
+  }, [filter, sortFilter]);
 
   const filteredData = taskData?.filter((item) =>
     item?.task?.toLowerCase()?.includes(search?.toLowerCase())
@@ -180,25 +200,35 @@ const TasksContainer = () => {
               </div>
               <div className="w-full flex flex-col justify-start items-start gap-3">
                 <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                  <input
+                  checked={sortFilter === "all"}
+                  onChange={() => handleCheckboxChange("all")}
+                   type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     None
                   </span>
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                  <input
+                  checked={sortFilter === "latest"}
+                  onChange={() => handleCheckboxChange("latest")}
+                  type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Latest
                   </span>
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                  <input
+                  checked={sortFilter === "earliest"}
+                  onChange={() => handleCheckboxChange("earliest")}
+                   type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Earliest
                   </span>
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
-                  <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                  <input 
+                  type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Calendar
                   </span>
@@ -227,13 +257,19 @@ const TasksContainer = () => {
           <TasksListLoader/>
           )}
         </div>
+        <DateModal
+          isOpen={isCalendarOpen}
+          setIsOpen={setIsCalendarOpen}
+          setDueDate={setDueDate}
+          setInputError={setInputError}
+        />
       </div>
       <div className="w-full flex justify-center pb-4">
             <Pagination
               page={pageDetails?.currentPage}
               totalPages={pageDetails?.totalPages}
               rowsPerPage={9}
-              // selectedFilter={selectedFilter}
+              selectedFilter={filter}
               onPageChange={getTasks}
             />
           </div>

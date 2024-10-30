@@ -7,8 +7,29 @@ import MiniListLoader from "../global/MiniListLoader";
 import TaskType from "../global/headerDropdowns/TaskType";
 import StatusType from "../global/headerDropdowns/StatusType";
 
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task"
+};
+
 const NewTaskTable = ({ data, loading }) => {
   const { formatTimestampToDate } = useContext(GlobalContext);
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
+
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [statusFilter , setStatusFilter] = useState("all");
@@ -22,6 +43,7 @@ const NewTaskTable = ({ data, loading }) => {
   };
 
   const [search, setSearch] = useState("");
+  const [taskType, setTaskType] = useState("")
 
   // const filteredData = data?.filter((item) =>
   //   item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -30,7 +52,8 @@ const NewTaskTable = ({ data, loading }) => {
   const filteredData = data?.filter((item) => {
     const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
     const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
-    return matchesSearch && matchesStatus;
+    const taskTypeMatch = taskType && taskType !== "all" ? item?.task?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
+    return matchesSearch && matchesStatus && taskTypeMatch;
   });
 
   return (
@@ -62,6 +85,7 @@ const NewTaskTable = ({ data, loading }) => {
               Boat name
             </span>
             <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+            setTaskType={setTaskType} taskType={taskType}
             />
             <span className="w-full flex justify-start items-center">
               Due Date
@@ -91,8 +115,10 @@ const NewTaskTable = ({ data, loading }) => {
                   {formatTimestampToDate(task?.task?.dueDate)}
                 </span>
                 <span className="w-full flex justify-start items-center ">
-                  <span className="w-auto h-[27px] capitalize rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                    {task?.task?.status}
+                  <span
+                  style={{ color: statusColors[task?.task?.status] || statusColors["default"] }}
+                   className="w-auto h-[27px] capitalize rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
+                    {getFormattedStatus(task?.task?.status)}
                   </span>
                 </span>
               </div>

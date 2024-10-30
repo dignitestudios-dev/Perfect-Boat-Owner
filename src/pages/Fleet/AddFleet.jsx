@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import AddFleetImage from "../../components/fleet/AddFleetImage";
 import { TbCaretDownFilled } from "react-icons/tb";
@@ -11,9 +11,12 @@ import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
 import { boatType } from "../../data/TaskTypeData";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddFleet = () => {
 
+  const {boatDropDown} = useContext(GlobalContext)
+  console.log("🚀 ~ AddFleet ~ boatDropDown:", boatDropDown)
   const navigate = useNavigate()
   const [selectedBoat, setSelectedBoat] = useState("");
   const [isManagerOpen, setIsManagerOpen] = useState(false);
@@ -22,6 +25,7 @@ const AddFleet = () => {
   const [coverImage, setCoverImage] = useState("")
 
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [selectedManagers, setSelectedManagers] = useState([]);
   
   const [fleetPictures, setFleetPictures] = useState([0])
 
@@ -48,7 +52,7 @@ const AddFleet = () => {
   }
 
   const submitBoatData = async (formData) => {
-    if(!coverImage){
+    if(!coverImage && coverImage > 0 ){
       ErrorToast("Select cover image");
       return;
     }
@@ -134,7 +138,7 @@ const AddFleet = () => {
                          duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
                         >
                           <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
-                            {boatType?.map((boat, index) => (
+                            {boatDropDown?.map((boat, index) => (
                               <button
                                 type="button"
                                 key={index}
@@ -186,13 +190,21 @@ const AddFleet = () => {
                       error={errors.model}
                     />
                     <AddFleetInput
-                      label="Size (m)"
-                      placeholder="Enter Size"
-                      type="number"
-                      register={register(`size`, {
-                        required: "Size is required",
-                      })}
-                      error={errors.size}
+                     label="Size (m)"
+                     placeholder="Enter Size"
+                     type="text"
+                     register={register(`size`, {
+                       required: "Size is required",
+                       pattern: {
+                        value: /^[0-9]{4}$/,
+                        message: "Size must be positive",
+                      },
+                     })}
+                     maxLength={4}
+                     onInput={(e) => {
+                      e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, "");
+                    }}
+                     error={errors.size}
                     />
                     <AddFleetInput
                       label="Location"
@@ -298,6 +310,7 @@ const AddFleet = () => {
           setIsOpen={setIsManagerOpen}
           SetPassSelectedManager={SetPassSelectedManager}
           SetPassSelectedManagers={SetPassSelectedManagers}
+          selectedManagers={selectedManagers} setSelectedManagers={setSelectedManagers}
         />
       )}
 

@@ -29,6 +29,9 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [deactivateLoading, setDeactivateLoading] = useState(false)
 
+  const [locationType, setLocationType] = useState("")
+  const [jobType, setJobType] = useState("")
+
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
@@ -129,8 +132,10 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
             <span className="w-full flex justify-start items-center">
               Email
             </span>
-            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
+            jobType={jobType} setJobType={setJobType}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
             <span className="w-full flex justify-start items-center px-[170px]">
               Action
             </span>

@@ -27,18 +27,10 @@ import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 
-const statusColors = {
-  "newtask": "#FF007F",
-  "overdue": "#FF3B30",
-  "default": "#FFCC00", 
-  "in-progress":"#36B8F3",
-  "completed":"#1FBA46"
-};
-
 const BoatDetail = () => {
-  const boatType = ["Yatch", "Sail Boat", "Console Cruiser", "Cabin Cruiser"];
 
-  const { navigate } = useContext(GlobalContext);
+
+  const { navigate, boatDropDown } = useContext(GlobalContext);
   const [isEditing, setIsEditing] = useState(false); // New state for edit mode
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -47,6 +39,7 @@ const BoatDetail = () => {
   const jobRef = React.useRef(null);
   const [isServiceHistoryModalOpen, setServiceHistoryModalOpen] = useState(false);
   const [isMangerModalOpen, setIsManagerModalOpen] = useState(false); 
+  const [selectedManagers, setSelectedManagers] = useState([]);
 
   const [showBoatTypeDropdown, setShowBoatTypeDropdown] = useState(false);
   const [showSubheadingDropdown, setShowSubheadingDropdown] = useState(false);
@@ -381,7 +374,7 @@ const BoatDetail = () => {
                          duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
                         >
                           <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
-                            {boatType.map((boat, index) => (
+                            {boatDropDown?.map((boat, index) => (
                               <button
                                 type="button"
                                 key={index}
@@ -672,6 +665,7 @@ const BoatDetail = () => {
                 setIsOpen={setIsManagerModalOpen}
                 SetPassSelectedManagers={setPassSelectedManagers}
                 handleManagerModal={(managers)=>handleAssignManager(managers)}
+                selectedManagers={selectedManagers} setSelectedManagers={setSelectedManagers}
               />
             </div>
           )}

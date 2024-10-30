@@ -7,6 +7,7 @@ import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "./Toaster";
 import { GlobalContext } from "../../contexts/GlobalContext";
+import ManagerDeleteAssignModal from "../managers/ManagerDeleteAssignModal";
 
 const DeleteManagerAccount = () => {
   const {id} = useParams()
@@ -25,7 +26,7 @@ const DeleteManagerAccount = () => {
     const [loading, setLoading] = useState(false)
     const [deleteLoad,setDeleteLoad] = useState(false)
     const [userData, setUserData] = useState("")
-    console.log("🚀 ~ DeleteManagerAccount ~ userData:", userData)
+    const [managers, setManagers] = useState([])    
 
     const navigate = useNavigate();
 
@@ -55,10 +56,16 @@ const DeleteManagerAccount = () => {
         setDeleteLoad(true)
     try {
       const employeeData = {
-        employees: userData?.employees?.map((employee)=>employee?._id)
+        employees: [
+          ...new Set([
+            ...userData?.employees?.map((employee) => employee?._id) || [],
+            ...passSelectedManager?.employees?.map((employee) => employee?._id) || []
+          ])
+        ]
       }
+      console.log("🚀 ~ handleDelete ~ employeeData:", employeeData)
 
-      const putResponse = await axios.put(`/owner/manager/${passSelectedManager?.id}/employees/assign`, employeeData);
+      const putResponse = await axios.put(`/owner/manager/${passSelectedManager?._id}/employees/assign`, employeeData);
       if (putResponse?.status === 200) {
         const obj = {
           reason: reasonForDelete,
@@ -94,9 +101,26 @@ const DeleteManagerAccount = () => {
           setLoading(false)
         }
       }
+
+      const getManagers = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get(`/owner/manager/employees`)
+          if(response?.status === 200){
+            setManagers(response?.data?.data)
+          }
+        }
+        catch(err){
+          console.log(err)
+        }
+        finally{
+          setLoading(false)
+        }
+      }
       
       useEffect(()=>{
         getDataById()
+        getManagers()
       },[])
 
     return (
@@ -245,8 +269,8 @@ const DeleteManagerAccount = () => {
 
         {/* EmployeeDetailModal Component */}
         {isBoatModalOpen && (
-        <ManagerDetailModal managerId={id} SetPassSelectedManager={SetPassSelectedManager}
-         isMultiple= {false} setIsOpen={setIsBoatModalOpen} setSelectedManager={setSelectedManager} selectedManager={selectedManager} />
+        <ManagerDeleteAssignModal managerId={id} SetPassSelectedManager={SetPassSelectedManager} managers={managers}
+        setIsOpen={setIsBoatModalOpen} setSelectedManager={setSelectedManager} selectedManager={selectedManager} />
         )}
 
         {/* AssignManagerModal Component */}

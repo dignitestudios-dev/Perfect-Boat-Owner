@@ -18,8 +18,8 @@ const ResendModal = ({ isOpen, onClose, id }) => {
         SuccessToast("Credentials Send")
       }
     }catch(err){
-    console.log("🚀 ~ resendCredentials ~ err:", err)
-    setLoading(false)
+      setErrorMessage(err?.response?.data?.message)
+      setLoading(false)
     }
   }
   return (

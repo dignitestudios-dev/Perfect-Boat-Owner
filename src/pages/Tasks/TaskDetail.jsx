@@ -33,7 +33,7 @@ const statusColors = {
 };
 
 const TaskDetail = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, taskDropDown } = useContext(GlobalContext);
   const { id } = useParams();
 
   const [taskDetail, setTaskDetail] = useState({});
@@ -102,9 +102,9 @@ const TaskDetail = () => {
   
     }else{
       setSelectedTaskType(taskType);
-      setTasks(taskTypeData[taskType] || []);
+      setTasks(taskDropDown?.find((item) => item?.taskType === taskType)?.task || []);
       setTaskTypeDropdownOpen(false);
-      setTaskDropdownOpen(false); 
+      setTaskDropdownOpen(false);
     }
   };
   
@@ -248,7 +248,7 @@ const TaskDetail = () => {
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
             <div>
               <TaskTypeInputField toggleTaskTypeDropdown={toggleTaskTypeDropdown} selectedTaskType={selectedTaskType} isEdit={isEdit}
-              isTaskTypeDropdownOpen={isTaskTypeDropdownOpen} customTypeText={customTypeText}
+              isTaskTypeDropdownOpen={isTaskTypeDropdownOpen} customTypeText={customTypeText} taskDropDown={taskDropDown}
               handleTaskTypeSelection={handleTaskTypeSelection} customInput={customInput} setCustomTypeText={setCustomTypeText} />
               {inputError.task && <p className="text-red-500">{inputError.task}</p>}
               </div>

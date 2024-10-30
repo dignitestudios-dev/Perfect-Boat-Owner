@@ -10,6 +10,7 @@ const AuthInput = ({
   error,
   placeholder,
   register,
+  onInput
 }) => {
   const [isPassVisible, setIsPassVisible] = useState(false);
 
@@ -34,6 +35,7 @@ const AuthInput = ({
             // value={state}
             // onChange={(e) => setState(e.target.value)}
             {...register}
+            onInput={onInput}
           />
           <span
             onClick={() => setIsPassVisible((prev) => !prev)}

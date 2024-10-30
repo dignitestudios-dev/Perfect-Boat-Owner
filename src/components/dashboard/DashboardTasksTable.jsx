@@ -7,15 +7,35 @@ import MiniListLoader from "../global/MiniListLoader";
 import TaskType from "../global/headerDropdowns/TaskType";
 import StatusType from "../global/headerDropdowns/StatusType";
 
+const statusColors = {
+  "newtask": "#FF007F",
+  "overdue": "#FF3B30",
+  "default": "#FFCC00", 
+  "in-progress":"#36B8F3",
+  "completed":"#1FBA46"
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task"
+};
+
 const DashboardTasksTable = ({ data, loading }) => {
   
   const { navigate, formatTimestampToDate } = useContext(GlobalContext);
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [statusFilter , setStatusFilter] = useState("all");
   const [taskType, setTaskType] = useState("")
-  console.log("🚀 ~ DashboardTasksTable ~ taskType:", taskType)
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -25,15 +45,13 @@ const DashboardTasksTable = ({ data, loading }) => {
     setStatusDropdownOpen(!statusDropdownOpen);
   };
 
-  const [showTasks, setShowTasks] = useState(false);
-
   const [search, setSearch] = useState("");
 
   // const filteredData = data?.filter((item) => item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) );
   const filteredData = data?.filter((item) => {
     const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
     const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
-    const taskTypeMatch = taskType ? !taskType || item?.taskType?.toLowerCase() === taskType?.toLowerCase(): true;
+    const taskTypeMatch = taskType && taskType !== "all" ? item?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
   
@@ -105,10 +123,11 @@ const DashboardTasksTable = ({ data, loading }) => {
                       </span>
                       <span className="w-full flex justify-start items-center ">
                         <span
+                        style={{ color: statusColors[task?.status] || statusColors["default"] }}
                           className="w-auto h-[27px] capitalize rounded-full flex items-center
-                             justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
+                             justify-center bg-[#FFCC00]/[0.12] px-2" 
                         >
-                          {task?.status}
+                          {getFormattedStatus(task?.status)}
                         </span>
                       </span>
                     </div>

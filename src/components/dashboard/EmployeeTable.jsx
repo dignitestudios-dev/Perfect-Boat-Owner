@@ -8,9 +8,12 @@ import LocationType from "../global/headerDropdowns/LocationType";
 import JobType from "../global/headerDropdowns/JobType";
 
 const EmployeeTable = ({ data, loading }) => {
+
   const { navigate } = useContext(GlobalContext);
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("")
+  const [jobType, setJobType] = useState("")
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -22,9 +25,16 @@ const EmployeeTable = ({ data, loading }) => {
 
   const [search, setSearch] = useState("");
 
-  const filteredData = data?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = data?.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
+
+  const filteredData = data?.filter((item) => {
+    const matchesSearch = search ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const jobTypeMatch = jobType && jobType !== "all" ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229] ">
@@ -66,8 +76,10 @@ const EmployeeTable = ({ data, loading }) => {
             <span className="w-full flex justify-start items-center">
               Email
             </span>
-            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
+            jobType={jobType} setJobType={setJobType}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
           </div>
           {filteredData?.slice(0, 4)?.map((manager, key) => {
             return (

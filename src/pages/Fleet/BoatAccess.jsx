@@ -24,6 +24,7 @@ const BoatAccess = () => {
   // const [passSelectedManager,SetPassSelectedManager] = useState(null)
   const [passSelectedManagers, SetPassSelectedManagers] = useState([])
   const [isManagerSuccess, setIsManagerSuccess] = useState(false)
+  const [selectedManagers, setSelectedManagers] = useState([]);
 
   const filteredData = boats?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -113,7 +114,7 @@ const BoatAccess = () => {
       <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
         <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
           Boats Access{" "}
-          <span className="text-[12px] font-normal text-white/50 ">(723)</span>
+          <span className="text-[12px] font-normal text-white/50 ">({filteredData.length})</span>
         </h3>
 
         <div className="w-full h-auto flex justify-between items-center">
@@ -270,6 +271,7 @@ const BoatAccess = () => {
         // SetPassSelectedManager={SetPassSelectedManager}
           SetPassSelectedManagers={SetPassSelectedManagers}
           isMultiple={true} boatAccess={boatsData}
+          selectedManagers={selectedManagers} setSelectedManagers={setSelectedManagers}
         />
         // <SelectAllManager setIsOpen={setIsManagerDetailModalOpen} />
       )}

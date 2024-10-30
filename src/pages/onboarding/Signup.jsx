@@ -88,7 +88,7 @@ const Signup = () => {
             register={register("phoneNumber", {
               required: "Please enter your phone number.",
               pattern: {
-                value: /^[0-9]{10}$/, // Example pattern for 10-digit phone number
+                value: /^[0-9]{10}$/,
                 message: "Please enter a valid phone number.",
               },
             })}
@@ -97,6 +97,9 @@ const Signup = () => {
             placeholder={"Type your phone number here"}
             type={"text"}
             error={errors.phoneNumber}
+            onInput={(e) => {
+              e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, "");
+            }}
           />
 
           <AuthInput

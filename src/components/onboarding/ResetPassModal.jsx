@@ -45,8 +45,6 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
     }
     catch(err){
       setErrorMessage(err?.response?.data?.message)
-    console.log("🚀 ~ handleResetPassword ~ err:", err)
-
     }finally{
       setLoading(false)
     }

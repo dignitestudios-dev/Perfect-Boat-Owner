@@ -16,9 +16,11 @@ import TaskTypeInputField from "../../components/global/customInputs/TaskTypeInp
 import TaskInputField from "../../components/global/customInputs/TaskInputField";
 import RecurringDaysInputField from "../../components/global/customInputs/RecurringDaysInputField";
 import {formValidation} from "../../constants/formValidation"
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddTask = () => {
 
+  const {taskDropDown} = useContext(GlobalContext)
   const [submitLoading,setSubmitLoading] = useState(false);
   const [noteText, setNoteText] = useState("")
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -84,12 +86,12 @@ const handleTaskTypeSelection = (taskType) => {
   if(taskType === "custom"){
     setTaskTypeDropdownOpen(true);
     setCustomInput(true)
-
+    setTaskDropdownOpen(false);
   }else{
     setSelectedTaskType(taskType);
-    setTasks(taskTypeData[taskType] || []);
-    setTaskTypeDropdownOpen(false);
-    setTaskDropdownOpen(false); // Reset task dropdown when a new type is selected 
+    setTasks(taskDropDown?.find((item) => item?.taskType === taskType)?.task || []);
+    setTaskDropdownOpen(false);
+    setDisplaySelectedTask(null);
   }
 };
 
@@ -120,7 +122,7 @@ const submitTask = async()=>{
     const obj = {
       boat:passSelectedBoat?.id,
       task:displaySelectedTask ? displaySelectedTask : selectedTaskType,
-      taskType: selectedTaskType,
+      taskType: selectedTaskType?.replace(/([A-Z])/g, ' $1')?.trim(),
       dueDate: dueDate?.unix,
       description: noteText,
       reoccuring: true,
@@ -169,7 +171,8 @@ const submitTask = async()=>{
               <div>
               <TaskTypeInputField toggleTaskTypeDropdown={toggleTaskTypeDropdown} selectedTaskType={selectedTaskType} isEdit={true}
               isTaskTypeDropdownOpen={isTaskTypeDropdownOpen} taskTypeDropdownRef={taskTypeDropdownRef} customTypeText={customTypeText}
-              handleTaskTypeSelection={handleTaskTypeSelection} customInput={customInput} setCustomTypeText={setCustomTypeText} setInputError={setInputError}/>
+              handleTaskTypeSelection={handleTaskTypeSelection} customInput={customInput} setCustomTypeText={setCustomTypeText} 
+              setInputError={setInputError} taskDropDown={taskDropDown}/>
               {inputError.task && <p className="text-red-500">{inputError.task}</p>}
               </div>
 

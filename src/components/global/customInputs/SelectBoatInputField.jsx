@@ -13,7 +13,7 @@ const SelectBoatInputField = ({passSelectedBoat, setIsBoatModalOpen, isEdit}) =>
                 >
                   <span className="w-full text-gray-400 flex justify-start">
                     {/* Display text or selected boat name here */}
-                    {passSelectedBoat?.name || "SelectBoat"}
+                    {passSelectedBoat?.name || "Select Boat"}
                   </span>
                 </button>
               </div>

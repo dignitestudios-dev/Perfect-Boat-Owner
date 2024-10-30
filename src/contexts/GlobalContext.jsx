@@ -71,6 +71,36 @@ export const GlobalContextProvider = ({ children }) => {
     getBoats();
   }, [updateBoat]);
 
+  const [dropDown, setDropDown] = useState([]);
+  const [boatDropDown, setBoatDropDown] = useState([])
+  const [taskDropDown, setTaskDropDown] = useState([])
+
+  const [updateDropDown, setUpdateDropDown] = useState(false);
+
+  const getDropDown = async () => {
+    setLoadingBoats(true);
+    try {
+      const [companyResponse, boatResponse, taskResponse] = await Promise.all([
+        axios.get("/owner/dropdown/company"),
+        axios.get("/owner/dropdown/boat"),
+        axios.get("/owner/dropdown/task")
+      ]);
+      console.log("🚀 ~ getDropDown ~ taskResponse:", taskResponse)
+      if(taskResponse.status === 200 || boatResponse.status === 200 || companyResponse.status === 200){
+        setDropDown(companyResponse?.data?.data);
+        setBoatDropDown(boatResponse?.data?.data);
+        setTaskDropDown(taskResponse?.data?.data);
+      }
+    } catch (err) {
+      console.error("Error fetching dropdown data", err);
+    } finally {
+      setLoadingBoats(false);
+    }
+  };
+  useEffect(() => {
+    getDropDown();
+  }, [updateDropDown]);
+
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: "", body: "" });
   const [notifications, setNotifications] = useState([]);
@@ -103,6 +133,9 @@ export const GlobalContextProvider = ({ children }) => {
         setUpdateEmployee,
         setUpdateManager,
         setUpdateBoat,
+        dropDown,
+        boatDropDown,
+        taskDropDown,
         loadingBoats,
         loadingEmployees,
         loadingManagers,

@@ -12,6 +12,8 @@ const DashboardBoats = ({ data, loading }) => {
   const { navigate, formatTimestampToDate } = useContext(GlobalContext);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType,setLocationType] = useState("")
+  const [boatType, setBoatType] = useState("")
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -23,9 +25,17 @@ const DashboardBoats = ({ data, loading }) => {
 
   const [search, setSearch] = useState("");
 
-  const filteredData = data?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = data?.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase()) 
+  // );
+
+  const filteredData = data?.filter((item) => {
+    const matchesSearch = search ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const boatTypeMatch = boatType && boatType !== "all" ? item?.boatType?.toLowerCase() === boatType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && boatTypeMatch;
+  });
+
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -63,12 +73,14 @@ const DashboardBoats = ({ data, loading }) => {
         {data?.length > 0 ? (
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/> 
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+            boatType={boatType} setBoatType={setBoatType}/> 
             <span className="w-full flex justify-start items-center">Name</span>
             <span className="w-full flex justify-start items-center">
               Model / Make / Size
             </span>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
           </div>
           {filteredData?.slice(0, 4)?.map((boat, key) => {
             return (
