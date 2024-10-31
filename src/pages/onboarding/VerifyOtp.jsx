@@ -64,7 +64,6 @@ const VerifyOtp = () => {
         email: email,
         otp: getOtpValue(),
       };
-      console.log("Login Data:", obj);
 
       const response = await axios.post("/auth/forget/verify/email", obj);
       if (response.status === 200) {
@@ -151,7 +150,7 @@ const VerifyOtp = () => {
               disabled={resendLoading}
               className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
             >
-              Resend now
+              {resendLoading ? "Resending..." : "Resend now"}
             </button>
           </div>
         </div>

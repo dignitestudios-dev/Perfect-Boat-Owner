@@ -11,10 +11,12 @@ const Employees = () => {
   const [loadingEmployees, setLoadingEmployees] = useState(false)
   const [pageDetails, setPageDetails] = useState({})
   
-  const getEmployees = async (pageNumber = 1, rows = 15) => {
+  const getEmployees = async (pageNumber = 1, rows = 15, jobTitle="all", locations="all") => {
     setLoadingEmployees(true);
     try {
-      const { data } = await axios.get(`/owner/employees?page=${pageNumber}&pageSize=${rows}`);
+      const jobQuery = jobTitle !== "all" ? `&jobTitle=${jobTitle}` : "";
+      const locationQuery = locations !== "all" ? `&locations=${locations}` : "";
+      const { data } = await axios.get(`/owner/employees?page=${pageNumber}&pageSize=${rows}${jobQuery}${locationQuery}`);
       setEmployees(data?.data?.data);
       setPageDetails(data?.data?.paginationDetails);
     } catch (err) {

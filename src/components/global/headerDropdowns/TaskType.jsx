@@ -19,7 +19,7 @@ const TaskType = ({taskTypeDropdownOpen,toggleTaskTypeDropdown, setTaskType, tas
         onClick={toggleTaskTypeDropdown}
       />
       {taskTypeDropdownOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
+        <div className="absolute top-full left-0 mt-1 w-52 bg-[#1A293D] text-white rounded-md shadow-lg z-10 overflow-auto pr-1">
           <label
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"
             >

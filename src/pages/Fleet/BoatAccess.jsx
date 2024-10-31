@@ -10,21 +10,33 @@ import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import axios from "../../axios";
 import BoatManagerModal from "../Managers/BoatManagerModal";
+import BoatType from "../../components/global/headerDropdowns/BoatType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const BoatAccess = () => {
-  const { navigate, boats, loadingBoats } = useContext(GlobalContext);
+  const { navigate, boats, getBoats, loadingBoats } = useContext(GlobalContext);
   const [search, setSearch] = useState("");
-  const [boatTypeFilter, setBoatTypeFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-  const boatTypeRef = useRef(null);
-  const locationRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [boatId, setBoatId] = useState("")
   const [boatsData, setBoatsData] = useState([])
   // const [passSelectedManager,SetPassSelectedManager] = useState(null)
   const [passSelectedManagers, SetPassSelectedManagers] = useState([])
   const [isManagerSuccess, setIsManagerSuccess] = useState(false)
   const [selectedManagers, setSelectedManagers] = useState([]);
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] = useState(false);
+
+  const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("all")
+  const [boatType, setBoatType] = useState("all")
+
+  const toggleBoatTypeDropdown = () => {
+    setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
 
   const filteredData = boats?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -34,55 +46,20 @@ const BoatAccess = () => {
     setBoatId(id)
     e.stopPropagation(); 
     setIsModalOpen(true);
-    getBoats(id)
+    getBoatsById(id)
   }
 
-  const getBoats = async (id) => {
+  const getBoatsById = async (id) => {
     try {
       const { data } = await axios.get(`/owner/boat/${id}`);
-      console.log("data?.data?.boatAccess`` ",data?.data?.boatAccess)
       setBoatsData(data?.data?.boatAccess);
     } catch (err) {
 
     }
   };
 
-  const boatTypes = ["Type 1", "Type 2", "Type 3"];
-  const locations = [
-    "East California Dock",
-    "West California Dock",
-    "South California Dock",
-  ];
-
-  const toggleBoatTypeModal = () => {
-    setBoatTypeFilter((prev) => !prev);
-  };
-
-  const toggleLocationModal = () => {
-    setLocationFilter((prev) => !prev);
-  };
-
-  const handleClickOutside = (event) => {
-    if (boatTypeRef.current && !boatTypeRef.current.contains(event.target)) {
-      setBoatTypeFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
-  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] = useState(false);
-
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const handleAssignManager =async(managers)=>{
     try{
-      console.log("inside", managers)
       const obj = {
         managers: managers?.map((item)=> item?.id)
       }
@@ -103,6 +80,10 @@ const BoatAccess = () => {
 
     }
   }
+
+  useEffect(()=>{
+    getBoats(boatType, locationType)
+  },[boatType, locationType])
   // useEffect(()=>{
   //   if(passSelectedManagers){
     // handleAssignManager()
@@ -114,7 +95,7 @@ const BoatAccess = () => {
       <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
         <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
           Boats Access{" "}
-          <span className="text-[12px] font-normal text-white/50 ">({filteredData.length})</span>
+          <span className="text-[12px] font-normal text-white/50 ">({boats?.length})</span>
         </h3>
 
         <div className="w-full h-auto flex justify-between items-center">
@@ -134,70 +115,16 @@ const BoatAccess = () => {
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-6 text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
             <span className="flex justify-start items-center">Boat Image</span>
-            <button
-              onClick={toggleBoatTypeModal}
-              className="w-auto flex flex-col gap-1 justify-start items-start relative"
-            >
-              <div className="w-auto flex gap-1 justify-start items-center">
-                <span>Boat Type</span>
-                <FaCaretDown />
-              </div>
-              <div
-                ref={boatTypeRef}
-                className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                  boatTypeFilter ? "scale-100" : "scale-0"
-                } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-              >
-                {boatTypes.map((type, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex justify-start items-start gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      {type}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </button>
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+            boatType={boatType} setBoatType={setBoatType}/> 
             <span className="flex justify-start items-center">Name</span>
             <span className="flex justify-start items-center">
               Model/Make/Size
             </span>
-            <button
-              onClick={toggleLocationModal}
-              className="w-auto flex flex-col gap-1 justify-start items-start relative"
-            >
-              <div className="w-auto flex gap-1 justify-start items-center">
-                <span>Location</span>
-                <FaCaretDown />
-              </div>
-              <div
-                ref={locationRef}
-                className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                  locationFilter ? "scale-100" : "scale-0"
-                } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-              >
-                {locations.map((location, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex justify-start items-start gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      {location}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </button>
+            <span className="flex justify-center items-center ml-16">
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
+            </span>
             <span className="flex justify-start items-center"></span>
           </div>
 
@@ -220,7 +147,7 @@ const BoatAccess = () => {
                     className="w-full h-auto grid grid-cols-6 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
                     <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                      <img src={boat?.images[0]} alt="boat_image"
+                      <img src={boat?.cover} alt="boat_image"
                         style={{ width: "100%", height: "100%", borderRadius: "15px 0 0 15px", objectFit: "cover" }}
                       />
                       <div
@@ -240,7 +167,7 @@ const BoatAccess = () => {
                     <span className="flex justify-start items-center">
                     {boat.model} / {boat.make} / {boat.size}
                     </span>
-                    <span className="flex justify-start items-center">
+                    <span className="flex justify-center items-center">
                     {boat.location}
                     </span>
                     <button

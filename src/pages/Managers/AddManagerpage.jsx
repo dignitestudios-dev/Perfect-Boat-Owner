@@ -35,9 +35,9 @@ const AddManagerpage = () => {
     setValue("employee", passSelectedEmployee?.name); 
   }, [passSelectedEmployee?.name, setValue]);
 
-  const toggleLocationFilter = () => {
-    setLocationFilter((prev) => !prev);
-  };
+  // const toggleLocationFilter = () => {
+  //   setLocationFilter((prev) => !prev);
+  // };
 
   const handleClickOutside = (event) => {
     if (locationRef.current && !locationRef.current.contains(event.target)) {
@@ -52,34 +52,34 @@ const AddManagerpage = () => {
     };
   }, []);
 
-  const openEmployeeModal = () => {
-    setIsEmployeeModalOpen(true);
-  };
+  // const openEmployeeModal = () => {
+  //   setIsEmployeeModalOpen(true);
+  // };
 
-  const closeEmployeeModal = () => {
-    setIsEmployeeModalOpen(false);
-  };
+  // const closeEmployeeModal = () => {
+  //   setIsEmployeeModalOpen(false);
+  // };
 
   const onClose = () =>{
     setIsEmployeeOpen(false)
     navigate("/managers")
   }
 
-  const openBoatModal = () => {
-    setIsBoatModalOpen(true);
-  };
+  // const openBoatModal = () => {
+  //   setIsBoatModalOpen(true);
+  // };
 
-  const closeBoatModal = () => {
-    setIsBoatModalOpen(false);
-  };
+  // const closeBoatModal = () => {
+  //   setIsBoatModalOpen(false);
+  // };
 
-  const openSelectBoatsModal = () => {
-    setIsSelectBoatsModalOpen(true);
-  };
+  // const openSelectBoatsModal = () => {
+  //   setIsSelectBoatsModalOpen(true);
+  // };
 
-  const closeSelectBoatsModal = () => {
-    setIsSelectBoatsModalOpen(false);
-  };
+  // const closeSelectBoatsModal = () => {
+  //   setIsSelectBoatsModalOpen(false);
+  // };
 
   const handleAddManager = async (data) => {
     
@@ -111,8 +111,6 @@ const AddManagerpage = () => {
       setSubmitLoading(false)
     }
   };
-  
-
 
   return (
     <div className="w-full h-auto min-h-screen overflow-y-auto text-white p-4 
@@ -135,14 +133,27 @@ const AddManagerpage = () => {
               label={"Name"}
               type="text"
               placeholder="Enter Name"
-              register={register("name", { required: "Please enter your name" })} 
+              register={register("name", {
+              required: "Please enter your name.",
+              pattern: {
+                value: /^[A-Za-z\s]+$/,
+                message: "Please enter a valid name.",
+              },
+            })}
               error={errors.name}
+              onInput={(e) => { e.target.value = e.target.value.replace(/[^A-Za-z]/g, ""); }}
             />
             <AddFleetInput
               label={"Email"}
               type="email"
               placeholder="Enter Email"
-              register={register("email", { required: "Please enter your email" })}
+              register={register("email", {
+                required: "Please enter your email address.",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address.",
+                },
+              })}
               error={errors.email}
             />
           </div>
@@ -177,8 +188,10 @@ const AddManagerpage = () => {
               label={"Location"}
               type="text"
               placeholder="Enter Location"
-              register={register("location", { required: "Please enter a location" })}
               error={errors.location}
+              register={register("location", { required: "Please enter a location",
+                minLength: { value: 2, message: "Location must be at least 2 characters long"} }
+              )}
             />
           </div>
           <span className="w-full h-[0.5px] bg-white/10"></span>

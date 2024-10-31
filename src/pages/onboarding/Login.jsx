@@ -27,7 +27,7 @@ const Login = () => {
     setLoading(true);
     try {
       const fcmToken = await getFCMToken();
-      console.log(fcmToken);
+      // console.log(fcmToken);
       let obj = {
         email: formData.email,
         password: formData.password,
@@ -99,7 +99,7 @@ const Login = () => {
                 },
               })}
               text={"Password"}
-              placeholder={"Enter Password"}
+              placeholder={"Enter your password here"}
               type={"password"}
               error={errors.password}
             />

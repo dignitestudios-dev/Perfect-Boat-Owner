@@ -13,21 +13,21 @@ import LocationType from "../../components/global/headerDropdowns/LocationType";
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   
   const { navigate, boats, setUpdateBoat } = useContext(GlobalContext);
-  const [boatTypeFilter, setBoatTypeFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
   
   const [search,setSearch] = useState("")
-  const boatTypeRef = useRef(null);
-  const locationRef = useRef(null);
+
   const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false); 
   const [loadingManager, setLoadingManager] = useState(false)
   const [managersBoat, setManagersBoat] = useState([])
+  
   const [assignLoading, setAssignLoading] = useState(false)
   const [isBoatManagerAccessOpen, setIsBoatManagerAccessOpen] = useState(false);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType,setLocationType] = useState("")
+  const [boatType, setBoatType] = useState("")
 
 
   const toggleBoatTypeDropdown = () => {
@@ -38,14 +38,23 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const filteredData = managersBoat?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = managersBoat?.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
 
-  const filteredBoats = boats?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-);
-console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
+  const filteredData = managersBoat?.filter((item) => {
+    const matchesSearch = search ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const boatTypeMatch = boatType && boatType !== "all" ? item?.boatType?.toLowerCase() === boatType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && boatTypeMatch;
+  });
+  
+  const filteredBoats = boats?.filter((item) =>{
+    const matchesSearch = search ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const boatTypeMatch = boatType && boatType !== "all" ? item?.boatType?.toLowerCase() === boatType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && boatTypeMatch;
+  });
 
   const handleOpenSelectBoatsModal = () => {
     setIsSelectBoatsModalOpen(true);
@@ -60,19 +69,6 @@ console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
     setIsSelectBoatsModalOpen(false)
     setIsOpen(false)
   }
-
-  const toggleLocationFilter = () => {
-    setLocationFilter((prev) => !prev);
-  };
-
-  const handleClickOutside = (event) => {
-    if (boatTypeRef.current && !boatTypeRef.current.contains(event.target)) {   
-      setBoatTypeFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -136,17 +132,6 @@ console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
     }
   },[managerId])
 
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   return (
@@ -199,7 +184,8 @@ console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
               <span className="w-full flex justify-start items-center">
                 Boat Image
               </span>
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/>
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown} 
+            setBoatType={setBoatType} boatType={boatType}/>
               
               <span className="w-full flex justify-start items-center">
                 Name
@@ -207,7 +193,8 @@ console.log("🚀 ~ BoatAccessList ~ filteredBoats:", filteredBoats)
               <span className="w-full flex justify-start items-center">
                 Model/Make/Size
               </span>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}
+            locationType={locationType} setLocationType={setLocationType}/>
               
             </div>
 

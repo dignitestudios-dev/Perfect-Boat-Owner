@@ -20,9 +20,12 @@ const statusColors = {
 
 const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleRemoveTask}) => {
   const navigateTo = useNavigate();
+
+  const [search, setSearch] = useState("");
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [statusFilter , setStatusFilter] = useState("all");
+  const [taskType, setTaskType] = useState("all")
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -34,6 +37,13 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
   const handleEditTaskClick = (taskId) => {
     navigateTo(`/tasks/${taskId}`);
   };
+
+  const filteredData = employeeTasks?.filter((item) => {
+    const matchesSearch = search ? item?.boatName?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
+    const taskTypeMatch = taskType && taskType !== "all" ? item?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
+    return matchesSearch && matchesStatus && taskTypeMatch;
+  });
     
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -54,6 +64,7 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
                     <FiSearch className="text-white/50 text-lg" />
                   </span>
                   <input
+                  onChange={(e)=>setSearch(e.target.value)}
                     type="text"
                     placeholder="Search here"
                     className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -70,6 +81,7 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
                 <TaskType
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                  taskType={taskType} setTaskType={setTaskType}
                 />
                 <span className="w-full flex justify-start items-center">
                   Due Date
@@ -87,9 +99,9 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
                   Action
                 </span>
               </div>
-              {employeeTasks?.length > 0 ? (
+              {filteredData?.length > 0 ? (
                 <>
-                  {employeeTasks?.map((task, index) => (
+                  {filteredData?.map((task, index) => (
                     <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}

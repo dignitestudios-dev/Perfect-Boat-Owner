@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../../contexts/GlobalContext";
@@ -14,11 +14,9 @@ import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 
 const EmployeesTableBig = ({data, loading, getEmployees}) => {
+
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
-  const [jobFilter, setJobFilter] = useState(false);
-  const jobRef = useRef(null);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const locationRef = useRef(null);
+
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
@@ -29,8 +27,8 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [deactivateLoading, setDeactivateLoading] = useState(false)
 
-  const [locationType, setLocationType] = useState("")
-  const [jobType, setJobType] = useState("")
+  const [locationType, setLocationType] = useState("all")
+  const [jobType, setJobType] = useState("all")
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -40,21 +38,9 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
-
-  const toggleJobModal = (e) => {
-    if (jobRef.current && !jobRef.current.contains(e.target)) {
-      setJobFilter((prev) => !prev);
-    }
-  };
-  const toggleLocationModal = (e) => {
-    if (locationRef.current && !locationRef.current.contains(e.target)) {
-      setLocationFilter((prev) => !prev);
-    }
-  };
 
   const handleEditClick = (id) => {
     navigate(`/edit-employee/${id}`);
@@ -95,6 +81,10 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
 
   };
 
+  useEffect(()=>{
+    getEmployees(1,15,jobType, locationType)
+  },[jobType, locationType])
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -125,7 +115,8 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
 
       <div className="w-full overflow-x-auto lg:overflow-visible">
         <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
-          <div className="w-full grid grid-cols-5 border-b border-white/10 h-6 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start">
+          <div className="w-full grid grid-cols-5 border-b border-white/10 h-6 text-[11px] font-medium 
+          leading-[14.85px] text-white/50 justify-start items-start">
             <span className="w-full flex justify-start items-center">
               Employee Name
             </span>

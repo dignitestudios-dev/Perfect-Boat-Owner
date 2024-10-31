@@ -60,14 +60,15 @@ const Signup = () => {
             register={register("fullName", {
               required: "Please enter your name.",
               pattern: {
-                value: /^[A-Za-z\s]+$/, // Name should only contain letters
+                value: /^[A-Za-z\s]+$/,
                 message: "Please enter a valid name.",
               },
             })}
             text={"Name"}
-            placeholder={"e.g. Mike Smith"}
+            placeholder={"Type your name here"}
             type={"text"}
             error={errors.fullName}
+            onInput={(e) => { e.target.value = e.target.value.replace(/[^A-Za-z]/g, ""); }}
           />
 
           <AuthInput
@@ -98,8 +99,9 @@ const Signup = () => {
             type={"text"}
             error={errors.phoneNumber}
             onInput={(e) => {
-              e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, "");
+              e.target.value = e.target.value.replace(/\D/g, "");
             }}
+            isPhone={true}
           />
 
           <AuthInput
@@ -117,7 +119,7 @@ const Signup = () => {
               },
             })}
             text={"Password"}
-            placeholder={"Enter Password"}
+            placeholder={"Enter your password here"}
             type={"password"}
             error={errors.password}
           />
@@ -159,7 +161,7 @@ const Signup = () => {
         <div className="w-full h-auto flex   flex-col gap-1 justify-start items-start  ">
           <div className="w-full lg:w-[434px] flex flex-wrap gap-1 justify-center items-center ">
             <span className="text-[16px] font-medium text-[#C2C6CB]">
-              By creating account, I accept the
+              By creating an account, I accept the
             </span>
             <button
               className="outline-none text-[16px] border-none text-[#199BD1] font-bold"

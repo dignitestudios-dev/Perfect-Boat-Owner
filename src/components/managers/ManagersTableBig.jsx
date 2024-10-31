@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { FaCaretDown, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -31,8 +31,8 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
-  const [locationType, setLocationType] = useState("")
-  const [jobType, setJobType] = useState("")
+  const [locationType, setLocationType] = useState("all")
+  const [jobType, setJobType] = useState("all")
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -83,6 +83,10 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
     setIsAccountDeleteModalOpen(true);
     // setIsModalOpen(false); 
   };
+
+  useEffect(()=>{
+    getManagers(1,15,jobType, locationType)
+  },[jobType, locationType])
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">

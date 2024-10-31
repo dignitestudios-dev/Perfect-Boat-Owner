@@ -149,7 +149,7 @@ const OnboardVerifyOtp = () => {
               onClick={handleResendOtp}
               className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
             >
-              Resend now
+              {resendLoading?"Resending...":"Resend now"}
             </button>
           </div>
         </div>

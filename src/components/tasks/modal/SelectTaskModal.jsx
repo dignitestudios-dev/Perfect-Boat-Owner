@@ -6,6 +6,8 @@ import axios from "../../../axios";
 import { getUnixDate } from "../../../data/DateFormat";
 import AssignCompleteModal from "../../../components/tasks/AssignCompleteModal";
 import RequestTaskListLoader from "../loaders/RequestTaskListLoader";
+import TaskType from "../../global/headerDropdowns/TaskType";
+import StatusType from "../../global/headerDropdowns/StatusType";
 
 const Dropdown = ({ label, options }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -52,8 +54,22 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) =>
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  console.log("🚀 ~ SelectTaskModal ~ search:", search)
   const [selectedTasks, setSelectedTasks] = useState([])
   const [openAssignSuccess, setOpenAssignSuccess] = useState(false)
+
+  const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [statusFilter , setStatusFilter] = useState("all");
+  const [taskType, setTaskType] = useState("all")
+
+  const toggleTaskTypeDropdown = () => {
+    setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
+  };
+
+  const toggleStatusDropdown = () => {
+    setStatusDropdownOpen(!statusDropdownOpen);
+  };
 
   const handleOpenAssignSuccess = () =>{
     setOpenAssignSuccess(!openAssignSuccess)
@@ -73,9 +89,16 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) =>
     }
   };
 
-  const filteredData = taskData?.filter((item) =>
-    item?.task?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = taskData?.filter((item) =>
+  //   item?.task?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
+
+  const filteredData = taskData?.filter((item) => {
+    const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
+    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
+    const taskTypeMatch = taskType && taskType !== "all" ? item?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
+    return matchesSearch && matchesStatus && taskTypeMatch;
+  });
 
   useEffect(() => {
     getTasks();
@@ -115,6 +138,7 @@ const handleTaskSubmit = () =>{
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
+              onChange={(e)=>setSearch(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -143,7 +167,8 @@ const handleTaskSubmit = () =>{
                   Boat Name
                 </span>
                 <div className="flex items-center justify-start">
-                  <Dropdown label="Task Type" options={["Inspection", "Maintenance", "Repair"]} />
+                <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown} 
+          setTaskType={setTaskType} taskType={taskType}/>
                 </div>
                 <span className="flex items-center justify-start">
                   Due Date
@@ -152,46 +177,74 @@ const handleTaskSubmit = () =>{
                   Recurring Days
                 </span>
                 <div className="flex items-center justify-start">
-                  <Dropdown label="Status" options={["Pending", "In Progress", "Completed"]} />
+                <StatusType statusDropdownOpen={statusDropdownOpen} statusFilter={statusFilter}
+          toggleStatusDropdown={toggleStatusDropdown} 
+          setStatusFilter={setStatusFilter} setSearch={setSearch}/>
                 </div>
               </div>
-              {loading?(<RequestTaskListLoader/>):(
-                <>
-                {filteredData?.map((task, index) => {
-                const isMultiSelected = selectedTasks?.some((selected) => selected.id === task._id);
-                return (
-                  <div key={index} className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center">
-                    <span className="flex items-center justify-start mr-2">
-                      <input 
-                      checked={isMultiSelected}
-                      onChange={() => handleSelectTask(task?._id, task?.task)}
-                       type="checkbox" className="w-4 h-4 accent-[#199BD1]" />
-                    </span>
-                    <p className=" flex items-center justify-start">
-                      {task?.boat?.name}
-                    </p>
-                    <p className="flex items-center justify-start">
-                      {task?.taskType?.length > 15 ? task?.taskType?.slice(0,15) + "..." : task?.taskType}
-                    </p>
-                    <span className="flex items-center justify-start">
-                    {getUnixDate(task?.dueDate)}
-                    </span>
-                    <span className="flex items-center justify-start">
-                    {task?.reoccuringDays} Days
-                    </span>
-                    <span className="flex items-center justify-start">
-                      <span className="w-auto h-[27px] rounded-full flex items-center justify-center
-                       bg-[#FFCC00]/[0.12] px-2"
-                       style={{ color: statusColors[task?.status] || statusColors["default"] }}>
-                      {task?.status}
-                      </span>
-                    </span>
-                  </div>
-                )
-              }
-              )}
-                </>
-              )}
+              {loading ? (
+  <RequestTaskListLoader /> // Show loading spinner while loading
+) : (
+  <>
+    {filteredData.length > 0 ? ( // Check if there's any data to display
+      <>
+        {filteredData.map((task, index) => {
+          const isMultiSelected = selectedTasks?.some(
+            (selected) => selected.id === task._id
+          );
+          return (
+            <div
+              key={index}
+              className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center"
+            >
+              <span className="flex items-center justify-start mr-2">
+                <input
+                  checked={isMultiSelected}
+                  onChange={() =>
+                    handleSelectTask(task?._id, task?.task)
+                  }
+                  type="checkbox"
+                  className="w-4 h-4 accent-[#199BD1]"
+                />
+              </span>
+              <p className="flex items-center justify-start">
+                {task?.boat?.name}
+              </p>
+              <p className="flex items-center justify-start">
+                {task?.taskType?.length > 15
+                  ? task?.taskType?.slice(0, 15) + "..."
+                  : task?.taskType}
+              </p>
+              <span className="flex items-center justify-start">
+                {getUnixDate(task?.dueDate)}
+              </span>
+              <span className="flex items-center justify-start">
+                {task?.reoccuringDays} Days
+              </span>
+              <span className="flex items-center justify-start">
+                <span
+                  className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
+                  style={{
+                    color:
+                      statusColors[task?.status] ||
+                      statusColors["default"],
+                  }}
+                >
+                  {task?.status}
+                </span>
+              </span>
+            </div>
+          );
+        })}
+      </>
+    ) : (
+      <div className="w-full text-center text-white mt-4">
+        No data found
+      </div> // Display when there's no data
+    )}
+  </>
+)}
+
               
               {/* Add more rows as needed */}
             </div>

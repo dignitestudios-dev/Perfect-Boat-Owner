@@ -18,7 +18,6 @@ const TasksContainer = () => {
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [dueDate, setDueDate] = useState({})
-  console.log("🚀 ~ TasksContainer ~ dueDate:", dueDate)
   const [inputError, setInputError] = useState({});
 
 
@@ -26,7 +25,6 @@ const TasksContainer = () => {
   const [filter, setFilter] = useState("");
   const [sortDate,setSortDate] = useState("")
   const [sortFilter,setSortFilter] = useState("")
-  console.log("🚀 ~ TasksContainer ~ sortFilter:", sortFilter)
 
   const handleCheckboxChange = (sort) => {  
     setSortFilter(sort);

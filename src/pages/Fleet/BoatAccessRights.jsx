@@ -7,19 +7,21 @@ import { IoIosSearch } from "react-icons/io";
 import BoatAccessList from "./BoatAccessList";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 
 const BoatAccessRights = () => {
-  const { managers } = useContext(GlobalContext);
+  const { managers, getManagers, loadingManagers } = useContext(GlobalContext);
   const [search, setSearch] = useState("");
   const [isBoatAccessModalOpen, setIsBoatAccessModalOpen] = useState(false);
   const [managerId, setManagerId] = useState("")
   const [managerName, setManagerName] = useState("")
-  const jobRef = useRef(null);
-  const locationRef = useRef(null);
 
   const filteredData = managers?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
+
+  const [locationType, setLocationType] = useState("all")
+  const [jobType, setJobType] = useState("all")
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -38,21 +40,9 @@ const BoatAccessRights = () => {
     setIsBoatAccessModalOpen(true);
   };
 
-  const handleClickOutside = (event) => {
-    if (jobRef.current && !jobRef.current.contains(event.target)) {
-      setJobFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  useEffect(()=>{
+    getManagers( jobType, locationType)
+  },[locationType, jobType])
 
   return (
     <div className="h-full w-full p-2 lg:p-6 flex flex-col gap-6">
@@ -83,46 +73,51 @@ const BoatAccessRights = () => {
                 <span className="flex items-center justify-start">
                   Manager Name
                 </span>
-                <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
-                <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+                <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
+                jobType={jobType} setJobType={setJobType}/>
+                <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}
+                setLocationType={setLocationType} locationType={locationType}/>
 
                 <span className="flex items-center justify-start">Access</span>
               </div>
 
               <div className="w-full h-[calc(100vh-300px)] overflow-x-auto">
+                {loadingManagers?<ManagerDetailLoader/>:
                 <div className="w-full h-full overflow-y-auto">
-                  <div className="w-full h-auto min-w-[800px]">
-                    {filteredData?.map((item, index) => (
-                      <div
-                        key={index}
-                        className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] 
-                        py-1 text-[11px] font-medium text-white items-center"
+                <div className="w-full h-auto min-w-[800px]">
+                  {filteredData?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] 
+                      py-1 text-[11px] font-medium text-white items-center"
+                    >
+                      <span
+                        // onClick={() => navigate("/employees/1", "Employees")}
+                        className="flex items-center justify-start cursor-pointer"
                       >
-                        <span
-                          // onClick={() => navigate("/employees/1", "Employees")}
-                          className="flex items-center justify-start cursor-pointer"
-                        >
-                          {item?.name}
-                        </span>
-                        <span className="flex items-center justify-start">
-                          {item?.jobtitle}
-                        </span>
-                        <span className="flex items-center justify-start">
-                          {item?.location || "---"}
-                        </span>
-                        <span className="flex items-center justify-start">
-                          {item?.managerAccess}
-                        </span>
-                        <button
-                          onClick={()=>openBoatAccessModal(item?._id, item?.name)}
-                          className="w-[74px] h-[27px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-full py-1"
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                        {item?.name}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        {item?.jobtitle}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        {item?.location || "---"}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        {item?.managerAccess}
+                      </span>
+                      <button
+                        onClick={()=>openBoatAccessModal(item?._id, item?.name)}
+                        className="w-[74px] h-[27px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-full py-1"
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  ))}
                 </div>
+              </div>
+                }
+                
               </div>
             </div>
           </div>

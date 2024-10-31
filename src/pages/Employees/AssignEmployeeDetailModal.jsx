@@ -7,15 +7,14 @@ import LocationType from "../../components/global/headerDropdowns/LocationType";
 const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredData = employeesList?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
-
-  const jobTitleRef = useRef(null);
-  const locationRef = useRef(null);
+  // const filteredData = employeesList?.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  // ); 
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("all")
+  const [jobType, setJobType] = useState("all")
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -25,22 +24,13 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleClickOutside = (event) => {
-    if (jobTitleRef.current && !jobTitleRef.current.contains(event.target)) {
-      setJobTitleFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
+  const filteredData = employeesList?.filter((item) => {
+    const matchesSearch = searchTerm ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) : true;
+    const jobTypeMatch = jobType && jobType !== "all" ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -83,11 +73,12 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                   <th className="px-4 py-2">Employee Name</th>
                   <th className="px-4 py-2">Email</th>
                   <th className="px-4 py-2 relative">
-                  <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+                  <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
+            jobType={jobType} setJobType={setJobType}/>
                   </th>
                   <th className="px-4 py-2 relative">
-                    
-                  <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+                  <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
                   </th>
                 </tr>
               </thead>
@@ -96,16 +87,16 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                   return (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.name}
+                        {employee?.name || "---"}
                       </td>
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.email}
+                        {employee?.email || "---"}
                       </td>
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.jobtitle}
+                        {employee?.jobtitle || "---"}
                       </td>
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.location}
+                        {employee?.location || "---"}
                       </td>
                     </tr>
                   )

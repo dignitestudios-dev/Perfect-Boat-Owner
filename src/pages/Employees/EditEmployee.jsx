@@ -281,9 +281,15 @@ const EditEmployee = () => {
                         type="text"
                         placeholder="Enter Name"
                         register={register("name", {
-                          required: "Please enter your name",
+                          required: "Please enter your name.",
+                          pattern: {
+                            value: /^[A-Za-z\s]+$/,
+                            message: "Please enter a valid name.",
+                          },
                         })}
                         error={errors.name}
+              onInput={(e) => { e.target.value = e.target.value.replace(/[^A-Za-z]/g, ""); }}
+
                       />
                       <AddFleetInput
                         isDisabled={!isEditing}
@@ -291,7 +297,11 @@ const EditEmployee = () => {
                         type="email"
                         placeholder="Enter Email"
                         register={register("email", {
-                          required: "Please enter your email",
+                          required: "Please enter your email address.",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Please enter a valid email address.",
+                          },
                         })}
                         error={errors.email}
                       />
@@ -312,9 +322,9 @@ const EditEmployee = () => {
                         label="Location"
                         type="text"
                         placeholder="Enter Location"
-                        register={register("location", {
-                          required: "Please enter your location",
-                        })}
+                        register={register("location", { required: "Please enter a location",
+                          minLength: { value: 2, message: "Location must be at least 2 characters long"} }
+                        )}
                         error={errors.location}
                       />
                     </div>
@@ -332,6 +342,12 @@ const EditEmployee = () => {
                           },
                         })}
                         error={errors.phone}
+                        onInput={(e) => {
+                          e.target.value = e.target.value.replace(
+                            /(?!^\+)[^\d]/g,
+                            ""
+                          );
+                        }}
                       />
                     </div>
                   </div>

@@ -21,10 +21,14 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingManagers, setLoadingManagers] = useState(false);
   const [updateManager, setUpdateManager] = useState(false);
 
-  const getManagers = async () => {
+  const getManagers = async (jobType ="all", locationType="all") => {
     setLoadingManagers(true);
     try {
-      const { data } = await axios.get("/owner/manager");
+      const boatQuery = jobType !== "all" ? `jobTitle=${jobType}` : "";
+      const locationQuery = locationType !== "all" ? `locations=${locationType}` : "";
+       const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
+      const { data } = await axios.get(`/owner/manager?${queryString}`);
+
       setManagers(data?.data);
     } catch (err) {
     } finally {
@@ -39,10 +43,13 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [updateEmployee, setUpdateEmployee] = useState(false);
 
-  const getEmployees = async () => {
+  const getEmployees = async (jobType ="all", locationType="all") => {
     setLoadingEmployees(true);
     try {
-      const { data } = await axios.get("/owner/employees");
+      const boatQuery = jobType !== "all" ? `jobTitle=${jobType}` : "";
+      const locationQuery = locationType !== "all" ? `locations=${locationType}` : "";
+       const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
+      const { data } = await axios.get(`/owner/employees?${queryString}`);
       setEmployees(data?.data);
     } catch (err) {
     } finally {
@@ -57,10 +64,14 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingBoats, setLoadingBoats] = useState(false);
   const [updateBoat, setUpdateBoat] = useState(false);
 
-  const getBoats = async () => {
+  const getBoats = async (boatType ="all", locationType="all") => {
     setLoadingBoats(true);
     try {
-      const { data } = await axios.get("/owner/boat");
+      const boatQuery = boatType !== "all" ? `boatType=${boatType}` : "";
+       const locationQuery = locationType !== "all" ? `locationType=${locationType}` : "";
+        const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
+      const { data } = await axios.get(`/owner/boat?${queryString}`);
+
       setBoats(data?.data);
     } catch (err) {
     } finally {
@@ -85,7 +96,6 @@ export const GlobalContextProvider = ({ children }) => {
         axios.get("/owner/dropdown/boat"),
         axios.get("/owner/dropdown/task")
       ]);
-      console.log("🚀 ~ getDropDown ~ taskResponse:", taskResponse)
       if(taskResponse.status === 200 || boatResponse.status === 200 || companyResponse.status === 200){
         setDropDown(companyResponse?.data?.data);
         setBoatDropDown(boatResponse?.data?.data);
@@ -133,6 +143,7 @@ export const GlobalContextProvider = ({ children }) => {
         setUpdateEmployee,
         setUpdateManager,
         setUpdateBoat,
+        setUpdateDropDown,
         dropDown,
         boatDropDown,
         taskDropDown,

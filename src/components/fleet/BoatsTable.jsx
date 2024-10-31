@@ -1,4 +1,4 @@
-import React, { useContext, useState, Fragment, useCallback } from "react";
+import React, { useContext, useState, Fragment, useCallback, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
@@ -17,7 +17,7 @@ import LocationType from "../global/headerDropdowns/LocationType";
 //   };
 // };
 
-const BoatsTable = ({data , loading}) => {
+const BoatsTable = ({data , loading, getBoats}) => {
   const { navigate } = useContext(GlobalContext);
 
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
@@ -36,10 +36,18 @@ const BoatsTable = ({data , loading}) => {
   const [search, setSearch] = useState("");
   // let rows = 15;
 
+  const filteredData = data?.filter((item) =>
+    item?.name?.toLowerCase()?.includes(search?.toLowerCase()) 
+  );
+
 
   const handleBoatDetails=(boat) => {
     navigate(`/boats/${boat?._id}`, {state:{boat}})
   }
+
+  useEffect(() => {
+    getBoats(1, 15, boatType, locationType);
+  }, [boatType, locationType]);
 
   // const debouncedGetBoats = useCallback(
   //   debounce((pageNumber, rows, search) => getBoats(pageNumber, rows, search), 500),
@@ -109,7 +117,9 @@ const BoatsTable = ({data , loading}) => {
         ):(
           <Fragment>
             {/* Example rows */}
-        {data?.map((boat, index) => (
+            {filteredData.length > 0 ? (
+              <>
+              {filteredData?.map((boat, index) => (
           <div
             key={index}
             onClick={() => handleBoatDetails(boat)}
@@ -164,9 +174,14 @@ const BoatsTable = ({data , loading}) => {
             </span> */}
           </div>
         ))}
+              </>
+            ):(
+              <div className="pt-4">No Record Found</div>
+            )}
+        
          </Fragment>
-        )}
 
+        )}
 
       </div>
     </div>

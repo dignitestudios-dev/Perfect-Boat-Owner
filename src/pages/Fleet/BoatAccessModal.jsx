@@ -4,48 +4,33 @@ import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import axios from "../../axios";
 import BoatsLoader from "../../components/fleet/BoatsLoader";
 import MiniListLoader from "../../components/global/MiniListLoader";
+import JobType from "../../components/global/headerDropdowns/JobType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDetailModalOpen, boatId }) => {
   
   const [searchTerm, setSearchTerm] = useState("");
-  const [jobTitleFilter, setJobTitleFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("")
+  const [jobType, setJobType] = useState("")
   const [loadingBoats, setLoadingBoats] = useState(false);
   const [boats, setBoats] = useState([]);
-  
-  const jobTitleRef = useRef(null);
-  const locationRef = useRef(null);
 
-  const filteredData = boats?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
-
-  const jobTitles = ["Manager", "Engineer", "Developer"];
-  const locations = ["East California Dock", "West California Dock", "South California Dock"];
-
-  const toggleJobTitleFilter = () => {
-    setJobTitleFilter((prev) => !prev);
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
 
-  const toggleLocationFilter = () => {
-    setLocationFilter((prev) => !prev);
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleClickOutside = (event) => {
-    if (jobTitleRef.current && !jobTitleRef.current.contains(event.target)) {
-      setJobTitleFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const filteredData = boats?.filter((item) =>{
+    const matchesSearch = searchTerm ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) : true;
+    const jobTypeMatch = jobType && jobType !== "all" ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
 
   const getBoats = async () => {
     setLoadingBoats(true);
@@ -109,56 +94,12 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                     <th className="px-4 py-2">Manager Name</th>
                     <th className="px-4 py-2">Email</th>
                     <th className="px-4 py-2 relative">
-                      <button
-                        onClick={toggleJobTitleFilter}
-                        className="flex items-center gap-1"
-                      >
-                        Job Title
-                        <FaCaretDown />
-                      </button>
-                      <div
-                        ref={jobTitleRef}
-                        className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                          jobTitleFilter ? "scale-100" : "scale-0"
-                        } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                      >
-                        {jobTitles.map((title, index) => (
-                          <div
-                            key={index}
-                            className="w-full flex justify-start items-start"
-                          >
-                            <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                              {title}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                    <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
+            jobType={jobType} setJobType={setJobType}/>
                     </th>
                     <th className="px-4 py-2 relative">
-                      <button
-                        onClick={toggleLocationFilter}
-                        className="flex items-center gap-1"
-                      >
-                        Location
-                        <FaCaretDown />
-                      </button>
-                      <div
-                        ref={locationRef}
-                        className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                          locationFilter ? "scale-100" : "scale-0"
-                        } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                      >
-                        {locations.map((location, index) => (
-                          <div
-                            key={index}
-                            className="w-full flex justify-start items-start"
-                          >
-                            <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                              {location}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                    <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
                     </th>
                   </tr>
                 </thead>
@@ -168,7 +109,9 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                   </Fragment>
                 ) : (
                   <tbody>
-                    {filteredData?.map((manager, index) => (
+                    {filteredData?.length > 0 ?(
+                      <>
+                      {filteredData?.map((manager, index) => (
                       <tr key={index} className="border-b border-[#2A394C]">
                         <td className="px-4 py-2">{manager?.name}</td>
                         <td className="px-4 py-2">{manager?.email}</td>
@@ -176,6 +119,10 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                         <td className="px-4 py-2">{manager?.location || "---"}</td>
                       </tr>
                     ))}
+                      </>
+                    ):(
+                      <div className="pt-4">No record found</div>
+                    )}
                   </tbody>
                 )}
               </table>

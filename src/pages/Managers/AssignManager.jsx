@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import ManagerDetailModal from "../Managers/ManagerDetailModal"; // Update with the correct path
@@ -10,17 +10,21 @@ import { ErrorToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 
 const AssignManager = () => {
-  const { managers, employees } = useContext(GlobalContext);
+  const { getEmployees, employees, loadingEmployees } = useContext(GlobalContext);
   const navigate = useNavigate()
   const [search, setSearch] = useState("");
+
   const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
 );
 
 const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("all")
+  const [jobType, setJobType] = useState("all")
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -30,11 +34,8 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const [locationFilter, setLocationFilter] = useState(false);
-  const [jobFilter, setJobFilter] = useState(false);
-  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false); // State for employee detail modal
-  const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] =
-    useState(false); // State for assign employee modal 
+  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
+  const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] = useState(false);
 
   const [passSelectedManager, SetPassSelectedManager] = useState("")
   const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -72,20 +73,16 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
     }
   }
 
-  const locationRef = useRef(null);
-  const jobRef = useRef(null);
+  useEffect(()=>{
+    getEmployees( jobType, locationType)
+  },[locationType, jobType])
+
 
   // const toggleLocationDropdown = (e) => {
   //   if (locationRef.current && !locationRef.current.contains(e.target)) {
   //     setLocationFilter((prev) => !prev);
   //   }
   // };
-
-  const toggleJobDropdown = (e) => {
-    if (jobRef.current && !jobRef.current.contains(e.target)) {
-      setJobFilter((prev) => !prev);
-    }
-  };
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -104,17 +101,21 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
               onClick={() => setIsBoatModalOpen(true)} // Open the Employee Detail Modal
               className="w-full h-[52px] text-gray-400 bg-[#1A293D] text-left disabled:text-50 outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl mb-6"
             >
-              {passSelectedManager?.name ||"Click here to select manager"}
+              {passSelectedManager?.name || "Click here to select manager"}
             </button>
           </div>
 
           <button
-          disabled={assignLoading}
-            onClick={handleAssignManager} 
+            disabled={assignLoading}
+            onClick={handleAssignManager}
             className="w-full lg:w-[135px] h-[35px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
           >
-            <div className="flex items-center"><span className="mr-1">Assign Manager</span>{assignLoading &&(
-                <FiLoader className="animate-spin text-lg mx-auto" />)}</div>
+            <div className="flex items-center">
+              <span className="mr-1">Assign Manager</span>
+              {assignLoading && (
+                <FiLoader className="animate-spin text-lg mx-auto" />
+              )}
+            </div>
           </button>
         </div>
 
@@ -132,7 +133,7 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[600px]">
             {/* Table Headings */}
             <div className="w-full grid h-10 grid-cols-10 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
@@ -144,69 +145,96 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
                 <span className="text-white/50">Email</span>
               </div>
               <div className="flex items-center px-2 col-span-2">
-
-            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
+                <JobType
+                  jobTitleDropdownOpen={jobTitleDropdownOpen}
+                  toggleJobTitleDropdown={toggleJobTitleDropdown}
+                  jobType={jobType}
+                  setJobType={setJobType}
+                />
               </div>
 
               <div className="flex items-center px-2 col-span-1">
-
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+                <LocationType
+                  locationDropdownOpen={locationDropdownOpen}
+                  toggleLocationDropdown={toggleLocationDropdown}
+                  setLocationType={setLocationType}
+                  locationType={locationType}
+                />
               </div>
             </div>
 
-            {/* Table Content */}
             <>
-  {filteredData && filteredData.length > 0 ? (
-    filteredData?.map((employee, index) => {
-      const isMultiSelected = selectedEmployees?.some((selected) => selected?.id === employee?._id);
-      return (
-        <div
-          key={index}
-          className="w-full h-10 grid grid-cols-10 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
-        >
-          <div className="flex items-center col-span-1 px-2">
-            <input
-              checked={isMultiSelected}
-              onChange={() => handleSelectEmployee(employee?._id, employee?.name)}
-              type="checkbox"
-              className="w-3 h-3 accent-[#199BD1]"
-            />
-          </div>
-          <span className="col-span-2 flex items-center px-2">
-            {employee?.name}
-          </span>
-          <span className="flex items-center px-2 col-span-3">
-            {employee?.email}
-          </span>
-          <span className="flex items-center px-2 col-span-2">
-            {employee?.jobtitle}
-          </span>
-          <span className="flex items-center px-2 col-span-2">
-            {employee?.location}
-          </span>
-        </div>
-      );
-    })
-  ) : (
-    <div className="w-full h-10 grid grid-cols-1 border-b mt-2 text-center">
-      No data found. Add employees and conquer the tasks together!
-    </div>
-  )}
-</>
+              {loadingEmployees ? (
+                <ManagerDetailLoader />
+              ) : (
+                <>
+                  {filteredData && filteredData.length > 0 ? (
+                    filteredData?.map((employee, index) => {
+                      const isMultiSelected = selectedEmployees?.some(
+                        (selected) => selected?.id === employee?._id
+                      );
+                      return (
+                        <div
+                          key={index}
+                          className="w-full h-10 grid grid-cols-10 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
+                        >
+                          <div className="flex items-center col-span-1 px-2">
+                            <input
+                              checked={isMultiSelected}
+                              onChange={() =>
+                                handleSelectEmployee(
+                                  employee?._id,
+                                  employee?.name
+                                )
+                              }
+                              type="checkbox"
+                              className="w-3 h-3 accent-[#199BD1]"
+                            />
+                          </div>
+                          <span className="col-span-2 flex items-center px-2">
+                            {employee?.name}
+                          </span>
+                          <span className="flex items-center px-2 col-span-3">
+                            {employee?.email}
+                          </span>
+                          <span className="flex items-center px-2 col-span-2">
+                            {employee?.jobtitle}
+                          </span>
+                          <span className="flex items-center px-2 col-span-2">
+                            {employee?.location}
+                          </span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="w-full h-10 grid grid-cols-1 border-b mt-2 text-center">
+                      No data found.
+                    </div>
+                  )}
+                </>
+              )}
+            </>
           </div>
         </div>
 
         {/* EmployeeDetailModal Component */}
         {isBoatModalOpen && (
-          <ManagerDetailModal setIsOpen={setIsBoatModalOpen} SetPassSelectedManager={SetPassSelectedManager} 
-          selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
+          <ManagerDetailModal
+            setIsOpen={setIsBoatModalOpen}
+            SetPassSelectedManager={SetPassSelectedManager}
+            selectedManager={selectedManager}
+            setSelectedManager={setSelectedManager}
+          />
         )}
 
         {/* AssignManagerModal Component */}
         {isAssignEmployeeModalOpen && (
           <AssignManagerModal
             isOpen={isAssignEmployeeModalOpen}
-            onClose={() => {setIsAssignEmployeeModalOpen(false); navigate("/employees")}}
+            onClose={() => {
+              setIsAssignEmployeeModalOpen(false);
+              navigate("/employees");
+            }}
           />
         )}
       </div>

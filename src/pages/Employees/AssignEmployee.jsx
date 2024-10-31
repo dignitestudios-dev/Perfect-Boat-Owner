@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { IoIosSearch } from "react-icons/io";
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
@@ -13,12 +13,13 @@ import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const AssignEmployee = () => {
-  const { employees, loadingEmployees } = useContext(GlobalContext);
+  const { employees, loadingEmployees, getEmployees } = useContext(GlobalContext);
   const navigate = useNavigate()
   const [search, setSearch] = useState("");
   const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
 );
+
 const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
 const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 const [selectedManager, setSelectedManager] = useState(null);
@@ -36,6 +37,9 @@ const toggleLocationDropdown = () => {
 
   const [passSelectedManager, SetPassSelectedManager] = useState("")
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [locationType, setLocationType] = useState("all")
+  const [jobType, setJobType] = useState("all")
+
 
   const handleSelectEmployee = (employeeId, employeeName) => {
       const isSelected = selectedEmployees.some((employee) => employee?.id === employeeId);
@@ -66,6 +70,10 @@ const toggleLocationDropdown = () => {
       setAssignLoading(false)
     }
   }
+
+  useEffect(()=>{
+    getEmployees(jobType, locationType)
+  },[jobType, locationType])
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -110,19 +118,27 @@ const toggleLocationDropdown = () => {
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
-          <div className="min-w-[600px]">
+
+
+        <div className="w-full overflow-x-auto lg:overflow-visible">
+          <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
             {/* Table Headings */}
-            <div className="w-full grid h-10 grid-cols-10 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
-              <div className="flex items-center px-2 col-span-1"></div>
+            <div className="w-full grid h-10 grid-cols-8 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
+              
               <div className="flex items-center px-2 col-span-2">
                 <span className="text-white/50">Employee Name</span>
               </div>
-              <div className="flex items-center px-2 col-span-3">
+              <div className="flex items-center px-2 col-span-2">
                 <span className="text-white/50">Email</span>
               </div>
-              <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}/>
-              <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+              <div className="flex items-center px-2 col-span-2">
+              <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
+              jobType={jobType} setJobType={setJobType} />
+              </div>
+              <div className="flex items-center px-2 col-span-2">
+              <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}
+              setLocationType={setLocationType} locationType={locationType}/>
+              </div>
             </div>
 
             {loadingEmployees ? (
@@ -130,15 +146,16 @@ const toggleLocationDropdown = () => {
             ):(
               <>
               {/* Table Content */}
-            {filteredData?.length > 0 &&
+            {filteredData?.length > 0 ?
             filteredData?.map((employee, index) => {
               const isMultiSelected = selectedEmployees.some((selected) => selected.id === employee._id);
               return(
                 <div
                   key={index}
-                  className="w-full h-10 grid grid-cols-10 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
+                  className="w-full h-20 grid grid-cols-8 border-b border-[#fff]/[0.14] text-[11px] font-medium
+                   leading-[14.85px] text-white"
                 >
-                  <div className="flex items-center col-span-1 px-2">
+                  <div className="flex items-center col-span-2 px-1">
                     <input
                     checked={isMultiSelected}
                     onChange={
@@ -147,11 +164,12 @@ const toggleLocationDropdown = () => {
                       type="checkbox"
                       className="w-3 h-3 accent-[#199BD1]"
                     />
-                  </div>
-                  <span className="col-span-2 flex items-center px-2">
+                    <span className="col-span-2 flex items-center px-2">
                     {employee?.name}
                   </span>
-                  <span className="flex items-center px-2 col-span-3">
+                  </div>
+                  
+                  <span className="flex items-center px-2 col-span-2">
                   {employee?.email}
                   </span>
                   <span className="flex items-center px-2 col-span-2">
@@ -161,7 +179,8 @@ const toggleLocationDropdown = () => {
                   {employee?.location || "---"}
                   </span>
                 </div>
-                )})}
+                )}):
+                <div className=" mt-6">No record found</div>}
               </>
             )}
           </div>

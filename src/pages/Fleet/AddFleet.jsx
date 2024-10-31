@@ -16,7 +16,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 const AddFleet = () => {
 
   const {boatDropDown} = useContext(GlobalContext)
-  console.log("🚀 ~ AddFleet ~ boatDropDown:", boatDropDown)
+
   const navigate = useNavigate()
   const [selectedBoat, setSelectedBoat] = useState("");
   const [isManagerOpen, setIsManagerOpen] = useState(false);

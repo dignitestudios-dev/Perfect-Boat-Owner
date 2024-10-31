@@ -8,13 +8,15 @@ import BoatType from "../../components/global/headerDropdowns/BoatType";
 
 const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
   const { navigate } = useContext(GlobalContext);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [selectAll, setSelectAll] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
-  const boatTypeRef = useRef(null);
-  const locationRef = useRef(null);
 
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("all")
+  const [boatType, setBoatType] = useState("all")
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -24,15 +26,14 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleClickOutside = (event) => {
-    if (boatTypeRef.current && !boatTypeRef.current.contains(event.target)) {
-      setBoatTypeFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
+  const filteredData = boatList?.filter((item) => {
+    const matchesSearch = searchTerm ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) : true;
+    const jobTypeMatch = boatType && boatType !== "all" ? item?.boatType?.toLowerCase() === boatType?.toLowerCase() : true;
+    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
 
+  
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedBoats([]);
@@ -47,17 +48,6 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
     updatedSelection[index] = !updatedSelection[index];
     setSelectedBoats(updatedSelection);
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -83,6 +73,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
+                onChange={(e)=>setSearchTerm(e.target.value)} 
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -110,15 +101,17 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
           <div className="w-full flex flex-col gap-1 justify-start items-start mt-4">
             <div className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
               <span className="w-full flex justify-start items-center">Boat Image</span>
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}/> 
+            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+            boatType={boatType} setBoatType={setBoatType}/> 
               
               <span className="w-full flex justify-start items-center">Name</span>
               <span className="w-full flex justify-start items-center">Model/Make/Size</span>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}/>
+            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}
+            locationType={locationType} setLocationType={setLocationType}/>
               
             </div>
 
-            {boatList?.map((boat, index) => (
+            {filteredData?.map((boat, index) => (
               <div
                 key={index}
                 // onClick={() => navigate(`/boats/${boat?._id}`, "Boat")}

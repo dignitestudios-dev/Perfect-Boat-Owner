@@ -27,7 +27,7 @@ export const sidebarArr = [
     icon: <HiOutlineDocumentPlus />,
   },
   {
-    title: "Manager",
+    title: "Managers",
     url: "/managers",
     icon: <GrUserManager />,
     submenu: [
@@ -69,7 +69,7 @@ export const sidebarArr = [
     ],
   },
   {
-    title: "Boat",
+    title: "Boats",
     url: "/boats",
     icon: <TbSailboat />,
     submenu: [

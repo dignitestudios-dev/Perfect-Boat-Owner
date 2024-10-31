@@ -6,49 +6,46 @@ import { AuthMockup } from "../../assets/export";
 import axios from "../../axios";
 import { ErrorToast } from "../global/Toaster";
 import RequestTaskListLoader from "./loaders/RequestTaskListLoader";
+import LocationType from "../global/headerDropdowns/LocationType";
 
 const NewTaskTable = () => {
   const { navigate } = useContext(GlobalContext);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const locationRef = useRef(null);
+  // const [locationFilter, setLocationFilter] = useState(false);
+  // const locationRef = useRef(null);
+  const [locationType, setLocationType] = useState("all")
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
-  const toggleLocationModal = () => {
-    setLocationFilter((prev) => !prev);
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleClickOutside = (event) => {
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
+  // const handleClickOutside = (event) => {
+  //   if (locationRef.current && !locationRef.current.contains(event.target)) {
+  //     setLocationFilter(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   const [data, setData] = useState([]);
-  console.log("🚀 ~ NewTaskTable ~ data:", data)
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
   const filteredData = data.filter((item) =>
-    item?.note?.toLowerCase()?.includes(search?.toLowerCase())
+    item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
 
-  const toggleModal = (e) => {
-    if (dropDownRef.current && !dropDownRef.current.contains(e.target)) {
-      setOpenDropdownFilter((prev) => !prev);
-    }
-  };
-
   // Fetch tasks from the API
-  const getData = async () => {
+  const getData = async (locationType = "all") => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/owner/task/requests?search=${""}`);
+      const locationQuery = locationType !== "all" ? `location=${locationType}` : "";
+      const { data } = await axios.get(`/owner/task/requests?${locationQuery}`);
       setData(data?.data || []);
     } catch (err) {
       console.error("Error fetching Task data:", err);
@@ -59,8 +56,8 @@ const NewTaskTable = () => {
   };
 
   useEffect(() => {
-    getData();
-  }, [search]);
+    getData(locationType);
+  }, [locationType]);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -92,40 +89,8 @@ const NewTaskTable = () => {
           <span className="w-full flex justify-start items-center">
             Boat Name
           </span>
-          <button
-            onClick={toggleLocationModal}
-            className="w-auto flex flex-col gap-1 justify-start items-start relative"
-          >
-            <div className="w-auto flex gap-1 justify-start items-center">
-              <span>Location</span>
-              <FaCaretDown />
-            </div>
-            <div
-              ref={locationRef}
-              className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                locationFilter ? "scale-100" : "scale-0"
-              } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-            >
-              <div className="w-full flex justify-start items-start gap-2">
-                <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                  East California Dock
-                </span>
-              </div>
-              <div className="w-full flex justify-start items-start gap-2">
-                <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                  West California Dock
-                </span>
-              </div>
-              <div className="w-full flex justify-start items-start gap-2">
-                <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-                <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                  South California Dock
-                </span>
-              </div>
-            </div>
-          </button>
+          <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
+            locationType={locationType} setLocationType={setLocationType}/>
           <span className="w-full flex justify-start items-center px-[60px]">
             Requested By
           </span>
