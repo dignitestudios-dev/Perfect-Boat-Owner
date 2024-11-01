@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PublishModal from "./PublishModal"; // Make sure the path is correct
 import { GlobalContext } from "../../contexts/GlobalContext"; // Adjust the path as needed
 import { BlogContext } from "../../contexts/BlogContext";
@@ -43,14 +43,6 @@ const Publish = () => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <meta name="description" content="${subtitle}">
-    <style>
-      /* You can add custom styles here */
-      body {
-        font-family: Arial, sans-serif;
-        background-color: transparent;
-        color: #fff;
-      }
-    </style>
   </head>
   <body>
     ${content}
@@ -96,6 +88,9 @@ const Publish = () => {
     navigate("/blog/createnewblog"); // Redirect to the desired path
   };
 
+  useEffect(() => {
+    setViewers("everyone");
+  }, []);
   return (
     <div className="h-full w-full p-6 flex flex-col gap-4 bg-[#0D1B2A]">
       {/* Top Right Button */}

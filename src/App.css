@@ -39,3 +39,20 @@ body {
 .bg-gradient {
   background: linear-gradient(to right, #199ad13d, #06afb2);
 }
+
+.font {
+  font-family: sans-serif !important;
+}
+.rainbow-calendar_month-text {
+  color: white !important;
+}
+.rainbow-calendar_day-adjacent {
+  color: #7e7e7e !important;
+}
+.rainbow-calendar_day-button {
+  color: #fff !important;
+}
+.rainbow-select {
+  background-color: rgb(26 41 61) !important;
+  color: white !important;
+}

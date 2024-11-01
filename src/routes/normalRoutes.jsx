@@ -50,6 +50,7 @@ import AddCard from "../pages/onboarding/AddCard";
 import Summary from "../pages/onboarding/Summary";
 import UpdatePassword from "../pages/onboarding/UpdatePassword";
 import CsvUploader from "../pages/Dashboard/CsvUploader";
+import AssignEmployeeInternal from "../pages/Managers/AssignEmployeeInternal";
 
 export const normalRoutes = [
   {
@@ -161,11 +162,16 @@ export const normalRoutes = [
     url: "/managers/add",
     page: <GlobalLayout page={<AddManagerpage />} />,
   },
-  
+
   {
     title: "Add a Employee",
     url: "/add-employee",
     page: <GlobalLayout page={<AddEmployee />} />,
+  },
+  {
+    title: "ASsign Employee CSV",
+    url: "/assign-employee/csv",
+    page: <GlobalLayout page={<AssignEmployeeInternal />} />,
   },
   {
     title: "Assign Employees",
@@ -193,6 +199,7 @@ export const normalRoutes = [
     url: "/add-fleet",
     page: <GlobalLayout page={<AddFleet />} />,
   },
+
   {
     title: "Boat Details",
     url: "/boats/:id",
