@@ -14,25 +14,30 @@ import { boatType } from "../../data/TaskTypeData";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddFleet = () => {
+  const { boatDropDown } = useContext(GlobalContext);
 
-  const {boatDropDown} = useContext(GlobalContext)
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [selectedBoat, setSelectedBoat] = useState("");
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isCongratsOpen, setIsCongratsOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
-  const [coverImage, setCoverImage] = useState("")
+  const [coverImage, setCoverImage] = useState("");
 
-  const [submitLoading, setSubmitLoading] = useState(false)
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
-  
-  const [fleetPictures, setFleetPictures] = useState([0])
 
-  const [passSelectedManager, SetPassSelectedManager] = useState("")
-  const [passSelectedManagers, SetPassSelectedManagers] = useState([])
+  const [fleetPictures, setFleetPictures] = useState([0]);
 
-  const {watch, setValue, register, handleSubmit, formState: { errors } }= useForm();
+  const [passSelectedManager, SetPassSelectedManager] = useState("");
+  const [passSelectedManagers, SetPassSelectedManagers] = useState([]);
+
+  const {
+    watch,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const formsImages = watch("formsImages");
 
@@ -40,63 +45,88 @@ const AddFleet = () => {
     setSelectedBoat(boat);
   };
 
-  const handleImageSelect = (imageIndex) =>{
-    setCoverImage(imageIndex)
-  }
+  const handleImageSelect = (imageIndex) => {
+    setCoverImage(imageIndex);
+  };
 
-  const handleFleetImage =(index,event) => {
-    let setIndex = index+1
-    if(setIndex === formsImages?.length && setIndex < 5){
-      setFleetPictures((prev)=> [...prev, prev?.length])
+  const handleFleetImage = (index, event) => {
+    let setIndex = index + 1;
+    if (setIndex === formsImages?.length && setIndex < 5) {
+      setFleetPictures((prev) => [...prev, prev?.length]);
     }
-  }
+  };
+
+  const currentYear = new Date().getFullYear();
+  const minYear = 1970;
+  const maxYear = currentYear + 1;
+
+  const [model, setModel] = useState("");
+  const [modelError, setModelError] = useState(false);
+
+  const handleModelChange = (event) => {
+    const inputYear = event.target.value;
+
+    // Ensure input is a number
+    if (/^\d{0,4}$/.test(inputYear)) {
+      setModel(inputYear);
+
+      // Check if year is within the allowed range
+      if (inputYear && (inputYear < minYear || inputYear > maxYear)) {
+        setModelError(`Please enter a year between ${minYear} and ${maxYear}.`);
+      } else {
+        setModelError(false);
+      }
+    }
+  };
 
   const submitBoatData = async (formData) => {
-    if(!coverImage && coverImage > 0 ){
+    if (!coverImage && coverImage > 0) {
       ErrorToast("Select cover image");
       return;
     }
-    try{
-      setSubmitLoading(true)
-        const data = new FormData();
-        console.log("form =? ", formData)
-        data.append('name', formData.name);
-        data.append("make", formData.make);
-        data.append("size", formData.size);
-        data.append("model", formData.model);
-        data.append("location", formData.location);
-        data.append("boatType", selectedBoat);
-        // data.append("boatType", selectedBoat[formIndex]);
-        if(passSelectedManagers){
-          passSelectedManagers.forEach((manager)=>{
-            data.append("managers",manager.id)
-          })}
-
-        if (formData.formsImages) {
-          formData.formsImages.forEach((fileList,index) => {
-              if (fileList.length > 0 && fileList[0]) {
-                if(coverImage === index){
-                  data.append('cover',fileList[0])
-                }
-                else{
-                  data.append('pictures', fileList[0]);
-                }
-              }
-          });
-        }
-        const response = await axios.post('/owner/boat', data)
-
-        if (response?.status === 200) {
-          console.log("--> ",response?.data)
-          setIsCongratsOpen(true);
-        }
+    if (modelError) {
+      ErrorToast("Enter valid model");
+      return;
     }
-    catch (error) {
-      ErrorToast(error?.response?.data?.message)
+    try {
+      setSubmitLoading(true);
+      const data = new FormData();
+      console.log("form =? ", formData);
+      data.append("name", formData.name);
+      data.append("make", formData.make);
+      data.append("size", formData.size);
+      data.append("model", formData.model);
+      data.append("location", formData.location);
+      data.append("boatType", selectedBoat);
+      // data.append("boatType", selectedBoat[formIndex]);
+      if (passSelectedManagers) {
+        passSelectedManagers.forEach((manager) => {
+          data.append("managers", manager.id);
+        });
+      }
+
+      if (formData.formsImages) {
+        formData.formsImages.forEach((fileList, index) => {
+          if (fileList.length > 0 && fileList[0]) {
+            if (coverImage === index) {
+              data.append("cover", fileList[0]);
+            } else {
+              data.append("pictures", fileList[0]);
+            }
+          }
+        });
+      }
+      const response = await axios.post("/owner/boat", data);
+
+      if (response?.status === 200) {
+        console.log("--> ", response?.data);
+        setIsCongratsOpen(true);
+      }
+    } catch (error) {
+      ErrorToast(error?.response?.data?.message);
       console.log("Error uploading images:", error);
-    }
-    finally{
-      setSubmitLoading(false)
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -121,7 +151,7 @@ const AddFleet = () => {
             <div className="w-full h-auto flex flex-col gap-6 justify-start items-start">
               <div className="w-full flex flex-col justify-start items-start gap-4">
                 <div className="w-full h-auto flex flex-col justify-start items-start gap-8">
-                  <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-12">
+                  <div className="w-full grid grid-cols-1 md:grid-cols-3 items-start justify-start gap-3 lg:gap-12">
                     <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                       <label className="text-[16px] font-medium leading-[21.6px]">
                         Boat Type
@@ -179,32 +209,48 @@ const AddFleet = () => {
                     {/* <AddFleetInput label={"Name"} />
                     <AddFleetInput label={"Make"} /> */}
                   </div>
-                  <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-12">
+                  <div className="w-full grid grid-cols-1 md:grid-cols-3 items-start justify-start gap-3 lg:gap-12">
+                    <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                      <label className="text-[16px] font-medium leading-[21.6px]">
+                        Model
+                      </label>
+                      <div
+                        className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center ${
+                          modelError && "border-red-500"
+                        }`}
+                      >
+                        <input
+                          type="text"
+                          id="year"
+                          value={model}
+                          onChange={handleModelChange}
+                          placeholder="YYYY"
+                          className="w-full h-full bg-transparent autofill:bg-transparent autofill:text-white outline-none text-white placeholder:text-gray-400"
+                        />
+                      </div>
+                      {modelError && (
+                        <p className="text-red-500 text-sm">{modelError}</p>
+                      )}
+                    </div>
                     <AddFleetInput
-                      label="Model"
-                      placeholder="Enter Model"
+                      label="Size (m)"
+                      placeholder="Enter Size"
                       type="text"
-                      register={register(`model`, {
-                        required: "Model is required",
+                      register={register(`size`, {
+                        required: "Size is required",
+                        pattern: {
+                          value: /^[1-9][0-9]{0,3}$/,
+                          message: "Size must be positive",
+                        },
                       })}
-                      error={errors.model}
-                    />
-                    <AddFleetInput
-                     label="Size (m)"
-                     placeholder="Enter Size"
-                     type="text"
-                     register={register(`size`, {
-                       required: "Size is required",
-                       pattern: {
-                        value: /^[0-9]{4}$/,
-                        message: "Size must be positive",
-                      },
-                     })}
-                     maxLength={4}
-                     onInput={(e) => {
-                      e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, "");
-                    }}
-                     error={errors.size}
+                      maxLength={4}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(
+                          /(?!^\+)[^\d]/g,
+                          ""
+                        );
+                      }}
+                      error={errors.size}
                     />
                     <AddFleetInput
                       label="Location"
@@ -228,12 +274,13 @@ const AddFleet = () => {
                   onClick={() => setIsManagerOpen(true)}
                   className="w-full h-[52px] bg-[#1A293D] text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
                 >
-                  {passSelectedManagers.length > 0 ?(
-                    passSelectedManagers ? passSelectedManagers?.map(item=> item.name+","):  "Click Here To Select Manager"
-                  ):(
-                   passSelectedManager ? passSelectedManager.name : "Click Here To Select Manager"
-                  )}
-                    
+                  {passSelectedManagers.length > 0
+                    ? passSelectedManagers
+                      ? passSelectedManagers?.map((item) => item.name + ",")
+                      : "Click Here To Select Manager"
+                    : passSelectedManager
+                    ? passSelectedManager.name
+                    : "Click Here To Select Manager"}
                 </button>
               </div>
 
@@ -259,21 +306,37 @@ const AddFleet = () => {
                               <>
                                 {formsImages[imageIndex]?.length > 0 &&
                                 formsImages[imageIndex][0] ? (
-                                  <img src={URL.createObjectURL(formsImages[imageIndex][0])}
+                                  <img
+                                    src={URL.createObjectURL(
+                                      formsImages[imageIndex][0]
+                                    )}
                                     alt={`Uploaded preview ${imageIndex}`}
                                     className="w-full h-full object-cover rounded-xl"
-                                  />) : (<FiDownload />)}
+                                  />
+                                ) : (
+                                  <FiDownload />
+                                )}
                               </>
                             )}
                           </label>
-                          <input key={imageIndex} name={`formsImages.${imageIndex}`} id={`form-image-${imageIndex}`}
-                            accept="image/*" className="hidden" type="file"
-                            {...register(`formsImages.${imageIndex}`, { 
-                              required: false, onChange: (e) => {handleFleetImage(imageIndex, e)}
+                          <input
+                            key={imageIndex}
+                            name={`formsImages.${imageIndex}`}
+                            id={`form-image-${imageIndex}`}
+                            accept="image/*"
+                            className="hidden"
+                            type="file"
+                            {...register(`formsImages.${imageIndex}`, {
+                              required: false,
+                              onChange: (e) => {
+                                handleFleetImage(imageIndex, e);
+                              },
                             })}
                           />
                           <div className="w-auto ml-1 mt-1 flex gap-2 justify-start items-center">
-                            <input type="radio" checked={isSelected}
+                            <input
+                              type="radio"
+                              checked={isSelected}
                               onChange={() => handleImageSelect(imageIndex)}
                               className="w-3 h-3 rounded-full accent-white outline-none border-none"
                             />
@@ -292,12 +355,16 @@ const AddFleet = () => {
 
           <div className="w-full flex justify-end mt-10 items-center gap-4">
             <button
-            disabled={submitLoading}
+              disabled={submitLoading}
               type="submit"
               className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
             >
-              <div className="flex items-center"><span className="mr-1">Save Fleet</span>{submitLoading &&(
-          <FiLoader className="animate-spin text-lg mx-auto" />)}</div>
+              <div className="flex items-center">
+                <span className="mr-1">Save Fleet</span>
+                {submitLoading && (
+                  <FiLoader className="animate-spin text-lg mx-auto" />
+                )}
+              </div>
             </button>
           </div>
         </form>
@@ -306,11 +373,12 @@ const AddFleet = () => {
       {/* ManagerDetailModal Component */}
       {isManagerOpen && (
         <ManagerDetailModal
-        isMultiple={true}
+          isMultiple={true}
           setIsOpen={setIsManagerOpen}
           SetPassSelectedManager={SetPassSelectedManager}
           SetPassSelectedManagers={SetPassSelectedManagers}
-          selectedManagers={selectedManagers} setSelectedManagers={setSelectedManagers}
+          selectedManagers={selectedManagers}
+          setSelectedManagers={setSelectedManagers}
         />
       )}
 
@@ -318,7 +386,10 @@ const AddFleet = () => {
       {isCongratsOpen && (
         <CongratsModal
           isOpen={isCongratsOpen}
-          onClose={() => {setIsCongratsOpen(false); navigate("/boats")}}
+          onClose={() => {
+            setIsCongratsOpen(false);
+            navigate("/boats");
+          }}
         />
       )}
 
