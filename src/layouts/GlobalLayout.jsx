@@ -42,7 +42,7 @@ const GlobalLayout = ({ page }) => {
       <div className="w-full lg:w-[calc(100%-280px)]  h-full relative flex flex-col justify-start items-start">
         <Navbar />
         {show && (
-          <div
+          <Link to="/notifications"
             class="min-w-64 max-w-96 fixed animate-pulse z-[100000] bottom-4 right-8 bg-[#001229] shadow border border-gray-800 text-sm text-gray-200 rounded-2xl "
             role="alert"
             tabindex="-1"
@@ -100,7 +100,7 @@ const GlobalLayout = ({ page }) => {
                 </button>
               </div>
             </div>
-          </div>
+          </Link>
         )}
         <div className="w-full h-[calc(100%-60px)] bg-[#1A293D] text-white   flex flex-col justify-start items-start">
           {page}

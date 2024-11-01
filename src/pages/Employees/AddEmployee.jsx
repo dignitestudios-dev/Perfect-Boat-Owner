@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import Papa from "papaparse";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
@@ -8,6 +9,7 @@ import axios from "../../axios"; // Ensure axios is imported
 import { useForm } from "react-hook-form"; // Import useForm
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
+import AddEmployeeCsv from "../../components/employees/AddEmployeeCsv";
 
 const AddEmployee = () => {
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
@@ -19,8 +21,10 @@ const AddEmployee = () => {
   // const [tasks,setTasks] = useState([])
   // const [tasksError,setTasksError] = useState("")
   const [managerError,setManagerError] = useState(null)
-
+  
   const [addLoading, setAddLoading] = useState(false)
+  const [csvUploaded, setCsvUploaded] = useState(false)
+  console.log("🚀 ~ AddEmployee ~ csvUploaded:", csvUploaded)
   
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: { manager: passSelectedManager?.name } 
@@ -33,22 +37,6 @@ const AddEmployee = () => {
 
   const openManagerModal = () => {
     setIsManagerModalOpen(true);
-  };
-
-  const closeManagerModal = () => {
-    setIsManagerModalOpen(false);
-  };
-
-  const openTaskModal = () => {
-    setIsTaskModalOpen(true);
-  };
-
-  const closeTaskModal = () => {
-    setIsTaskModalOpen(false);
-  };
-
-  const openImportCSVModal = () => {
-    setIsImportCSVModalOpen(true);
   };
 
   const closeImportCSVModal = () => {
@@ -92,6 +80,44 @@ const AddEmployee = () => {
     }
   };
 
+  const [data, setData] = useState([
+    {
+      name: "",
+      email: "",
+      jobtitle: "",
+      location: "",
+      manager: null,
+      phone: "",
+      password: "Test@123",
+    },
+  ]);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const parsedData = results.data.map((item) => ({
+            name: item.name || "",
+            email: item.email || "",
+            jobtitle: item.jobtitle || "",
+            location: item.location || "",
+            manager: item.manager || null,
+            phone: item.phoneNumber || "",
+            password: "Test@123",
+          }));
+          setData(parsedData);
+          // checkForError(parsedData);
+        },
+      });
+      setCsvUploaded(true)
+    }
+  };
+
+
   return (
     <div className="w-full h-auto min-h-screen overflow-y-auto bg-[#1A293D] text-white p-4 pb-20 flex flex-col justify-start items-start">
       <form
@@ -104,13 +130,23 @@ const AddEmployee = () => {
               Add Employee
             </h3>
             <button
-              onClick={openImportCSVModal}
-              className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-[11px] font-bold leading-5"
+            type="button"
+              className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+              onClick={() => { document.getElementById("input").click();}}
             >
               Import CSV
             </button>
+            <input
+              type="file"
+              id="input"
+              className="hidden"
+              accept=".csv"
+              onChange={handleFileChange}
+            />
           </div>
-          <div className="w-full h-auto grid grid-cols-2 gap-12">
+          {csvUploaded ? (<AddEmployeeCsv data={data} setData={setData}/>):(
+            <Fragment>
+               <div className="w-full h-auto grid grid-cols-2 gap-12">
             <AddFleetInput
               label={"Name"}
               type="text"
@@ -223,8 +259,12 @@ const AddEmployee = () => {
               </div> */}
             </div>
           </div>
+            </Fragment>
+          )}
         </div>
-        <div className="w-full flex justify-end mt-10 items-center gap-4">
+        {
+          !csvUploaded && (
+            <div className="w-full flex justify-end mt-10 items-center gap-4">
           <button
           disabled={addLoading}
             type="submit"
@@ -234,6 +274,8 @@ const AddEmployee = () => {
           <FiLoader className="animate-spin text-lg mx-auto" />)}</div>
           </button>
         </div>
+          )
+        }
       </form>
       {isManagerModalOpen && (
         <ManagerDetailModal setIsOpen={setIsManagerModalOpen} SetPassSelectedManager={SetPassSelectedManager} 
