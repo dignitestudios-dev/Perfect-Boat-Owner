@@ -6,17 +6,13 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import DeletedModal from "../../components/global/DeletedModal";
 import { useLocation } from "react-router-dom";
-import moment from "moment"
-
-
+import moment from "moment";
 
 const NewTaskRequestPage = () => {
   const location = useLocation();
   const { task } = location.state || {};
-  console.log("🚀 ~ NewTaskRequestPage ~ task:", task)
   const { navigate } = useContext(GlobalContext);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
 
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true);
@@ -28,7 +24,7 @@ const NewTaskRequestPage = () => {
 
   const handleDeleteConfirm = () => {
     // Perform delete action here
-    
+
     closeDeleteModal();
   };
 
@@ -56,12 +52,18 @@ const NewTaskRequestPage = () => {
                 Images of the Reported Issue
               </h3>
               <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
-                  {task?.images?.map((image,index)=>(
-                <div key={index} className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D] text-3xl flex items-center justify-center">
-                    <img src={image}
-                      alt="boatimage" className="w-full h-full rounded-xl"/>
-                </div>
-                      ))}
+                {task?.images?.map((image, index) => (
+                  <div
+                    key={index}
+                    className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D] text-3xl flex items-center justify-center"
+                  >
+                    <img
+                      src={image}
+                      alt="boatimage"
+                      className="w-full h-full rounded-xl"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -95,33 +97,33 @@ const NewTaskRequestPage = () => {
               Action
             </span>
           </div>
-            <div
-            className="w-full h-10 grid grid-cols-6  py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-          >
+          <div className="w-full h-10 grid grid-cols-6  py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
             <span className="w-full flex justify-start items-center">
               {task?.task?.taskType}
             </span>
             <span className="w-full flex justify-start items-center">
-              {moment(task?.task?.taskType)?.format('YYYY-MM-DD')}
+              {moment(task?.task?.taskType)?.format("YYYY-MM-DD")}
             </span>
-            <span className="w-full flex justify-start items-center"
-            >
+            <span className="w-full flex justify-start items-center">
               {task?.task?.reoccuringDays}
             </span>
-            <span className="w-full flex justify-start items-center"
-            >
+            <span className="w-full flex justify-start items-center">
               {task?.employee?.name}
             </span>
             <span className="text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] ">
               {task?.task?.status}
             </span>
             <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-              <span onClick={() => navigate(`/tasks/${task?.task?._id}`, "All Tasks")}
-               className=" flex justify-start items-center cursor-pointer">
+              <span
+                onClick={() =>
+                  navigate(`/tasks/${task?.task?._id}`, "All Tasks")
+                }
+                className=" flex justify-start items-center cursor-pointer"
+              >
                 <FaRegEdit />
               </span>
               <span className=" flex justify-start items-center ">
-              <RiDeleteBinLine onClick={openDeleteModal}/>
+                <RiDeleteBinLine onClick={openDeleteModal} />
               </span>
             </div>
           </div>
@@ -141,7 +143,7 @@ const NewTaskRequestPage = () => {
             <div className="w-full flex flex-col justify-start items-start gap-4">
               <div className="w-full h-auto flex flex-col justify-start items-start gap-8">
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
-                <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
+                  <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
                       Name
                     </label>
@@ -155,17 +157,22 @@ const NewTaskRequestPage = () => {
                       {"Model/Make/Size"}
                     </label>
                     <div className="group transition-all duration-500 w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center  px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl  relative">
-                      <span className="text-gray-400">{task?.boat?.model} {task?.boat?.make} {task?.boat?.size}</span>
+                      <span className="text-gray-400">
+                        {task?.boat?.model} {task?.boat?.make}{" "}
+                        {task?.boat?.size}
+                      </span>
                     </div>
                   </div>
                 </div>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
-                <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
+                  <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
                       Task Type
                     </label>
                     <div className="group transition-all duration-500 w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center  px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl  relative">
-                      <span className="text-gray-400">{task?.task?.taskType}</span>
+                      <span className="text-gray-400">
+                        {task?.task?.taskType}
+                      </span>
                     </div>
                   </div>
                   <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
@@ -181,7 +188,9 @@ const NewTaskRequestPage = () => {
                       Location
                     </label>
                     <div className="group transition-all duration-500 w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center  px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl  relative">
-                      <span className="text-gray-400">{task?.employee?.location || "---"}</span>
+                      <span className="text-gray-400">
+                        {task?.employee?.location || "---"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -191,14 +200,17 @@ const NewTaskRequestPage = () => {
             <div className="w-full flex flex-col justify-start items-start gap-4">
               <h3 className="text-[18px] font-bold leading-[24.3px]">Photos</h3>
               <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
-                {task?.boat?.images?.map((image,index)=>(
-                  <div key={index} className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D] text-3xl flex items-center justify-center">
-                  <img
-                    src={image}
-                    alt="boatimage"
-                    className="w-full h-full rounded-xl"
-                  />
-                </div>
+                {task?.boat?.images?.map((image, index) => (
+                  <div
+                    key={index}
+                    className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D] text-3xl flex items-center justify-center"
+                  >
+                    <img
+                      src={image}
+                      alt="boatimage"
+                      className="w-full h-full rounded-xl"
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -207,7 +219,7 @@ const NewTaskRequestPage = () => {
       </div>
       <div className="w-full flex justify-end mt-10 items-center gap-4">
         <button
-          onClick={() =>  navigate(`/assign-reported-task` ,{ state: {task} })}
+          onClick={() => navigate(`/assign-reported-task`, { state: { task } })}
           className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
         >
           {"Assign Reported Task"}

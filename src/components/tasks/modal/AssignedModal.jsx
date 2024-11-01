@@ -4,9 +4,8 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { FiSearch } from "react-icons/fi";
 import DeletedModal from "../../global/DeletedModal";
 
-
 const Dropdown = ({ label, options }) => {
-  const [isOpen, setIsOpen] = React.useState(false); 
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -38,13 +37,11 @@ const Dropdown = ({ label, options }) => {
 };
 
 const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
-  console.log("🚀 ~ AssignedModal ~ tasksList:", tasksList)
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-
 
   const handleDeleteConfirm = () => {
     setDeleteModalOpen(false);
-    getEmployeeData()
+    getEmployeeData();
   };
 
   return (
@@ -61,25 +58,28 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
             </button>
           </div>
           <div className="flex justify-between items-center mb-4">
-          <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
-          <span className="w-[32px] h-full flex items-center justify-center">
-            <FiSearch className="text-white/50 text-lg" />
-          </span>
-          <input
-            type="text"
-            placeholder="Search here"
-            className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
-          />
-        </div>
+            <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
+              <span className="w-[32px] h-full flex items-center justify-center">
+                <FiSearch className="text-white/50 text-lg" />
+              </span>
+              <input
+                type="text"
+                placeholder="Search here"
+                className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
+              />
+            </div>
           </div>
           <div className="relative h-full overflow-auto">
-              <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+            <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-8 grid grid-cols-6 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center mb-2">
                 <span className="w-full flex justify-start items-center">
                   Boat Name
                 </span>
                 <div className="w-full flex justify-start items-center bg-transparent">
-                  <Dropdown label="Task Type" options={["Inspection", "Maintenance", "Repair"]} />
+                  <Dropdown
+                    label="Task Type"
+                    options={["Inspection", "Maintenance", "Repair"]}
+                  />
                 </div>
                 <span className="w-full flex justify-start items-center">
                   Due Date
@@ -88,7 +88,10 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
                   Recurring Days
                 </span>
                 <div className="w-full flex justify-start items-center">
-                  <Dropdown label="Status" options={["Pending", "In Progress", "Completed"]} />
+                  <Dropdown
+                    label="Status"
+                    options={["Pending", "In Progress", "Completed"]}
+                  />
                 </div>
                 <span className="w-full flex justify-start items-center">
                   Action
@@ -96,52 +99,54 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
               </div>
               {tasksList?.length > 0 ? (
                 <>
-                {
-                tasksList?.map((task,index)=>(
-                  <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                  <span className="w-full flex justify-start items-center">
-                    {task?.name}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                  {task?.type}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                  {getUnixDate(task?.dueDate)}
-                  </span>
-                  <span className="w-full flex justify-start items-center ">
-                    {task?.recurringDays}
-                  </span>
-                  <span className="w-full flex justify-start items-center ">
-                    <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                    {task?.status}
-                    </span>
-                  </span>
-                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
-                    <span
-                      className="flex justify-start items-center"
-                      onClick={()=>handleEditTaskClick(task?._id)}
-                    >
-                      <FaRegEdit />
-                    </span>
-                    <span className="flex justify-start items-center">
-                      <RiDeleteBinLine />
-                    </span>
-                  </div>
-                  <DeletedModal isOpen={isDeleteModalOpen} _id={data?._id}
-        onClose={() => setDeleteModalOpen(false)} refreshTasks={handleDeleteConfirm} />
-                </div>
-                ))
-              }
+                  {tasksList?.map((task, index) => (
+                    <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                      <span className="w-full flex justify-start items-center">
+                        {task?.name}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {task?.type}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {getUnixDate(task?.dueDate)}
+                      </span>
+                      <span className="w-full flex justify-start items-center ">
+                        {task?.recurringDays}
+                      </span>
+                      <span className="w-full flex justify-start items-center ">
+                        <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
+                          {task?.status}
+                        </span>
+                      </span>
+                      <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
+                        <span
+                          className="flex justify-start items-center"
+                          onClick={() => handleEditTaskClick(task?._id)}
+                        >
+                          <FaRegEdit />
+                        </span>
+                        <span className="flex justify-start items-center">
+                          <RiDeleteBinLine />
+                        </span>
+                      </div>
+                      <DeletedModal
+                        isOpen={isDeleteModalOpen}
+                        _id={data?._id}
+                        onClose={() => setDeleteModalOpen(false)}
+                        refreshTasks={handleDeleteConfirm}
+                      />
+                    </div>
+                  ))}
                 </>
-              ):(
-                <div>No tasks on the horizon? Assign tasks to keep the crew engaged
-                and productive!</div>
+              ) : (
+                <div>
+                  No tasks on the horizon? Assign tasks to keep the crew engaged
+                  and productive!
+                </div>
               )}
-              
+
               {/* Add more rows as needed */}
             </div>
-            
-            
           </div>
           <div className="flex justify-end mt-4">
             <button

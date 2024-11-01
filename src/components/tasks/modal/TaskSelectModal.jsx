@@ -5,11 +5,11 @@ import { FiSearch } from "react-icons/fi";
 import { getUnixDate } from "../../../data/DateFormat";
 
 const statusColors = {
-  "newtask": "#FF007F",
-  "overdue": "#FF3B30",
-  "default": "#FFCC00", 
-  "in-progress":"#36B8F3",
-  "completed":"#1FBA46"
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA46",
 };
 
 const Dropdown = ({ label, options }) => {
@@ -45,13 +45,12 @@ const Dropdown = ({ label, options }) => {
 };
 
 const TaskSelectModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
-  console.log("🚀 ~ TaskSelectModal ~ tasksList:", tasksList)
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredData = tasksList?.filter((item) =>
     item?.task?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -71,8 +70,8 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -83,50 +82,82 @@ const TaskSelectModal = ({ handleViewAllClick, setIsOpen, tasksList }) => {
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-8 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_1fr] text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 mb-2">
                 <span className="flex items-center justify-start mr-2"></span>
-                <span className="flex items-center justify-start">Boat Name</span>
+                <span className="flex items-center justify-start">
+                  Boat Name
+                </span>
                 <div className="flex items-center justify-start">
-                  <Dropdown label="Task Type" options={["Inspection", "Maintenance", "Repair"]} />
+                  <Dropdown
+                    label="Task Type"
+                    options={["Inspection", "Maintenance", "Repair"]}
+                  />
                 </div>
-                <span className="flex items-center justify-start">Due Date</span>
-                <span className="flex items-center justify-start">Recurring Days</span>
+                <span className="flex items-center justify-start">
+                  Due Date
+                </span>
+                <span className="flex items-center justify-start">
+                  Recurring Days
+                </span>
                 <div className="flex items-center justify-start">
-                  <Dropdown label="Status" options={["Pending", "In Progress", "Completed"]} />
+                  <Dropdown
+                    label="Status"
+                    options={["Pending", "In Progress", "Completed"]}
+                  />
                 </div>
                 <span className="flex items-center justify-start">Action</span>
               </div>
-              {filteredData?.length > 0 ?(
+              {filteredData?.length > 0 ? (
                 <>
-                {filteredData?.map((item, index) => (
-                <div key={index} className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center">
-                  <span className="flex items-center justify-start mr-2"></span>
-                  <span className="flex items-center justify-start">{item?.task}</span>
-                  <span className="flex items-center justify-start">
-                    {item?.taskType?.length > 15 ? item?.taskType?.slice(0, 24) + "..." : item?.taskType}
-                  </span>
-                  <span className="flex items-center justify-start">{getUnixDate(item?.dueDate)}</span>
-                  <span className="flex items-center justify-start">{item?.reoccuringDays}</span>
-                  <span className="flex items-center justify-start">
-                    <span style={{ color: statusColors[item?.status] || statusColors["default"] }}
-                    className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                    {item?.status}
-                    </span>
-                  </span>
-                  <div className="flex text-[15px] text-white/40  items-center gap-2">
-                    <span className="flex items-center justify-center">
-                      <FaRegEdit />
-                    </span>
-                    <span className="flex items-center justify-center">
-                      <RiDeleteBinLine />
-                    </span>
-                  </div>
-                </div>
-              ))}
+                  {filteredData?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center"
+                    >
+                      <span className="flex items-center justify-start mr-2"></span>
+                      <span className="flex items-center justify-start">
+                        {item?.task}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        {item?.taskType?.length > 15
+                          ? item?.taskType?.slice(0, 24) + "..."
+                          : item?.taskType}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        {getUnixDate(item?.dueDate)}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        {item?.reoccuringDays}
+                      </span>
+                      <span className="flex items-center justify-start">
+                        <span
+                          style={{
+                            color:
+                              statusColors[item?.status] ||
+                              statusColors["default"],
+                          }}
+                          className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
+                        >
+                          {item?.status}
+                        </span>
+                      </span>
+                      <div className="flex text-[15px] text-white/40  items-center gap-2">
+                        <span className="flex items-center justify-center">
+                          <FaRegEdit />
+                        </span>
+                        <span className="flex items-center justify-center">
+                          <RiDeleteBinLine />
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </>
-              ):(
-                <div> No tasks on the horizon? Assign tasks to keep the crew engaged
-                and productive!</div>
+              ) : (
+                <div>
+                  {" "}
+                  No tasks on the horizon? Assign tasks to keep the crew engaged
+                  and productive!
+                </div>
               )}
-              
+
               {/* Add more rows as needed */}
             </div>
           </div>

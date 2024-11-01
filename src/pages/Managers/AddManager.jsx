@@ -8,6 +8,8 @@ import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 const AddManager = () => {
+  const { navigate } = useContext(GlobalContext);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [data, setData] = useState([
     {
@@ -83,19 +85,24 @@ const AddManager = () => {
     setData(newData);
   };
 
-  const { navigate } = useContext(GlobalContext);
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const handleRemoveBeforeIndex = (index) => {
+    const filteredData = data?.filter((item, idx) => idx >= index);
+    setData(filteredData);
+  };
 
   const submitManagerData = async (e) => {
     e.preventDefault();
     try {
       setSubmitLoading(true);
       const response = await axios.post("/owner/manager/csv", data);
-      console.log("🚀 ~ ~ response:", response);
       if (response.status === 200) {
         setIsEmployeeOpen(true);
       }
     } catch (error) {
+      if (error?.response?.data?.index > 0) {
+        const index = error?.response?.data?.index;
+        handleRemoveBeforeIndex(index);
+      }
       console.error("Error adding employee:", error);
       ErrorToast(error?.response?.data?.message);
     } finally {
@@ -261,21 +268,34 @@ const AddManager = () => {
                             {"Phone Number"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
-                            <input
-                              type="text"
-                              value={form?.phone}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                // Allow only digits and restrict to 10 digits
-                                if (/^\d{0,10}$/.test(value)) {
-                                  handleChange(index, "phone", value);
-                                }
-                              }}
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Phone Number"}
-                            />
+                            <div
+                              className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
+                            >
+                              <span
+                                className="mr-2 w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
+                          text-md font-medium text-white h-full"
+                                style={{
+                                  color: "#6B7373",
+                                }}
+                              >
+                                +1
+                              </span>
+                              <input
+                                type="text"
+                                value={form?.phone}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  // Allow only digits and restrict to 10 digits
+                                  if (/^\d{0,10}$/.test(value)) {
+                                    handleChange(index, "phone", value);
+                                  }
+                                }}
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                                placeholder={"Enter Phone Number"}
+                              />
+                            </div>
                           </div>
                           {/* {errors.length && (
                             <p className="text-red-500 text-sm">

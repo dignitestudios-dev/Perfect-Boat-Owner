@@ -6,16 +6,16 @@ const MiniListLoader = () => {
       {[...Array(4)].map((_, index) => (
         <tr key={index} className="border-b border-[#2A394C]">
           <td className="pr-12 py-2">
-            <div className="w-[160px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
+            <div className="w-[140px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
           </td>
           <td className="px-12 py-2">
-            <div className="w-[180px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
+            <div className="w-[160px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
           </td>
           <td className="px-14 py-2">
             <div className="w-[160px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
           </td>
           <td className="pl-14 py-2">
-            <div className="w-[200px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
+            <div className="w-[180px] h-[20px] bg-gray-600 rounded animate-pulse"></div>
           </td>
         </tr>
       ))}

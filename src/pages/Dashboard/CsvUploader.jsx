@@ -6,6 +6,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
+
 const CsvUploader = () => {
   const [data, setData] = useState([
     {
@@ -76,7 +77,6 @@ const CsvUploader = () => {
     try {
       setSubmitLoading(true);
       const response = await axios.post("/owner/manager/csv", data);
-      console.log("🚀 ~ ~ response:", response);
       if (response.status === 200) {
         // setIsEmployeeOpen(true);
       }
@@ -257,15 +257,28 @@ const CsvUploader = () => {
                               error && "border-red-500"
                             }`}
                           >
-                            <input
-                              type="text"
-                              value={form?.phone}
-                              onChange={(e) =>
-                                handleChange(index, "phoneNo", e.target.value)
-                              }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
-                              placeholder={"Enter Phone Number"}
-                            />
+                            <div
+                              className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
+                            >
+                              <span
+                                className="mr-2 w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
+                          text-md font-medium text-white h-full"
+                                style={{
+                                  color: "#6B7373",
+                                }}
+                              >
+                                +1
+                              </span>
+                              <input
+                                type="text"
+                                value={form?.phone}
+                                onChange={(e) =>
+                                  handleChange(index, "phoneNo", e.target.value)
+                                }
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400"
+                                placeholder={"Enter Phone Number"}
+                              />
+                            </div>
                           </div>
                           {/* {errors.length && (
                             <p className="text-red-500 text-sm">

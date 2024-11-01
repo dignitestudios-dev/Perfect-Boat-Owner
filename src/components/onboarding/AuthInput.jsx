@@ -11,7 +11,7 @@ const AuthInput = ({
   placeholder,
   register,
   onInput,
-  isPhone =false
+  isPhone = false,
 }) => {
   const [isPassVisible, setIsPassVisible] = useState(false);
 
@@ -26,21 +26,20 @@ const AuthInput = ({
         } `}
       >
         <div
-          className={` w-full  h-full flex items-center justify-center    rounded-[12px] relative`}
+          className={` w-full  h-full flex items-center justify-center rounded-[12px] relative`}
         >
-          {
-            isPhone && 
+          {isPhone && (
             <span
-            className="  w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
+              className="  w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
              text-md font-medium text-white h-full"
-            style={{
-              color: "#6B7373",
-            }}
-          >
-            +1
-          </span>
-        }
-          
+              style={{
+                color: "#6B7373",
+              }}
+            >
+              +1
+            </span>
+          )}
+
           <input
             type={isPassVisible ? "text" : type}
             placeholder={placeholder}

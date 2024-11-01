@@ -8,12 +8,11 @@ import LocationType from "../global/headerDropdowns/LocationType";
 import JobType from "../global/headerDropdowns/JobType";
 
 const EmployeeTable = ({ data, loading }) => {
-
   const { navigate } = useContext(GlobalContext);
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("")
-  const [jobType, setJobType] = useState("")
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -30,9 +29,17 @@ const EmployeeTable = ({ data, loading }) => {
   // );
 
   const filteredData = data?.filter((item) => {
-    const matchesSearch = search ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
-    const jobTypeMatch = jobType && jobType !== "all" ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase() : true;
-    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    const matchesSearch = search
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType !== "all"
+        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch;
   });
 
@@ -51,7 +58,7 @@ const EmployeeTable = ({ data, loading }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-          onChange={(e)=>setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -65,49 +72,59 @@ const EmployeeTable = ({ data, loading }) => {
           + Add Employee
         </button>
       </div>
-      {loading?(
-        <MiniListLoader/>
-      ):(
-        <>
-        {data?.length > 0 ? (
-        <div className="w-full flex flex-col gap-1 justify-start items-start">
-          <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
-            <span className="w-full flex justify-start items-center">Name</span>
-            <span className="w-full flex justify-start items-center">
-              Email
-            </span>
-            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-            jobType={jobType} setJobType={setJobType}/>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
-          </div>
-          {filteredData?.slice(0, 4)?.map((manager, key) => {
-            return (
-              <div
-                key={key}
-                className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-              >
-                <span className="w-full flex justify-start items-center">
-                  {manager?.name}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {manager?.email}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {manager?.jobtitle}
-                </span>
-                <span className="w-full flex justify-start items-center ">
-                  {manager?.location}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+      {loading ? (
+        <MiniListLoader />
       ) : (
-        <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
-          No team members yet? Add employees and conquer the tasks together!
-        </div>
-      )}
+        <>
+          {data?.length > 0 ? (
+            <div className="w-full flex flex-col gap-1 justify-start items-start">
+              <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
+                <span className="w-full flex justify-start items-center">
+                  Name
+                </span>
+                <span className="w-full flex justify-start items-center">
+                  Email
+                </span>
+                <JobType
+                  jobTitleDropdownOpen={jobTitleDropdownOpen}
+                  toggleJobTitleDropdown={toggleJobTitleDropdown}
+                  jobType={jobType}
+                  setJobType={setJobType}
+                />
+                <LocationType
+                  locationDropdownOpen={locationDropdownOpen}
+                  toggleLocationDropdown={toggleLocationDropdown}
+                  locationType={locationType}
+                  setLocationType={setLocationType}
+                />
+              </div>
+              {filteredData?.slice(0, 4)?.map((manager, key) => {
+                return (
+                  <div
+                    key={key}
+                    className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  >
+                    <span className="w-full flex justify-start items-center">
+                      {manager?.name}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {manager?.email}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {manager?.jobtitle}
+                    </span>
+                    <span className="w-full flex justify-start items-center ">
+                      {manager?.location}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
+              No team members yet? Add employees and conquer the tasks together!
+            </div>
+          )}
         </>
       )}
       <div className="w-full h-auto flex justify-center items-center">

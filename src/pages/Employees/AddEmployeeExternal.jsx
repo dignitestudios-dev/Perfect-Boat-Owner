@@ -8,6 +8,7 @@ import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 import EmployeeOnboardSuccess from "../../components/global/EmployeeOnboardSuccess";
+
 const AddEmployeeExternal = () => {
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [data, setData] = useState([
@@ -24,7 +25,7 @@ const AddEmployeeExternal = () => {
   const [error, setError] = useState({});
   const handleRemoveBeforeIndex = (index) => {
     // Use filter to remove all items before the index
-    const filteredData = data.filter((item, idx) => idx > index);
+    const filteredData = data?.filter((item, idx) => idx >= index);
     setData(filteredData);
   };
   const checkForErrors = (parsedData) => {
@@ -104,9 +105,9 @@ const AddEmployeeExternal = () => {
         setIsEmployeeOpen(true);
       }
     } catch (error) {
-      if(error?.response?.data?.index > 0){
+      if (error?.response?.data?.index > 0) {
         const index = error?.response?.data?.index;
-        
+
         handleRemoveBeforeIndex(index);
       }
       console.error("Error adding employee:", error);
@@ -136,7 +137,7 @@ const AddEmployeeExternal = () => {
               </span> */}
             </div>
             <button
-            type="button"
+              type="button"
               className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
               onClick={() => {
                 document.getElementById("input").click();
@@ -274,17 +275,30 @@ const AddEmployeeExternal = () => {
                             {"Phone Number"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
-                            <input
-                              type="text"
-                              value={form?.phone}
-                              onChange={(e) =>
-                                handleChange(index, "phone", e.target.value)
-                              }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Phone Number"}
-                            />
+                            <div
+                              className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
+                            >
+                              <span
+                                className="mr-2 w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
+                          text-md font-medium text-white h-full"
+                                style={{
+                                  color: "#6B7373",
+                                }}
+                              >
+                                +1
+                              </span>
+                              <input
+                                type="text"
+                                value={form?.phone}
+                                onChange={(e) =>
+                                  handleChange(index, "phone", e.target.value)
+                                }
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                                placeholder={"Enter Phone Number"}
+                              />
+                            </div>
                           </div>
                           {/* {errors.length && (
                             <p className="text-red-500 text-sm">

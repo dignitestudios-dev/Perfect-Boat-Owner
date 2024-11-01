@@ -11,7 +11,6 @@ const Blogs = () => {
     try {
       setLoading(true);
       const { data } = await axios.get("/owner/blog");
-      console.log(data);
       setblogsData(data?.data);
     } catch (error) {
       console.error("Error:", error);

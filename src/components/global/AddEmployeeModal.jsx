@@ -22,17 +22,23 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
         {/* Close button */}
         {createManager ? (
           <button
-          onClick={() => {setIsOpen(false); navigate("/managers")}}
-          className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8" >
+            onClick={() => {
+              setIsOpen(false);
+              navigate("/dashboard");
+            }}
+            className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
+          >
             ✕
           </button>
-        ):(
+        ) : (
           <button
-          onClick={() => setIsOpen(false)}
-          className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
-        >
-          ✕
-        </button>
+            onClick={() => {
+              setIsOpen(false);
+            }}
+            className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
+          >
+            ✕
+          </button>
         )}
         <div
           ref={employeeRef}

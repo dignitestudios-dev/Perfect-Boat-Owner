@@ -15,8 +15,8 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
 
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all")
-  const [boatType, setBoatType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [boatType, setBoatType] = useState("all");
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -27,13 +27,20 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
   };
 
   const filteredData = boatList?.filter((item) => {
-    const matchesSearch = searchTerm ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) : true;
-    const jobTypeMatch = boatType && boatType !== "all" ? item?.boatType?.toLowerCase() === boatType?.toLowerCase() : true;
-    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    const matchesSearch = searchTerm
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      boatType && boatType !== "all"
+        ? item?.boatType?.toLowerCase() === boatType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch;
   });
 
-  
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedBoats([]);
@@ -63,17 +70,18 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
           </button>
           <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
             Boats Access List{" "}
-            <span className="text-[12px] font-normal text-white/50 ">(723)</span>
+            <span className="text-[12px] font-normal text-white/50 ">
+              ({filteredData?.length})
+            </span>
           </h3>
 
           <div className="w-full h-auto flex justify-between items-center mt-4">
             <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
-            
               <span className="w-[32px] h-full flex items-center justify-center">
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
-                onChange={(e)=>setSearchTerm(e.target.value)} 
+                onChange={(e) => setSearchTerm(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -100,15 +108,28 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
 
           <div className="w-full flex flex-col gap-1 justify-start items-start mt-4">
             <div className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
-              <span className="w-full flex justify-start items-center">Boat Image</span>
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
-            boatType={boatType} setBoatType={setBoatType}/> 
-              
-              <span className="w-full flex justify-start items-center">Name</span>
-              <span className="w-full flex justify-start items-center">Model/Make/Size</span>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown}
-            locationType={locationType} setLocationType={setLocationType}/>
-              
+              <span className="w-full flex justify-start items-center">
+                Boat Image
+              </span>
+              <BoatType
+                boatTypeDropdownOpen={boatTypeDropdownOpen}
+                toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+                boatType={boatType}
+                setBoatType={setBoatType}
+              />
+
+              <span className="w-full flex justify-start items-center">
+                Name
+              </span>
+              <span className="w-full flex justify-start items-center">
+                Model/Make/Size
+              </span>
+              <LocationType
+                locationDropdownOpen={locationDropdownOpen}
+                toggleLocationDropdown={toggleLocationDropdown}
+                locationType={locationType}
+                setLocationType={setLocationType}
+              />
             </div>
 
             {filteredData?.map((boat, index) => (
@@ -125,31 +146,43 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                     onChange={() => handleSelectBoat(index)}
                   />*/}
                   <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                  <img
-                src={boat?.cover}
-                alt="boat_image"
-                style={{ width: '100%',  height: '100%', borderRadius: '8px',  objectFit: 'cover',  }}
-              />
-              <div
-                style={{ content: '""', position: 'absolute', top: 0, right: 0,
-                  bottom: 0,  left: '70%', background: 'linear-gradient(to right, transparent, #111111)',
-                }}
-              />
-                  </span> 
+                    <img
+                      src={boat?.cover}
+                      alt="boat_image"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div
+                      style={{
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: "70%",
+                        background:
+                          "linear-gradient(to right, transparent, #111111)",
+                      }}
+                    />
+                  </span>
                 </div>
                 <span className="w-full flex justify-start items-center">
-                      {boat?.boatType}
-                    </span>
-                    <span className="w-full flex justify-start items-center">
-                      {boat?.name}
-                    </span>
-                    <span className="w-full flex justify-start items-center">
-                      {boat?.make}, {boat?.model}, {boat?.size}
-                    </span>
-                    <span className="w-full flex justify-start items-center ">
-                      {boat?.location}
-                    </span>
-                    <span className="w-full flex justify-start items-center "></span>
+                  {boat?.boatType}
+                </span>
+                <span className="w-full flex justify-start items-center">
+                  {boat?.name}
+                </span>
+                <span className="w-full flex justify-start items-center">
+                  {boat?.make}, {boat?.model}, {boat?.size}
+                </span>
+                <span className="w-full flex justify-start items-center ">
+                  {boat?.location}
+                </span>
+                <span className="w-full flex justify-start items-center "></span>
               </div>
             ))}
           </div>

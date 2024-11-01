@@ -13,16 +13,16 @@ import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 import Pagination from "../global/pagination/Pagination";
 
-
-const ManagerTableBig = ({data, loading, getManagers}) => {
-  const { navigate,setUpdateManager } = useContext(GlobalContext); 
+const ManagerTableBig = ({ data, loading, getManagers }) => {
+  const { navigate, setUpdateManager } = useContext(GlobalContext);
   const [search, setSearch] = useState("");
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
-  const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
-  const [managerId, setManagerId] = useState("")
-  const [deactivateLoading, setDeactivateLoading] = useState(false)
+  const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] =
+    useState(false);
+  const [managerId, setManagerId] = useState("");
+  const [deactivateLoading, setDeactivateLoading] = useState(false);
 
   const filteredData = data.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -31,8 +31,8 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
-  const [locationType, setLocationType] = useState("all")
-  const [jobType, setJobType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -47,7 +47,7 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
   };
 
   const handleDeleteClick = (managerID) => {
-    setManagerId(managerID)
+    setManagerId(managerID);
     setIsModalOpen(true);
   };
 
@@ -57,36 +57,35 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
 
   const handleDeactivate = async () => {
     try {
-      setDeactivateLoading(true)
-      const obj = { reason: "Deactivate"}
-      const response = await axios.delete(`/owner/manager/${managerId}?deactivate=true`, {data: obj });
+      setDeactivateLoading(true);
+      const obj = { reason: "Deactivate" };
+      const response = await axios.delete(
+        `/owner/manager/${managerId}?deactivate=true`,
+        { data: obj }
+      );
 
-      console.log("🚀 ~ handleDeactivate ~ response:", response)
       if (response?.status === 200) {
-        console.log("if call")
         setUpdateManager((prev) => !prev);
         setIsDeactivateModalOpen(true);
         setIsModalOpen(false);
-        getManagers()
+        getManagers();
       }
     } catch (err) {
-      console.log("error call")
+      console.log("error call");
       ErrorToast(err?.response?.data?.message);
-    }
-    finally{
-      setDeactivateLoading(false)
+    } finally {
+      setDeactivateLoading(false);
     }
   };
 
   const handleDelete = () => {
-    console.log("habdle delete call")
     setIsAccountDeleteModalOpen(true);
-    // setIsModalOpen(false); 
+    // setIsModalOpen(false);
   };
 
-  useEffect(()=>{
-    getManagers(1,15,jobType, locationType)
-  },[jobType, locationType])
+  useEffect(() => {
+    getManagers(1, 15, jobType, locationType);
+  }, [jobType, locationType]);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -100,7 +99,7 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-          onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -116,7 +115,7 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
         </button>
       </div>
       {loading ? (
-       <ManagerListLoader/>
+        <ManagerListLoader />
       ) : (
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
@@ -127,18 +126,29 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
               <span className="w-full flex justify-start items-center">
                 Email
               </span>
-              <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-            jobType={jobType} setJobType={setJobType}/>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+              <JobType
+                jobTitleDropdownOpen={jobTitleDropdownOpen}
+                toggleJobTitleDropdown={toggleJobTitleDropdown}
+                jobType={jobType}
+                setJobType={setJobType}
+              />
+              <LocationType
+                locationDropdownOpen={locationDropdownOpen}
+                toggleLocationDropdown={toggleLocationDropdown}
+                locationType={locationType}
+                setLocationType={setLocationType}
+              />
               <span className="w-full flex justify-start items-center px-[170px]">
                 Action
               </span>
             </div>
 
             {filteredData?.map((manager, index) => (
-              <div onClick={() => handleEditClick(manager)} className="w-full h-8 grid grid-cols-5 border-b cursor-pointer
-               border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
+              <div
+                onClick={() => handleEditClick(manager)}
+                className="w-full h-8 grid grid-cols-5 border-b cursor-pointer
+               border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+              >
                 <span
                   key={index}
                   className="w-full flex justify-start items-center"
@@ -163,36 +173,38 @@ const ManagerTableBig = ({data, loading, getManagers}) => {
                   </span>
                   <span
                     className="flex justify-start items-center"
-                    onClick={(e)=>{e.stopPropagation(); handleDeleteClick(manager?._id)}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteClick(manager?._id);
+                    }}
                   >
                     <RiDeleteBinLine />
                   </span>
                 </div>
               </div>
             ))}
-
           </div>
         </div>
       )}
-      
-            {/* DeleteAccount Modal */}
-            <DeleteAccount
-              isOpen={isModalOpen}
-              onClose={handleCloseModal}
-              onDeactivate={handleDeactivate}
-              onDelete={()=>handleDelete()}
-              deactivateLoading={deactivateLoading}
-            />
-            <DeactivateAccountModal
-              isOpen={isDeactivateModalOpen}
-              setIsOpen={setIsDeactivateModalOpen}
-            />
 
-            <DeleteManagerAccountModal
-            managerId={managerId}
-              isOpen={isAccountDeleteModalOpen}
-              onClose={() => setIsAccountDeleteModalOpen(false)}
-            />
+      {/* DeleteAccount Modal */}
+      <DeleteAccount
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onDeactivate={handleDeactivate}
+        onDelete={() => handleDelete()}
+        deactivateLoading={deactivateLoading}
+      />
+      <DeactivateAccountModal
+        isOpen={isDeactivateModalOpen}
+        setIsOpen={setIsDeactivateModalOpen}
+      />
+
+      <DeleteManagerAccountModal
+        managerId={managerId}
+        isOpen={isAccountDeleteModalOpen}
+        onClose={() => setIsAccountDeleteModalOpen(false)}
+      />
     </div>
   );
 };

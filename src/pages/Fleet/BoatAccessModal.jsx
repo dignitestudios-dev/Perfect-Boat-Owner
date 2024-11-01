@@ -7,13 +7,17 @@ import MiniListLoader from "../../components/global/MiniListLoader";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 
-const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDetailModalOpen, boatId }) => {
-  
+const BoatAccessModal = ({
+  setIsOpen,
+  isManagerDetailModalOpen,
+  setIsManagerDetailModalOpen,
+  boatId,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("")
-  const [jobType, setJobType] = useState("")
+  const [locationType, setLocationType] = useState("");
+  const [jobType, setJobType] = useState("");
   const [loadingBoats, setLoadingBoats] = useState(false);
   const [boats, setBoats] = useState([]);
 
@@ -25,10 +29,18 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const filteredData = boats?.filter((item) =>{
-    const matchesSearch = searchTerm ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) : true;
-    const jobTypeMatch = jobType && jobType !== "all" ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase() : true;
-    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+  const filteredData = boats?.filter((item) => {
+    const matchesSearch = searchTerm
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType !== "all"
+        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch;
   });
 
@@ -38,15 +50,17 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
       const { data } = await axios.get(`/owner/boat/${boatId}`);
       setBoats(data?.data?.boatAccess);
     } catch (err) {
-      console.log("🚀 ~ getBoats ~ err:", err)
+      console.log("🚀 ~ getBoats ~ err:", err);
     } finally {
       setLoadingBoats(false);
     }
   };
 
-  useEffect(()=>{
-    if(boatId){ getBoats()}
-  },[boatId])
+  useEffect(() => {
+    if (boatId) {
+      getBoats();
+    }
+  }, [boatId]);
 
   return (
     <>
@@ -94,33 +108,45 @@ const BoatAccessModal = ({ setIsOpen, isManagerDetailModalOpen, setIsManagerDeta
                     <th className="px-4 py-2">Manager Name</th>
                     <th className="px-4 py-2">Email</th>
                     <th className="px-4 py-2 relative">
-                    <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-            jobType={jobType} setJobType={setJobType}/>
+                      <JobType
+                        jobTitleDropdownOpen={jobTitleDropdownOpen}
+                        toggleJobTitleDropdown={toggleJobTitleDropdown}
+                        jobType={jobType}
+                        setJobType={setJobType}
+                      />
                     </th>
                     <th className="px-4 py-2 relative">
-                    <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+                      <LocationType
+                        locationDropdownOpen={locationDropdownOpen}
+                        toggleLocationDropdown={toggleLocationDropdown}
+                        locationType={locationType}
+                        setLocationType={setLocationType}
+                      />
                     </th>
                   </tr>
                 </thead>
                 {loadingBoats ? (
                   <Fragment>
-                    <MiniListLoader/>
+                    <MiniListLoader />
                   </Fragment>
                 ) : (
                   <tbody>
-                    {filteredData?.length > 0 ?(
+                    {filteredData?.length > 0 ? (
                       <>
-                      {filteredData?.map((manager, index) => (
-                      <tr key={index} className="border-b border-[#2A394C]">
-                        <td className="px-4 py-2">{manager?.name}</td>
-                        <td className="px-4 py-2">{manager?.email}</td>
-                        <td className="px-4 py-2">{manager?.jobtitle || "---"}</td>
-                        <td className="px-4 py-2">{manager?.location || "---"}</td>
-                      </tr>
-                    ))}
+                        {filteredData?.map((manager, index) => (
+                          <tr key={index} className="border-b border-[#2A394C]">
+                            <td className="px-4 py-2">{manager?.name}</td>
+                            <td className="px-4 py-2">{manager?.email}</td>
+                            <td className="px-4 py-2">
+                              {manager?.jobtitle || "---"}
+                            </td>
+                            <td className="px-4 py-2">
+                              {manager?.location || "---"}
+                            </td>
+                          </tr>
+                        ))}
                       </>
-                    ):(
+                    ) : (
                       <div className="pt-4">No record found</div>
                     )}
                   </tbody>

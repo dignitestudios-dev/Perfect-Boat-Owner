@@ -1,7 +1,7 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import EmployeeDetailModal from "../Employees/EmployeeDetailModal"; 
+import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
 import { FaCaretDown } from "react-icons/fa";
 import BoatRightsModal from "../Fleet/BoatsRightsModal";
 import ImportCSVModal from "../../components/global/ImportCSVModal";
@@ -22,12 +22,12 @@ const AddManagerpage = () => {
   const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
 
-  const [passSelectedEmployee,SetPassSelectedEmployee] = useState("")
-  const [submitLoading,setSubmitLoading] = useState(false);
+  const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
-  const [passSelectedBoat,setPassSelectedBoat]= useState([])
+  const [passSelectedBoat, setPassSelectedBoat] = useState([]);
   const [inputError, setInputError] = useState({});
-  const [csvUploaded, setCsvUploaded] = useState(false)
+  const [csvUploaded, setCsvUploaded] = useState(false);
 
   const [data, setData] = useState([
     {
@@ -41,12 +41,18 @@ const AddManagerpage = () => {
   ]);
 
   const locationRef = useRef(null);
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
-    defaultValues: { employee: passSelectedEmployee?.name } 
-  }); 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { employee: passSelectedEmployee?.name },
+  });
 
   useEffect(() => {
-    setValue("employee", passSelectedEmployee?.name); 
+    setValue("employee", passSelectedEmployee?.name);
   }, [passSelectedEmployee?.name, setValue]);
 
   // const toggleLocationFilter = () => {
@@ -74,10 +80,10 @@ const AddManagerpage = () => {
   //   setIsEmployeeModalOpen(false);
   // };
 
-  const onClose = () =>{
-    setIsEmployeeOpen(false)
-    navigate("/managers")
-  }
+  const onClose = () => {
+    setIsEmployeeOpen(false);
+    navigate("/managers");
+  };
 
   // const openBoatModal = () => {
   //   setIsBoatModalOpen(true);
@@ -96,7 +102,6 @@ const AddManagerpage = () => {
   // };
 
   const handleAddManager = async (data) => {
-    
     try {
       setSubmitLoading(true);
       const managerData = {
@@ -106,23 +111,22 @@ const AddManagerpage = () => {
         name: data.name,
         password: "Test@123",
         phone: data.phone,
-        ...(passSelectedEmployee?.id && { assignEmployees: [passSelectedEmployee.id] }),
+        ...(passSelectedEmployee?.id && {
+          assignEmployees: [passSelectedEmployee.id],
+        }),
         // accessBoat: passSelectedBoat?.map(item =>item.id),
       };
       const response = await axios.post("/owner/manager", managerData);
-      console.log("Response:", response);
-      if(response.status === 200){
-        setUpdateManager((prev)=> !prev);
+      if (response.status === 200) {
+        setUpdateManager((prev) => !prev);
         setIsEmployeeOpen(true);
         reset();
       }
-      
     } catch (error) {
       console.error("Error adding manager:", error);
-      ErrorToast(error.message)
-    }
-    finally{
-      setSubmitLoading(false)
+      ErrorToast(error.message);
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -139,18 +143,16 @@ const AddManagerpage = () => {
             email: item.email || "",
             jobtitle: item.jobtitle || "",
             location: item.location || "",
-            phone: item.phoneNumber || "",
+            phone: item.phone || "",
             password: "Test@123",
           }));
           setData(parsedData);
           // checkForError(parsedData);
         },
       });
-      setCsvUploaded(true)
+      setCsvUploaded(true);
     }
   };
-
-
 
   return (
     <div
@@ -376,22 +378,22 @@ const AddManagerpage = () => {
         </div>
       </div> */}
 
-      {!csvUploaded && (
-        <div className="w-full flex justify-end mt-10 items-center gap-4">
-        <button
-          disabled={submitLoading}
-          type="submit" // Ensure this is a submit button
-          className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-        >
-          <div className="flex items-center">
-            <span className="mr-1">Save</span>
-            {submitLoading && (
-              <FiLoader className="animate-spin text-lg mx-auto" />
-            )}
+        {!csvUploaded && (
+          <div className="w-full flex justify-end mt-10 items-center gap-4">
+            <button
+              disabled={submitLoading}
+              type="submit" // Ensure this is a submit button
+              className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+            >
+              <div className="flex items-center">
+                <span className="mr-1">Save</span>
+                {submitLoading && (
+                  <FiLoader className="animate-spin text-lg mx-auto" />
+                )}
+              </div>
+            </button>
           </div>
-        </button>
-      </div>
-      )}
+        )}
       </form>
       {isEmployeeModalOpen && (
         <EmployeeDetailModal

@@ -13,22 +13,22 @@ import axios from "../../axios";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 
-const EmployeesTableBig = ({data, loading, getEmployees}) => {
-
+const EmployeesTableBig = ({ data, loading, getEmployees }) => {
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
 
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
-  const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] = useState(false);
-  const [employeeId, setEmployeeId] = useState()
+  const [isAccountDeleteModalOpen, setIsAccountDeleteModalOpen] =
+    useState(false);
+  const [employeeId, setEmployeeId] = useState();
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [deactivateLoading, setDeactivateLoading] = useState(false)
+  const [deactivateLoading, setDeactivateLoading] = useState(false);
 
-  const [locationType, setLocationType] = useState("all")
-  const [jobType, setJobType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -47,7 +47,7 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
   };
 
   const handleDeleteClick = (id) => {
-    setEmployeeId(id)
+    setEmployeeId(id);
     setIsModalOpen(true);
   };
 
@@ -55,35 +55,36 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
     setIsModalOpen(false);
   };
 
-  const handleDeactivate = async() => {
-    setDeactivateLoading(true)
+  const handleDeactivate = async () => {
+    setDeactivateLoading(true);
     try {
-      const obj = { reason: "Deactivate"}
-      const response = await axios.delete(`/owner/employees/${employeeId}?deactivate=true`, {data: obj });
+      const obj = { reason: "Deactivate" };
+      const response = await axios.delete(
+        `/owner/employees/${employeeId}?deactivate=true`,
+        { data: obj }
+      );
 
       if (response?.status === 200) {
         setUpdateEmployee((prev) => !prev);
         setIsDeactivateModalOpen(true);
         setIsModalOpen(false);
-        getEmployees()
-        setDeactivateLoading(false)
+        getEmployees();
+        setDeactivateLoading(false);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
-      setDeactivateLoading(false)
+      setDeactivateLoading(false);
     }
   };
 
   const handleDelete = () => {
-    console.log("Called")
     setIsAccountDeleteModalOpen(true); // Open the delete modal
     // setIsModalOpen(false); // Close the delete modal when deactivate modal opens
-
   };
 
-  useEffect(()=>{
-    getEmployees(1,15,jobType, locationType)
-  },[jobType, locationType])
+  useEffect(() => {
+    getEmployees(1, 15, jobType, locationType);
+  }, [jobType, locationType]);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -97,7 +98,7 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-          onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -115,84 +116,102 @@ const EmployeesTableBig = ({data, loading, getEmployees}) => {
 
       <div className="w-full overflow-x-auto lg:overflow-visible">
         <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
-          <div className="w-full grid grid-cols-5 border-b border-white/10 h-6 text-[11px] font-medium 
-          leading-[14.85px] text-white/50 justify-start items-start">
+          <div
+            className="w-full grid grid-cols-5 border-b border-white/10 h-6 text-[11px] font-medium 
+          leading-[14.85px] text-white/50 justify-start items-start"
+          >
             <span className="w-full flex justify-start items-center">
               Employee Name
             </span>
             <span className="w-full flex justify-start items-center">
               Email
             </span>
-            <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-            jobType={jobType} setJobType={setJobType}/>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+            <JobType
+              jobTitleDropdownOpen={jobTitleDropdownOpen}
+              toggleJobTitleDropdown={toggleJobTitleDropdown}
+              jobType={jobType}
+              setJobType={setJobType}
+            />
+            <LocationType
+              locationDropdownOpen={locationDropdownOpen}
+              toggleLocationDropdown={toggleLocationDropdown}
+              locationType={locationType}
+              setLocationType={setLocationType}
+            />
             <span className="w-full flex justify-start items-center px-[170px]">
               Action
             </span>
           </div>
 
-          {loading? (<ManagerListLoader/>):(
+          {loading ? (
+            <ManagerListLoader />
+          ) : (
             <>
-            {/* Example Data Rows */}
-          {filteredData?.map((employee, index) => (
-          <div
-          onClick={()=>handleEditClick(employee?._id)}
-           className=" cursor-pointer w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
-            font-medium leading-[14.85px] text-white justify-start items-center">
-            <span
-              key={index}
-              className="w-full flex justify-start items-center"
-            >
-            {employee?.name}
-            </span>
-            <span className="w-full flex justify-start items-center">
-            {employee?.email}
-            </span>
-            <span className="w-full flex justify-start items-center">
-            {employee?.jobtitle}
-            </span>
-            <span className="w-full flex justify-start items-center">
-            {employee?.location || "---"}
-            </span>
-            <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
-              <span
-                className="flex justify-start items-center cursor-pointer"
-                onClick={(e)=>{e.stopPropagation(); handleEditClick(employee?._id)}}
-              >
-                <FaRegEdit />
-              </span>
-              <span
-                className="flex justify-start items-center cursor-pointer"
-                onClick={(e)=>{e.stopPropagation(); handleDeleteClick(employee?._id)}}
-              >
-                <RiDeleteBinLine />
-              </span>
-            </div>
-          </div>
-          ))}
+              {/* Example Data Rows */}
+              {filteredData?.map((employee, index) => (
+                <div
+                  onClick={() => handleEditClick(employee?._id)}
+                  className=" cursor-pointer w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
+            font-medium leading-[14.85px] text-white justify-start items-center"
+                >
+                  <span
+                    key={index}
+                    className="w-full flex justify-start items-center"
+                  >
+                    {employee?.name}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {employee?.email}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {employee?.jobtitle}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {employee?.location || "---"}
+                  </span>
+                  <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
+                    <span
+                      className="flex justify-start items-center cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditClick(employee?._id);
+                      }}
+                    >
+                      <FaRegEdit />
+                    </span>
+                    <span
+                      className="flex justify-start items-center cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(employee?._id);
+                      }}
+                    >
+                      <RiDeleteBinLine />
+                    </span>
+                  </div>
+                </div>
+              ))}
             </>
           )}
-
         </div>
-        <DeleteAccount 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
-        onDeactivate={handleDeactivate} 
-        onDelete={()=>handleDelete()} 
-        deactivateLoading={deactivateLoading}
-      />
-      
-       <DeactivateAccountModal
-        isOpen={isDeactivateModalOpen}
-        setIsOpen={setIsDeactivateModalOpen}
-      />
+        <DeleteAccount
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onDeactivate={handleDeactivate}
+          onDelete={() => handleDelete()}
+          deactivateLoading={deactivateLoading}
+        />
 
-     <DeleteAccountModal
-     employeeId={employeeId}
-     isOpen={isAccountDeleteModalOpen}
-     onClose={() => setIsAccountDeleteModalOpen(false)} 
-    />
+        <DeactivateAccountModal
+          isOpen={isDeactivateModalOpen}
+          setIsOpen={setIsDeactivateModalOpen}
+        />
+
+        <DeleteAccountModal
+          employeeId={employeeId}
+          isOpen={isAccountDeleteModalOpen}
+          onClose={() => setIsAccountDeleteModalOpen(false)}
+        />
       </div>
     </div>
   );

@@ -41,27 +41,29 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
-const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) => {
-
+const SelectTaskModal = ({
+  handleViewAllClick,
+  setIsOpen,
+  passSelectedTask,
+}) => {
   const statusColors = {
-    "newtask": "#FF007F",
-    "overdue": "#FF3B30", 
-    "default": "#FFCC00", 
-    "in-progress":"#36B8F3",
-    "completed":"#1FBA46"
+    newtask: "#FF007F",
+    overdue: "#FF3B30",
+    default: "#FFCC00",
+    "in-progress": "#36B8F3",
+    completed: "#1FBA46",
   };
 
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  console.log("🚀 ~ SelectTaskModal ~ search:", search)
-  const [selectedTasks, setSelectedTasks] = useState([])
-  const [openAssignSuccess, setOpenAssignSuccess] = useState(false)
+  const [selectedTasks, setSelectedTasks] = useState([]);
+  const [openAssignSuccess, setOpenAssignSuccess] = useState(false);
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter , setStatusFilter] = useState("all");
-  const [taskType, setTaskType] = useState("all")
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [taskType, setTaskType] = useState("all");
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -71,10 +73,10 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) =>
     setStatusDropdownOpen(!statusDropdownOpen);
   };
 
-  const handleOpenAssignSuccess = () =>{
-    setOpenAssignSuccess(!openAssignSuccess)
-    setIsOpen(false)
-  }
+  const handleOpenAssignSuccess = () => {
+    setOpenAssignSuccess(!openAssignSuccess);
+    setIsOpen(false);
+  };
 
   // Fetch tasks from the API
   const getTasks = async () => {
@@ -94,9 +96,17 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) =>
   // );
 
   const filteredData = taskData?.filter((item) => {
-    const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
-    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
-    const taskTypeMatch = taskType && taskType !== "all" ? item?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
+    const matchesSearch = search
+      ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const matchesStatus =
+      statusFilter && statusFilter !== "all"
+        ? item?.status === statusFilter
+        : true;
+    const taskTypeMatch =
+      taskType && taskType !== "all"
+        ? item?.taskType?.toLowerCase() === taskType?.toLowerCase()
+        : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
 
@@ -111,13 +121,13 @@ const SelectTaskModal = ({ handleViewAllClick, setIsOpen, passSelectedTask }) =>
     } else {
       setSelectedTasks([...selectedTasks, { id: taskId, name: taskName }]);
     }
-};
+  };
 
-const handleTaskSubmit = () =>{
-  passSelectedTask(selectedTasks); 
-  handleOpenAssignSuccess()
-  // setIsOpen(false);
-}
+  const handleTaskSubmit = () => {
+    passSelectedTask(selectedTasks);
+    handleOpenAssignSuccess();
+    // setIsOpen(false);
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -138,7 +148,7 @@ const handleTaskSubmit = () =>{
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
-              onChange={(e)=>setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -151,11 +161,11 @@ const handleTaskSubmit = () =>{
               <span className="text-white text-[13px] font-medium">Select All</span>
             </div> */}
             <button
-                onClick={() => handleTaskSubmit()}
-                className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
-              >
-                Done
-              </button>
+              onClick={() => handleTaskSubmit()}
+              className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
+            >
+              Done
+            </button>
           </div>
           <div className="relative h-full overflow-auto">
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -167,8 +177,12 @@ const handleTaskSubmit = () =>{
                   Boat Name
                 </span>
                 <div className="flex items-center justify-start">
-                <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown} 
-          setTaskType={setTaskType} taskType={taskType}/>
+                  <TaskType
+                    taskTypeDropdownOpen={taskTypeDropdownOpen}
+                    toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                    setTaskType={setTaskType}
+                    taskType={taskType}
+                  />
                 </div>
                 <span className="flex items-center justify-start">
                   Due Date
@@ -177,75 +191,78 @@ const handleTaskSubmit = () =>{
                   Recurring Days
                 </span>
                 <div className="flex items-center justify-start">
-                <StatusType statusDropdownOpen={statusDropdownOpen} statusFilter={statusFilter}
-          toggleStatusDropdown={toggleStatusDropdown} 
-          setStatusFilter={setStatusFilter} setSearch={setSearch}/>
+                  <StatusType
+                    statusDropdownOpen={statusDropdownOpen}
+                    statusFilter={statusFilter}
+                    toggleStatusDropdown={toggleStatusDropdown}
+                    setStatusFilter={setStatusFilter}
+                    setSearch={setSearch}
+                  />
                 </div>
               </div>
               {loading ? (
-  <RequestTaskListLoader /> // Show loading spinner while loading
-) : (
-  <>
-    {filteredData.length > 0 ? ( // Check if there's any data to display
-      <>
-        {filteredData.map((task, index) => {
-          const isMultiSelected = selectedTasks?.some(
-            (selected) => selected.id === task._id
-          );
-          return (
-            <div
-              key={index}
-              className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center"
-            >
-              <span className="flex items-center justify-start mr-2">
-                <input
-                  checked={isMultiSelected}
-                  onChange={() =>
-                    handleSelectTask(task?._id, task?.task)
-                  }
-                  type="checkbox"
-                  className="w-4 h-4 accent-[#199BD1]"
-                />
-              </span>
-              <p className="flex items-center justify-start">
-                {task?.boat?.name}
-              </p>
-              <p className="flex items-center justify-start">
-                {task?.taskType?.length > 15
-                  ? task?.taskType?.slice(0, 15) + "..."
-                  : task?.taskType}
-              </p>
-              <span className="flex items-center justify-start">
-                {getUnixDate(task?.dueDate)}
-              </span>
-              <span className="flex items-center justify-start">
-                {task?.reoccuringDays} Days
-              </span>
-              <span className="flex items-center justify-start">
-                <span
-                  className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
-                  style={{
-                    color:
-                      statusColors[task?.status] ||
-                      statusColors["default"],
-                  }}
-                >
-                  {task?.status}
-                </span>
-              </span>
-            </div>
-          );
-        })}
-      </>
-    ) : (
-      <div className="w-full text-center text-white mt-4">
-        No data found
-      </div> // Display when there's no data
-    )}
-  </>
-)}
+                <RequestTaskListLoader /> // Show loading spinner while loading
+              ) : (
+                <>
+                  {filteredData.length > 0 ? ( // Check if there's any data to display
+                    <>
+                      {filteredData.map((task, index) => {
+                        const isMultiSelected = selectedTasks?.some(
+                          (selected) => selected.id === task._id
+                        );
+                        return (
+                          <div
+                            key={index}
+                            className="w-full h-10 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white items-center"
+                          >
+                            <span className="flex items-center justify-start mr-2">
+                              <input
+                                checked={isMultiSelected}
+                                onChange={() =>
+                                  handleSelectTask(task?._id, task?.task)
+                                }
+                                type="checkbox"
+                                className="w-4 h-4 accent-[#199BD1]"
+                              />
+                            </span>
+                            <p className="flex items-center justify-start">
+                              {task?.boat?.name}
+                            </p>
+                            <p className="flex items-center justify-start">
+                              {task?.taskType?.length > 15
+                                ? task?.taskType?.slice(0, 15) + "..."
+                                : task?.taskType}
+                            </p>
+                            <span className="flex items-center justify-start">
+                              {getUnixDate(task?.dueDate)}
+                            </span>
+                            <span className="flex items-center justify-start">
+                              {task?.reoccuringDays} Days
+                            </span>
+                            <span className="flex items-center justify-start">
+                              <span
+                                className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
+                                style={{
+                                  color:
+                                    statusColors[task?.status] ||
+                                    statusColors["default"],
+                                }}
+                              >
+                                {task?.status}
+                              </span>
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <div className="w-full text-center text-white mt-4">
+                      No data found
+                    </div> // Display when there's no data
+                  )}
+                </>
+              )}
 
-              
               {/* Add more rows as needed */}
             </div>
           </div>
@@ -258,7 +275,10 @@ const handleTaskSubmit = () =>{
             </button>
           </div>
         </div>
-        <AssignCompleteModal isOpen={openAssignSuccess} setIsOpen={handleOpenAssignSuccess}/>
+        <AssignCompleteModal
+          isOpen={openAssignSuccess}
+          setIsOpen={handleOpenAssignSuccess}
+        />
       </div>
     </div>
   );

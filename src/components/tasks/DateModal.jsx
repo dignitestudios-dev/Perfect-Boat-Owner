@@ -90,7 +90,6 @@ const DateModal = ({ isOpen, setIsOpen, setDueDate, setInputError }) => {
                   minDate={today.toDate()}
                   onChange={(value) => {
                     setDate(value);
-                    console.log(value);
                   }}
                 />
               </Card>

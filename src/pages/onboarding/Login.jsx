@@ -9,6 +9,7 @@ import axios from "../../axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import getFCMToken from "../../firebase/getFcmToken";
+import SocialLogin from "./SocialLogin";
 
 const Login = () => {
   const { navigate } = useContext(GlobalContext);
@@ -68,86 +69,72 @@ const Login = () => {
 
   return (
     <div className="w-screen h-screen flex items-start justify-start">
-      <form
-        onSubmit={handleSubmit(handleLogin)}
-        className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col justify-start items-center gap-8"
-      >
-        <h1 className="w-full justify-start items-start text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
-          Log in
-        </h1>
-        <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
-          <AuthInput
-            register={register("email", {
-              required: "Please enter your email address.",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Please enter a valid email address.",
-              },
-            })}
-            text={"Email Address"}
-            placeholder={"Type your email address here"}
-            type={"text"}
-            error={errors.email}
-          />
-          <div className="w-full lg:w-[434px] flex flex-col justify-start items-end gap-1">
+      <div className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col justify-start items-center gap-8">
+        <form onSubmit={handleSubmit(handleLogin)} className="w-full">
+          <h1 className="w-full justify-start items-start text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
+            Log in
+          </h1>
+          <div className="w-full h-auto flex flex-col justify-start items-start gap-4 pt-6">
             <AuthInput
-              register={register("password", {
-                required: "Please enter your password.",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters long.",
+              register={register("email", {
+                required: "Please enter your email address.",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address.",
                 },
               })}
-              text={"Password"}
-              placeholder={"Enter your password here"}
-              type={"password"}
-              error={errors.password}
+              text={"Email Address"}
+              placeholder={"Type your email address here"}
+              type={"text"}
+              error={errors.email}
             />
-            <button
-              type="button"
-              onClick={() => navigate("/forgot-password")}
-              className="text-[13px] font-medium text-[#fff]"
-            >
-              Forgot Password?
-            </button>
-          </div>
-        </div>
-
-        <AuthSubmitBtn text={"Log in"} loader={loading} />
-
-        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-          <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
-            <span className="text-[13px] font-medium text-[#C2C6CB]">
-              Don’t have an account?
-            </span>
-            <button
-              type="button"
-              className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
-              onClick={() => {
-                navigate("/signup");
-              }}
-            >
-              Create one
-            </button>
-          </div>
-        </div>
-
-        <div className="w-full h-auto flex flex-col gap-1 justify-center items-start">
-          <div className="w-full lg:w-[434px] flex justify-center items-center">
-            <div className="grid grid-cols-3 gap-3 lg:gap-10">
-              <div className="w-[108.31px] h-[88px] rounded-[16px] bg-[#1A293D]  text-white text-2xl flex items-center justify-center">
-                <FaGoogle />
-              </div>
-              <div className="w-[108.31px] h-[88px] rounded-[16px] bg-[#1A293D]  text-white text-3xl flex items-center justify-center">
-                <FaFacebookF />
-              </div>
-              <div className="w-[108.31px] h-[88px] rounded-[16px] bg-[#1A293D]  text-white text-3xl flex items-center justify-center">
-                <FaApple />
-              </div>
+            <div className="w-full lg:w-[434px] flex flex-col justify-start items-end gap-1">
+              <AuthInput
+                register={register("password", {
+                  required: "Please enter your password.",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters long.",
+                  },
+                })}
+                text={"Password"}
+                placeholder={"Enter your password here"}
+                type={"password"}
+                error={errors.password}
+              />
+              <button
+                type="button"
+                onClick={() => navigate("/forgot-password")}
+                className="text-[13px] font-medium text-[#fff]"
+              >
+                Forgot Password?
+              </button>
             </div>
           </div>
-        </div>
-      </form>
+
+          <div className="pt-8">
+            <AuthSubmitBtn text={"Log in"} loader={loading} />
+          </div>
+
+          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+            <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center pt-8">
+              <span className="text-[13px] font-medium text-[#C2C6CB]">
+                Don’t have an account?
+              </span>
+              <button
+                type="button"
+                className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
+                onClick={() => {
+                  navigate("/signup");
+                }}
+              >
+                Create one
+              </button>
+            </div>
+          </div>
+        </form>
+        <SocialLogin />
+      </div>
 
       <div className="w-1/2 lg:flex hidden relative h-full">
         <span className="w-20 h-full bg-gradient-to-r from-black/70 via-black/30 to-black/0  absolute top-0 -left-4"></span>

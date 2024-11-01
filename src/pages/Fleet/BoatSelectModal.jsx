@@ -3,15 +3,52 @@ import { FiSearch } from "react-icons/fi";
 import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
+import BoatType from "../../components/global/headerDropdowns/BoatType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
-const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, setInputError }) => {
+const BoatSelectModal = ({
+  isOpen,
+  setIsOpen,
+  SetPassSelectedBoat,
+  isMultiple,
+  setInputError,
+}) => {
   const { navigate, boats, loadingBoats } = useContext(GlobalContext);
   const [boatTypeFilter, setBoatTypeFilter] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedBoat, setSelectedBoat] = useState(null);
   const [selectedBoats, setSelectedBoats] = useState([]);
-  
+  const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("");
+  const [boatType, setBoatType] = useState("");
+
+  const toggleBoatTypeDropdown = () => {
+    setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
+  const [search, setSearch] = useState("");
+
+  const filteredData = boats?.filter((item) => {
+    const matchesSearch = search
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const boatTypeMatch =
+      boatType && boatType !== "all"
+        ? item?.boatType?.toLowerCase() === boatType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
+    return matchesSearch && locationTypeMatch && boatTypeMatch;
+  });
+
   const boatTypeRef = useRef(null);
   const locationRef = useRef(null);
 
@@ -42,16 +79,18 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
   };
 
   const handleSelectBoat = (boatId, boatName, boatType, make, location) => {
-    setInputError({})
-    if(isMultiple){
+    setInputError({});
+    if (isMultiple) {
       const isSelected = selectedBoats.some((boat) => boat?.id === boatId);
       if (isSelected) {
         setSelectedBoats(selectedBoats.filter((boat) => boat?.id !== boatId));
       } else {
-        setSelectedBoats([...selectedBoats, 
-          { id: boatId, name: boatName, type:boatType, make:make , location }]);
+        setSelectedBoats([
+          ...selectedBoats,
+          { id: boatId, name: boatName, type: boatType, make: make, location },
+        ]);
       }
-    }else{
+    } else {
       if (selectedBoat?.id === boatId) {
         setSelectedBoat(null);
       } else {
@@ -60,7 +99,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
     }
   };
 
-  const handleBoatSelection = () =>{
+  const handleBoatSelection = () => {
     if (isMultiple) {
       SetPassSelectedBoat(selectedBoats);
       setIsOpen(false);
@@ -70,7 +109,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
         setIsOpen(false);
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -98,7 +137,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
           <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
             Boats List{" "}
             <span className="text-[12px] font-normal text-white/50 ">
-              ({boats?.length})
+              ({filteredData?.length})
             </span>
           </h3>
 
@@ -108,6 +147,7 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
                 <FiSearch className="text-white/50 text-lg" />
               </span>
               <input
+                onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder="Search here"
                 className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -138,118 +178,51 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
               <span className="w-full flex justify-start items-center">
                 Boat Image
               </span>
-              <button
-                onClick={toggleBoatTypeModal}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Boat Type</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={boatTypeRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    boatTypeFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Type 3
-                    </span>
-                  </div>
-                </div>
-              </button>
+              <BoatType
+                boatTypeDropdownOpen={boatTypeDropdownOpen}
+                toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+                boatType={boatType}
+                setBoatType={setBoatType}
+              />
               <span className="w-full flex justify-start items-center">
                 Name
               </span>
               <span className="w-full flex justify-start items-center">
                 Model/Make/Size
               </span>
-              <button
-                onClick={toggleLocationFilter}
-                className="w-auto flex flex-col gap-1 justify-start items-start relative"
-              >
-                <div className="w-auto flex gap-1 justify-start items-center">
-                  <span>Location</span>
-                  <FaCaretDown />
-                </div>
-                <div
-                  ref={locationRef}
-                  className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
-                >
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 1
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 2
-                    </span>
-                  </div>
-                  <div className="w-full flex justify-start items-start gap-2">
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      Location 3
-                    </span>
-                  </div>
-                </div>
-              </button>
+              <LocationType
+                locationDropdownOpen={locationDropdownOpen}
+                toggleLocationDropdown={toggleLocationDropdown}
+                locationType={locationType}
+                setLocationType={setLocationType}
+              />
             </div>
 
-            {boats?.map((boat, index) => {
+            {filteredData?.map((boat, index) => {
               const isSelected = selectedBoat?.id === boat._id;
-              const isMultiSelected = selectedBoats.some((selected) => selected.id === boat._id);
+              const isMultiSelected = selectedBoats.some(
+                (selected) => selected.id === boat._id
+              );
 
               return (
                 <div
                   key={index}
                   className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium 
                   leading-[14.85px] text-white justify-start items-center"
-                > 
+                >
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       className="accent-[#199BD1] mr-2 cursor-pointer"
                       checked={isMultiple ? isMultiSelected : isSelected}
-                      onChange={
-                        () => handleSelectBoat(boat?._id, boat?.name, boat?.boatType,
-                           `${boat?.make}, ${boat?.model}, ${boat?.size}`, boat?.location)
+                      onChange={() =>
+                        handleSelectBoat(
+                          boat?._id,
+                          boat?.name,
+                          boat?.boatType,
+                          `${boat?.make}, ${boat?.model}, ${boat?.size}`,
+                          boat?.location
+                        )
                       }
                     />
                     <span className="w-[106px] h-[76px] flex justify-start items-center relative">
@@ -291,9 +264,8 @@ const BoatSelectModal = ({ isOpen, setIsOpen, SetPassSelectedBoat, isMultiple, s
                     {boat?.location}
                   </span>
                 </div>
-              )
-            }
-            )}
+              );
+            })}
           </div>
         </div>
       </div>

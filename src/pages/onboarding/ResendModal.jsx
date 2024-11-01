@@ -1,27 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { MdAccessTime } from "react-icons/md";
-import { SuccessToast } from '../../components/global/Toaster';
-import axios from '../../axios';
+import { SuccessToast } from "../../components/global/Toaster";
+import axios from "../../axios";
 
 const ResendModal = ({ isOpen, onClose, id }) => {
   if (!isOpen) return null;
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const resendCredentials = async()=>{
-    setLoading(true)
-    try{
-      const response = await axios.get(`/owner/manager/${id}/credentials/send`)
-      if(response.status === 200){
-        console.log("🚀 ~ resendCredentials ~ response:", response)
-        setLoading(false)
-        onClose()
-        SuccessToast("Credentials Send")
+  const resendCredentials = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/owner/manager/${id}/credentials/send`);
+      if (response.status === 200) {
+        setLoading(false);
+        onClose();
+        SuccessToast("Credentials Send");
       }
-    }catch(err){
-      setErrorMessage(err?.response?.data?.message)
-      setLoading(false)
+    } catch (err) {
+      setErrorMessage(err?.response?.data?.message);
+      setLoading(false);
     }
-  }
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50">
       <div className="relative bg-[#02203A] rounded-lg shadow-md w-full max-w-md">
@@ -34,8 +33,12 @@ const ResendModal = ({ isOpen, onClose, id }) => {
           {/* Add your icon or text here */}
         </button>
         <div className="p-4 text-left">
-          <p className="mb-2 mt-2 text-[18px] text-white font-bold">Resend Credentials</p>
-          <p className="text-[16px] text-white">Are you sure you want to resend the credentials</p>
+          <p className="mb-2 mt-2 text-[18px] text-white font-bold">
+            Resend Credentials
+          </p>
+          <p className="text-[16px] text-white">
+            Are you sure you want to resend the credentials
+          </p>
           <p className="mb-5 text-md text-white">to the managers?</p>
 
           {/* Container for buttons aligned to the right */}
@@ -48,12 +51,12 @@ const ResendModal = ({ isOpen, onClose, id }) => {
               Cancel
             </button>
             <button
-            disabled={loading}
+              disabled={loading}
               onClick={resendCredentials}
               type="button"
               className="text-[#199BD1] font-bold	 py-2 px-4 rounded-lg text-[16px]"
             >
-              {loading ? "Sending...":"Resend"}
+              {loading ? "Sending..." : "Resend"}
             </button>
           </div>
         </div>

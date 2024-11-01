@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import SocialLogin from "./SocialLogin";
 
 const Signup = () => {
   const { navigate } = useContext(GlobalContext);
@@ -27,7 +28,7 @@ const Signup = () => {
         name: formData.fullName,
         email: formData.email,
         password: formData.password,
-        phone: formData.phoneNumber,
+        phone: `+1${formData.phoneNumber}`,
         role: "owner",
       };
       const response = await axios.post("/auth/signUp", obj);
@@ -68,7 +69,9 @@ const Signup = () => {
             placeholder={"Type your name here"}
             type={"text"}
             error={errors.fullName}
-            onInput={(e) => { e.target.value = e.target.value.replace(/[^A-Za-z]/g, ""); }}
+            onInput={(e) => {
+              e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+            }}
           />
 
           <AuthInput
@@ -142,21 +145,7 @@ const Signup = () => {
           </div>
         </div>
 
-        <div className="w-full  h-auto flex  flex-col gap-1 justify-center items-start  ">
-          <div className="w-full lg:w-[434px] flex justify-center items-center">
-            <div className="grid grid-cols-3 gap-3 lg:gap-10">
-              <div className="w-[108.31px] h-[88px] rounded-[16px] bg-[#1A293D]  text-white text-2xl flex items-center justify-center">
-                <FaGoogle />
-              </div>
-              <div className="w-[108.31px] h-[88px] rounded-[16px] bg-[#1A293D]  text-white text-3xl flex items-center justify-center">
-                <FaFacebookF />
-              </div>
-              <div className="w-[108.31px] h-[88px] rounded-[16px] bg-[#1A293D]  text-white text-3xl flex items-center justify-center">
-                <FaApple />
-              </div>
-            </div>
-          </div>
-        </div>
+        <SocialLogin />
 
         <div className="w-full h-auto flex   flex-col gap-1 justify-start items-start  ">
           <div className="w-full lg:w-[434px] flex flex-wrap gap-1 justify-center items-center ">

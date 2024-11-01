@@ -9,7 +9,6 @@ const ImportCSVModal = ({ isOpen, onClose }) => {
     const selectedFile = event.target.files[0];
     if (selectedFile && selectedFile.type === "text/csv") {
       setFile(selectedFile);
-      console.log("CSV file selected:", selectedFile);
     } else {
       alert("Please select a valid CSV file.");
     }
@@ -17,7 +16,6 @@ const ImportCSVModal = ({ isOpen, onClose }) => {
 
   const handleUpload = () => {
     if (file) {
-      console.log("Uploading:", file);
       onClose();
     } else {
       alert("No file selected.");

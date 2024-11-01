@@ -19,51 +19,56 @@ const TaskCompleted = () => {
   const location = useLocation();
   const taskDetail = location.state || {};
 
-  const {watch, setValue, register, handleSubmit, formState: { errors } }= useForm();
+  const {
+    watch,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const formsImages = watch("formsImages", []);
-  console.log("🚀 ~ TaskCompleted ~ formsImages:", formsImages)
 
-  const [fleetPictures, setFleetPictures] = useState([0])
+  const [fleetPictures, setFleetPictures] = useState([0]);
   const [noteText, setNoteText] = useState("");
-  const [submitLoading, setSubmitLoading] = useState(false)
+  const [submitLoading, setSubmitLoading] = useState(false);
 
-  const handleFleetImage =(index,event) => {
-    let setIndex = index+1
-    console.log("🚀 ~ handleFleetImage ~ setIndex:", setIndex)
-    if(setIndex === formsImages?.length && setIndex < 5){
-      setFleetPictures((prev)=> [...prev, prev?.length])
+  const handleFleetImage = (index, event) => {
+    let setIndex = index + 1;
+    if (setIndex === formsImages?.length && setIndex < 5) {
+      setFleetPictures((prev) => [...prev, prev?.length]);
     }
-  }
+  };
 
-  const submitBoatData = async(formData) => {
-    try{
-      setSubmitLoading(true)
+  const submitBoatData = async (formData) => {
+    try {
+      setSubmitLoading(true);
       const data = new FormData();
-      data.append('note', formData.note);
-      if(taskDetail?.reoccuring === true){
-        data.append('recurring', true);
-        data.append('reoccuringDays', taskDetail?.reoccuringDays);
+      data.append("note", formData.note);
+      if (taskDetail?.reoccuring === true) {
+        data.append("recurring", true);
+        data.append("reoccuringDays", taskDetail?.reoccuringDays);
       }
       if (formData.formsImages) {
-        formData.formsImages.forEach((fileList,index) => {
-            if (fileList.length > 0 && fileList[0]) {
-              data.append('pictures', fileList[0]);
-            }
+        formData.formsImages.forEach((fileList, index) => {
+          if (fileList.length > 0 && fileList[0]) {
+            data.append("pictures", fileList[0]);
+          }
         });
       }
-      
-      const response = await axios.post(`/owner/task/${taskDetail?._id}/report`, data)
-      if(response.status === 200){
+
+      const response = await axios.post(
+        `/owner/task/${taskDetail?._id}/report`,
+        data
+      );
+      if (response.status === 200) {
         setIsModalOpen(true);
       }
-    }
-    catch(err){
-    console.log("🚀 ~ openModal ~ err:", err)
-    ErrorToast(err?.response?.data?.message);
-    }
-    finally{
-      setSubmitLoading(false)
+    } catch (err) {
+      console.log("🚀 ~ openModal ~ err:", err);
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -121,12 +126,18 @@ const TaskCompleted = () => {
                         className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
                           text-3xl flex items-center justify-center cursor-pointer"
                       >
-                        {formsImages.length > 0 && formsImages[imageIndex]?.length > 0 ? (
-                          <img src={URL.createObjectURL(formsImages[imageIndex][0])}
+                        {formsImages.length > 0 &&
+                        formsImages[imageIndex]?.length > 0 ? (
+                          <img
+                            src={URL.createObjectURL(
+                              formsImages[imageIndex][0]
+                            )}
                             alt={`Uploaded preview ${imageIndex}`}
-                            className="w-full h-full object-cover rounded-xl" /> ) : (
-                               <FiDownload />
-                          )}
+                            className="w-full h-full object-cover rounded-xl"
+                          />
+                        ) : (
+                          <FiDownload />
+                        )}
                       </label>
                       <input
                         key={imageIndex}
@@ -153,10 +164,14 @@ const TaskCompleted = () => {
                   </label>
                   <textarea
                     type="text"
-                    {...register("note",{ required: "Please enter a note" })}
+                    {...register("note", { required: "Please enter a note" })}
                     className="w-full h-[315px] disabled:text-white/50 resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
                   ></textarea>
-                  {errors.note && <p className="text-red-500 text-sm">{errors?.note?.message}</p>}
+                  {errors.note && (
+                    <p className="text-red-500 text-sm">
+                      {errors?.note?.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
