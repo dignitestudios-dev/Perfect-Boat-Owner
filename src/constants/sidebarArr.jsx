@@ -5,7 +5,7 @@ import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { FiUsers } from "react-icons/fi";
 import { TbSailboat } from "react-icons/tb";
 import { IoIosGitPullRequest } from "react-icons/io";
-import { LuUserMinus } from "react-icons/lu";
+import { LuArrowRightLeft, LuUserMinus } from "react-icons/lu";
 import { TiDocumentText } from "react-icons/ti";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlinePrivacyTip } from "react-icons/md";
@@ -67,6 +67,11 @@ export const sidebarArr = [
         url: "/add-employee",
       },
     ],
+  },
+  {
+    title: "Assign Employee",
+    url: "/assign-employee/csv",
+    icon: <LuArrowRightLeft />,
   },
   {
     title: "Boats",
