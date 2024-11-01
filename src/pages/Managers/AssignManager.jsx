@@ -13,18 +13,19 @@ import LocationType from "../../components/global/headerDropdowns/LocationType";
 import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 
 const AssignManager = () => {
-  const { getEmployees, employees, loadingEmployees } = useContext(GlobalContext);
-  const navigate = useNavigate()
+  const { getEmployees, employees, loadingEmployees } =
+    useContext(GlobalContext);
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-);
+  );
 
-const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all")
-  const [jobType, setJobType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -35,48 +36,54 @@ const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   };
 
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
-  const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] = useState(false);
+  const [isAssignEmployeeModalOpen, setIsAssignEmployeeModalOpen] =
+    useState(false);
 
-  const [passSelectedManager, SetPassSelectedManager] = useState("")
+  const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
-  const [assignLoading, setAssignLoading] = useState(false)
+  const [assignLoading, setAssignLoading] = useState(false);
   const [selectedManager, setSelectedManager] = useState(null);
 
-
   const handleSelectEmployee = (employeeId, employeeName) => {
-      const isSelected = selectedEmployees.some((employee) => employee?.id === employeeId);
-      if (isSelected) {
-        setSelectedEmployees(selectedEmployees.filter((employee) => employee?.id !== employeeId));
-      } else {
-        setSelectedEmployees([...selectedEmployees, 
-          { id: employeeId, name: employeeName }]);
-      }
+    const isSelected = selectedEmployees.some(
+      (employee) => employee?.id === employeeId
+    );
+    if (isSelected) {
+      setSelectedEmployees(
+        selectedEmployees.filter((employee) => employee?.id !== employeeId)
+      );
+    } else {
+      setSelectedEmployees([
+        ...selectedEmployees,
+        { id: employeeId, name: employeeName },
+      ]);
+    }
   };
 
-  const handleAssignManager =async()=>{
-    setAssignLoading(true)
-    try{
+  const handleAssignManager = async () => {
+    setAssignLoading(true);
+    try {
       const obj = {
-        employees: selectedEmployees?.map(item=>item.id)
+        employees: selectedEmployees?.map((item) => item.id),
+      };
+      const response = await axios.put(
+        `/owner/manager/${passSelectedManager?.id}/employees/assign`,
+        obj
+      );
+      if (response.status === 200) {
+        setIsAssignEmployeeModalOpen(true);
       }
-      const response = await axios.put(`/owner/manager/${passSelectedManager?.id}/employees/assign`,obj)
-      if(response.status === 200){
-        setIsAssignEmployeeModalOpen(true) 
-      }
+    } catch (err) {
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setAssignLoading(false);
     }
-    catch(err){
-      console.log("🚀 ~ handleAssignEmployees ~ err:", err)
-      ErrorToast(err?.response?.data?.message)
-    }
-    finally{
-      setAssignLoading(false)
-    }
-  }
+  };
 
-  useEffect(()=>{
-    getEmployees( jobType, locationType)
-  },[locationType, jobType])
-
+  useEffect(() => {
+    getEmployees(jobType, locationType);
+  }, [locationType, jobType]);
 
   // const toggleLocationDropdown = (e) => {
   //   if (locationRef.current && !locationRef.current.contains(e.target)) {

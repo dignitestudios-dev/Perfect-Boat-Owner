@@ -43,3 +43,16 @@ body {
 .font {
   font-family: sans-serif !important;
 }
+.rainbow-calendar_month-text {
+  color: white !important;
+}
+.rainbow-calendar_day-adjacent {
+  color: #353434 !important;
+}
+.rainbow-calendar_day-button {
+  color: #fff !important;
+}
+.rainbow-select {
+  background-color: rgb(26 41 61) !important;
+  color: white !important;
+}
