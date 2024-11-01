@@ -39,3 +39,7 @@ body {
 .bg-gradient {
   background: linear-gradient(to right, #199ad13d, #06afb2);
 }
+
+.font {
+  font-family: sans-serif !important;
+}
