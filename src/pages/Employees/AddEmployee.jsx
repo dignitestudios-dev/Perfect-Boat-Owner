@@ -220,6 +220,7 @@ const AddEmployee = () => {
                   type={"text"}
                   maxLength="10"
                   label={"Phone Number"}
+                  isPhone={true}
                   register={register("phone", {
                     required: "Please enter your phone number.",
                     pattern: {

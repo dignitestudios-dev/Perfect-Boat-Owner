@@ -8,7 +8,12 @@ import { ErrorToast } from "../components/global/Toaster";
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
-  const navigate = useNavigate();
+  const route = useNavigate();
+  const [activeLink, setActiveLink] = useState("Home");
+  const navigate = (url, active) => {
+    route(url);
+    setActiveLink(active);
+  };
   const test = "";
 
   function formatTimestampToDate(timestamp) {
@@ -21,12 +26,13 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingManagers, setLoadingManagers] = useState(false);
   const [updateManager, setUpdateManager] = useState(false);
 
-  const getManagers = async (jobType ="all", locationType="all") => {
+  const getManagers = async (jobType = "all", locationType = "all") => {
     setLoadingManagers(true);
     try {
       const boatQuery = jobType !== "all" ? `jobTitle=${jobType}` : "";
-      const locationQuery = locationType !== "all" ? `locations=${locationType}` : "";
-       const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
+      const locationQuery =
+        locationType !== "all" ? `locations=${locationType}` : "";
+      const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
       const { data } = await axios.get(`/owner/manager?${queryString}`);
 
       setManagers(data?.data);
@@ -43,12 +49,13 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [updateEmployee, setUpdateEmployee] = useState(false);
 
-  const getEmployees = async (jobType ="all", locationType="all") => {
+  const getEmployees = async (jobType = "all", locationType = "all") => {
     setLoadingEmployees(true);
     try {
       const boatQuery = jobType !== "all" ? `jobTitle=${jobType}` : "";
-      const locationQuery = locationType !== "all" ? `locations=${locationType}` : "";
-       const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
+      const locationQuery =
+        locationType !== "all" ? `locations=${locationType}` : "";
+      const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
       const { data } = await axios.get(`/owner/employees?${queryString}`);
       setEmployees(data?.data);
     } catch (err) {
@@ -64,12 +71,13 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingBoats, setLoadingBoats] = useState(false);
   const [updateBoat, setUpdateBoat] = useState(false);
 
-  const getBoats = async (boatType ="all", locationType="all") => {
+  const getBoats = async (boatType = "all", locationType = "all") => {
     setLoadingBoats(true);
     try {
       const boatQuery = boatType !== "all" ? `boatType=${boatType}` : "";
-       const locationQuery = locationType !== "all" ? `locationType=${locationType}` : "";
-        const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
+      const locationQuery =
+        locationType !== "all" ? `locationType=${locationType}` : "";
+      const queryString = [boatQuery, locationQuery].filter(Boolean).join("&");
       const { data } = await axios.get(`/owner/boat?${queryString}`);
 
       setBoats(data?.data);
@@ -83,20 +91,25 @@ export const GlobalContextProvider = ({ children }) => {
   }, [updateBoat]);
 
   const [dropDown, setDropDown] = useState([]);
-  const [boatDropDown, setBoatDropDown] = useState([])
-  const [taskDropDown, setTaskDropDown] = useState([])
+  const [boatDropDown, setBoatDropDown] = useState([]);
+  const [taskDropDown, setTaskDropDown] = useState([]);
+  const [dropDownLoading, setDropDownLoading] = useState(false);
 
   const [updateDropDown, setUpdateDropDown] = useState(false);
 
   const getDropDown = async () => {
-    setLoadingBoats(true);
     try {
+      setDropDownLoading(true);
       const [companyResponse, boatResponse, taskResponse] = await Promise.all([
         axios.get("/owner/dropdown/company"),
         axios.get("/owner/dropdown/boat"),
-        axios.get("/owner/dropdown/task")
+        axios.get("/owner/dropdown/task"),
       ]);
-      if(taskResponse.status === 200 || boatResponse.status === 200 || companyResponse.status === 200){
+      if (
+        taskResponse.status === 200 ||
+        boatResponse.status === 200 ||
+        companyResponse.status === 200
+      ) {
         setDropDown(companyResponse?.data?.data);
         setBoatDropDown(boatResponse?.data?.data);
         setTaskDropDown(taskResponse?.data?.data);
@@ -104,7 +117,7 @@ export const GlobalContextProvider = ({ children }) => {
     } catch (err) {
       console.error("Error fetching dropdown data", err);
     } finally {
-      setLoadingBoats(false);
+      setDropDownLoading(false);
     }
   };
   useEffect(() => {
@@ -140,6 +153,7 @@ export const GlobalContextProvider = ({ children }) => {
         getManagers,
         getEmployees,
         getBoats,
+        getDropDown,
         setUpdateEmployee,
         setUpdateManager,
         setUpdateBoat,

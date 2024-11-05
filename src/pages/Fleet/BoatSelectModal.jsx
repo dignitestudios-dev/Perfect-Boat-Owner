@@ -5,12 +5,13 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import { ErrorToast } from "../../components/global/Toaster";
 
 const BoatSelectModal = ({
   isOpen,
   setIsOpen,
   SetPassSelectedBoat,
-  isMultiple,
+  isMultiple = false,
   setInputError,
 }) => {
   const { navigate, boats, loadingBoats } = useContext(GlobalContext);
@@ -107,6 +108,8 @@ const BoatSelectModal = ({
       if (selectedBoat) {
         SetPassSelectedBoat(selectedBoat);
         setIsOpen(false);
+      } else {
+        ErrorToast("Select Boat");
       }
     }
   };
@@ -197,75 +200,80 @@ const BoatSelectModal = ({
                 setLocationType={setLocationType}
               />
             </div>
+            {filteredData?.length > 0 ? (
+              <>
+                {filteredData?.map((boat, index) => {
+                  const isSelected = selectedBoat?.id === boat._id;
+                  const isMultiSelected = selectedBoats.some(
+                    (selected) => selected.id === boat._id
+                  );
 
-            {filteredData?.map((boat, index) => {
-              const isSelected = selectedBoat?.id === boat._id;
-              const isMultiSelected = selectedBoats.some(
-                (selected) => selected.id === boat._id
-              );
-
-              return (
-                <div
-                  key={index}
-                  className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium 
+                  return (
+                    <div
+                      key={index}
+                      className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium 
                   leading-[14.85px] text-white justify-start items-center"
-                >
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="accent-[#199BD1] mr-2 cursor-pointer"
-                      checked={isMultiple ? isMultiSelected : isSelected}
-                      onChange={() =>
-                        handleSelectBoat(
-                          boat?._id,
-                          boat?.name,
-                          boat?.boatType,
-                          `${boat?.make}, ${boat?.model}, ${boat?.size}`,
-                          boat?.location
-                        )
-                      }
-                    />
-                    <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                      <img
-                        src={boat?.cover}
-                        alt="boat_image"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "15px 0 0 15px",
-                          objectFit: "cover",
-                        }}
-                        className="bg-gray-600"
-                      />
-                      <div
-                        className="w-24"
-                        style={{
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                          background:
-                            "linear-gradient(to right, transparent, #001229)",
-                        }}
-                      />
-                    </span>
-                  </div>
-                  <span className="w-full flex justify-start items-center">
-                    {boat?.boatType}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {boat?.name}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {boat?.model} / {boat?.make} / {boat?.size}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {boat?.location}
-                  </span>
-                </div>
-              );
-            })}
+                    >
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="accent-[#199BD1] mr-2 cursor-pointer"
+                          checked={isMultiple ? isMultiSelected : isSelected}
+                          onChange={() =>
+                            handleSelectBoat(
+                              boat?._id,
+                              boat?.name,
+                              boat?.boatType,
+                              `${boat?.make}, ${boat?.model}, ${boat?.size}`,
+                              boat?.location
+                            )
+                          }
+                        />
+                        <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                          <img
+                            src={boat?.cover}
+                            alt="boat_image"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "15px 0 0 15px",
+                              objectFit: "cover",
+                            }}
+                            className="bg-gray-600"
+                          />
+                          <div
+                            className="w-24"
+                            style={{
+                              content: '""',
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              bottom: 0,
+                              background:
+                                "linear-gradient(to right, transparent, #001229)",
+                            }}
+                          />
+                        </span>
+                      </div>
+                      <span className="w-full flex justify-start items-center">
+                        {boat?.boatType}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {boat?.name}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {boat?.model} / {boat?.make} / {boat?.size}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {boat?.location}
+                      </span>
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
+              <div className="pt-2">No record found</div>
+            )}
           </div>
         </div>
       </div>

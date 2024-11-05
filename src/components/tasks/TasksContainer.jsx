@@ -3,7 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import TasksCard from "./TasksCard";
 import { TbCaretDownFilled } from "react-icons/tb";
-import axios from "../../axios"; 
+import axios from "../../axios";
 import TasksListLoader from "./loaders/TasksListLoader";
 import Pagination from "../global/pagination/Pagination";
 import DateModal from "./DateModal";
@@ -12,21 +12,21 @@ const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
   const [openDropDownFilter, setOpenDropdownFilter] = useState(false);
   const dropDownRef = useRef(null);
-  const [pageDetails, setPageDetails] = useState({})
+  const [pageDetails, setPageDetails] = useState({});
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [dueDate, setDueDate] = useState({})
+  const [dueDate, setDueDate] = useState({});
+  console.log("🚀 ~ TasksContainer ~ dueDate:", dueDate);
   const [inputError, setInputError] = useState({});
-
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
-  const [sortDate,setSortDate] = useState("")
-  const [sortFilter,setSortFilter] = useState("")
+  const [sortDate, setSortDate] = useState("");
+  const [sortFilter, setSortFilter] = useState("all");
 
-  const handleCheckboxChange = (sort) => {  
+  const handleCheckboxChange = (sort) => {
     setSortFilter(sort);
   };
 
@@ -37,14 +37,18 @@ const TasksContainer = () => {
   };
 
   // Fetch tasks from the API
-  const getTasks = async ( pageNumber = 1, rows = 9 ) => {
+  const getTasks = async (pageNumber = 1, rows = 9) => {
     setLoading(true);
     try {
-      const searchFilter = filter ? `&filter=${filter}` : "";
-      // const sortByFilter = sortDate ? `&startDate=${sortDate}&endDate=${sortDate}` : "";
+      const searchFilter = filter ? `&status=${filter}` : "";
+      const sortByDate = sortDate
+        ? `&startDate=${dueDate?.normal}&endDate=${dueDate?.normal}`
+        : "";
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
 
-    const { data } = await axios.get(`/owner/task?page=${pageNumber}&pageSize=${rows}${searchFilter}${sortByFilter}`);
+      const { data } = await axios.get(
+        `/owner/task?page=${pageNumber}&pageSize=${rows}${searchFilter}${sortByFilter}${sortByDate}`
+      );
 
       // const { data } = await axios.get(
       //   filter !== "" ? `/owner/task?status=${filter}` : `/owner/task?page=${pageNumber}&pageSize=${rows}`
@@ -64,7 +68,7 @@ const TasksContainer = () => {
 
   const filteredData = taskData?.filter((item) =>
     item?.task?.toLowerCase()?.includes(search?.toLowerCase())
-);
+  );
 
   return (
     <div className="h-full w-full flex flex-col gap-6 justify-start items-center">
@@ -199,34 +203,43 @@ const TasksContainer = () => {
               <div className="w-full flex flex-col justify-start items-start gap-3">
                 <div className="w-full flex justify-start items-start gap-2">
                   <input
-                  checked={sortFilter === "all"}
-                  onChange={() => handleCheckboxChange("all")}
-                   type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                    checked={sortFilter === "all"}
+                    onChange={() => handleCheckboxChange("all")}
+                    type="checkbox"
+                    className="w-3 h-3 accent-[#199BD1]"
+                  />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     None
                   </span>
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
                   <input
-                  checked={sortFilter === "latest"}
-                  onChange={() => handleCheckboxChange("latest")}
-                  type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                    checked={sortFilter === "latest"}
+                    onChange={() => handleCheckboxChange("latest")}
+                    type="checkbox"
+                    className="w-3 h-3 accent-[#199BD1]"
+                  />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Latest
                   </span>
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
                   <input
-                  checked={sortFilter === "earliest"}
-                  onChange={() => handleCheckboxChange("earliest")}
-                   type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                    checked={sortFilter === "earliest"}
+                    onChange={() => handleCheckboxChange("earliest")}
+                    type="checkbox"
+                    className="w-3 h-3 accent-[#199BD1]"
+                  />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Earliest
                   </span>
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
-                  <input 
-                  type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+                  <input
+                    onChange={() => setIsCalendarOpen(true)}
+                    type="checkbox"
+                    className="w-3 h-3 accent-[#199BD1]"
+                  />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Calendar
                   </span>
@@ -239,7 +252,7 @@ const TasksContainer = () => {
         <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {!loading ? (
             filteredData?.length > 0 &&
-            filteredData?.map((task,index) => {
+            filteredData?.map((task, index) => {
               const assignedBy = task?.assignBy
                 ? task?.assignBy?.name
                 : "Unknown"; // Adjust based on the API response structure
@@ -248,11 +261,15 @@ const TasksContainer = () => {
                 ? task?.assignTo[0]?.name
                 : "Unknown";
               return (
-                <TasksCard data={task} getTasks={()=>getTasks()} key={index}/>
+                <TasksCard
+                  data={task}
+                  getTasks={() => getTasks()}
+                  key={index}
+                />
               );
             })
           ) : (
-          <TasksListLoader/>
+            <TasksListLoader />
           )}
         </div>
         <DateModal
@@ -260,17 +277,18 @@ const TasksContainer = () => {
           setIsOpen={setIsCalendarOpen}
           setDueDate={setDueDate}
           setInputError={setInputError}
+          isRange={"range"}
         />
       </div>
       <div className="w-full flex justify-center pb-4">
-            <Pagination
-              page={pageDetails?.currentPage}
-              totalPages={pageDetails?.totalPages}
-              rowsPerPage={9}
-              selectedFilter={filter}
-              onPageChange={getTasks}
-            />
-          </div>
+        <Pagination
+          page={pageDetails?.currentPage}
+          totalPages={pageDetails?.totalPages}
+          rowsPerPage={9}
+          selectedFilter={filter}
+          onPageChange={getTasks}
+        />
+      </div>
     </div>
   );
 };

@@ -4,21 +4,37 @@ import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import { ErrorToast } from "../../components/global/Toaster";
 
-const EmployeeDetailModal = ({ setIsOpen, SetPassSelectedEmployee, setInputError }) => {
-  const { employees, getEmployees, loadingEmployees } = useContext(GlobalContext);
-  
+const EmployeeDetailModal = ({
+  setIsOpen,
+  SetPassSelectedEmployee,
+  setInputError,
+}) => {
+  const { employees, loadingEmployees } = useContext(GlobalContext);
+
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [jobType, setJobType] = useState("all");
   const [locationType, setLocationType] = useState("all");
-  
+
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredData = employees?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
+  const filteredData = employees?.filter((item) => {
+    const matchesSearch = searchTerm
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType !== "all"
+        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -27,24 +43,24 @@ const EmployeeDetailModal = ({ setIsOpen, SetPassSelectedEmployee, setInputError
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
-  
+
   const handleSelectEmployee = (employeeId, employeeName) => {
-    setInputError({})
+    setInputError({});
     if (selectedEmployee?.id === employeeId) {
       setSelectedEmployee(null);
     } else {
-      setSelectedEmployee({id: employeeId, name: employeeName});
+      setSelectedEmployee({ id: employeeId, name: employeeName });
     }
   };
 
-  const handleEmployeeSelection = () =>{
-    SetPassSelectedEmployee(selectedEmployee)
-    setIsOpen(false)
-  }
-
-  useEffect(()=>{
-    getEmployees(jobType, locationType)
-  },[jobType, locationType])
+  const handleEmployeeSelection = () => {
+    if (selectedEmployee) {
+      SetPassSelectedEmployee(selectedEmployee);
+      setIsOpen(false);
+    } else {
+      ErrorToast("Select Employee");
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -66,7 +82,7 @@ const EmployeeDetailModal = ({ setIsOpen, SetPassSelectedEmployee, setInputError
                   <FiSearch className="text-white/50 text-lg" />
                 </span>
                 <input
-                onChange={(e)=>setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search here"
                   className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -92,17 +108,25 @@ const EmployeeDetailModal = ({ setIsOpen, SetPassSelectedEmployee, setInputError
                     Email
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
-                  <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-            jobType={jobType} setJobType={setJobType}/>
+                    <JobType
+                      jobTitleDropdownOpen={jobTitleDropdownOpen}
+                      toggleJobTitleDropdown={toggleJobTitleDropdown}
+                      jobType={jobType}
+                      setJobType={setJobType}
+                    />
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
-                  <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+                    <LocationType
+                      locationDropdownOpen={locationDropdownOpen}
+                      toggleLocationDropdown={toggleLocationDropdown}
+                      locationType={locationType}
+                      setLocationType={setLocationType}
+                    />
                   </th>
                 </tr>
               </thead>
-              {loadingEmployees?(
-                  <tbody>
+              {loadingEmployees ? (
+                <tbody>
                   {[...Array(10)].map((_, index) => (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-0 py-2">
@@ -123,52 +147,61 @@ const EmployeeDetailModal = ({ setIsOpen, SetPassSelectedEmployee, setInputError
                     </tr>
                   ))}
                 </tbody>
-              ):(
+              ) : (
                 <tbody>
-                {
-                  filteredData.length > 0 ? (
+                  {filteredData.length > 0 ? (
                     <>
-                    {filteredData?.map((employee, index) =>{
-                  const isSelected = selectedEmployee?.id === employee._id;
-                  return (
-                    <tr key={index} className="border-b-[1px] border-white/10">
-                      <td className="px-0 py-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                          checked={isSelected}
-                          onChange={() => handleSelectEmployee(employee._id, employee.name)}
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.name}
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.email}
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.jobtitle}
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {employee?.location}
-                      </td>
-                    </tr>
-                  )
-                })}
+                      {filteredData?.map((employee, index) => {
+                        const isSelected =
+                          selectedEmployee?.id === employee._id;
+                        return (
+                          <tr
+                            key={index}
+                            className="border-b-[1px] border-white/10"
+                          >
+                            <td className="px-0 py-2">
+                              <input
+                                type="checkbox"
+                                className="w-3 h-3 accent-[#199BD1]"
+                                checked={isSelected}
+                                onChange={() =>
+                                  handleSelectEmployee(
+                                    employee._id,
+                                    employee.name
+                                  )
+                                }
+                              />
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {employee?.name}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {employee?.email}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {employee?.jobtitle}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {employee?.location}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </>
-                  ):(
+                  ) : (
                     <tr>
-                       <div className="pt-4 ">No record found</div>
+                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        <div className="pt-4 ">No record found</div>
+                      </td>
                     </tr>
-                  )
-                }
-              </tbody>
+                  )}
+                </tbody>
               )}
             </table>
           </div>
           <div className="flex justify-end mt-4">
             <button
-              onClick={()=>setIsOpen(false)}
+              onClick={() => setIsOpen(false)}
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >
               Done

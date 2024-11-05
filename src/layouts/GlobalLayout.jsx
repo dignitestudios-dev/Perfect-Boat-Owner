@@ -13,6 +13,7 @@ const GlobalLayout = ({ page }) => {
     getBoats,
     getEmployees,
     getManagers,
+    getDropDown,
     updateBoats,
     show,
     setShow,
@@ -25,6 +26,7 @@ const GlobalLayout = ({ page }) => {
       getBoats();
       getEmployees();
       getManagers();
+      getDropDown();
       return true;
     } else {
       navigate("/login");
@@ -42,7 +44,8 @@ const GlobalLayout = ({ page }) => {
       <div className="w-full lg:w-[calc(100%-280px)]  h-full relative flex flex-col justify-start items-start">
         <Navbar />
         {show && (
-          <Link to="/notifications"
+          <Link
+            to="/notifications"
             class="min-w-64 max-w-96 fixed animate-pulse z-[100000] bottom-4 right-8 bg-[#001229] shadow border border-gray-800 text-sm text-gray-200 rounded-2xl "
             role="alert"
             tabindex="-1"

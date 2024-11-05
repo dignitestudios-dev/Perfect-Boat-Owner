@@ -7,41 +7,46 @@ import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { BiArrowBack } from "react-icons/bi";
 import PasswordUpdateSuccessModal from "../../components/onboarding/PasswordUpdateSuccessModal";
 import { useForm } from "react-hook-form";
-import axios from "../../axios"
+import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 const UpdatePassword = () => {
   const { navigate } = useContext(GlobalContext);
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // Set up react-hook-form
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const handleUpdatePassword = async (formData) => {
-    setLoading(true)
+    setLoading(true);
     try {
       let obj = {
         newPassword: formData.password,
         confirmPassword: formData.confirmPassword,
       };
-      
+
       const response = await axios.post("/auth/forget/update/pass", obj);
       if (response.status === 200) {
-        navigate("/login")
-        setLoading(false)
+        navigate("/login");
+        setLoading(false);
         SuccessToast(response?.data?.message);
-      }else{
+      } else {
         SuccessToast(response?.data?.message);
       }
-    } catch(err){
-      console.log("🚀 ~ createAccount ~ err:", err)
-      ErrorToast(err?.response?.data?.message)
-      }finally{
-      setLoading(false)
+    } catch (err) {
+      console.log("🚀 ~ createAccount ~ err:", err);
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="w-screen h-screen flex items-start justify-start">
       <form
@@ -61,35 +66,37 @@ const UpdatePassword = () => {
           </h1>
         </div>
         <div className="w-full h-auto flex flex-col mt-4 mb-16 justify-start items-start gap-4">
-        <AuthInput
-              register={register("password", {
-                required: "Please enter your password.",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters long.",
-                },
-              })}
-              text={"Password"}
-              placeholder={"Enter Password"}
-              type={"password"}
-              error={errors.password}
-            />
-            <AuthInput
-              register={register("confirmPassword", {
-                required: "Please enter your password.",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters long.",
-                },
-              })}
-              text={"Repeat Password"}
-              placeholder={"Enter Password"}
-              type={"password"}
-              error={errors.password}
-            />
+          <AuthInput
+            register={register("password", {
+              required: "Please enter your password.",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters long.",
+              },
+            })}
+            maxLength={12}
+            text={"Password"}
+            placeholder={"Enter Password"}
+            type={"password"}
+            error={errors.password}
+          />
+          <AuthInput
+            register={register("confirmPassword", {
+              required: "Please enter your password.",
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters long.",
+              },
+            })}
+            maxLength={12}
+            text={"Repeat Password"}
+            placeholder={"Enter Password"}
+            type={"password"}
+            error={errors.password}
+          />
         </div>
 
-        <AuthSubmitBtn text={"Update Password"} loader={loading}/>
+        <AuthSubmitBtn text={"Update Password"} loader={loading} />
         {isUpdated && (
           <PasswordUpdateSuccessModal
             isOpen={isUpdated}

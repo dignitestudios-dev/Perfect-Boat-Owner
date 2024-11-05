@@ -21,11 +21,11 @@ import SelectTaskModal from "../../components/tasks/modal/SelectTaskModal";
 import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
 
 const statusColors = {
-  "newtask": "#FF007F",
-  "overdue": "#FF3B30",
-  "default": "#FFCC00", 
-  "in-progress":"#36B8F3",
-  "completed":"#1FBA46"
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA46",
 };
 
 const Dropdown = ({ options, label }) => {
@@ -52,7 +52,7 @@ const Dropdown = ({ options, label }) => {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-      type="button"
+        type="button"
         className="text-left w-full flex justify-start items-center gap-1"
         onClick={handleToggle}
       >
@@ -85,22 +85,23 @@ const EditEmployee = () => {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignedModalOpen, setIsAssignedModalOpen] = useState(false);
-  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] = useState(false);
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
+    useState(false);
   const [isResendModalOpen, setIsResendModalOpen] = useState(false);
   const [isDeletedModalOpen, setIsDeletedModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [employee, setEmployee] = useState("");
-  const [employeeTasks, setEmployeeTasks] = useState([])
+  const [employeeTasks, setEmployeeTasks] = useState([]);
   const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-  const [tasks,setTasks] = useState([])
+  const [tasks, setTasks] = useState([]);
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [selectedManager, setSelectedManager] = useState(null);
-  const [tasksError,setTasksError] = useState("")
-  const [statusFilter , setStatusFilter] = useState("all");
+  const [tasksError, setTasksError] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
@@ -108,9 +109,8 @@ const EditEmployee = () => {
   // Function to close modal
   const handleDeleteConfirm = () => {
     setDeleteModalOpen(false);
-    getEmployeeData()
+    getEmployeeData();
   };
-
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -119,8 +119,13 @@ const EditEmployee = () => {
   const toggleStatusDropdown = () => {
     setStatusDropdownOpen(!statusDropdownOpen);
   };
-  
-  const { register, handleSubmit, setValue, formState: { errors }} = useForm({
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: { manager: passSelectedManager?.name },
   });
 
@@ -133,7 +138,7 @@ const EditEmployee = () => {
   const handleAssignNewTask = () => {
     setIsTaskModalOpen(true);
     // setIsAssignedModalOpen(true);
-  }
+  };
 
   const closeTaskModal = () => {
     setIsTaskModalOpen(false);
@@ -142,7 +147,6 @@ const EditEmployee = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-
 
   const handleResetPassClick = () => {
     setIsModalOpen(true);
@@ -161,17 +165,16 @@ const EditEmployee = () => {
   };
 
   const handleRemoveTask = (taskID) => {
-    const tasks = employeeTasks?.filter((task)=> task?._id !== taskID)
-    setEmployeeTasks(tasks)
-    setTasks(tasks)
-  }
+    const tasks = employeeTasks?.filter((task) => task?._id !== taskID);
+    setEmployeeTasks(tasks);
+    setTasks(tasks);
+  };
 
   const handleDeleteClick = () => {
     setIsDeletedModalOpen(true);
   };
 
   const handleUpdateEmployee = async (data) => {
-
     try {
       setSubmitLoading(true);
 
@@ -179,7 +182,9 @@ const EditEmployee = () => {
         ...data,
         manager: passSelectedManager?.id,
         password: "Test@123",
-        tasks: tasks ? tasks?.map((item) => item?._id) : employeeTasks?.map((item) => item?.id),
+        tasks: tasks
+          ? tasks?.map((item) => item?._id)
+          : employeeTasks?.map((item) => item?.id),
       };
 
       const response = await axios.put(
@@ -288,8 +293,12 @@ const EditEmployee = () => {
                           },
                         })}
                         error={errors.name}
-              onInput={(e) => { e.target.value = e.target.value.replace(/[^A-Za-z]/g, ""); }}
-
+                        onInput={(e) => {
+                          e.target.value = e.target.value.replace(
+                            /[^A-Za-z]/g,
+                            ""
+                          );
+                        }}
                       />
                       <AddFleetInput
                         isDisabled={!isEditing}
@@ -322,9 +331,14 @@ const EditEmployee = () => {
                         label="Location"
                         type="text"
                         placeholder="Enter Location"
-                        register={register("location", { required: "Please enter a location",
-                          minLength: { value: 2, message: "Location must be at least 2 characters long"} }
-                        )}
+                        register={register("location", {
+                          required: "Please enter a location",
+                          minLength: {
+                            value: 2,
+                            message:
+                              "Location must be at least 2 characters long",
+                          },
+                        })}
                         error={errors.location}
                       />
                     </div>
@@ -334,6 +348,7 @@ const EditEmployee = () => {
                         label="Phone Number"
                         type="text"
                         placeholder="Enter Phone Number"
+                        isPhone={true}
                         register={register("phone", {
                           required: "Please enter your phone number.",
                           pattern: {
@@ -482,7 +497,7 @@ const EditEmployee = () => {
               </div>
               {employeeTasks?.length > 0 ? (
                 <>
-                  {employeeTasks?.slice(0,4)?.map((task, index) => (
+                  {employeeTasks?.slice(0, 4)?.map((task, index) => (
                     <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
@@ -520,7 +535,7 @@ const EditEmployee = () => {
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRemoveTask(task?._id)
+                            handleRemoveTask(task?._id);
                             // setDeleteModalOpen(true); // Open modal when delete icon is clicked
                           }}
                         >
@@ -616,8 +631,13 @@ const EditEmployee = () => {
       )}
 
       {isSelectTaskModalOpen && (
-        <ViewAssignedTaskModal setIsOpen={setIsSelectTaskModalOpen} handleRemoveTask={(taskID)=>handleRemoveTask(taskID)}
-        employeeTasks={employeeTasks} getEmployeeData={()=>getEmployeeData()} loading={isLoading} />
+        <ViewAssignedTaskModal
+          setIsOpen={setIsSelectTaskModalOpen}
+          handleRemoveTask={(taskID) => handleRemoveTask(taskID)}
+          employeeTasks={employeeTasks}
+          getEmployeeData={() => getEmployeeData()}
+          loading={isLoading}
+        />
       )}
 
       {/* <DeletedModal isOpen={isDeletedModalOpen} onClose={() => setIsDeletedModalOpen(false)}/> */}

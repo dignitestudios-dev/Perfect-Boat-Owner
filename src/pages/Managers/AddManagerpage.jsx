@@ -243,6 +243,7 @@ const AddManagerpage = () => {
                     maxLength="10"
                     type={"text"}
                     error={errors?.phone}
+                    isPhone={true}
                     onInput={(e) => {
                       e.target.value = e.target.value.replace(
                         /(?!^\+)[^\d]/g,

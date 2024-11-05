@@ -72,7 +72,7 @@ const Login = () => {
       <div className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col justify-start items-center gap-8">
         <form onSubmit={handleSubmit(handleLogin)} className="w-full">
           <h1 className="w-full justify-start items-start text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
-            Log in
+            Log In
           </h1>
           <div className="w-full h-auto flex flex-col justify-start items-start gap-4 pt-6">
             <AuthInput
@@ -84,7 +84,7 @@ const Login = () => {
                 },
               })}
               text={"Email Address"}
-              placeholder={"Type your email address here"}
+              placeholder={"Enter your email here"}
               type={"text"}
               error={errors.email}
             />
@@ -93,10 +93,11 @@ const Login = () => {
                 register={register("password", {
                   required: "Please enter your password.",
                   minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters long.",
+                    value: 8,
+                    message: "Password must be at least 8 characters long.",
                   },
                 })}
+                maxLength={12}
                 text={"Password"}
                 placeholder={"Enter your password here"}
                 type={"password"}
