@@ -315,6 +315,11 @@ const AddFleet = () => {
                         type="text"
                         register={register(`location`, {
                           required: "Location is required",
+                          minLength: {
+                            value: 2,
+                            message:
+                              "Location must be at least 2 characters long",
+                          },
                         })}
                         error={errors.location}
                       />

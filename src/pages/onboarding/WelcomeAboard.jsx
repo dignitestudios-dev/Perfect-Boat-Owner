@@ -65,6 +65,10 @@ const WelcomeAboard = () => {
     setIsOpen(false); // Close dropdown after selection
   };
 
+  const currentYear = new Date().getFullYear();
+  const minYear = 1970;
+  const maxYear = currentYear + 1;
+
   const [coverImages, setCoverImages] = useState("");
   const [coverError, setCoverError] = useState(Array(forms.length).fill(null));
 
@@ -222,6 +226,7 @@ const WelcomeAboard = () => {
           >
             Import CSV
           </button>
+
           <input
             type="file"
             id="input"
@@ -240,6 +245,11 @@ const WelcomeAboard = () => {
           </>
         ) : (
           <form onSubmit={handleSubmit(submitBoatData)}>
+            <div className="pt-2 pb-6">
+              <p className="text-[20px] font-semibold leading-[21.6px]">
+                Add Fleet
+              </p>
+            </div>
             <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
               {forms?.map((form, idx) => (
                 <div
@@ -263,7 +273,7 @@ const WelcomeAboard = () => {
                               <TbCaretDownFilled className="group-hover:rotate-180 " />
                             </span>
                             <div
-                              className="group-hover:flex  flex-col justify-start items-start gap-3 transition-all
+                              className="group-hover:flex z-20 flex-col justify-start items-start gap-3 transition-all
                          duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
                             >
                               <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
@@ -312,16 +322,37 @@ const WelcomeAboard = () => {
                           type="text"
                           register={register(`forms.${idx}.model`, {
                             required: "Model is required",
+                            validate: {
+                              // Custom validation for numeric year format and within range
+                              isValidYear: (value) =>
+                                /^\d{4}$/.test(value) ||
+                                "Model must be a 4-digit number",
+                              withinRange: (value) =>
+                                (value >= minYear && value <= maxYear) ||
+                                `Please enter a year between ${minYear} and ${maxYear}`,
+                            },
                           })}
                           error={errors?.forms?.[idx]?.model}
                         />
                         <AddFleetInput
                           label="Size (m)"
                           placeholder="Enter Size"
-                          type="number"
+                          type="text"
+                          maxLength={4}
                           register={register(`forms.${idx}.size`, {
                             required: "Size is required",
+                            pattern: {
+                              value: /^[1-9][0-9]{0,3}$/,
+                              message:
+                                "Size must be positive and 4 digits long",
+                            },
                           })}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(
+                              /(?!^\+)[^\d]/g,
+                              ""
+                            );
+                          }}
                           error={errors?.forms?.[idx]?.size}
                         />
                         <AddFleetInput
@@ -330,6 +361,11 @@ const WelcomeAboard = () => {
                           type="text"
                           register={register(`forms.${idx}.location`, {
                             required: "Location is required",
+                            minLength: {
+                              value: 2,
+                              message:
+                                "Location must be at least 2 characters long",
+                            },
                           })}
                           error={errors?.forms?.[idx]?.location}
                         />

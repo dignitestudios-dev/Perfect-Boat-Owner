@@ -9,12 +9,16 @@ import { AuthContext } from "../../contexts/AuthContext";
 import axios from "../../axios.js";
 import { ErrorToast, SuccessToast } from "./../../components/global/Toaster";
 import getFCMToken from "../../firebase/getFcmToken.js";
+import CountDown from "../../components/onboarding/CountDown.jsx";
 
 const OnboardVerifyOtp = () => {
   const { navigate } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [otp, setOtp] = useState(Array(6).fill(""));
+  const [isActive, setIsActive] = useState(true);
+  const [seconds, setSeconds] = useState(30);
+  const [navigateString, setNavigateString] = useState("");
 
   const inputs = useRef([]);
   const { login } = useContext(AuthContext);
@@ -70,9 +74,13 @@ const OnboardVerifyOtp = () => {
         SuccessToast("Email Verified");
         if (response?.data?.data?.isEmailVerified === true) {
           if (response?.data?.data?.isSubscribed === true) {
-            navigate("/welcome-aboard");
+            setNavigateString("/welcome-aboard");
+            // navigate("/welcome-aboard");
+            setIsVerified(true);
           } else {
-            navigate("/select-package");
+            setNavigateString("/select-package");
+            // navigate("/select-package");
+            setIsVerified(true);
           }
         } else {
           navigate("/onboard-verify-otp");
@@ -97,14 +105,21 @@ const OnboardVerifyOtp = () => {
         // navigate("/select-package");
         SuccessToast(response?.data?.message);
         setResendLoading(false);
+        handleRestart();
       } else {
         ErrorToast(response?.data?.message);
       }
     } catch (err) {
+      console.log("🚀 ~ handleResendOtp ~ err:", err);
       ErrorToast(err?.response?.data?.message);
     } finally {
       setResendLoading(false);
     }
+  };
+
+  const handleRestart = () => {
+    setSeconds(30);
+    setIsActive(true);
   };
 
   return (
@@ -143,24 +158,34 @@ const OnboardVerifyOtp = () => {
             <span className="text-[13px] font-medium text-[#C2C6CB]">
               Didn't recieve a code?
             </span>
-            <button
-              type="button"
-              disabled={resendLoading}
-              onClick={handleResendOtp}
-              className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
-            >
-              {resendLoading?"Resending...":"Resend now"}
-            </button>
+            {isActive ? (
+              <CountDown
+                isActive={isActive}
+                setIsActive={setIsActive}
+                seconds={seconds}
+                setSeconds={setSeconds}
+              />
+            ) : (
+              <button
+                type="button"
+                disabled={resendLoading}
+                onClick={handleResendOtp}
+                className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
+              >
+                {resendLoading ? "Resending..." : "Resend now"}
+              </button>
+            )}
           </div>
         </div>
         <AuthSubmitBtn text={"Verify"} loader={loading} />
 
-        {/* {isVerified && (
+        {isVerified && (
           <EmailVerificationSuccessModal
             isOpen={isVerified}
             setIsOpen={setIsVerified}
+            navigateString={navigateString}
           />
-        )} */}
+        )}
       </form>
       <div className="w-1/2 lg:flex hidden relative h-full">
         <span className="w-20 h-full bg-gradient-to-r from-black/70 via-black/30 to-black/0  absolute top-0 -left-4"></span>

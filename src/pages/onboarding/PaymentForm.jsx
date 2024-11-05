@@ -115,11 +115,16 @@ const PaymentForm = () => {
               className={` w-full  h-full flex items-center justify-center    rounded-[12px] relative`}
             >
               <input
-                type={"text"}
-                placeholder={"e.g. Mike Smith"}
+                type="text"
+                placeholder="e.g. Mike Smith"
                 className="w-full outline-none  rounded-[12px] placeholder:text-[13px] placeholder:font-normal placeholder:text-[#6B737E] text-white bg-transparent h-full px-3 text-sm font-medium "
                 value={cardHolderName}
-                onChange={(e) => setCardHolderName(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "" || /^[^\s]/.test(value)) {
+                    setCardHolderName(value);
+                  }
+                }}
               />
             </div>
           </div>

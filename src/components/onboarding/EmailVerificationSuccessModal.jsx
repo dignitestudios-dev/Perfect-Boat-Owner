@@ -2,11 +2,15 @@ import React, { useContext, useEffect } from "react";
 import { SuccessVector } from "../../assets/export";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
-const EmailVerificationSuccessModal = ({ isOpen, setIsOpen }) => {
+const EmailVerificationSuccessModal = ({
+  isOpen,
+  setIsOpen,
+  navigateString,
+}) => {
   const { navigate } = useContext(GlobalContext);
   useEffect(() => {
     setTimeout(() => {
-      navigate("/select-package");
+      navigate(navigateString);
       setIsOpen(false);
     }, 2000);
   }, []);

@@ -66,7 +66,7 @@ const Signup = () => {
               },
             })}
             text={"Name"}
-            placeholder={"Type your name here"}
+            placeholder={"Enter your name here"}
             type={"text"}
             error={errors.fullName}
             onInput={(e) => {
@@ -83,7 +83,7 @@ const Signup = () => {
               },
             })}
             text={"Email"}
-            placeholder={"Type your email address here"}
+            placeholder={"Enter your email address here"}
             type={"text"}
             error={errors.email}
           />
@@ -98,7 +98,7 @@ const Signup = () => {
             })}
             maxLength="10"
             text={"Phone Number"}
-            placeholder={"Type your phone number here"}
+            placeholder={"Enter your phone number here"}
             type={"text"}
             error={errors.phoneNumber}
             onInput={(e) => {
