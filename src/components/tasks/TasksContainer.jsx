@@ -18,7 +18,7 @@ const TasksContainer = () => {
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [dueDate, setDueDate] = useState({});
-  console.log("🚀 ~ TasksContainer ~ dueDate:", dueDate);
+
   const [inputError, setInputError] = useState({});
 
   const [search, setSearch] = useState("");

@@ -11,7 +11,7 @@ import { taskTypeData } from "../../data/TaskTypeData";
 import DateModal from "../../components/tasks/DateModal";
 import BoatSelectModal from "../Fleet/BoatSelectModal";
 import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
-import moment from 'moment';
+import moment from "moment";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import SelectBoatInputField from "../../components/global/customInputs/SelectBoatInputField";
 import SelectEmployeeInputField from "../../components/global/customInputs/SelectEmployeeInputField";
@@ -25,11 +25,11 @@ import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { useForm } from "react-hook-form";
 
 const statusColors = {
-  "newtask": "#FF007F",
-  "overdue": "#FF3B30",
-  "default": "#FFCC00", 
-  "in-progress":"#36B8F3",
-  "completed":"#1FBA46"
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA46",
 };
 
 const TaskDetail = () => {
@@ -46,18 +46,23 @@ const TaskDetail = () => {
   const [isTaskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [isTaskDropdownOpen, setTaskDropdownOpen] = useState(false);
   const [customInput, setCustomInput] = useState(false);
-  const [customTypeText, setCustomTypeText] = useState("")
+  const [customTypeText, setCustomTypeText] = useState("");
   const [tasks, setTasks] = useState([]);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
-  const [passSelectedBoat,setPassSelectedBoat]= useState("")
-  
-  const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(false)
-  const [updateLoad, setUpdateLoad] =useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [passSelectedBoat, setPassSelectedBoat] = useState("");
 
-  const { register, handleSubmit, setValue, formState: { errors }} = useForm();
+  const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [updateLoad, setUpdateLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
@@ -68,9 +73,9 @@ const TaskDetail = () => {
   };
 
   const [RecurringDropdown, setRecurringDropdown] = useState(false);
-  const [recurringDays, setRecurringDays] = useState("")
-  const [customDays, setCustomDays] = useState(false)
-  const [customRecurring, setCustomRecurring] = useState("")
+  const [recurringDays, setRecurringDays] = useState("");
+  const [customDays, setCustomDays] = useState(false);
+  const [customRecurring, setCustomRecurring] = useState("");
   const [inputError, setInputError] = useState({});
 
   const RecurringRef = useRef(null);
@@ -82,40 +87,41 @@ const TaskDetail = () => {
   };
 
   const handleSelectDay = (day, text) => {
-    if(day === "custom"){
-      setRecurringDays(day)
+    if (day === "custom") {
+      setRecurringDays(day);
       setSelectedDay(text);
-      setCustomDays(true)
+      setCustomDays(true);
       setRecurringDropdown(true);
-    }else{
-      setRecurringDays(day)
-    setSelectedDay(text); // Set selected text
-    setRecurringDropdown(false); // Close the dropdown after selecting
+    } else {
+      setRecurringDays(day);
+      setSelectedDay(text); // Set selected text
+      setRecurringDropdown(false); // Close the dropdown after selecting
     }
   };
 
   const handleTaskTypeSelection = (taskType) => {
-    setInputError({})
-    if(taskType === "custom"){
+    setInputError({});
+    if (taskType === "custom") {
       setTaskTypeDropdownOpen(true);
-      setCustomInput(true)
-  
-    }else{
+      setCustomInput(true);
+    } else {
       setSelectedTaskType(taskType);
-      setTasks(taskDropDown?.find((item) => item?.taskType === taskType)?.task || []);
+      setTasks(
+        taskDropDown?.find((item) => item?.taskType === taskType)?.task || []
+      );
       setTaskTypeDropdownOpen(false);
       setTaskDropdownOpen(false);
     }
   };
-  
+
   const handleTaskSelection = (task) => {
     setTaskDropdownOpen(false);
-    setDisplaySelectedTask(task)
+    setDisplaySelectedTask(task);
   };
-  
+
   const getTaskDetail = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const response = await axios.get(`/owner/task/${id}`);
       if (response.status === 200) {
         const data = response?.data?.data;
@@ -126,21 +132,27 @@ const TaskDetail = () => {
         setPassSelectedBoat(data?.boat || null);
         setPassSelectedEmployee(data?.assignTo[0] || null);
         setValue("assignBy", data?.assignBy?.name);
-        setSelectedDay(data?.reoccuringDays ? `${data?.reoccuringDays} days` : "None");
-        setDueDate({ normal: moment(data?.dueDate * 1000).format('YYYY-MM-DD'), unix: data?.dueDate});
+        setSelectedDay(
+          data?.reoccuringDays ? `${data?.reoccuringDays} days` : "None"
+        );
+        setDueDate({
+          normal: moment(data?.dueDate * 1000).format("YYYY-MM-DD"),
+          unix: data?.dueDate,
+        });
       }
     } catch (err) {
-      ErrorToast(err?.response?.data?.message)
+      ErrorToast(err?.response?.data?.message);
       console.log("🚀 ~ getTaskDetail ~ err:", err);
-    }
-    finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
-    getTaskDetail();
-  }, []);
+    if (id) {
+      getTaskDetail();
+    }
+  }, [id]);
 
   const handleUpdate = async () => {
     setInputError({});
@@ -149,244 +161,302 @@ const TaskDetail = () => {
       passSelectedBoat,
       selectedTaskType,
       noteText,
-      dueDate
+      dueDate,
     };
     const errors = formValidation(validateData);
-      if (Object.keys(errors).length > 0) {
-        setInputError(errors);
-        return;
-      }
+    if (Object.keys(errors).length > 0) {
+      setInputError(errors);
+      return;
+    }
     try {
-      setUpdateLoad(true)
+      setUpdateLoad(true);
       const obj = {
-        boat:passSelectedBoat?._id ? passSelectedBoat?._id : passSelectedBoat?.id,
-        task:displaySelectedTask ? displaySelectedTask : selectedTaskType,
+        boat: passSelectedBoat?._id
+          ? passSelectedBoat?._id
+          : passSelectedBoat?.id,
+        task: displaySelectedTask ? displaySelectedTask : selectedTaskType,
         taskType: selectedTaskType,
         dueDate: dueDate?.unix,
         description: noteText,
         reoccuring: true,
         reoccuringDays: +recurringDays,
-        assignTo: [passSelectedEmployee?._id ? passSelectedEmployee?._id : passSelectedEmployee?.id]
+        assignTo: [
+          passSelectedEmployee?._id
+            ? passSelectedEmployee?._id
+            : passSelectedEmployee?.id,
+        ],
+      };
+      const response = await axios.put(`/owner/task/${id}`, obj);
+      if (response.status === 200) {
+        SuccessToast("Task Updated successfully");
+        getTaskDetail();
+        setIsEdit(false);
       }
-        const response = await axios.put(`/owner/task/${id}`, obj);
-        if(response.status === 200){
-          SuccessToast("Task Updated successfully");
-          getTaskDetail();
-          setIsEdit(false)
-        }
     } catch (error) {
       console.error("Error update task:", error);
-      ErrorToast(error?.response?.data.message)
-    }
-    finally{
-      setUpdateLoad(false)
+      ErrorToast(error?.response?.data.message);
+    } finally {
+      setUpdateLoad(false);
     }
   };
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
-      {isLoading?(
+      {isLoading ? (
         <div className="w-full h-[90dvh] flex justify-center items-center">
-        <FiLoader className="text-[30px] animate-spin text-lg mx-auto"/>
-      </div>
-      ):(
+          <FiLoader className="text-[30px] animate-spin text-lg mx-auto" />
+        </div>
+      ) : (
         <div className="h-full w-full flex flex-col gap-6 justify-start items-center">
-        <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-          <div className="w-full flex justify-between items-center h-12">
-            <div className="w-auto flex justify-start items-center gap-2">
-              <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-                {isEdit ? "Edit Task" : "Task"}
-              </h3>
-              <span className="text-[11px] capitalize bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] 
+          <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
+            <div className="w-full flex justify-between items-center h-12">
+              <div className="w-auto flex justify-start items-center gap-2">
+                <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
+                  {isEdit ? "Edit Task" : "Task"}
+                </h3>
+                <span
+                  className="text-[11px] capitalize bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] 
               font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] "
-              style={{ color: statusColors[taskDetail?.status] || statusColors["default"] }}>
-                {taskDetail?.status}
-              </span>
+                  style={{
+                    color:
+                      statusColors[taskDetail?.status] ||
+                      statusColors["default"],
+                  }}
+                >
+                  {taskDetail?.status}
+                </span>
+              </div>
+              {!isEdit && (
+                <button
+                  onClick={() => setIsEdit(true)}
+                  className="w-[118px] h-[32px] flex justify-center items-center gap-2 bg-[#36B8F3]/[0.12] rounded-[10px] text-[#36B8F3] text-[13px] font-bold"
+                >
+                  <TiPencil className="text-lg" />
+                  <span>Edit</span>
+                </button>
+              )}
             </div>
-            {!isEdit && (
-              <button
-                onClick={() => setIsEdit(true)}
-                className="w-[118px] h-[32px] flex justify-center items-center gap-2 bg-[#36B8F3]/[0.12] rounded-[10px] text-[#36B8F3] text-[13px] font-bold"
-              >
-                <TiPencil className="text-lg" />
-                <span>Edit</span>
-              </button>
-            )}
-          </div>
-          <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
-            <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
-              {/* Select Boat */}
-              {/* <div>
+            <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
+              <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
+                {/* Select Boat */}
+                {/* <div>
                 <SelectBoatInputField passSelectedBoat={passSelectedBoat} setIsBoatModalOpen={setIsBoatModalOpen} isEdit={isEdit}/>
                 {inputError.updateBoat && <p className="text-red-500">{inputError.updateBoat}</p>}
               </div> */}
-              <div className="w-full lg:w-[327px] h-[90px] flex gap-3 justify-start items-center rounded-[12px] bg-[#1A293D] p-2">
-                <img
-                  src={taskDetail?.boat?.cover || AuthMockup}
-                  alt="taskimage"
-                  className="w-[106px] h-[74px] rounded-[12px]"
-                />
-                <div className="w-auto flex flex-col justify-start items-start">
-                  <h3 className="text-[16px] font-medium leading-[21.6px] text-white">
-                    {taskDetail?.boat?.name}
-                  </h3>
-                  <p className="text-[14px] font-normal text-[#199bd1]">
-                    {taskDetail?.boat?.model}/{taskDetail?.boat?.make}/{taskDetail?.boat?.size}
-                  </p>
+                <div className="w-full lg:w-[327px] h-[90px] flex gap-3 justify-start items-center rounded-[12px] bg-[#1A293D] p-2">
+                  <img
+                    src={taskDetail?.boat?.cover || AuthMockup}
+                    alt="taskimage"
+                    className="w-[106px] h-[74px] rounded-[12px]"
+                  />
+                  <div className="w-auto flex flex-col justify-start items-start">
+                    <h3 className="text-[16px] font-medium leading-[21.6px] text-white">
+                      {taskDetail?.boat?.name}
+                    </h3>
+                    <p className="text-[14px] font-normal text-[#199bd1]">
+                      {taskDetail?.boat?.model}/{taskDetail?.boat?.make}/
+                      {taskDetail?.boat?.size}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Assign Employee */}
+                <div>
+                  <AddFleetInput
+                    label={"Task Created By"}
+                    register={register("assignBy")}
+                    isDisabled={true}
+                  />
+                  {/* <SelectEmployeeInputField setIsEmployeeModalOpen={setIsEmployeeModalOpen} passSelectedEmployee={passSelectedEmployee} isEdit={isEdit}/> */}
+                  {/* {inputError.updateEmployee && <p className="text-red-500">{inputError.updateEmployee}</p>} */}
                 </div>
               </div>
 
-              {/* Assign Employee */}
-              <div>
-              <AddFleetInput label={"Task Created By"} register={register("assignBy")} isDisabled={true} />
-                {/* <SelectEmployeeInputField setIsEmployeeModalOpen={setIsEmployeeModalOpen} passSelectedEmployee={passSelectedEmployee} isEdit={isEdit}/> */}
-                {/* {inputError.updateEmployee && <p className="text-red-500">{inputError.updateEmployee}</p>} */}
-              </div>
-            </div>
+              {/* Task Type */}
+              <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
+                <div>
+                  <TaskTypeInputField
+                    toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                    selectedTaskType={selectedTaskType}
+                    isEdit={isEdit}
+                    isTaskTypeDropdownOpen={isTaskTypeDropdownOpen}
+                    customTypeText={customTypeText}
+                    taskDropDown={taskDropDown}
+                    handleTaskTypeSelection={handleTaskTypeSelection}
+                    customInput={customInput}
+                    setCustomTypeText={setCustomTypeText}
+                  />
+                  {inputError.task && (
+                    <p className="text-red-500">{inputError.task}</p>
+                  )}
+                </div>
 
-            {/* Task Type */}
-            <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
-            <div>
-              <TaskTypeInputField toggleTaskTypeDropdown={toggleTaskTypeDropdown} selectedTaskType={selectedTaskType} isEdit={isEdit}
-              isTaskTypeDropdownOpen={isTaskTypeDropdownOpen} customTypeText={customTypeText} taskDropDown={taskDropDown}
-              handleTaskTypeSelection={handleTaskTypeSelection} customInput={customInput} setCustomTypeText={setCustomTypeText} />
-              {inputError.task && <p className="text-red-500">{inputError.task}</p>}
+                <div>
+                  <TaskInputField
+                    handleTaskSelection={handleTaskSelection}
+                    toggleTaskDropdown={toggleTaskDropdown}
+                    isTaskDropdownOpen={isTaskDropdownOpen}
+                    displaySelectedTask={displaySelectedTask}
+                    tasks={tasks}
+                    isEdit={isEdit}
+                  />
+                  {inputError.task && (
+                    <p className="text-red-500">{inputError.task}</p>
+                  )}
+                </div>
               </div>
 
-              <div>
-              <TaskInputField handleTaskSelection={handleTaskSelection} toggleTaskDropdown={toggleTaskDropdown} 
-              isTaskDropdownOpen={isTaskDropdownOpen} displaySelectedTask={displaySelectedTask} 
-               tasks={tasks} isEdit={isEdit} />
-              {inputError.task && <p className="text-red-500">{inputError.task}</p>}
+              {/* Note */}
+              <div className="w-full grid grid-cols-1 gap-12 mt-4">
+                <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                  <label className="text-[16px] font-medium leading-[21.6px]">
+                    Add Note
+                  </label>
+                  <textarea
+                    disabled={!isEdit}
+                    value={noteText}
+                    onChange={(e) => {
+                      setNoteText(e.target.value);
+                      setInputError({});
+                    }}
+                    className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+                  />
+                  {inputError.note && (
+                    <p className="text-red-500">{inputError.note}</p>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Note */}
-            <div className="w-full grid grid-cols-1 gap-12 mt-4">
-              <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-                <label className="text-[16px] font-medium leading-[21.6px]">
-                  Add Note
-                </label>
-                <textarea
-                  disabled={!isEdit}
-                  value={noteText}
-                  onChange={(e) => {setNoteText(e.target.value); setInputError({})}}
-                  className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+              {/* Due Date */}
+              <div className="w-full flex flex-col gap-4">
+                <div>
+                  <div className="w-auto flex justify-start items-center gap-3">
+                    <IoCalendarOutline className="text-2xl text-white/40" />
+                    <span className="text-md font-normal text-white">
+                      Due Date
+                    </span>
+                    <button
+                      onClick={() => setIsCalendarOpen(true)}
+                      className="text-xs font-normal text-[#199BD1]"
+                    >
+                      {dueDate?.normal || "Select Due Date"}
+                    </button>
+                  </div>
+                  {inputError.dueDate && (
+                    <p className="text-red-500">{inputError.dueDate}</p>
+                  )}
+                </div>
+
+                {/* Recurring Days */}
+                <RecurringDaysInputField
+                  toggleRecurringDropdown={toggleRecurringDropdown}
+                  selectedDay={selectedDay}
+                  RecurringRef={RecurringRef}
+                  RecurringDropdown={RecurringDropdown}
+                  handleSelectDay={handleSelectDay}
+                  customDays={customDays}
+                  setCustomRecurring={setCustomRecurring}
+                  customRecurring={customRecurring}
                 />
-              {inputError.note && <p className="text-red-500">{inputError.note}</p>}
               </div>
             </div>
-
-            {/* Due Date */}
-            <div className="w-full flex flex-col gap-4">
-            <div>
-            <div className="w-auto flex justify-start items-center gap-3">
-              <IoCalendarOutline className="text-2xl text-white/40" />
-              <span className="text-md font-normal text-white">Due Date</span>
+            <DateModal
+              isOpen={isCalendarOpen}
+              setIsOpen={setIsCalendarOpen}
+              setDueDate={setDueDate}
+              setInputError={setInputError}
+            />
+            {isBoatModalOpen && (
+              <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
+                <BoatSelectModal
+                  isOpen={isBoatModalOpen}
+                  setIsOpen={setIsBoatModalOpen}
+                  SetPassSelectedBoat={setPassSelectedBoat}
+                  setInputError={setInputError}
+                />
+              </div>
+            )}
+            {isEmployeeModalOpen && (
+              <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
+                <EmployeeDetailModal
+                  isOpen={isEmployeeModalOpen}
+                  setIsOpen={setIsEmployeeModalOpen}
+                  SetPassSelectedEmployee={setPassSelectedEmployee}
+                  setInputError={setInputError}
+                />
+              </div>
+            )}
+          </div>
+          <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
+            <div className="w-auto flex justify-start items-center gap-2">
+              <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
+                Assigned Employee
+              </h3>
+              {isEdit ? (
+                <button
+                  onClick={() => setIsEmployeeModalOpen(true)}
+                  className="w-[42px] h-[42px] rounded-[8px] text-[#55C9FA] flex justify-center items-center"
+                >
+                  Change
+                </button>
+              ) : (
+                <span></span>
+              )}
+            </div>
+            <AssignedEmployeeCard
+              taskDetail={taskDetail}
+              passSelectedEmployee={passSelectedEmployee}
+            />
+          </div>
+          {isEdit ? (
+            <div className="w-full flex justify-end py-4 items-center gap-4">
               <button
-                onClick={() => setIsCalendarOpen(true)}
-                className="text-xs font-normal text-[#199BD1]"
+                type="button"
+                onClick={() => {
+                  setIsEdit(false);
+                }}
+                className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
               >
-                {dueDate?.normal || "Select Due Date"}
+                {"Back"}
+              </button>
+              <button
+                disabled={updateLoad}
+                onClick={handleUpdate}
+                className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+              >
+                <div className="flex items-center">
+                  <span className="mr-1">Save</span>
+                  {updateLoad && (
+                    <FiLoader className="animate-spin text-lg mx-auto" />
+                  )}
+                </div>
               </button>
             </div>
-            {inputError.dueDate && <p className="text-red-500">{inputError.dueDate}</p>}
-            </div>
-
-              
-              {/* Recurring Days */}
-              <RecurringDaysInputField toggleRecurringDropdown={toggleRecurringDropdown} selectedDay={selectedDay}RecurringRef={RecurringRef}
-            RecurringDropdown={RecurringDropdown} handleSelectDay={handleSelectDay}customDays={customDays} setCustomRecurring={setCustomRecurring}
-            customRecurring={customRecurring}/>
-            </div>
-          </div>
-          <DateModal
-            isOpen={isCalendarOpen}
-            setIsOpen={setIsCalendarOpen}
-            setDueDate={setDueDate}
-            setInputError={setInputError}
-          />
-          {isBoatModalOpen && (
-            <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
-              <BoatSelectModal
-                isOpen={isBoatModalOpen}
-                setIsOpen={setIsBoatModalOpen}
-                SetPassSelectedBoat={setPassSelectedBoat}
-                setInputError={setInputError}
-              />
-            </div>
-          )}
-          {isEmployeeModalOpen && (
-            <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
-              <EmployeeDetailModal
-                isOpen={isEmployeeModalOpen}
-                setIsOpen={setIsEmployeeModalOpen}
-                SetPassSelectedEmployee={setPassSelectedEmployee}
-                setInputError={setInputError}
-              />
+          ) : (
+            <div className="w-full flex justify-end py-4 items-center gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  navigate(-1);
+                }}
+                className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+              >
+                {"Back"}
+              </button>
+              {taskDetail?.status !== "completed" && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate("/task-completed", { state: taskDetail })
+                  }
+                  className="w-full lg:w-[208px] h-[52px] bg-[#1FBA46] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+                >
+                  {"Mark As Completed"}
+                </button>
+              )}
             </div>
           )}
         </div>
-        <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-        <div className="w-auto flex justify-start items-center gap-2">
-            <h3 className="text-[18px] font-bold leading-[24.3px] text-white">Assigned Employee</h3>
-            {isEdit ? (
-               <button
-               onClick={() => setIsEmployeeModalOpen(true)}
-               className="w-[42px] h-[42px] rounded-[8px] text-[#55C9FA] flex justify-center items-center"
-             >
-               Change
-             </button>
-            ):(
-              <span></span>
-            )}
-           
-          </div>
-          <AssignedEmployeeCard taskDetail={taskDetail} passSelectedEmployee={passSelectedEmployee}/>
-        </div>
-        {isEdit ? (
-          <div className="w-full flex justify-end py-4 items-center gap-4">
-            <button
-              type="button"
-              onClick={() => {
-                setIsEdit(false);
-              }}
-              className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-            >
-              {"Back"}
-            </button>
-            <button
-            disabled={updateLoad}
-              onClick={handleUpdate}
-              className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-            >
-              <div className="flex items-center"><span className="mr-1">Save</span>{updateLoad &&(
-                <FiLoader className="animate-spin text-lg mx-auto" />)}</div>
-            </button>
-          </div>
-        ) : (
-          <div className="w-full flex justify-end py-4 items-center gap-4">
-            <button
-              type="button"
-              onClick={() => {
-                navigate(-1);
-              }}
-              className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-            >
-              {"Back"}
-            </button>
-            {taskDetail?.status !== "completed" &&
-            <button
-            type="button"
-            onClick={() => navigate("/task-completed", { state: taskDetail })}
-            className="w-full lg:w-[208px] h-[52px] bg-[#1FBA46] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-          >
-            {"Mark As Completed"}
-          </button>}
-            
-          </div>
-        )}
-      </div>
       )}
     </div>
   );

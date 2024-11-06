@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
-  
   const navigate = useNavigate();
-  
+
   const [selectedReason, setSelectedReason] = useState(null);
-  const [reasonError, setReasonError] = useState(null)
-  
+  const [reasonError, setReasonError] = useState(null);
+
   const reasons = [
     "Role Change",
     "Performance Issues",
@@ -16,36 +15,48 @@ const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
     "Compliance Reasons",
     "Redundancy",
     "Misconduct",
-    "Mutual Agreement"
+    "Mutual Agreement",
   ];
-  
+
   const handleCheckboxChange = (reason) => {
-    setReasonError(null)
+    setReasonError(null);
     setSelectedReason(reason);
   };
-  
+
   const handleSubmit = () => {
     if (!selectedReason) {
       setReasonError("Please select a reason");
       return;
     }
     navigate(`/delete-account/${employeeId}`, {
-      state: {reasonForDelete: selectedReason },
+      state: { reasonForDelete: selectedReason },
     });
   };
-  
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
-      <div className="relative bg-[#02203A] rounded-lg shadow-md w-[418px] h-[auto] flex flex-col p-4">
+      <div
+        className="relative bg-[#02203A] rounded-lg shadow-md w-[418px] h-[auto]
+       flex flex-col p-4"
+      >
         {/* Close button */}
-        <button onClick={onClose} className="absolute top-3 right-3 text-xl font-bold text-[#199BD1] hover:text-gray-800" aria-label="Close modal">✕</button>
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-xl font-bold
+         text-[#199BD1] hover:text-gray-800"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col justify-center">
-          <p className="block mb-4 text-[16px] font-bold">Select reasons for account deletion:</p>
-          {reasons.map(reason => (
+        <div className="flex-1 flex flex-col justify-center mb-2">
+          <p className="block mb-4 text-[16px] font-bold">
+            Select reasons for account deletion:
+          </p>
+          {reasons.map((reason) => (
             <div className="flex items-center mb-4" key={reason}>
               <input
                 type="checkbox"
@@ -53,19 +64,33 @@ const DeleteAccountModal = ({ isOpen, onClose, employeeId }) => {
                 checked={selectedReason === reason}
                 onChange={() => handleCheckboxChange(reason)}
               />
-              <span className="ml-2 text-[14px] leading-[16.3px]">{reason}</span>
+              <span className="ml-2 text-[14px] leading-[16.3px]">
+                {reason}
+              </span>
             </div>
           ))}
         </div>
 
         {/* Container for buttons aligned to the bottom right */}
         <div className="flex justify-end gap-2 mt-4">
-          <button onClick={onClose} type="button" className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]">Cancel</button>
-          <button onClick={handleSubmit} type="button" className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]">Confirm Delete</button>
+          <button
+            onClick={onClose}
+            type="button"
+            className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            type="button"
+            className="text-[#199BD1] font-bold py-2 px-4 rounded-lg text-[16px]"
+          >
+            Confirm Delete
+          </button>
         </div>
         <div className="flex justify-end gap-2">
-        {reasonError&& <p className="text-red-500">{reasonError}</p>}
-      </div>
+          {reasonError && <p className="text-red-500">{reasonError}</p>}
+        </div>
       </div>
     </div>
   );
