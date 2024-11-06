@@ -116,9 +116,7 @@ const AddManager = () => {
         <div className="w-full flex flex-col justify-start items-start gap-6 p-6 rounded-[18px] bg-[#001229]">
           <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
             <div>
-              <h1 className="text-[28px] font-bold text-white leading-[37.8px]">
-                Manager
-              </h1>
+              <h3 className="text-[18px] font-bold ">Add Manager</h3>
               {/* <span className="text-[14px] font-normal leading-[21.6px]">
                 Experience the power of simplified fleet management today.
                 Whether you are assigning task or tracking boat maintenance,
@@ -156,13 +154,13 @@ const AddManager = () => {
                     key={index}
                     className="w-full flex flex-col justify-start items-start gap-6"
                   >
-                    <div className="w-full h-auto flex justify-between items-center">
+                    {/* <div className="w-full h-auto flex justify-between items-center">
                       <div>
                         <h3 className="text-[18px] font-bold leading-[24.3px]">
                           Add {index === 0 ? "Manager" : "Another Manager"}
                         </h3>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">

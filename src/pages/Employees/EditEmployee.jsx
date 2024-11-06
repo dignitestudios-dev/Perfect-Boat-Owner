@@ -356,6 +356,7 @@ const EditEmployee = () => {
                             message: "Please enter a valid phone number.",
                           },
                         })}
+                        maxLength={10}
                         error={errors.phone}
                         onInput={(e) => {
                           e.target.value = e.target.value.replace(
