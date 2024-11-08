@@ -119,8 +119,8 @@ const VerifyOtp = () => {
           <h1 className=" text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
             Update your Password
           </h1>
-          <p className=" font-normal text-[16px] text-white leading-[21.6px] tracking-[-1.2px]">
-            Enter the code we just sent to owner@gmail.com
+          <p className=" font-normal text-[16px] text-white leading-[21.6px] tracking-[0.2px]">
+            Enter the code we just sent to {email}
           </p>
         </div>
         <div className="w-full h-auto flex justify-start items-center gap-4 my-4 ">

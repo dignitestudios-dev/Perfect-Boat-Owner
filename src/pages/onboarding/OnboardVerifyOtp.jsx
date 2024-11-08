@@ -135,7 +135,7 @@ const OnboardVerifyOtp = () => {
           <h1 className=" text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
             Verification
           </h1>
-          <p className=" font-normal text-[16px] text-white leading-[21.6px] tracking-[-1.2px]">
+          <p className=" font-normal text-[16px] text-white leading-[21.6px] tracking-[0.2px]">
             Enter the OTP code sent to your email
           </p>
         </div>

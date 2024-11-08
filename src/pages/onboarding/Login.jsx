@@ -28,6 +28,7 @@ const Login = () => {
     setLoading(true);
     try {
       const fcmToken = await getFCMToken();
+      console.log("🚀 ~ handleLogin ~ fcmToken:", fcmToken);
       // console.log(fcmToken);
       let obj = {
         email: formData.email,

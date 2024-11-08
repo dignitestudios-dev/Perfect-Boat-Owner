@@ -340,7 +340,7 @@ const AssignReportedTask = () => {
                   </label>
                   <textarea
                     {...register("note", {
-                      required: "Please enter boat location",
+                      required: "Please enter note",
                     })}
                     type="text"
                     // value={task?.note || ""}

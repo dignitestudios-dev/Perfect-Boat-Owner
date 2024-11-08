@@ -40,8 +40,6 @@ const BoatDetail = () => {
   const [isMangerModalOpen, setIsManagerModalOpen] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
 
-  const [showBoatTypeDropdown, setShowBoatTypeDropdown] = useState(false);
-  const [showSubheadingDropdown, setShowSubheadingDropdown] = useState(false);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { id } = useParams();
@@ -59,12 +57,25 @@ const BoatDetail = () => {
     null,
     null,
   ]);
+  console.log("🚀 ~ BoatDetail ~ picturesArray:", picturesArray);
+
+  const [selectedCoverImage, setSelectedCoverImage] = useState([
+    null,
+    null,
+    null,
+    null,
+    null,
+  ]);
+  console.log("🚀 ~ BoatDetail ~ selectedCoverImage:", selectedCoverImage);
 
   const [selectedBoat, setSelectedBoat] = useState(boatsData?.boatType || "");
   const [passSelectedManagers, setPassSelectedManagers] = useState([]);
   const [formsImages, setFormsImages] = useState([]);
 
   const [coverImage, setCoverImage] = useState(null);
+  const [coverImageIndex, setCoverImageIndex] = useState(null);
+  console.log("🚀 ~ BoatDetail ~ coverImageIndex:", coverImageIndex);
+
   const [submitLoading, setSubmitLoading] = useState(false);
   const [loadingBoats, setLoadingBoats] = useState(false);
 
@@ -89,6 +100,7 @@ const BoatDetail = () => {
     try {
       const { data } = await axios.get(`/owner/boat/${id}`);
       setBoatsData(data?.data);
+      setCoverImage(data?.data?.boat?.cover);
       const displayArray = (await data?.data?.boat?.images)
         ? [data?.data?.boat?.cover, ...data?.data?.boat?.images]
         : [data?.data?.boat?.cover];
@@ -112,13 +124,19 @@ const BoatDetail = () => {
       setValue("model", boatsData?.boat?.model);
       setValue("size", boatsData?.boat?.size);
       setValue("location", boatsData?.boat?.location);
-      setFormsImages(boatsData?.boat?.images || [{}]);
+      // setFormsImages(boatsData?.boat?.images || [{}]);
       setSelectedBoat(boatsData?.boat?.boatType);
     }
   }, [boatsData, setValue]);
 
   const handleImageUpdate = async (event, index) => {
     const file = event.files[0];
+    setPicturesArray((prev) => {
+      const updatedImages = [...prev];
+      updatedImages[index] = file;
+      return updatedImages;
+    });
+
     setPicturesArray((prev) => {
       const updatedImages = [...prev];
       updatedImages[index] = file;
@@ -148,6 +166,11 @@ const BoatDetail = () => {
       const base64WithPrefix = `data:${file.type};base64,${base64String}`;
       setDisplayArray((prevImages) => [...prevImages, base64WithPrefix]);
     }
+    setSelectedCoverImage((prev) => {
+      const updatedImages = [...prev];
+      updatedImages[index] = file;
+      return updatedImages;
+    });
   };
 
   const convertImageToBase64 = (file) => {
@@ -171,9 +194,14 @@ const BoatDetail = () => {
     // Remove the image at the specified index
     setDisplayArray((prevImages) => prevImages.filter((_, i) => i !== index));
     setPicturesArray((prevImages) => prevImages.filter((_, i) => i !== index));
+    setFormsImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setSelectedCoverImage((prevImages) =>
+      prevImages.filter((_, i) => i !== index)
+    );
   };
 
-  const selectCoverImage = (coverImageUrl) => {
+  const selectCoverImage = (coverImageUrl, index) => {
+    const isBase64 = coverImageUrl.startsWith("data:image");
     setBoatsData((prevData) => ({
       ...prevData,
       boat: {
@@ -182,23 +210,10 @@ const BoatDetail = () => {
       },
     }));
     setCoverImage(coverImageUrl);
-  };
-
-  // const selectOption = (type, option) => {
-  //   if (type === "boatType") {
-  //     setBoatType(option);
-  //     setShowBoatTypeDropdown(false);
-  //   } else if (type === "subheading") {
-  //     setSubheading(option);
-  //     setShowSubheadingDropdown(false);
-  //   }
-  // };
-
-  const toggleDropdown = (type) => {
-    if (type === "boatType") {
-      setShowBoatTypeDropdown(!showBoatTypeDropdown);
-    } else if (type === "subheading") {
-      setShowSubheadingDropdown(!showSubheadingDropdown);
+    if (isBase64) {
+      setCoverImageIndex(index);
+    } else {
+      setCoverImageIndex(null);
     }
   };
 
@@ -216,11 +231,6 @@ const BoatDetail = () => {
     setjobFilter((prev) => !prev);
   };
 
-  const handleClickOutsides = (event) => {
-    if (jobRef.current && !jobRef.current.contains(event.target)) {
-      setjobFilter(false);
-    }
-  };
   const handleDateModalOpen = () => {
     setIsDateModalOpen(true); // Open DateModal
   };
@@ -248,9 +258,10 @@ const BoatDetail = () => {
   const submitBoatData = async (formData) => {
     setSubmitLoading(true);
     try {
-      const nonNullPictures = picturesArray.filter(
-        (picture) => picture !== null
-      );
+      // const nonNullPictures = picturesArray.filter(
+      //   (picture) => picture !== null
+      // );
+
       const data = new FormData();
       data.append("name", formData.name);
       data.append("make", formData.make);
@@ -258,18 +269,29 @@ const BoatDetail = () => {
       data.append("model", formData.model);
       data.append("location", formData.location);
       data.append("boatType", selectedBoat);
-      nonNullPictures.forEach((picture) => {
-        data.append("pictures", picture);
+      picturesArray.forEach((picture, index) => {
+        if (picture && index !== coverImageIndex) {
+          data.append("pictures", picture);
+        }
       });
 
+      if (
+        coverImageIndex !== null &&
+        coverImageIndex < selectedCoverImage.length
+      ) {
+        data.append("cover", selectedCoverImage[coverImageIndex]);
+      }
+
       if (formsImages) {
-        formsImages?.forEach((file, index) => {
-          if (file[0].length > 0 && file[0]) {
-            if (coverImage === index) {
-              data.append("cover", file);
+        formsImages?.forEach((item, index) => {
+          if (!coverImageIndex) {
+            if (coverImage === item) {
+              data.append("updatedCover", item);
             } else {
-              data.append("updatedImages", file);
+              data.append("updatedImages[]", item);
             }
+          } else {
+            data.append("updatedImages[]", item);
           }
         });
       }
@@ -604,7 +626,7 @@ const BoatDetail = () => {
                           <div className="flex items-center gap-2 mt-2">
                             <input
                               checked={photo === boatsData?.boat?.cover}
-                              onChange={() => selectCoverImage(photo)}
+                              onChange={() => selectCoverImage(photo, index)}
                               type="radio"
                               name="photoRadio"
                               className="accent-[#199BD1]"

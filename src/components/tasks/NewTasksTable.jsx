@@ -12,7 +12,7 @@ const NewTaskTable = () => {
   const { navigate } = useContext(GlobalContext);
   // const [locationFilter, setLocationFilter] = useState(false);
   // const locationRef = useRef(null);
-  const [locationType, setLocationType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
   const toggleLocationDropdown = () => {
@@ -44,12 +44,13 @@ const NewTaskTable = () => {
   const getData = async (locationType = "all") => {
     setLoading(true);
     try {
-      const locationQuery = locationType !== "all" ? `location=${locationType}` : "";
+      const locationQuery =
+        locationType !== "all" ? `location=${locationType}` : "";
       const { data } = await axios.get(`/owner/task/requests?${locationQuery}`);
       setData(data?.data || []);
     } catch (err) {
       console.error("Error fetching Task data:", err);
-      ErrorToast(err?.response?.data?.message)
+      ErrorToast(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,9 @@ const NewTaskTable = () => {
     <div className="w-full h-auto flex flex-col gap-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
         New Task Request List{" "}
-        <span className="text-[12px] font-normal text-white/50 ">({data.length})</span>
+        <span className="text-[12px] font-normal text-white/50 ">
+          ({data.length})
+        </span>
       </h3>
 
       <div className="w-full h-auto flex justify-between items-center">
@@ -81,73 +84,80 @@ const NewTaskTable = () => {
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
-        <div className="w-full grid grid-cols-4 text-[11px] py-2 border-b border-[#fff]/[0.14] 
-        font-medium leading-[14.85px] text-white/50 justify-start items-start">
+        <div
+          className="w-full grid grid-cols-4 text-[11px] py-2 border-b border-[#fff]/[0.14] 
+        font-medium leading-[14.85px] text-white/50 justify-start items-start"
+        >
           <span className="w-full flex justify-start items-center">
             Boat Image
           </span>
           <span className="w-full flex justify-start items-center">
             Boat Name
           </span>
-          <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+          <LocationType
+            locationDropdownOpen={locationDropdownOpen}
+            toggleLocationDropdown={toggleLocationDropdown}
+            locationType={locationType}
+            setLocationType={setLocationType}
+          />
           <span className="w-full flex justify-start items-center px-[60px]">
             Requested By
           </span>
         </div>
 
-        {loading? (
-        <RequestTaskListLoader/>
-        ):(
+        {loading ? (
+          <RequestTaskListLoader />
+        ) : (
           <>
-          {filteredData?.map((task, key) => {
-          return (
-            <button
-            key={key}
-              onClick={() =>
-                navigate(`/new-tasks-request/${task?._id}`, { state: {task} })
-              }
-              className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-            >
-              <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                <img
-                  src={task?.boat?.cover}
-                  alt="boat_image"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: "15px 0 0 15px",
-                    objectFit: "cover",
-                  }}
-                />
-                <div
-                  className="w-24"
-                  style={{
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    background:
-                      "linear-gradient(to right, transparent, #001229)",
-                  }}
-                />
-              </span>
-              <span className="w-full flex justify-start items-center">
-                {task?.boat?.name}
-              </span>
-              <span className="w-full flex justify-start items-center">
-                {task?.boat?.location}
-              </span>
-              <span className="w-full flex justify-start items-center px-[60px]">
-                David Beckham
-              </span>
-            </button>
-          );
-        })}
+            {filteredData?.map((task, key) => {
+              return (
+                <button
+                  key={key}
+                  onClick={() =>
+                    navigate(`/new-tasks-request/${task?._id}`, {
+                      state: { task },
+                    })
+                  }
+                  className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                >
+                  <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                    <img
+                      src={task?.boat?.cover}
+                      alt="boat_image"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "15px 0 0 15px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div
+                      className="w-24"
+                      style={{
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        background:
+                          "linear-gradient(to right, transparent, #001229)",
+                      }}
+                    />
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {task?.boat?.name}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {task?.boat?.location}
+                  </span>
+                  <span className="w-full flex justify-start items-center px-[60px]">
+                    {task?.employee?.name}
+                  </span>
+                </button>
+              );
+            })}
           </>
         )}
-
       </div>
     </div>
   );

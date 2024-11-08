@@ -14,6 +14,7 @@ import { boatType } from "../../data/TaskTypeData";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import Papa from "papaparse";
 import AddFleetInternalCsv from "../../components/fleet/AddFleetInternalCsv";
+import { FaTrashAlt } from "react-icons/fa";
 
 const AddFleet = () => {
   const { boatDropDown } = useContext(GlobalContext);
@@ -24,11 +25,13 @@ const AddFleet = () => {
   const [isCongratsOpen, setIsCongratsOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
   const [coverImage, setCoverImage] = useState("");
+  const [imagesBox, setImagesBox] = useState([0]);
+
+  const [imagesArray, setImagesArray] = useState([]);
+  const [uploadImages, setUploadImages] = useState([]);
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
-
-  const [fleetPictures, setFleetPictures] = useState([0]);
 
   const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [passSelectedManagers, SetPassSelectedManagers] = useState([]);
@@ -56,21 +59,8 @@ const AddFleet = () => {
     formState: { errors },
   } = useForm();
 
-  const formsImages = watch("formsImages");
-
   const handleSelect = (boat) => {
     setSelectedBoat(boat);
-  };
-
-  const handleImageSelect = (imageIndex) => {
-    setCoverImage(imageIndex);
-  };
-
-  const handleFleetImage = (index, event) => {
-    let setIndex = index + 1;
-    if (setIndex === formsImages?.length && setIndex < 5) {
-      setFleetPictures((prev) => [...prev, prev?.length]);
-    }
   };
 
   const currentYear = new Date().getFullYear();
@@ -123,13 +113,13 @@ const AddFleet = () => {
         });
       }
 
-      if (formData.formsImages) {
-        formData.formsImages.forEach((fileList, index) => {
-          if (fileList.length > 0 && fileList[0]) {
+      if (imagesArray) {
+        uploadImages?.forEach((files, index) => {
+          if (files) {
             if (coverImage === index) {
-              data.append("cover", fileList[0]);
+              data.append("cover", files);
             } else {
-              data.append("pictures", fileList[0]);
+              data.append("pictures", files);
             }
           }
         });
@@ -170,6 +160,63 @@ const AddFleet = () => {
       });
       setCsvUploaded(true);
     }
+  };
+
+  const handleRemoveImage = (imageIndex) => {
+    const updatedImages = imagesArray?.filter(
+      (_, index) => index !== imageIndex
+    );
+    setImagesArray(updatedImages);
+
+    const newImages = uploadImages?.filter((_, index) => index !== imageIndex);
+    setUploadImages(newImages);
+
+    if (imagesBox.length > 1) {
+      setImagesBox((prev) => prev.slice(0, -1));
+    }
+  };
+
+  const handleUploadedImage = async (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const image = file;
+      setUploadImages((prev) => {
+        const updatedImages = [...prev];
+        updatedImages[index] = image;
+        return updatedImages;
+      });
+      const base64String = await convertImageToBase64(file);
+      const base64WithPrefix = `data:${file.type};base64,${base64String}`;
+      setImagesArray((prev) => {
+        const updatedImages = [...prev];
+        updatedImages[index] = base64WithPrefix;
+        return updatedImages;
+      });
+      if (imagesBox.length < 5) {
+        setImagesBox((prev) => [...prev, prev.length]);
+      }
+    }
+  };
+
+  const convertImageToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1];
+        resolve(base64String);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleCoverSelect = (index) => {
+    setCoverImage(index);
   };
 
   return (
@@ -353,64 +400,57 @@ const AddFleet = () => {
                       (Supported Files Type: JPG, PNG, GIF)
                     </span>
                   </h3>
-                  <>
-                    <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
-                      {fleetPictures?.map((_, imageIndex) => {
-                        const isSelected = coverImage === imageIndex;
-                        return (
-                          <div key={imageIndex}>
+
+                  <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
+                    {imagesBox?.map((_, index) => {
+                      const isSelected = coverImage === index;
+                      return (
+                        <div key={index}>
+                          <div className="relative">
                             <label
-                              htmlFor={`form-image-${imageIndex}`}
                               className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
-                              text-3xl flex items-center justify-center cursor-pointer"
+                                text-3xl flex items-center justify-center cursor-pointer"
                             >
-                              {formsImages && (
-                                <>
-                                  {formsImages[imageIndex]?.length > 0 &&
-                                  formsImages[imageIndex][0] ? (
-                                    <img
-                                      src={URL.createObjectURL(
-                                        formsImages[imageIndex][0]
-                                      )}
-                                      alt={`Uploaded preview ${imageIndex}`}
-                                      className="w-full h-full object-cover rounded-xl"
-                                    />
-                                  ) : (
-                                    <FiDownload />
-                                  )}
-                                </>
+                              {imagesArray[index] ? (
+                                <img
+                                  src={imagesArray[index]}
+                                  className="w-full h-full object-cover rounded-xl"
+                                />
+                              ) : (
+                                <FiDownload />
                               )}
-                            </label>
-                            <input
-                              key={imageIndex}
-                              name={`formsImages.${imageIndex}`}
-                              id={`form-image-${imageIndex}`}
-                              accept="image/*"
-                              className="hidden"
-                              type="file"
-                              {...register(`formsImages.${imageIndex}`, {
-                                required: false,
-                                onChange: (e) => {
-                                  handleFleetImage(imageIndex, e);
-                                },
-                              })}
-                            />
-                            <div className="w-auto ml-1 mt-1 flex gap-2 justify-start items-center">
+
                               <input
-                                type="radio"
-                                checked={isSelected}
-                                onChange={() => handleImageSelect(imageIndex)}
-                                className="w-3 h-3 rounded-full accent-white outline-none border-none"
+                                name={`formsImages`}
+                                accept="image/*"
+                                className="hidden"
+                                type="file"
+                                onChange={(e) => handleUploadedImage(e, index)}
                               />
-                              <span className="text-[12px] font-medium leading-[16.3px]">
-                                Set as cover photo
-                              </span>
+                            </label>
+
+                            <div className="absolute top-1 right-1 bg-white p-1 rounded-full">
+                              <FaTrashAlt
+                                className="text-black cursor-pointer text-[15px]"
+                                onClick={() => handleRemoveImage(index)}
+                              />
                             </div>
                           </div>
-                        );
-                      })}
-                    </div>
-                  </>
+                          <div className="w-auto ml-1 mt-1 flex gap-2 justify-start items-center">
+                            <input
+                              type="radio"
+                              checked={isSelected}
+                              onChange={() => handleCoverSelect(index)}
+                              className="w-3 h-3 rounded-full accent-white outline-none border-none"
+                            />
+                            <span className="text-[12px] font-medium leading-[16.3px]">
+                              Set as cover photo
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
