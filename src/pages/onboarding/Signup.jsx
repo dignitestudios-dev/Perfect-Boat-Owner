@@ -111,8 +111,8 @@ const Signup = () => {
             register={register("password", {
               required: "Please enter your password.",
               minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters long.",
+                value: 8,
+                message: "Password must be at least 8 characters long.",
               },
               pattern: {
                 value:
@@ -121,6 +121,7 @@ const Signup = () => {
                   "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
               },
             })}
+            maxLength={12}
             text={"Password"}
             placeholder={"Enter your password here"}
             type={"password"}

@@ -38,6 +38,7 @@ const GlobalLayout = ({ page }) => {
   useEffect(() => {
     validateToken();
   }, [updateBoats]);
+
   return (
     <div className="w-full h-screen overflow-y-hidden flex justify-start items-start">
       <Sidebar />

@@ -57,7 +57,6 @@ const BoatDetail = () => {
     null,
     null,
   ]);
-  console.log("🚀 ~ BoatDetail ~ picturesArray:", picturesArray);
 
   const [selectedCoverImage, setSelectedCoverImage] = useState([
     null,
@@ -66,7 +65,6 @@ const BoatDetail = () => {
     null,
     null,
   ]);
-  console.log("🚀 ~ BoatDetail ~ selectedCoverImage:", selectedCoverImage);
 
   const [selectedBoat, setSelectedBoat] = useState(boatsData?.boatType || "");
   const [passSelectedManagers, setPassSelectedManagers] = useState([]);
@@ -74,7 +72,6 @@ const BoatDetail = () => {
 
   const [coverImage, setCoverImage] = useState(null);
   const [coverImageIndex, setCoverImageIndex] = useState(null);
-  console.log("🚀 ~ BoatDetail ~ coverImageIndex:", coverImageIndex);
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const [loadingBoats, setLoadingBoats] = useState(false);
@@ -258,10 +255,6 @@ const BoatDetail = () => {
   const submitBoatData = async (formData) => {
     setSubmitLoading(true);
     try {
-      // const nonNullPictures = picturesArray.filter(
-      //   (picture) => picture !== null
-      // );
-
       const data = new FormData();
       data.append("name", formData.name);
       data.append("make", formData.make);
@@ -286,7 +279,7 @@ const BoatDetail = () => {
         formsImages?.forEach((item, index) => {
           if (!coverImageIndex) {
             if (coverImage === item) {
-              data.append("updatedCover", item);
+              data.append("updatedCovers", item);
             } else {
               data.append("updatedImages[]", item);
             }
@@ -311,7 +304,6 @@ const BoatDetail = () => {
 
   const handleAssignManager = async (managers) => {
     try {
-      console.log("inside", managers);
       const obj = {
         managers: managers?.map((item) => item?.id),
       };
