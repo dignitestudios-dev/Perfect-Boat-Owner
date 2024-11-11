@@ -93,7 +93,10 @@ const EditManager = () => {
   const [isAssignDetailModalOpen, setIsAssignDetailModalOpen] = useState(false);
   const [isResetPassModalOpen, setIsResetPassModalOpen] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
-  const [managerName, setManagerName] = useState("*Manager Name*");
+  const [managerName, setManagerName] = useState({
+    name: "*Manager Name*",
+    email: "",
+  });
   const [managerId, setManagerId] = useState("");
   const [employeesList, setEmployeesList] = useState([]);
   const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
@@ -143,20 +146,6 @@ const EditManager = () => {
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
-    // Prefill the form with values from the `state`
-    getDataById();
-    if (state) {
-      setManagerName(state?.name);
-      setManagerId(state?._id);
-      setValue("name", state?.name);
-      setValue("email", state?.email);
-      setValue("jobtitle", state?.jobtitle);
-      setValue("location", state?.location);
-      setValue("phone", state?.phoneNumber);
-    }
-  }, [id, state, setValue]);
-
   const getDataById = async () => {
     setLoading(true);
     try {
@@ -171,7 +160,8 @@ const EditManager = () => {
         }));
 
         SetPassSelectedEmployee(employeeData);
-        setManagerName(data?.data?.managers?.name);
+        setManagerName({ name: data?.data?.managers?.name });
+        setManagerName({ email: data?.data?.managers?.email });
         setManagerId(data?.data?.managers?._id);
         setValue("name", data?.data?.managers?.name);
         setValue("email", data?.data?.managers?.email);
@@ -186,6 +176,10 @@ const EditManager = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getDataById();
+  }, [id]);
 
   const onSubmit = async (data) => {
     try {
@@ -231,7 +225,7 @@ const EditManager = () => {
               <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
                 <div className="flex flex-col lg:flex-row items-start lg:gap-[720px] justify-between sm:gap-3">
                   <h3 className="text-[18px] font-bold leading-[24.3px]">
-                    {managerName}
+                    {managerName?.name}
                   </h3>
                 </div>
                 {isEditable ? (
@@ -368,7 +362,7 @@ const EditManager = () => {
                 <div className="w-auto flex flex-col justify-start items-start gap-3">
                   <div className="flex justify-start items-center gap-2 text-white text-[16px] font-normal leading-[21.6px]">
                     <span className="text-white/50">Email:</span>
-                    <span>{state?.email}</span>
+                    <span>{managerName?.email}</span>
                   </div>
                   <div className="flex justify-start items-center gap-2 text-white text-[16px] font-normal leading-[21.6px]">
                     <span className="text-white/50">Password:</span>
@@ -415,23 +409,29 @@ const EditManager = () => {
                 <ManagerDetailLoader />
               ) : (
                 <>
-                  {employeesList?.slice(0, 4)?.map((employ, index) => (
-                    <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                      <span className="w-full flex justify-start items-center">
-                        {employ?.name || "--"}
-                      </span>
-                      <span className="w-full flex justify-start items-center">
-                        {employ?.email || "--"}
-                      </span>
-                      <span className="w-full flex justify-start items-center">
-                        {employ?.jobtitle || "---"}
-                      </span>
-                      <span className="w-full flex justify-start items-center ">
-                        {employ?.location || "---"}
-                      </span>
-                      <span className="w-full flex justify-start items-center "></span>
-                    </div>
-                  ))}
+                  {employeesList?.length > 0 ? (
+                    <>
+                      {employeesList?.slice(0, 4)?.map((employ, index) => (
+                        <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                          <span className="w-full flex justify-start items-center">
+                            {employ?.name || "--"}
+                          </span>
+                          <span className="w-full flex justify-start items-center">
+                            {employ?.email || "--"}
+                          </span>
+                          <span className="w-full flex justify-start items-center">
+                            {employ?.jobtitle || "---"}
+                          </span>
+                          <span className="w-full flex justify-start items-center ">
+                            {employ?.location || "---"}
+                          </span>
+                          <span className="w-full flex justify-start items-center "></span>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <div className="pt-2">No record found</div>
+                  )}
                 </>
               )}
               {/* Add more rows as needed */}
@@ -454,7 +454,7 @@ const EditManager = () => {
 
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <p className="mb-2 text-md">
-                {managerName} has access to all boats by default
+                {managerName?.name} has access to all boats by default
               </p>
               <div className="w-full h-6 grid grid-cols-4 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
                 <span className="w-full flex justify-start items-center">
@@ -479,26 +479,32 @@ const EditManager = () => {
                 <ManagerDetailLoader />
               ) : (
                 <>
-                  {boatList?.map((boat, index) => (
-                    <div
-                      key={index}
-                      className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-                    >
-                      <span className="w-full flex justify-start items-center">
-                        {boat?.boatType}
-                      </span>
-                      <span className="w-full flex justify-start items-center">
-                        {boat?.name}
-                      </span>
-                      <span className="w-full flex justify-start items-center">
-                        {boat?.make}, {boat?.model}, {boat?.size}
-                      </span>
-                      <span className="w-full flex justify-start items-center ">
-                        {boat?.location}
-                      </span>
-                      <span className="w-full flex justify-start items-center "></span>
-                    </div>
-                  ))}
+                  {boatList?.length > 0 ? (
+                    <Fragment>
+                      {boatList?.map((boat, index) => (
+                        <div
+                          key={index}
+                          className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                        >
+                          <span className="w-full flex justify-start items-center">
+                            {boat?.boatType}
+                          </span>
+                          <span className="w-full flex justify-start items-center">
+                            {boat?.name}
+                          </span>
+                          <span className="w-full flex justify-start items-center">
+                            {boat?.make}, {boat?.model}, {boat?.size}
+                          </span>
+                          <span className="w-full flex justify-start items-center ">
+                            {boat?.location}
+                          </span>
+                          <span className="w-full flex justify-start items-center "></span>
+                        </div>
+                      ))}
+                    </Fragment>
+                  ) : (
+                    <div className="pt-2">No record found</div>
+                  )}
                 </>
               )}
 

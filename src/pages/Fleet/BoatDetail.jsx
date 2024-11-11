@@ -188,13 +188,16 @@ const BoatDetail = () => {
   };
 
   const handleImageDelete = (index) => {
-    // Remove the image at the specified index
-    setDisplayArray((prevImages) => prevImages.filter((_, i) => i !== index));
-    setPicturesArray((prevImages) => prevImages.filter((_, i) => i !== index));
-    setFormsImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    setSelectedCoverImage((prevImages) =>
-      prevImages.filter((_, i) => i !== index)
-    );
+    if (index > 0) {
+      setDisplayArray((prevImages) => prevImages.filter((_, i) => i !== index));
+      setPicturesArray((prevImages) =>
+        prevImages.filter((_, i) => i !== index)
+      );
+      setFormsImages((prevImages) => prevImages.filter((_, i) => i !== index));
+      setSelectedCoverImage((prevImages) =>
+        prevImages.filter((_, i) => i !== index)
+      );
+    }
   };
 
   const selectCoverImage = (coverImageUrl, index) => {

@@ -1,17 +1,19 @@
-import axios from '../../axios';
-import React, { useState } from 'react';
-import { SuccessToast } from '../global/Toaster';
+import axios from "../../axios";
+import React, { useState } from "react";
+import { SuccessToast } from "../global/Toaster";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-const ResetPasswordModal = ({ isOpen, onClose,id }) => {
-  
+const ResetPasswordModal = ({ isOpen, onClose, id }) => {
   if (!isOpen) return null;
   const [password, setPassword] = useState({ new: "", confirm: "" });
   const [formErrors, setFormErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false)
-  
+  const [loading, setLoading] = useState(false);
+  const [isPassVisible, setIsPassVisible] = useState(false);
+  const [isConfirm, setIsConfirm] = useState(false);
+
   const handleChange = (e) => {
-    setFormErrors({})
+    setFormErrors({});
     const { name, value } = e.target;
     setPassword((prevPassword) => ({
       ...prevPassword,
@@ -19,7 +21,7 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
     }));
   };
 
-  const handleResetPassword=async()=>{
+  const handleResetPassword = async () => {
     const errors = {};
     if (!password.new) {
       errors.new = "New password is required";
@@ -31,24 +33,23 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
       setFormErrors(errors);
       return;
     }
-    try{
-      setLoading(true)
+    try {
+      setLoading(true);
       const obj = {
-        newPassword:password.new,
-        confirmPassword:password.confirm
-      }
-      const response = await axios.put(`/owner/manager/${id}/credentials`,obj)
-      if(response.status === 200){
+        newPassword: password.new,
+        confirmPassword: password.confirm,
+      };
+      const response = await axios.put(`/owner/manager/${id}/credentials`, obj);
+      if (response.status === 200) {
         SuccessToast("Password Reset Success");
         onClose();
       }
+    } catch (err) {
+      setErrorMessage(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
-    catch(err){
-      setErrorMessage(err?.response?.data?.message)
-    }finally{
-      setLoading(false)
-    }
-  }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50 rounded-xl">
@@ -62,33 +63,63 @@ const ResetPasswordModal = ({ isOpen, onClose,id }) => {
             ✕
           </button>
         </div>
-        <div className='flex justify-start items-center w-full'>
-        <p className="text-red-500 text-sm -mt-3 mb-1">{errorMessage}</p>
+        <div className="flex justify-start items-center w-full">
+          <p className="text-red-500 text-sm -mt-3 mb-1">{errorMessage}</p>
         </div>
         <div>
           <label className="block mb-2 text-[16px]">New Password</label>
-          <input
-            name="new"
-            onChange={(e) => handleChange(e)}
-            value={password.new} 
-            type="password"
-            className="w-[485px] h-[52px] p-2 mb-4 bg-[#1A293D] rounded-xl"
-          />
-           {formErrors.new && <p className="text-red-500 text-sm -mt-3 mb-1">{formErrors.new}</p>}
+          <div className="relative">
+            <input
+              name="new"
+              onChange={(e) => handleChange(e)}
+              value={password.new}
+              type={isPassVisible ? "text" : "password"}
+              className="w-[485px] h-[52px] p-2 mb-4 bg-[#1A293D] rounded-xl"
+            />
+            <span
+              type="button"
+              onClick={() => setIsPassVisible((prev) => !prev)}
+              className="cursor-pointer absolute top-4 text-lg right-4"
+              style={{
+                color: "#6B7373",
+              }}
+            >
+              {!isPassVisible ? <BsEyeSlash /> : <BsEye />}
+            </span>
+          </div>
+          {formErrors.new && (
+            <p className="text-red-500 text-sm -mt-3 mb-1">{formErrors.new}</p>
+          )}
         </div>
         <div>
           <label className="block mb-2 text-[16px]">Confirm Password</label>
-          <input
-            name="confirm" 
-            onChange={(e) => handleChange(e)}
-            value={password.confirm}
-            type="password"
-            className="w-[485px] h-[52px] p-2 mb-8 bg-[#1A293D] rounded-xl focus:outline-none"
-          />
-          {formErrors.confirm && <p className="text-red-500 text-sm -mt-6 mb-3">{formErrors.confirm}</p>}
+          <div className="relative">
+            <input
+              name="confirm"
+              onChange={(e) => handleChange(e)}
+              value={password.confirm}
+              type={isConfirm ? "text" : "password"}
+              className="w-[485px] h-[52px] p-2 mb-8 bg-[#1A293D] rounded-xl focus:outline-none"
+            />
+            <span
+              type="button"
+              onClick={() => setIsConfirm((prev) => !prev)}
+              className="cursor-pointer absolute top-4 text-lg right-4"
+              style={{
+                color: "#6B7373",
+              }}
+            >
+              {!isConfirm ? <BsEyeSlash /> : <BsEye />}
+            </span>
+          </div>
+          {formErrors.confirm && (
+            <p className="text-red-500 text-sm -mt-6 mb-3">
+              {formErrors.confirm}
+            </p>
+          )}
         </div>
         <button
-        disabled={loading}
+          disabled={loading}
           className="w-[485px] h-[54px] text-[16px] py-2 bg-[#199BD1] rounded-xl text-md font-medium"
           onClick={handleResetPassword}
         >

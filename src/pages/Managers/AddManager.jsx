@@ -171,6 +171,7 @@ const AddManager = () => {
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
                             <input
+                              name="name"
                               type="text"
                               value={form?.name}
                               onChange={(e) =>
@@ -221,6 +222,7 @@ const AddManager = () => {
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
                             <input
+                              name="jobTitle"
                               type="text"
                               value={form?.jobtitle}
                               onChange={(e) =>
@@ -244,6 +246,7 @@ const AddManager = () => {
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
                             <input
+                              name="location"
                               type="text"
                               value={form?.location}
                               onChange={(e) =>

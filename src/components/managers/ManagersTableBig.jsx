@@ -11,6 +11,7 @@ import axios from "../../axios";
 import { ErrorToast } from "../global/Toaster";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
+import { CiExport } from "react-icons/ci";
 import Pagination from "../global/pagination/Pagination";
 
 const ManagerTableBig = ({ data, loading, getManagers }) => {
@@ -23,6 +24,7 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
     useState(false);
   const [managerId, setManagerId] = useState("");
   const [deactivateLoading, setDeactivateLoading] = useState(false);
+  const [exportLoader, setExportLoader] = useState(false);
 
   const filteredData = data.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -87,6 +89,41 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
     getManagers(1, 15, jobType, locationType);
   }, [jobType, locationType]);
 
+  const exportManagers = async () => {
+    setExportLoader(true);
+    try {
+      const response = await axios.get("/owner/manager/csv");
+      console.log("🚀 ~ exportManagers ~ response:", response);
+
+      if (response.status === 200) {
+        const result = await response?.data;
+        console.log("🚀 ~ exportManagers ~ result:", result);
+
+        // Check if the data contains the download link
+        if (result?.success && result?.data) {
+          const downloadUrl = result?.data;
+
+          // Create an anchor element and trigger a download
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.download = "Manager.csv"; // Optional: Specify the download file name
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          console.error("Failed to fetch download link:", result?.message);
+        }
+      } else {
+        ErrorToast("Failed to download CSV");
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+      console.error("Error downloading file:", err);
+    } finally {
+      setExportLoader(false);
+    }
+  };
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -105,14 +142,27 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
           />
         </div>
+        <div className="flex content-center justify-end  h-full w-full ">
+          <button
+            disabled={exportLoader}
+            onClick={exportManagers}
+            className="h-[34px] w-[120px] mr-1 px-1 flex items-center gap-1 rounded-[10px] justify-center
+             bg-[#4c585c] text-white text-[11px] font-bold leading-[14.85px] hover:bg-[#576367]"
+          >
+            <span className="text-[11px]">
+              <CiExport className="text-[16px]" />
+            </span>
+            {exportLoader ? "Exporting..." : "Export Managers"}
+          </button>
 
-        <button
-          onClick={() => navigate("/managers/add", "Managers")}
-          className="h-[32px] w-[104px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
-        >
-          <span className="text-[11px]">+</span>
-          Add Manager
-        </button>
+          <button
+            onClick={() => navigate("/managers/add", "Managers")}
+            className="h-[34px] w-[104px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
+          >
+            <span className="text-[11px]">+</span>
+            Add Manager
+          </button>
+        </div>
       </div>
       {loading ? (
         <ManagerListLoader />
