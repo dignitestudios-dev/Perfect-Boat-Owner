@@ -10,8 +10,10 @@ import { FacebookAuthProvider } from "firebase/auth";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { signInWithPopup } from "firebase/auth";
 import { FiLoader } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const SocialLogin = () => {
+  const navigate = useNavigate();
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);

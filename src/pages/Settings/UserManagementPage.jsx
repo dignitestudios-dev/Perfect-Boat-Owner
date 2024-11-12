@@ -7,7 +7,7 @@ import VerifyPhoneEditOtp from "../../components/global/VerifyPhoneEditOtp";
 import PhoneUpdateSuccess from "../../components/global/PhoneUpdateSuccess";
 import Cookies from "js-cookie";
 import axios from "../../axios";
-import { SuccessToast } from "../../components/global/Toaster";
+import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 const UserManagementPage = () => {
   const [edit, setEdit] = useState(false);
@@ -26,7 +26,7 @@ const UserManagementPage = () => {
       }
     } catch (err) {
       console.log("🚀 ~ getUserProfile ~ err:", err);
-      SuccessToast(err?.response?.data?.message);
+      ErrorToast(err?.response?.data?.message);
     } finally {
       setProfileLoading(false);
     }
