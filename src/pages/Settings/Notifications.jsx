@@ -19,14 +19,14 @@ const Notifications = () => {
   } = useContext(GlobalContext);
   const [activeTab, setActiveTab] = useState("All");
 
-  const filterNotifications = () => {
-    if (activeTab === "Read") {
-      return sampleNotifications.filter((notification) => notification.read);
-    } else if (activeTab === "Unread") {
-      return sampleNotifications.filter((notification) => !notification.read);
-    }
-    return sampleNotifications;
-  };
+  // const filterNotifications = () => {
+  //   if (activeTab === "Read") {
+  //     return sampleNotifications.filter((notification) => notification.read);
+  //   } else if (activeTab === "Unread") {
+  //     return sampleNotifications.filter((notification) => !notification.read);
+  //   }
+  //   return sampleNotifications;
+  // };
 
   const [notificationLoading, setNotificationLoading] = useState(false);
 
@@ -61,15 +61,15 @@ const Notifications = () => {
     );
   }, [activeTab, notifications]);
 
-  function navigator(type, id) {
-    if (type == "task") {
-      navigate(`/tasks/${id}`);
-    } else if (type == "blog") {
-      navigate(`/blogs/${id}`);
-    } else {
-      return;
-    }
-  }
+  // function navigator(type, id) {
+  //   if (type == "task") {
+  //     navigate(`/tasks/${id}`);
+  //   } else if (type == "blog") {
+  //     navigate(`/blogs/${id}`);
+  //   } else {
+  //     return;
+  //   }
+  // }
 
   const [updateLoading, setUpdateLoading] = useState(false);
   const readAll = async () => {

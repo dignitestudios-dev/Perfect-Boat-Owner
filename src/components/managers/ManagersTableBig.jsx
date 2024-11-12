@@ -93,11 +93,9 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
     setExportLoader(true);
     try {
       const response = await axios.get("/owner/manager/csv");
-      console.log("🚀 ~ exportManagers ~ response:", response);
 
       if (response.status === 200) {
         const result = await response?.data;
-        console.log("🚀 ~ exportManagers ~ result:", result);
 
         // Check if the data contains the download link
         if (result?.success && result?.data) {

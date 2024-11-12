@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
-const StatusType = ({ statusDropdownOpen, toggleStatusDropdown, setStatusFilter, statusFilter }) => {
-  
-  const statuses = ["all","upcoming", "in-progress", "completed", "recurring", "overdue", "newtask"];
+const StatusType = ({
+  statusDropdownOpen,
+  toggleStatusDropdown,
+  setStatusFilter,
+  statusFilter,
+}) => {
+  const statuses = [
+    "all",
+    "upcoming",
+    "in-progress",
+    "completed",
+    "recurring",
+    "overdue",
+    "newtask",
+  ];
 
-  const handleCheckboxChange = (status) => {  
+  const handleCheckboxChange = (status) => {
     setStatusFilter(status);
   };
 
@@ -19,7 +31,7 @@ const StatusType = ({ statusDropdownOpen, toggleStatusDropdown, setStatusFilter,
         onClick={toggleStatusDropdown}
       />
       {statusDropdownOpen && (
-        <div className="absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
+        <div className="h-[300px] overflow-auto absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
           {statuses.map((status, index) => (
             <label
               key={index}

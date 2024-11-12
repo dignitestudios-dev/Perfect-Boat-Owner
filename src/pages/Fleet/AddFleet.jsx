@@ -98,7 +98,6 @@ const AddFleet = () => {
     try {
       setSubmitLoading(true);
       const data = new FormData();
-      console.log("form =? ", formData);
       data.append("name", formData.name);
       data.append("make", formData.make);
       data.append("size", formData.size);

@@ -100,7 +100,6 @@ const AddEmployeeExternal = () => {
     try {
       setSubmitLoading(true);
       const response = await axios.post("/owner/employees/csv", data);
-      console.log("🚀 ~ ~ response:", response);
       if (response.status === 200) {
         setIsEmployeeOpen(true);
       }

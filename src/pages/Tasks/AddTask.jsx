@@ -15,14 +15,13 @@ import SelectEmployeeInputField from "../../components/global/customInputs/Selec
 import TaskTypeInputField from "../../components/global/customInputs/TaskTypeInputField";
 import TaskInputField from "../../components/global/customInputs/TaskInputField";
 import RecurringDaysInputField from "../../components/global/customInputs/RecurringDaysInputField";
-import {formValidation} from "../../constants/formValidation"
+import { formValidation } from "../../constants/formValidation";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddTask = () => {
-
-  const {taskDropDown} = useContext(GlobalContext)
-  const [submitLoading,setSubmitLoading] = useState(false);
-  const [noteText, setNoteText] = useState("")
+  const { taskDropDown } = useContext(GlobalContext);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [noteText, setNoteText] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [customInput, setCustomInput] = useState(false);
   const [isTaskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
@@ -30,9 +29,9 @@ const AddTask = () => {
 
   const [RecurringDropdown, setRecurringDropdown] = useState(false);
   const [selectedDay, setSelectedDay] = useState("");
-  const [recurringDays, setRecurringDays] = useState("")
-  const [customDays, setCustomDays] = useState(false)
-  const [customRecurring, setCustomRecurring] = useState("")
+  const [recurringDays, setRecurringDays] = useState("");
+  const [customDays, setCustomDays] = useState(false);
+  const [customRecurring, setCustomRecurring] = useState("");
 
   const RecurringRef = useRef(null);
   const toggleRecurringDropdown = (e) => {
@@ -43,15 +42,15 @@ const AddTask = () => {
   };
 
   const handleSelectDay = (day, text) => {
-    if(day === "custom"){
-      setRecurringDays(day)
+    if (day === "custom") {
+      setRecurringDays(day);
       setSelectedDay(text);
-      setCustomDays(true)
+      setCustomDays(true);
       setRecurringDropdown(true);
-    }else{
-      setRecurringDays(day)
-    setSelectedDay(text); // Set selected text
-    setRecurringDropdown(false); // Close the dropdown after selecting
+    } else {
+      setRecurringDays(day);
+      setSelectedDay(text); // Set selected text
+      setRecurringDropdown(false); // Close the dropdown after selecting
     }
   };
 
@@ -59,8 +58,8 @@ const AddTask = () => {
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
 
-  const [passSelectedBoat,SetPassSelectedBoat]= useState("")
-  const [passSelectedEmployee,SetPassSelectedEmployee] = useState("")
+  const [passSelectedBoat, SetPassSelectedBoat] = useState("");
+  const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
 
   const taskTypeDropdownRef = useRef();
   const additionalDropdownRef = useRef();
@@ -68,82 +67,84 @@ const AddTask = () => {
 
   const [selectedTaskType, setSelectedTaskType] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [displaySelectedTask, setDisplaySelectedTask] = useState("")
-  const [dueDate, setDueDate] = useState({})
-  const [customTypeText, setCustomTypeText] = useState("")
+  const [displaySelectedTask, setDisplaySelectedTask] = useState("");
+  const [dueDate, setDueDate] = useState({});
+  const [customTypeText, setCustomTypeText] = useState("");
   const [inputError, setInputError] = useState({});
 
   const toggleTaskTypeDropdown = () => {
-  setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
-};
-
-const toggleTaskDropdown = () => {
-  setTaskDropdownOpen(!isTaskDropdownOpen);
-};
-
-const handleTaskTypeSelection = (taskType) => {
-  setInputError({})
-  if(taskType === "custom"){
-    setTaskTypeDropdownOpen(true);
-    setCustomInput(true)
-    setTaskDropdownOpen(false);
-  }else{
-    setSelectedTaskType(taskType);
-    setTasks(taskDropDown?.find((item) => item?.taskType === taskType)?.task || []);
-    setTaskDropdownOpen(false);
-    setDisplaySelectedTask(null);
-  }
-};
-
-const handleTaskSelection = (task) => {
-  setInputError({})
-  setTaskDropdownOpen(false); // Close task dropdown after selecting a task
-  setDisplaySelectedTask(task)
-};
-
-const submitTask = async()=>{
-  setInputError({});
-
-  const validateData = {
-    passSelectedEmployee,
-    passSelectedBoat,
-    selectedTaskType,
-    noteText,
-    dueDate
+    setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
   };
-  const errors = formValidation(validateData);
+
+  const toggleTaskDropdown = () => {
+    setTaskDropdownOpen(!isTaskDropdownOpen);
+  };
+
+  const handleTaskTypeSelection = (taskType) => {
+    setInputError({});
+    if (taskType === "custom") {
+      setTaskTypeDropdownOpen(true);
+      setCustomInput(true);
+      setTaskDropdownOpen(false);
+    } else {
+      setSelectedTaskType(taskType);
+      setTasks(
+        taskDropDown?.find((item) => item?.taskType === taskType)?.task || []
+      );
+      setTaskDropdownOpen(false);
+      setDisplaySelectedTask(null);
+    }
+  };
+
+  const handleTaskSelection = (task) => {
+    setInputError({});
+    setTaskDropdownOpen(false); // Close task dropdown after selecting a task
+    setDisplaySelectedTask(task);
+  };
+
+  const submitTask = async () => {
+    setInputError({});
+
+    const validateData = {
+      passSelectedEmployee,
+      passSelectedBoat,
+      selectedTaskType,
+      noteText,
+      dueDate,
+    };
+    const errors = formValidation(validateData);
     if (Object.keys(errors).length > 0) {
       setInputError(errors);
       return;
     }
 
-  try{
-    setSubmitLoading(true)
-    const obj = {
-      boat:passSelectedBoat?.id,
-      task:displaySelectedTask ? displaySelectedTask : selectedTaskType,
-      taskType: selectedTaskType?.replace(/([A-Z])/g, ' $1')?.trim(),
-      dueDate: dueDate?.unix,
-      description: noteText,
-      reoccuring: true,
-      reoccuringDays: +recurringDays,
-      assignTo: [passSelectedEmployee?.id]
+    try {
+      setSubmitLoading(true);
+      const obj = {
+        boat: passSelectedBoat?.id,
+        task: displaySelectedTask ? displaySelectedTask : selectedTaskType,
+        taskType: selectedTaskType?.replace(/([A-Z])/g, " $1")?.trim(),
+        dueDate: dueDate?.unix,
+        description: noteText,
+        reoccuring: true,
+        reoccuringDays: +recurringDays,
+        assignTo: [passSelectedEmployee?.id],
+      };
+
+      const response = await axios.post("/owner/task", obj);
+
+      if (response.status === 200) {
+        // SuccessToast("Task Created")
+        // navigate("/tasks")
+        setHasAssigned(true);
+      }
+    } catch (err) {
+      console.log("🚀 ~ submitTask ~ err:", err);
+      ErrorToast(err?.response?.data.message);
+    } finally {
+      setSubmitLoading(false);
     }
-    
-    const response = await axios.post("/owner/task", obj);
-    
-    if(response.status === 200){
-      // SuccessToast("Task Created")
-      // navigate("/tasks")
-      setHasAssigned(true);
-    }
-  }catch(err){
-    console.log("🚀 ~ submitTask ~ err:", err)
-    ErrorToast(err?.response?.data.message)
-  }finally{
-    setSubmitLoading(false)
-  }
-}
+  };
 
   return (
     <div className="w-full h-auto min-h-screen overflow-y-auto bg-[#1A293D] text-white p-4 pb-20 flex flex-col justify-start items-start">
@@ -159,28 +160,60 @@ const submitTask = async()=>{
           <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
               <div>
-                <SelectBoatInputField passSelectedBoat={passSelectedBoat} setIsBoatModalOpen={setIsBoatModalOpen} isEdit={true}/>
-                {inputError.boat && <p className="text-red-500">{inputError.boat}</p>}
+                <SelectBoatInputField
+                  passSelectedBoat={passSelectedBoat}
+                  setIsBoatModalOpen={setIsBoatModalOpen}
+                  isEdit={true}
+                />
+                {inputError.boat && (
+                  <p className="text-red-500">{inputError.boat}</p>
+                )}
               </div>
               <div>
-                <SelectEmployeeInputField setIsEmployeeModalOpen={setIsEmployeeModalOpen} passSelectedEmployee={passSelectedEmployee} isEdit={true}/>
-                {inputError.employee && <p className="text-red-500">{inputError.employee}</p>}
+                <SelectEmployeeInputField
+                  setIsEmployeeModalOpen={setIsEmployeeModalOpen}
+                  passSelectedEmployee={passSelectedEmployee}
+                  isEdit={true}
+                />
+                {inputError.employee && (
+                  <p className="text-red-500">{inputError.employee}</p>
+                )}
               </div>
             </div>
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
               <div>
-              <TaskTypeInputField toggleTaskTypeDropdown={toggleTaskTypeDropdown} selectedTaskType={selectedTaskType} isEdit={true}
-              isTaskTypeDropdownOpen={isTaskTypeDropdownOpen} taskTypeDropdownRef={taskTypeDropdownRef} customTypeText={customTypeText}
-              handleTaskTypeSelection={handleTaskTypeSelection} customInput={customInput} setCustomTypeText={setCustomTypeText} 
-              setInputError={setInputError} taskDropDown={taskDropDown}/>
-              {inputError.task && <p className="text-red-500">{inputError.task}</p>}
+                <TaskTypeInputField
+                  toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                  selectedTaskType={selectedTaskType}
+                  isEdit={true}
+                  isTaskTypeDropdownOpen={isTaskTypeDropdownOpen}
+                  taskTypeDropdownRef={taskTypeDropdownRef}
+                  customTypeText={customTypeText}
+                  handleTaskTypeSelection={handleTaskTypeSelection}
+                  customInput={customInput}
+                  setCustomTypeText={setCustomTypeText}
+                  setInputError={setInputError}
+                  taskDropDown={taskDropDown}
+                />
+                {inputError.task && (
+                  <p className="text-red-500">{inputError.task}</p>
+                )}
               </div>
 
               <div>
-              <TaskInputField handleTaskSelection={handleTaskSelection} toggleTaskDropdown={toggleTaskDropdown} 
-              isTaskDropdownOpen={isTaskDropdownOpen} displaySelectedTask={displaySelectedTask} 
-              additionalDropdownRef={additionalDropdownRef} tasks={tasks} isEdit={true} setInputError={setInputError}/>
-              {inputError.task && <p className="text-red-500">{inputError.task}</p>}
+                <TaskInputField
+                  handleTaskSelection={handleTaskSelection}
+                  toggleTaskDropdown={toggleTaskDropdown}
+                  isTaskDropdownOpen={isTaskDropdownOpen}
+                  displaySelectedTask={displaySelectedTask}
+                  additionalDropdownRef={additionalDropdownRef}
+                  tasks={tasks}
+                  isEdit={true}
+                  setInputError={setInputError}
+                />
+                {inputError.task && (
+                  <p className="text-red-500">{inputError.task}</p>
+                )}
               </div>
             </div>
             <div className="w-full grid grid-cols-1 gap-12 mt-4">
@@ -189,11 +222,16 @@ const submitTask = async()=>{
                   {"Add Note"}
                 </label>
                 <textarea
-                  onChange={(e) => {setNoteText(e.target.value); setInputError({})}}
+                  onChange={(e) => {
+                    setNoteText(e.target.value);
+                    setInputError({});
+                  }}
                   type="text"
                   className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
                 ></textarea>
-              {inputError.note && <p className="text-red-500">{inputError.note}</p>}
+                {inputError.note && (
+                  <p className="text-red-500">{inputError.note}</p>
+                )}
               </div>
             </div>
           </div>
@@ -202,21 +240,31 @@ const submitTask = async()=>{
         <div className="w-1/2">
           <div className="w-full flex flex-col gap-4">
             <div>
-            <div className="w-auto flex justify-start items-center gap-3">
-              <IoCalendarOutline className="text-2xl text-white/40" />
-              <span className="text-md font-normal text-white">Due Date</span>
-              <button
-                onClick={() => setIsCalendarOpen(true)}
-                className="text-xs font-normal text-[#199BD1]"
-              >
-                {dueDate?.normal || "Select Due Date"}
-              </button>
+              <div className="w-auto flex justify-start items-center gap-3">
+                <IoCalendarOutline className="text-2xl text-white/40" />
+                <span className="text-md font-normal text-white">Due Date</span>
+                <button
+                  onClick={() => setIsCalendarOpen(true)}
+                  className="text-xs font-normal text-[#199BD1]"
+                >
+                  {dueDate?.normal || "Select Due Date"}
+                </button>
+              </div>
+              {inputError.dueDate && (
+                <p className="text-red-500">{inputError.dueDate}</p>
+              )}
             </div>
-            {inputError.dueDate && <p className="text-red-500">{inputError.dueDate}</p>}
-            </div>
-            <RecurringDaysInputField toggleRecurringDropdown={toggleRecurringDropdown} selectedDay={selectedDay}RecurringRef={RecurringRef}
-            RecurringDropdown={RecurringDropdown} handleSelectDay={handleSelectDay}customDays={customDays} setCustomRecurring={setCustomRecurring}
-            customRecurring={customRecurring} isEdit={true}/>
+            <RecurringDaysInputField
+              toggleRecurringDropdown={toggleRecurringDropdown}
+              selectedDay={selectedDay}
+              RecurringRef={RecurringRef}
+              RecurringDropdown={RecurringDropdown}
+              handleSelectDay={handleSelectDay}
+              customDays={customDays}
+              setCustomRecurring={setCustomRecurring}
+              customRecurring={customRecurring}
+              isEdit={true}
+            />
           </div>
         </div>
         <DateModal
@@ -265,8 +313,12 @@ const submitTask = async()=>{
             }}
             className="w-52 h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
           >
-            <div className="flex items-center"><span className="mr-1">Save</span>{submitLoading &&(
-          <FiLoader className="animate-spin text-lg mx-auto" />)}</div>
+            <div className="flex items-center">
+              <span className="mr-1">Save</span>
+              {submitLoading && (
+                <FiLoader className="animate-spin text-lg mx-auto" />
+              )}
+            </div>
           </button>
           {/* <TaskAssignedModal
             isOpen={hasAssigned}
