@@ -17,7 +17,7 @@ import AddFleetInternalCsv from "../../components/fleet/AddFleetInternalCsv";
 import { FaTrashAlt } from "react-icons/fa";
 
 const AddFleet = () => {
-  const { boatDropDown } = useContext(GlobalContext);
+  const { boatDropDown, setUpdateDropDown } = useContext(GlobalContext);
 
   const navigate = useNavigate();
   const [selectedBoat, setSelectedBoat] = useState("");
@@ -54,6 +54,7 @@ const AddFleet = () => {
   const {
     watch,
     setValue,
+    reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -87,7 +88,7 @@ const AddFleet = () => {
   };
 
   const submitBoatData = async (formData) => {
-    if (!coverImage && coverImage > 0) {
+    if (!coverImage) {
       ErrorToast("Select cover image");
       return;
     }
@@ -127,6 +128,7 @@ const AddFleet = () => {
 
       if (response?.status === 200) {
         setIsCongratsOpen(true);
+        setUpdateDropDown((prev) => !prev);
       }
     } catch (error) {
       ErrorToast(error?.response?.data?.message);
@@ -173,6 +175,9 @@ const AddFleet = () => {
     if (imagesBox.length > 1) {
       setImagesBox((prev) => prev.slice(0, -1));
     }
+    if (imageIndex === coverImage) {
+      setCoverImage("");
+    }
   };
 
   const handleUploadedImage = async (e, index) => {
@@ -216,6 +221,24 @@ const AddFleet = () => {
 
   const handleCoverSelect = (index) => {
     setCoverImage(index);
+  };
+
+  const handleAddMore = () => {
+    setIsCongratsOpen(false);
+    reset();
+    setCoverImage("");
+    setImagesBox([0]);
+
+    setImagesArray([]);
+    setUploadImages([]);
+
+    setSubmitLoading(false);
+    setSelectedManagers([]);
+
+    SetPassSelectedManager("");
+    SetPassSelectedManagers([]);
+    setModel("");
+    setModelError(false);
   };
 
   return (
@@ -481,6 +504,7 @@ const AddFleet = () => {
           SetPassSelectedManagers={SetPassSelectedManagers}
           selectedManagers={selectedManagers}
           setSelectedManagers={setSelectedManagers}
+          handleManagerModal={() => console.log("manager modal")}
         />
       )}
 
@@ -492,6 +516,7 @@ const AddFleet = () => {
             setIsCongratsOpen(false);
             navigate("/boats");
           }}
+          addMore={handleAddMore}
         />
       )}
 

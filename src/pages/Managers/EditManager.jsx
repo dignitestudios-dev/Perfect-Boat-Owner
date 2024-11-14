@@ -24,59 +24,58 @@ import { FiLoader } from "react-icons/fi";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
 
-const Dropdown = ({ options, label }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+// const Dropdown = ({ options, label }) => {
+//   const [isOpen, setIsOpen] = useState(false);
+//   const dropdownRef = useRef(null);
 
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
+//   const handleToggle = () => {
+//     setIsOpen(!isOpen);
+//   };
 
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
-    }
-  };
+//   const handleClickOutside = (event) => {
+//     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//       setIsOpen(false);
+//     }
+//   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+//   useEffect(() => {
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, []);
 
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        className="text-left w-full flex justify-start items-center gap-1"
-        onClick={handleToggle}
-      >
-        {label}
-        <FaCaretDown />
-      </button>
-      {isOpen && (
-        <ul className="absolute z-10 bg-[#1A293D] text-white/50 text-[11px] rounded-[8px] mt-1 p-2 w-48">
-          {options.map((option, index) => (
-            <li
-              key={index}
-              className="py-1 px-2 hover:bg-[#199BD1] cursor-pointer flex items-center gap-2"
-            >
-              <input
-                type="checkbox"
-                className="form-checkbox h-3 w-3 text-[#199BD1]"
-              />
-              {option}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div className="relative" ref={dropdownRef}>
+//       <button
+//         className="text-left w-full flex justify-start items-center gap-1"
+//         onClick={handleToggle}
+//       >
+//         {label}
+//         <FaCaretDown />
+//       </button>
+//       {isOpen && (
+//         <ul className="absolute z-10 bg-[#1A293D] text-white/50 text-[11px] rounded-[8px] mt-1 p-2 w-48">
+//           {options.map((option, index) => (
+//             <li
+//               key={index}
+//               className="py-1 px-2 hover:bg-[#199BD1] cursor-pointer flex items-center gap-2"
+//             >
+//               <input
+//                 type="checkbox"
+//                 className="form-checkbox h-3 w-3 text-[#199BD1]"
+//               />
+//               {option}
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//     </div>
+//   );
+// };
 
 const EditManager = () => {
   const { navigate } = useContext(GlobalContext);
-  const navigateTo = useNavigate();
   const { id } = useParams();
 
   const location = useLocation();
@@ -99,10 +98,7 @@ const EditManager = () => {
   const [isAssignDetailModalOpen, setIsAssignDetailModalOpen] = useState(false);
   const [isResetPassModalOpen, setIsResetPassModalOpen] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
-  const [managerName, setManagerName] = useState({
-    name: "*Manager Name*",
-    email: "",
-  });
+  const [manager, setManager] = useState("");
   const [managerId, setManagerId] = useState("");
   const [employeesList, setEmployeesList] = useState([]);
   const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
@@ -144,7 +140,6 @@ const EditManager = () => {
 
   const handleChangeClick = () => {
     // setIsManagerDetailModalOpen(true); // Open ManagerDetailModal
-    setManagerName("Manager Name");
     setIsEditable(true);
   };
 
@@ -166,14 +161,18 @@ const EditManager = () => {
         }));
 
         SetPassSelectedEmployee(employeeData);
-        setManagerName({ name: data?.data?.managers?.name });
-        setManagerName({ email: data?.data?.managers?.email });
+        setManager(data?.data?.managers);
         setManagerId(data?.data?.managers?._id);
         setValue("name", data?.data?.managers?.name);
         setValue("email", data?.data?.managers?.email);
         setValue("jobtitle", data?.data?.managers?.jobtitle);
         setValue("location", data?.data?.managers?.location);
-        setValue("phone", data?.data?.managers?.phoneNumber);
+        const phoneNumber = data?.data?.managers?.phoneNumber;
+
+        const formattedPhoneNumber = phoneNumber?.startsWith("+1")
+          ? phoneNumber.slice(2)
+          : phoneNumber;
+        setValue("phone", formattedPhoneNumber);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message || "Something went wrong");
@@ -196,13 +195,10 @@ const EditManager = () => {
         location: data.location,
         name: data.name,
         password: "Test@123",
-        phone: data.phone,
+        phone: `+1${data.phone}`,
         assignEmployees: passSelectedEmployee.map((item) => item.id),
       };
-      const response = await axios.put(
-        `/owner/manager/${state._id}`,
-        managerData
-      );
+      const response = await axios.put(`/owner/manager/${id}`, managerData);
       if (response?.status === 200) {
         setIsEditable(false);
         SuccessToast("Updated Successfully");
@@ -231,7 +227,7 @@ const EditManager = () => {
               <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
                 <div className="flex flex-col lg:flex-row items-start lg:gap-[720px] justify-between sm:gap-3">
                   <h3 className="text-[18px] font-bold leading-[24.3px]">
-                    {managerName?.name}
+                    {isEditable ? `Edit ${manager?.name}` : manager?.name}
                   </h3>
                 </div>
                 {isEditable ? (
@@ -321,19 +317,16 @@ const EditManager = () => {
                         maxLength="10"
                         placeholder="Enter Phone Number"
                         isPhone={true}
-                        register={register("phone", {
+                        register={register(`phone`, {
                           required: "Please enter your phone number.",
                           pattern: {
-                            value: /^\+?[0-9]{10}$/,
+                            value: /^[0-9]{10}$/,
                             message: "Please enter a valid phone number.",
                           },
                         })}
                         error={errors.phone}
                         onInput={(e) => {
-                          e.target.value = e.target.value.replace(
-                            /(?!^\+)[^\d]/g,
-                            ""
-                          );
+                          e.target.value = e.target.value.replace(/[^\d]/g, "");
                         }}
                         isDisabled={!isEditable}
                       />
@@ -368,7 +361,7 @@ const EditManager = () => {
                 <div className="w-auto flex flex-col justify-start items-start gap-3">
                   <div className="flex justify-start items-center gap-2 text-white text-[16px] font-normal leading-[21.6px]">
                     <span className="text-white/50">Email:</span>
-                    <span>{managerName?.email}</span>
+                    <span>{manager?.email}</span>
                   </div>
                   <div className="flex justify-start items-center gap-2 text-white text-[16px] font-normal leading-[21.6px]">
                     <span className="text-white/50">Password:</span>
@@ -460,7 +453,7 @@ const EditManager = () => {
 
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <p className="mb-2 text-md">
-                {managerName?.name} has access to all boats by default
+                {manager?.name} has access to boats by default
               </p>
               <div className="w-full h-6 grid grid-cols-4 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
                 <span className="w-full flex justify-start items-center">
@@ -521,6 +514,14 @@ const EditManager = () => {
           <div className="w-full flex justify-end mt-10 items-center gap-4">
             {isEditable ? (
               <>
+                <button
+                  type="button"
+                  onClick={() => setIsEditable(false)}
+                  className="w-full lg:w-[208px] h-[52px] text-[#199BD1] bg-[#002240] rounded-[12px] flex items-center
+             justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px] hover:text-[#199BF9]"
+                >
+                  Back
+                </button>
                 <button
                   disabled={submitLoading}
                   type="submit"

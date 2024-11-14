@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthMockup } from "../../assets/export";
 import AuthInput from "../../components/onboarding/AuthInput";
 import AuthSubmitBtn from "../../components/onboarding/AuthSubmitBtn";
@@ -10,12 +10,14 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import getFCMToken from "../../firebase/getFcmToken";
 import SocialLogin from "./SocialLogin";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const { navigate } = useContext(GlobalContext);
 
   const { login } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const token = Cookies.get("token");
 
   // Set up react-hook-form
   const {
@@ -66,6 +68,12 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   return (
     <div className="w-screen h-screen flex items-start justify-start">

@@ -250,7 +250,29 @@ const TasksContainer = () => {
         </div>
 
         <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {!loading ? (
+          {loading ? (
+            <TasksListLoader />
+          ) : filteredData?.length > 0 ? (
+            filteredData?.map((task, index) => {
+              const assignedBy = task?.assignBy
+                ? task?.assignBy?.name
+                : "Unknown"; // Adjust based on the API response structure
+
+              const assignedTo = task?.assignTo
+                ? task?.assignTo[0]?.name
+                : "Unknown";
+              return (
+                <TasksCard
+                  data={task}
+                  getTasks={() => getTasks()}
+                  key={index}
+                />
+              );
+            })
+          ) : (
+            <div className="p-1">No record found</div>
+          )}
+          {/* {!loading ? (
             filteredData?.length > 0 &&
             filteredData?.map((task, index) => {
               const assignedBy = task?.assignBy
@@ -270,7 +292,7 @@ const TasksContainer = () => {
             })
           ) : (
             <TasksListLoader />
-          )}
+          )} */}
         </div>
         <DateModal
           isOpen={isCalendarOpen}

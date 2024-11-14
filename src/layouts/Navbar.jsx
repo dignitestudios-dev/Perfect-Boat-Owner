@@ -1,9 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { AuthMockup } from "../assets/export";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { GoDotFill } from "react-icons/go";
-import { RxCaretDown } from "react-icons/rx";
 import { GlobalContext } from "../contexts/GlobalContext";
 import Cookies from "js-cookie";
 

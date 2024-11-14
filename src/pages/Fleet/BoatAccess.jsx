@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState, useEffect, Fragment } from "react";
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useEffect,
+  Fragment,
+} from "react";
 import { FiSearch } from "react-icons/fi";
 import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
@@ -17,18 +23,19 @@ const BoatAccess = () => {
   const { navigate, boats, getBoats, loadingBoats } = useContext(GlobalContext);
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [boatId, setBoatId] = useState("")
-  const [boatsData, setBoatsData] = useState([])
+  const [boatId, setBoatId] = useState("");
+  const [boatsData, setBoatsData] = useState([]);
   // const [passSelectedManager,SetPassSelectedManager] = useState(null)
-  const [passSelectedManagers, SetPassSelectedManagers] = useState([])
-  const [isManagerSuccess, setIsManagerSuccess] = useState(false)
+  const [passSelectedManagers, SetPassSelectedManagers] = useState([]);
+  const [isManagerSuccess, setIsManagerSuccess] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
-  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] = useState(false);
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
+    useState(false);
 
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all")
-  const [boatType, setBoatType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [boatType, setBoatType] = useState("all");
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -42,51 +49,48 @@ const BoatAccess = () => {
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
 
-  const handleAccessModal = async (e,id)=>{
-    setBoatId(id)
-    e.stopPropagation(); 
+  const handleAccessModal = async (e, id) => {
+    setBoatId(id);
+    e.stopPropagation();
     setIsModalOpen(true);
-    getBoatsById(id)
-  }
+    getBoatsById(id);
+  };
 
   const getBoatsById = async (id) => {
     try {
       const { data } = await axios.get(`/owner/boat/${id}`);
       setBoatsData(data?.data?.boatAccess);
     } catch (err) {
-
+      console.log("getBoatsById ~ err:", err);
     }
   };
 
-  const handleAssignManager =async(managers)=>{
-    try{
+  const handleAssignManager = async (managers) => {
+    try {
       const obj = {
-        managers: managers?.map((item)=> item?.id)
-      }
-      const response = await axios.put(`/owner/boat/${boatId}/access`,obj)
-      if(response.status === 200){
+        managers: managers?.map((item) => item?.id),
+      };
+      const response = await axios.put(`/owner/boat/${boatId}/access`, obj);
+      if (response.status === 200) {
         // setIsManagerDetailModalOpen(false)
-        SetPassSelectedManagers(null)
-        setIsManagerSuccess(true)
-        SuccessToast("Boat access assigned")
+        SetPassSelectedManagers(null);
+        setIsManagerSuccess(true);
+        SuccessToast("Boat access assigned");
       }
+    } catch (err) {
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+      SetPassSelectedManagers(null);
+      ErrorToast(err?.response?.data?.message);
+    } finally {
     }
-    catch(err){
-      console.log("🚀 ~ handleAssignEmployees ~ err:", err)
-      SetPassSelectedManagers(null)
-      ErrorToast(err?.response?.data?.message)
-    }
-    finally{
+  };
 
-    }
-  }
-
-  useEffect(()=>{
-    getBoats(boatType, locationType)
-  },[boatType, locationType])
+  useEffect(() => {
+    getBoats(boatType, locationType);
+  }, [boatType, locationType]);
   // useEffect(()=>{
   //   if(passSelectedManagers){
-    // handleAssignManager()
+  // handleAssignManager()
   //   }
   // },[passSelectedManagers])
 
@@ -95,7 +99,9 @@ const BoatAccess = () => {
       <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
         <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
           Boats Access{" "}
-          <span className="text-[12px] font-normal text-white/50 ">({boats?.length})</span>
+          <span className="text-[12px] font-normal text-white/50 ">
+            ({boats?.length})
+          </span>
         </h3>
 
         <div className="w-full h-auto flex justify-between items-center">
@@ -115,15 +121,23 @@ const BoatAccess = () => {
         <div className="w-full flex flex-col gap-1 justify-start items-start">
           <div className="w-full grid grid-cols-6 text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
             <span className="flex justify-start items-center">Boat Image</span>
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
-            boatType={boatType} setBoatType={setBoatType}/> 
+            <BoatType
+              boatTypeDropdownOpen={boatTypeDropdownOpen}
+              toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+              boatType={boatType}
+              setBoatType={setBoatType}
+            />
             <span className="flex justify-start items-center">Name</span>
             <span className="flex justify-start items-center">
               Model/Make/Size
             </span>
             <span className="flex justify-center items-center ml-16">
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+              <LocationType
+                locationDropdownOpen={locationDropdownOpen}
+                toggleLocationDropdown={toggleLocationDropdown}
+                locationType={locationType}
+                setLocationType={setLocationType}
+              />
             </span>
             <span className="flex justify-start items-center"></span>
           </div>
@@ -147,31 +161,43 @@ const BoatAccess = () => {
                     className="w-full h-auto grid grid-cols-6 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
                     <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                      <img src={boat?.cover} alt="boat_image"
-                        style={{ width: "100%", height: "100%", borderRadius: "15px 0 0 15px", objectFit: "cover" }}
+                      <img
+                        src={boat?.cover}
+                        alt="boat_image"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "15px 0 0 15px",
+                          objectFit: "cover",
+                        }}
                       />
                       <div
                         className="w-24"
-                        style={{content: '""',
-                          position: "absolute", top: 0,
-                          right: 0, bottom: 0,
-                          background:  "linear-gradient(to right, transparent, #001229)", }}
+                        style={{
+                          content: '""',
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          background:
+                            "linear-gradient(to right, transparent, #001229)",
+                        }}
                       />
                     </span>
                     <span className="flex justify-start items-center">
-                    {boat?.boatType}
+                      {boat?.boatType}
                     </span>
                     <span className="flex justify-start items-center">
-                    {boat?.name}
+                      {boat?.name}
                     </span>
                     <span className="flex justify-start items-center">
-                    {boat.model} / {boat.make} / {boat.size}
+                      {boat.model} / {boat.make} / {boat.size}
                     </span>
                     <span className="flex justify-center items-center">
-                    {boat.location}
+                      {boat.location}
                     </span>
                     <button
-                      onClick={(e)=>handleAccessModal(e, boat?._id )}
+                      onClick={(e) => handleAccessModal(e, boat?._id)}
                       className="w-[100px] h-[30px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-xl py-1"
                     >
                       View Details
@@ -192,19 +218,20 @@ const BoatAccess = () => {
         />
       )}{" "}
       {isManagerDetailModalOpen && (
-        <ManagerDetailModal 
-        setIsOpen={setIsManagerDetailModalOpen}  handleManagerModal={(managers)=>handleAssignManager(managers)}
-              // boatAccess={boatsData?.boatAccess}
-        // SetPassSelectedManager={SetPassSelectedManager}
+        <ManagerDetailModal
+          setIsOpen={setIsManagerDetailModalOpen}
+          handleManagerModal={(managers) => handleAssignManager(managers)}
+          // boatAccess={boatsData?.boatAccess}
+          // SetPassSelectedManager={SetPassSelectedManager}
           SetPassSelectedManagers={SetPassSelectedManagers}
-          isMultiple={true} boatAccess={boatsData}
-          selectedManagers={selectedManagers} setSelectedManagers={setSelectedManagers}
+          isMultiple={true}
+          boatAccess={boatsData}
+          selectedManagers={selectedManagers}
+          setSelectedManagers={setSelectedManagers}
         />
         // <SelectAllManager setIsOpen={setIsManagerDetailModalOpen} />
       )}
-      {isManagerSuccess && (
-        <BoatManagerModal setIsOpen={setIsManagerSuccess}/>
-      )}
+      {isManagerSuccess && <BoatManagerModal setIsOpen={setIsManagerSuccess} />}
       {/* Conditionally render modal */}
     </div>
   );

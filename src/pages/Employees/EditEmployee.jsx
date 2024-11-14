@@ -81,8 +81,8 @@ const Dropdown = ({ options, label }) => {
 
 const EditEmployee = () => {
   const { navigate } = useContext(GlobalContext);
-  const navigateTo = useNavigate();
   const { id } = useParams();
+  const navigateTo = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignedModalOpen, setIsAssignedModalOpen] = useState(false);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
@@ -180,6 +180,7 @@ const EditEmployee = () => {
 
       const updatedEmployeeData = {
         ...data,
+        phone: `+1${data.phone}`,
         manager: passSelectedManager?.id,
         password: "Test@123",
         tasks: tasks
@@ -211,6 +212,12 @@ const EditEmployee = () => {
         const data = response?.data?.data;
         setEmployee(response?.data?.data?.employee);
         setEmployeeTasks(response?.data?.data?.tasks);
+        const phoneNumber = response?.data?.data?.employee?.phoneNumber;
+
+        const formattedPhoneNumber = phoneNumber?.startsWith("+1")
+          ? phoneNumber.slice(2)
+          : phoneNumber;
+        setValue("phone", formattedPhoneNumber);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
@@ -230,7 +237,6 @@ const EditEmployee = () => {
     setValue("email", employee?.email);
     setValue("jobtitle", employee?.jobtitle);
     setValue("location", employee?.location);
-    setValue("phone", employee?.phoneNumber);
     SetPassSelectedManager({
       name: employee?.manager?.name,
       id: employee?.manager?._id,
@@ -352,7 +358,7 @@ const EditEmployee = () => {
                         register={register("phone", {
                           required: "Please enter your phone number.",
                           pattern: {
-                            value: /^\+?[0-9]{11}$/,
+                            value: /^\+?[0-9]{10}$/,
                             message: "Please enter a valid phone number.",
                           },
                         })}
@@ -569,6 +575,14 @@ const EditEmployee = () => {
           <div className="w-full flex justify-end mt-10 items-center gap-4">
             {isEditing ? (
               <>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="w-full lg:w-[208px] h-[52px] text-[#199BD1] bg-[#002240] rounded-[12px] flex items-center
+             justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px] hover:text-[#199BF9]"
+                >
+                  Back
+                </button>
                 <button
                   disabled={submitLoading}
                   type="submit"

@@ -98,8 +98,12 @@ const AddEmployeeExternal = () => {
   const submitEmployeeData = async (e) => {
     e.preventDefault();
     try {
+      const dataToSubmit = data.map((item) => ({
+        ...item,
+        phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+      }));
       setSubmitLoading(true);
-      const response = await axios.post("/owner/employees/csv", data);
+      const response = await axios.post("/owner/employees/csv", dataToSubmit);
       if (response.status === 200) {
         setIsEmployeeOpen(true);
       }
@@ -180,6 +184,7 @@ const AddEmployeeExternal = () => {
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
                             <input
+                              name="name"
                               type="text"
                               value={form?.name}
                               onChange={(e) =>
@@ -204,7 +209,7 @@ const AddEmployeeExternal = () => {
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
                             <input
-                              type="text"
+                              type="email"
                               value={form?.email}
                               onChange={(e) =>
                                 handleChange(index, "email", e.target.value)
@@ -230,6 +235,7 @@ const AddEmployeeExternal = () => {
                           >
                             <input
                               type="text"
+                              name="jobTitle"
                               value={form?.jobtitle}
                               onChange={(e) =>
                                 handleChange(index, "jobtitle", e.target.value)
@@ -253,6 +259,7 @@ const AddEmployeeExternal = () => {
                           >
                             <input
                               type="text"
+                              name="location"
                               value={form?.location}
                               onChange={(e) =>
                                 handleChange(index, "location", e.target.value)
@@ -291,9 +298,13 @@ const AddEmployeeExternal = () => {
                               <input
                                 type="text"
                                 value={form?.phone}
-                                onChange={(e) =>
-                                  handleChange(index, "phone", e.target.value)
-                                }
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  // Allow only digits and restrict to 10 digits
+                                  if (/^\d{0,10}$/.test(value)) {
+                                    handleChange(index, "phone", value);
+                                  }
+                                }}
                                 className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                                 placeholder={"Enter Phone Number"}
                               />

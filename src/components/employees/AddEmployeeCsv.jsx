@@ -23,7 +23,11 @@ const AddEmployeeCsv = ({ data, setData }) => {
     e.preventDefault();
     try {
       setSubmitLoading(true);
-      const response = await axios.post("/owner/employees/csv", data);
+      const dataToSubmit = data.map((item) => ({
+        ...item,
+        phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+      }));
+      const response = await axios.post("/owner/employees/csv", dataToSubmit);
       if (response.status === 200) {
         SuccessToast("Employees Created Successfully");
         navigate("/employees");

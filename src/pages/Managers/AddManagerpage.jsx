@@ -110,7 +110,7 @@ const AddManagerpage = () => {
         location: data.location,
         name: data.name,
         password: "Test@123",
-        phone: data.phone,
+        phone: `+1${data.phone}`,
         ...(passSelectedEmployee?.id && {
           assignEmployees: [passSelectedEmployee.id],
         }),
@@ -234,7 +234,7 @@ const AddManagerpage = () => {
                     register={register(`phone`, {
                       required: "Please enter your phone number.",
                       pattern: {
-                        value: /^\+?[0-9]{10}$/,
+                        value: /^[0-9]{10}$/,
                         message: "Please enter a valid phone number.",
                       },
                     })}
@@ -245,10 +245,7 @@ const AddManagerpage = () => {
                     error={errors?.phone}
                     isPhone={true}
                     onInput={(e) => {
-                      e.target.value = e.target.value.replace(
-                        /(?!^\+)[^\d]/g,
-                        ""
-                      );
+                      e.target.value = e.target.value.replace(/[^\d]/g, "");
                     }}
                   />
                 </div>

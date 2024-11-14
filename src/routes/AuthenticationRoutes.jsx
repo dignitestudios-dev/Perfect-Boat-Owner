@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import AddCard from "../pages/onboarding/AddCard";
 import ForgotPassword from "../pages/onboarding/ForgotPassword";
 import Login from "../pages/onboarding/Login";
@@ -7,6 +8,7 @@ import Signup from "../pages/onboarding/Signup";
 import Summary from "../pages/onboarding/Summary";
 import UpdatePassword from "../pages/onboarding/UpdatePassword";
 import VerifyOtp from "../pages/onboarding/VerifyOtp";
+import PageNotFound from "../pages/PageNotFound";
 
 export const AuthenticationRoutes = [
   {
@@ -34,5 +36,15 @@ export const AuthenticationRoutes = [
     title: "Verify Otp",
     url: "/verify-otp",
     page: <VerifyOtp />,
+  },
+  {
+    title: "Not found",
+    url: "*",
+    page: <Navigate to="/404" />,
+  },
+  {
+    title: "Not found",
+    url: "/404",
+    page: <PageNotFound />,
   },
 ];

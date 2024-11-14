@@ -124,7 +124,7 @@ const Summary = () => {
                 <span className="text-[24px] font-bold text-white leading-[0px] tracking-[-0.24px]">
                   ${summary?.subscriptionPlan?.annualPrice}
                 </span>
-                <span className="text-[10px] font-normal  leading-[0px]  text-white">
+                <span className="text-[10px] font-normal leading-[0px] text-white">
                   /year
                 </span>
               </div>

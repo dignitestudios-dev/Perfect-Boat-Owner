@@ -24,7 +24,7 @@ const JobType = ({
         onClick={toggleJobTitleDropdown}
       />
       {jobTitleDropdownOpen && (
-        <div className="h-[300px] overflow-auto absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-10">
+        <div className="max-h-[300px] overflow-auto absolute top-full left-0 mt-1 w-48 bg-[#1A293D] text-white rounded-md shadow-lg z-20">
           <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
             <input
               checked={jobType === "all"}

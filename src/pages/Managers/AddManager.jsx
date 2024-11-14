@@ -51,8 +51,8 @@ const AddManager = () => {
         email: "",
         jobtitle: "",
         location: "",
-        phone: "",
         password: "Test@123",
+        phone: "",
       },
     ]);
   };
@@ -93,8 +93,12 @@ const AddManager = () => {
   const submitManagerData = async (e) => {
     e.preventDefault();
     try {
+      const dataToSubmit = data.map((item) => ({
+        ...item,
+        phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+      }));
       setSubmitLoading(true);
-      const response = await axios.post("/owner/manager/csv", data);
+      const response = await axios.post("/owner/manager/csv", dataToSubmit);
       if (response.status === 200) {
         setIsEmployeeOpen(true);
       }

@@ -51,6 +51,8 @@ import Summary from "../pages/onboarding/Summary";
 import UpdatePassword from "../pages/onboarding/UpdatePassword";
 import CsvUploader from "../pages/Dashboard/CsvUploader";
 import AssignEmployeeInternal from "../pages/Managers/AssignEmployeeInternal";
+import PageNotFound from "../pages/PageNotFound";
+import { Navigate } from "react-router-dom";
 
 export const normalRoutes = [
   {
@@ -342,5 +344,15 @@ export const normalRoutes = [
     title: "Add Employee Plus",
     url: "/addemployeeplus",
     page: <GlobalLayout page={<AddEmployeePlus />} />,
+  },
+  {
+    title: "Not found",
+    url: "*",
+    page: <Navigate to="/404" />,
+  },
+  {
+    title: "Not found",
+    url: "/404",
+    page: <PageNotFound />,
   },
 ];

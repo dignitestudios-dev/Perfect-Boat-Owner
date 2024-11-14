@@ -6,15 +6,13 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 import { FiLoader } from "react-icons/fi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { taskTypeData } from "../../data/TaskTypeData";
 import DateModal from "../../components/tasks/DateModal";
 import BoatSelectModal from "../Fleet/BoatSelectModal";
 import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
 import moment from "moment";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
-import SelectBoatInputField from "../../components/global/customInputs/SelectBoatInputField";
-import SelectEmployeeInputField from "../../components/global/customInputs/SelectEmployeeInputField";
 import TaskInputField from "../../components/global/customInputs/TaskInputField";
 import TaskTypeInputField from "../../components/global/customInputs/TaskTypeInputField";
 import RecurringDaysInputField from "../../components/global/customInputs/RecurringDaysInputField";
@@ -33,7 +31,8 @@ const statusColors = {
 };
 
 const TaskDetail = () => {
-  const { navigate, taskDropDown } = useContext(GlobalContext);
+  const { taskDropDown } = useContext(GlobalContext);
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [taskDetail, setTaskDetail] = useState({});

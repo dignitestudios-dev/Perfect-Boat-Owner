@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "../../axios";
 import {
   app,
@@ -11,6 +11,7 @@ import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { signInWithPopup } from "firebase/auth";
 import { FiLoader } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const SocialLogin = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const SocialLogin = () => {
   const [appleLoading, setAppleLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
   const [idToken, setIdToken] = useState(null);
+  const { login } = useContext(AuthContext);
 
   const handleAppleLogin = async () => {
     try {
@@ -34,13 +36,12 @@ const SocialLogin = () => {
             })
             .then(
               (response) => {
-                // just for now
-                sessionStorage.setItem("token", response?.data?.data?.token);
+                login(response?.data);
                 if (response?.data?.data?.token) {
                   if (response?.data?.data?.isSubscribed === true) {
-                    navigate("/congrats");
+                    navigate("/welcome-aboard");
                   } else {
-                    navigate("/buy-package");
+                    navigate("/select-package");
                   }
                 }
               },
@@ -80,13 +81,12 @@ const SocialLogin = () => {
             })
             .then(
               (response) => {
-                // just for now
-                sessionStorage.setItem("token", response?.data?.data?.token);
+                login(response?.data);
                 if (response?.data?.data?.token) {
                   if (response?.data?.data?.isSubscribed === true) {
-                    navigate("/congrats");
+                    navigate("/welcome-aboard");
                   } else {
-                    navigate("/buy-package");
+                    navigate("/select-package");
                   }
                 }
               },
@@ -125,13 +125,14 @@ const SocialLogin = () => {
             })
             .then(
               (response) => {
+                login(response?.data);
                 // just for now
                 sessionStorage.setItem("token", response?.data?.data?.token);
                 if (response?.data?.data?.token) {
                   if (response?.data?.data?.isSubscribed === true) {
-                    navigate("/congrats");
+                    navigate("/welcome-aboard");
                   } else {
-                    navigate("/buy-package");
+                    navigate("/select-package");
                   }
                 }
               },

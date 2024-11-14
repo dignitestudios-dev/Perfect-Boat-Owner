@@ -25,8 +25,8 @@ const LocationType = ({
       />
       {locationDropdownOpen && (
         <div
-          className="h-[300px] overflow-auto absolute top-full -left-4 mt-1 w-52 bg-[#1A293D]
-         text-white rounded-md shadow-lg z-100"
+          className="max-h-[300px] overflow-auto absolute top-full -left-4 mt-1 w-52 bg-[#1A293D]
+         text-white rounded-md shadow-lg z-10"
         >
           <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
             <input

@@ -5,16 +5,19 @@ import { AuthenticationRoutes } from "./routes/AuthenticationRoutes";
 import { normalRoutes } from "./routes/normalRoutes";
 import { AuthContext } from "./contexts/AuthContext";
 import { useContext } from "react";
+import Login from "./pages/onboarding/Login";
 
 function App() {
+  const navigate = useNavigate();
   const { token } = useContext(AuthContext);
 
   return (
     <Routes>
       <Route path="/" exact element={<Splash />} />
-      {normalRoutes.map((route, index) => {
-        return <Route path={route?.url} element={route?.page} key={index} />;
-      })}
+      {token &&
+        normalRoutes.map((route, index) => {
+          return <Route path={route?.url} element={route?.page} key={index} />;
+        })}
       {AuthenticationRoutes.map((route, index) => {
         return <Route path={route?.url} element={route?.page} key={index} />;
       })}
