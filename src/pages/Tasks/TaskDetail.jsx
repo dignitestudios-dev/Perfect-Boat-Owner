@@ -31,7 +31,7 @@ const statusColors = {
 };
 
 const TaskDetail = () => {
-  const { taskDropDown } = useContext(GlobalContext);
+  const { taskDropDown, setUpdateDropDown } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -188,6 +188,7 @@ const TaskDetail = () => {
       const response = await axios.put(`/owner/task/${id}`, obj);
       if (response.status === 200) {
         SuccessToast("Task Updated successfully");
+        setUpdateDropDown((prev) => !prev);
         getTaskDetail();
         setIsEdit(false);
       }

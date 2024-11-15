@@ -19,7 +19,7 @@ import { formValidation } from "../../constants/formValidation";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddTask = () => {
-  const { taskDropDown } = useContext(GlobalContext);
+  const { taskDropDown, setUpdateDropDown } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -137,6 +137,7 @@ const AddTask = () => {
         // SuccessToast("Task Created")
         // navigate("/tasks")
         setHasAssigned(true);
+        setUpdateDropDown((prev) => !prev);
       }
     } catch (err) {
       console.log("🚀 ~ submitTask ~ err:", err);

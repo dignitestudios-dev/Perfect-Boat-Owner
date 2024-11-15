@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FiDownload } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { FaBold, FaUnderline, FaStrikethrough } from "react-icons/fa";
@@ -30,7 +30,7 @@ const CreateNewBlog = () => {
   } = useContext(BlogContext);
   const editorRef = useRef(null);
 
-  const [htmlContent, setHtmlContent] = useState("");
+  const [htmlContent, setHtmlContent] = useState(story || "");
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSize, setSelectedSize] = useState(16); // Default font size
 
@@ -76,6 +76,13 @@ const CreateNewBlog = () => {
     }
   };
 
+  useEffect(() => {
+    if (editorRef.current && story) {
+      editorRef.current.innerHTML = story;
+      setHtmlContent(story);
+    }
+  }, [story]);
+
   return (
     <div className="h-full overflow-y-auto w-full p-6 flex flex-col gap-4 bg-[#0D1B2A]">
       <div className="w-full bg-[#001229] rounded-[18px] p-6 flex flex-col gap-4">
@@ -84,6 +91,7 @@ const CreateNewBlog = () => {
           <h2 className="text-white text-[18px] font-bold">Blogs</h2>
           <div className="flex items-center">
             <button
+              type="button"
               className="text-[#199BD1] w-[107px] bg-[#1A293D] px-4 py-2 mr-2 rounded-lg"
               onClick={() => navigate("/preview")}
             >

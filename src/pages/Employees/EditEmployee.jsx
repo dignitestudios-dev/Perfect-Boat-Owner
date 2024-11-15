@@ -80,7 +80,7 @@ const Dropdown = ({ options, label }) => {
 };
 
 const EditEmployee = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const { id } = useParams();
   const navigateTo = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -194,6 +194,7 @@ const EditEmployee = () => {
       );
       if (response.status === 200) {
         SuccessToast("Employee Updated");
+        setUpdateEmployee((prev) => !prev);
         navigate("/employees", "Employee List");
       }
     } catch (error) {

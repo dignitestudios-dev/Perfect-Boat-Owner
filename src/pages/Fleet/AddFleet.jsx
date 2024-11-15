@@ -17,14 +17,16 @@ import AddFleetInternalCsv from "../../components/fleet/AddFleetInternalCsv";
 import { FaTrashAlt } from "react-icons/fa";
 
 const AddFleet = () => {
-  const { boatDropDown, setUpdateDropDown } = useContext(GlobalContext);
+  const { boatDropDown, setUpdateDropDown, setUpdateBoat } =
+    useContext(GlobalContext);
 
   const navigate = useNavigate();
   const [selectedBoat, setSelectedBoat] = useState("");
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isCongratsOpen, setIsCongratsOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
-  const [coverImage, setCoverImage] = useState("");
+  const [coverImage, setCoverImage] = useState(0);
+  console.log("🚀 ~ AddFleet ~ coverImage:", coverImage);
   const [imagesBox, setImagesBox] = useState([0]);
 
   const [imagesArray, setImagesArray] = useState([]);
@@ -88,10 +90,10 @@ const AddFleet = () => {
   };
 
   const submitBoatData = async (formData) => {
-    if (!coverImage) {
-      ErrorToast("Select cover image");
-      return;
-    }
+    // if (!coverImage && coverImage === 0) {
+    //   ErrorToast("Select cover image");
+    //   return;
+    // }
     if (modelError) {
       ErrorToast("Enter valid model");
       return;
@@ -129,6 +131,7 @@ const AddFleet = () => {
       if (response?.status === 200) {
         setIsCongratsOpen(true);
         setUpdateDropDown((prev) => !prev);
+        setUpdateBoat((prev) => !prev);
       }
     } catch (error) {
       ErrorToast(error?.response?.data?.message);
@@ -176,7 +179,7 @@ const AddFleet = () => {
       setImagesBox((prev) => prev.slice(0, -1));
     }
     if (imageIndex === coverImage) {
-      setCoverImage("");
+      setCoverImage(0);
     }
   };
 

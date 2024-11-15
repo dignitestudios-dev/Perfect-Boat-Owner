@@ -28,7 +28,7 @@ import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTask
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 
 const BoatDetail = () => {
-  const { navigate, boatDropDown } = useContext(GlobalContext);
+  const { navigate, boatDropDown, setUpdateBoat } = useContext(GlobalContext);
   const [isEditing, setIsEditing] = useState(false); // New state for edit mode
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -295,6 +295,7 @@ const BoatDetail = () => {
 
       if (response?.status === 200) {
         SuccessToast("Updated Success");
+        setUpdateBoat((prev) => !prev);
         setIsEditing(false);
       }
     } catch (error) {

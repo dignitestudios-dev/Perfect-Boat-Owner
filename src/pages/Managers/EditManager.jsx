@@ -75,7 +75,7 @@ import JobType from "../../components/global/headerDropdowns/JobType";
 // };
 
 const EditManager = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { navigate, setUpdateManager } = useContext(GlobalContext);
   const { id } = useParams();
 
   const location = useLocation();
@@ -200,6 +200,7 @@ const EditManager = () => {
       };
       const response = await axios.put(`/owner/manager/${id}`, managerData);
       if (response?.status === 200) {
+        setUpdateManager((prev) => !prev);
         setIsEditable(false);
         SuccessToast("Updated Successfully");
       }
