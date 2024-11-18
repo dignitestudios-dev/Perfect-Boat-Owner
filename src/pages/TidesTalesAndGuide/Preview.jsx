@@ -6,6 +6,8 @@ import DateModal from "../../components/tasks/DateModal";
 import { BlogContext } from "../../contexts/BlogContext";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import moment from "moment";
+
 const Preview = () => {
   const [isScheduling, setIsScheduling] = useState(false); // State to toggle between publish and schedule view
   const [isDateModalOpen, setIsDateModalOpen] = useState(false); // State to control date modal visibility
@@ -25,6 +27,7 @@ const Preview = () => {
     coverUrl,
     setCoverUrl,
   } = useContext(BlogContext);
+  console.log("🚀 ~ Preview ~ viewers:", viewers);
   const navigate = useNavigate(); // Initialize the navigate function
 
   const handleScheduleClick = () => {
@@ -35,6 +38,10 @@ const Preview = () => {
   const handleClose = () => {
     navigate("/blog/createnewblog"); // Navigate to the /blog/createnewblog route when X is clicked
   };
+
+  const [dueDate, setDueDate] = useState({});
+
+  const [inputError, setInputError] = useState({});
 
   const [loading, setLoading] = useState(false);
 
@@ -108,7 +115,7 @@ const Preview = () => {
   }, []);
 
   return (
-    <div className="h-full w-full p-6 flex flex-col gap-4 bg-[#0D1B2A] text-white">
+    <div className="h-full w-full p-6 flex flex-col gap-4 bg-[#0D1B2A] text-white overflow-y-auto">
       {/* Header */}
       <div className="w-full flex justify-between items-center">
         <h2 className="text-white text-[18px] font-semibold">See Preview</h2>
@@ -119,7 +126,6 @@ const Preview = () => {
           <FiX />
         </button>
       </div>
-
       {/* Main Content */}
       <div className="flex justify-between mt-4">
         <div className="relative w-[60%] rounded-[18px]">
@@ -169,10 +175,13 @@ const Preview = () => {
                   </span>
                 </p>
                 <p className="text-[12px] font-normal mt-2">
-                  30/11/2023 01:08 AM
+                  {moment.unix(dueDate?.unix).format("DD/MM/YY hh:mmA")}
                 </p>
               </div>
-              <button className="bg-[#199BD1] text-white px-6 py-2 rounded-lg h-[32px] mb-4 mr-2">
+              <button
+                onClick={() => navigate("/publish")}
+                className="bg-[#199BD1] text-white px-6 py-2 rounded-lg h-[32px] mb-4 mr-2"
+              >
                 Schedule To Publish
               </button>
               <button
@@ -185,20 +194,22 @@ const Preview = () => {
           )}
         </div>
       </div>
-
       {/* Title and Description */}
       <div className="w-full mt-4">
         <h2 className="text-white text-[28px] font-bold">{title}</h2>
         <p className="text-white text-[16px]">{subTitle}</p>
       </div>
-
       {/* Story Input */}
       <div className="text-[10px] text-gray-200">
         <div dangerouslySetInnerHTML={{ __html: story }} />
       </div>
-
       {/* Date Modal */}
-      <DateModal isOpen={isDateModalOpen} setIsOpen={setIsDateModalOpen} />
+      <DateModal
+        isOpen={isDateModalOpen}
+        setIsOpen={setIsDateModalOpen}
+        setDueDate={setDueDate}
+        setInputError={setInputError}
+      />
     </div>
   );
 };

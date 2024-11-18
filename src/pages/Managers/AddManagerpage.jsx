@@ -200,7 +200,7 @@ const AddManagerpage = () => {
                   })}
                   error={errors.name}
                   onInput={(e) => {
-                    e.target.value = e.target.value.replace(/[^A-Za-z]/g, "");
+                    e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, "");
                   }}
                 />
                 <AddFleetInput

@@ -81,7 +81,7 @@ const CreateNewBlog = () => {
       editorRef.current.innerHTML = story;
       setHtmlContent(story);
     }
-  }, [story]);
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto w-full p-6 flex flex-col gap-4 bg-[#0D1B2A]">

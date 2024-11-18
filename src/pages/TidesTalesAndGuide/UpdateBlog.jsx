@@ -16,10 +16,10 @@ import { BlogContext } from "../../contexts/BlogContext";
 const UpdateBlog = () => {
   const { navigate } = useContext(GlobalContext);
   const editorRef = useRef(null);
-  const [htmlContent, setHtmlContent] = useState("");
+  const { state } = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSize, setSelectedSize] = useState(16); // Default font size
-  const { state } = useLocation();
+  const [htmlContent, setHtmlContent] = useState(state?.story || "");
 
   const applyStyle = (command, value = null) => {
     document.execCommand(command, false, value);
@@ -82,10 +82,18 @@ const UpdateBlog = () => {
     setTitle(state?.title);
     setSubTitle(state?.subTitle);
     setStory(state?.story);
-    setCoverFile(null);
+    setCoverFile(state?.cover);
     setCoverUrl(state?.cover);
     setImageText(state?.imageTitle);
   }, []);
+
+  useEffect(() => {
+    if (editorRef.current && state?.story) {
+      editorRef.current.innerHTML = state?.story;
+      setHtmlContent(state?.story);
+    }
+  }, []);
+
   return (
     <div className="h-full overflow-y-auto w-full p-6 flex flex-col gap-4 bg-[#0D1B2A]">
       <div className="w-full bg-[#001229] rounded-[18px] p-6 flex flex-col gap-4">
@@ -286,9 +294,13 @@ const UpdateBlog = () => {
             ref={editorRef}
             contentEditable
             onInput={handleInput}
-            className="w-full text-white bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2"
-            dangerouslySetInnerHTML={{ __html: story }}
-          ></div>
+            className="w-full text-white bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2 relative"
+            // dangerouslySetInnerHTML={{ __html: story }}
+          >
+            {htmlContent == "" && (
+              <span className="absolute top-0 left-0 text-gray-500 pointer-events-none"></span>
+            )}
+          </div>
 
           {/* Display Generated HTML for Debugging (optional) */}
           {/* <div className="mt-4 text-white">

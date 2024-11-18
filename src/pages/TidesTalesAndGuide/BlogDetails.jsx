@@ -1,12 +1,10 @@
 import React, { useContext, useState } from "react";
-import { AuthMockup, BlogBoat, Html } from "../../assets/export";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { GlobalContext } from "../../contexts/GlobalContext";
 import DeleteBlog from "./DeleteBlog";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const BlogDetails = () => {
-  const { navigate } = useContext(GlobalContext);
+  const navigate = useNavigate();
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { state } = useLocation();
@@ -104,7 +102,12 @@ const BlogDetails = () => {
           </div>
 
           <div className="w-full h-auto flex justify-start items-start py-6">
-            <div dangerouslySetInnerHTML={{ __html: state?.story }} />
+            <div
+              className={`w-full ${
+                state?.story.length < 2500 ? "h-[150px]" : "h-auto"
+              } relative`}
+              dangerouslySetInnerHTML={{ __html: state?.story }}
+            />
           </div>
 
           {/* <div className="w-full flex flex-col mt-10 justify-start items-start gap-3">

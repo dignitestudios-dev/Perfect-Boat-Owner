@@ -170,7 +170,7 @@ const AddEmployee = () => {
                   })}
                   error={errors.name}
                   onInput={(e) => {
-                    e.target.value = e.target.value.replace(/[^A-Za-z]/g, "");
+                    e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, "");
                   }}
                 />
                 <AddFleetInput
@@ -215,25 +215,22 @@ const AddEmployee = () => {
               </div>
               <div className="w-full h-auto grid grid-cols-2 gap-12">
                 <AddFleetInput
-                  text={"Phone Number"}
-                  placeholder={"Type your phone number here"}
-                  type={"text"}
-                  maxLength="10"
                   label={"Phone Number"}
-                  isPhone={true}
-                  register={register("phone", {
+                  register={register(`phone`, {
                     required: "Please enter your phone number.",
                     pattern: {
-                      value: /^\+?[0-9]{10}$/,
+                      value: /^[0-9]{10}$/,
                       message: "Please enter a valid phone number.",
                     },
                   })}
-                  error={errors.phone}
+                  text={"Phone Number"}
+                  placeholder={"Type phone number here"}
+                  maxLength="10"
+                  type={"text"}
+                  error={errors?.phone}
+                  isPhone={true}
                   onInput={(e) => {
-                    e.target.value = e.target.value.replace(
-                      /(?!^\+)[^\d]/g,
-                      ""
-                    );
+                    e.target.value = e.target.value.replace(/[^\d]/g, "");
                   }}
                 />
               </div>

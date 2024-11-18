@@ -93,7 +93,7 @@ const PostUpdateBlog = () => {
   };
 
   const handleCancel = () => {
-    navigate("/blog/createnewblog"); // Redirect to the desired path
+    navigate(-1); // Redirect to the desired path
   };
 
   useEffect(() => {

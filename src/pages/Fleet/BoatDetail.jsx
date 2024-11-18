@@ -1,30 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import { FaRegEdit } from "react-icons/fa";
-
-import { RiDeleteBinLine } from "react-icons/ri";
 import { TbCaretDownFilled } from "react-icons/tb";
 import { FaTrashAlt } from "react-icons/fa"; // Make sure to import the trash icon
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 
-// import ViewAllTasksModal from "../../components/tasks/ViewAllTasksModal";
 import ServiceHistoryModal from "../Fleet/ServiceHistoryModal"; // Adjust the path as necessary
-// import ManagerListModal from "../Managers/ManagerListModal";
-import TaskSelectModal from "../../components/tasks/modal/TaskSelectModal";
-import { MdOutlineDateRange } from "react-icons/md";
+
 import DateModal from "../../components/tasks/DateModal";
 import DeletedModal from "../../components/global/DeletedModal";
 import { useLocation, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "../../axios";
-import { getUnixDate } from "../../data/DateFormat";
 import { FiDownload, FiLoader } from "react-icons/fi";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import BoatAccessTable from "../../components/fleet/BoatAccessTable";
 import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
-import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 
 const BoatDetail = () => {
