@@ -13,7 +13,7 @@ import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const AssignEmployee = () => {
-  const { employees, loadingEmployees, getEmployees } =
+  const { employees, loadingEmployees, getEmployees, setLoadingEmployees } =
     useContext(GlobalContext);
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -91,6 +91,32 @@ const AssignEmployee = () => {
   useEffect(() => {
     getEmployees(jobType, locationType);
   }, [jobType, locationType]);
+
+  useEffect(() => {
+    if (selectedManager?.id) {
+      const managerById = async () => {
+        try {
+          setLoadingEmployees(true);
+          const { data } = await axios.get(
+            `/owner/manager/${selectedManager?.id}/employees`
+          );
+          if (data?.success === true) {
+            const transformedData = data?.data?.map((item) => ({
+              id: item?._id,
+              name: item?.name,
+            }));
+            setSelectedEmployees(transformedData);
+          }
+        } catch (err) {
+          console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+          ErrorToast(err?.response?.data?.message);
+        } finally {
+          setLoadingEmployees(false);
+        }
+      };
+      managerById();
+    }
+  }, [selectedManager]);
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">

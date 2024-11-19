@@ -7,6 +7,7 @@ import { BlogContext } from "../../contexts/BlogContext";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import moment from "moment";
+import Cookies from "js-cookie";
 
 const Preview = () => {
   const [isScheduling, setIsScheduling] = useState(false); // State to toggle between publish and schedule view
@@ -26,6 +27,8 @@ const Preview = () => {
     setCoverFile,
     coverUrl,
     setCoverUrl,
+    setDueDate,
+    dueDate,
   } = useContext(BlogContext);
   console.log("🚀 ~ Preview ~ viewers:", viewers);
   const navigate = useNavigate(); // Initialize the navigate function
@@ -38,8 +41,6 @@ const Preview = () => {
   const handleClose = () => {
     navigate("/blog/createnewblog"); // Navigate to the /blog/createnewblog route when X is clicked
   };
-
-  const [dueDate, setDueDate] = useState({});
 
   const [inputError, setInputError] = useState({});
 
@@ -143,8 +144,10 @@ const Preview = () => {
           {!isScheduling ? (
             <div>
               <p className="text-[16px] text-left mb-8">
-                Publishing to:{" "}
-                <span className="font-bold capitalize">{viewers}</span>
+                Publisher:{" "}
+                <span className="font-bold capitalize">
+                  {Cookies.get("name")}
+                </span>
               </p>
               <button
                 onClick={() => navigate("/publish")}
@@ -162,7 +165,8 @@ const Preview = () => {
           ) : (
             <div>
               <p className="text-[16px] text-left mb-8">
-                Publishing to: <span className="font-bold">Alex Deli</span>
+                Publisher:{" "}
+                <span className="font-bold">{Cookies.get("name")}</span>
               </p>
               <div className="text-left mb-4 font-bold text-[12px]">
                 <p>

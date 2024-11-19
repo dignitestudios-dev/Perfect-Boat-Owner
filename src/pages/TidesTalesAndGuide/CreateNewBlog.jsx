@@ -27,6 +27,8 @@ const CreateNewBlog = () => {
     setCoverFile,
     coverUrl,
     setCoverUrl,
+    setDueDate,
+    dueDate,
   } = useContext(BlogContext);
   const editorRef = useRef(null);
 

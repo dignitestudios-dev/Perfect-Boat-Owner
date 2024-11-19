@@ -25,6 +25,8 @@ const Publish = () => {
     setCoverFile,
     coverUrl,
     setCoverUrl,
+    setDueDate,
+    dueDate,
   } = useContext(BlogContext);
 
   const [loading, setLoading] = useState(false);
@@ -58,7 +60,12 @@ const Publish = () => {
       formdata.append("title", title);
       formdata.append("cover", coverFile);
       formdata.append("subTitle", subTitle);
-      formdata.append("imageTitle", imageText);
+      if (imageText) {
+        formdata.append("imageTitle", imageText);
+      }
+      if (dueDate) {
+        formdata.append("scheduleDate", dueDate?.unix);
+      }
       formdata.append("story", createHtmlTemplate(story, title, subTitle));
       formdata.append("viewer", viewers);
       const response = await axios.post(`/owner/blog/`, formdata);

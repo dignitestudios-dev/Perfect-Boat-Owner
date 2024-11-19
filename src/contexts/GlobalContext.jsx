@@ -181,6 +181,7 @@ export const GlobalContextProvider = ({ children }) => {
         taskDropDown,
         loadingBoats,
         loadingEmployees,
+        setLoadingEmployees,
         loadingManagers,
         managers,
         boats,

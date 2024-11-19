@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
+import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 const NotificationSettingsPage = () => {
   const [settings, setSettings] = useState([]);
@@ -35,10 +36,12 @@ const NotificationSettingsPage = () => {
   const handleSaveChanges = async () => {
     setUpdateLoading(true);
     try {
-      await axios.put("/owner/notification/setting", { data: settings });
+      await axios.put("/owner/notification/setting", settings);
       setSettingsUpdate((prev) => !prev); // Trigger re-fetch to ensure updates
       setUpdateLoading(false);
+      SuccessToast("Updated");
     } catch (err) {
+      ErrorToast(err?.response?.data?.message);
       console.error("Error saving settings:", err);
       setUpdateLoading(false);
     }

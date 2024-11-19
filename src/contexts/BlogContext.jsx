@@ -12,6 +12,8 @@ export const BlogContextProvider = ({ children }) => {
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState(null);
   const [viewers, setViewers] = useState("");
+  const [dueDate, setDueDate] = useState({});
+
   return (
     <BlogContext.Provider
       value={{
@@ -29,6 +31,8 @@ export const BlogContextProvider = ({ children }) => {
         setCoverUrl,
         viewers,
         setViewers,
+        dueDate,
+        setDueDate,
       }}
     >
       {children}
