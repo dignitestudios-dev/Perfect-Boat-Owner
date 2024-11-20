@@ -12,6 +12,8 @@ const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
   const [openDropDownFilter, setOpenDropdownFilter] = useState(false);
   const dropDownRef = useRef(null);
+  const timeoutRef = useRef(null);
+
   const [pageDetails, setPageDetails] = useState({});
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,12 +24,16 @@ const TasksContainer = () => {
   const [inputError, setInputError] = useState({});
 
   const [search, setSearch] = useState("");
+  const [findSearch, setFindSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [sortDate, setSortDate] = useState("");
   const [sortFilter, setSortFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleCheckboxChange = (sort) => {
     setSortFilter(sort);
+    setCurrentPage(1);
   };
 
   const toggleModal = (e) => {
@@ -36,10 +42,24 @@ const TasksContainer = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    const search = e.target.value;
+    console.log("🚀 ~ handleSearch ~ search:", search);
+    setSearch(search);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    //* Set a new timeout
+    timeoutRef.current = setTimeout(() => {
+      setFindSearch(search);
+      setCurrentPage(1);
+    }, 1000);
+  };
+
   // Fetch tasks from the API
-  const getTasks = async (pageNumber = 1, rows = 9) => {
+  const getTasks = async () => {
     setLoading(true);
     try {
+      const searchText = findSearch ? `&search=${findSearch}` : "";
       const searchFilter = filter ? `&status=${filter}` : "";
       const sortByDate = sortDate
         ? `&startDate=${dueDate?.normal}&endDate=${dueDate?.normal}`
@@ -47,7 +67,7 @@ const TasksContainer = () => {
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
 
       const { data } = await axios.get(
-        `/owner/task?page=${pageNumber}&pageSize=${rows}${searchFilter}${sortByFilter}${sortByDate}`
+        `/owner/task?page=${currentPage}&pageSize=9${searchText}${searchFilter}${sortByFilter}${sortByDate}`
       );
 
       // const { data } = await axios.get(
@@ -55,6 +75,7 @@ const TasksContainer = () => {
       // );
       setTaskData(data?.data?.data || []);
       setPageDetails(data?.data?.paginationDetails || []);
+      setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
       console.error("Error fetching Task data:", err);
     } finally {
@@ -64,11 +85,11 @@ const TasksContainer = () => {
 
   useEffect(() => {
     getTasks();
-  }, [filter, sortFilter]);
+  }, [filter, sortFilter, findSearch, currentPage]);
 
-  const filteredData = taskData?.filter((item) =>
-    item?.task?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = taskData?.filter((item) =>
+  //   item?.task?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
 
   return (
     <div className="h-full w-full flex flex-col gap-6 justify-start items-center">
@@ -88,7 +109,7 @@ const TasksContainer = () => {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearch(e)}
               placeholder="Search here"
               className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
             />
@@ -114,7 +135,10 @@ const TasksContainer = () => {
         <div className="w-full flex flex-col sm:flex-row justify-between items-center">
           <div className="w-full sm:w-auto flex flex-wrap gap-2 justify-start items-center">
             <button
-              onClick={() => setFilter("")}
+              onClick={() => {
+                setFilter("");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == ""
                   ? "bg-[#fff] text-[#001229]"
@@ -124,7 +148,10 @@ const TasksContainer = () => {
               All
             </button>
             <button
-              onClick={() => setFilter("newtask")}
+              onClick={() => {
+                setFilter("newtask");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "newtask"
                   ? "bg-[#fff] text-[#001229]"
@@ -134,7 +161,10 @@ const TasksContainer = () => {
               New
             </button>
             <button
-              onClick={() => setFilter("upcomingtask")}
+              onClick={() => {
+                setFilter("upcomingtask");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "upcomingtask"
                   ? "bg-[#fff] text-[#001229]"
@@ -144,7 +174,10 @@ const TasksContainer = () => {
               Upcoming
             </button>
             <button
-              onClick={() => setFilter("inprogress")}
+              onClick={() => {
+                setFilter("inprogress");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "inprogress"
                   ? "bg-[#fff] text-[#001229]"
@@ -154,7 +187,10 @@ const TasksContainer = () => {
               In-Progress
             </button>
             <button
-              onClick={() => setFilter("completed")}
+              onClick={() => {
+                setFilter("completed");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "completed"
                   ? "bg-[#fff] text-[#001229]"
@@ -164,7 +200,10 @@ const TasksContainer = () => {
               Completed
             </button>
             <button
-              onClick={() => setFilter("recurring")}
+              onClick={() => {
+                setFilter("recurring");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "recurring"
                   ? "bg-[#fff] text-[#001229]"
@@ -174,7 +213,10 @@ const TasksContainer = () => {
               Recurring
             </button>
             <button
-              onClick={() => setFilter("overdue")}
+              onClick={() => {
+                setFilter("overdue");
+                setCurrentPage(1);
+              }}
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "overdue"
                   ? "bg-[#fff] text-[#001229]"
@@ -252,8 +294,8 @@ const TasksContainer = () => {
         <div className="w-full h-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {loading ? (
             <TasksListLoader />
-          ) : filteredData?.length > 0 ? (
-            filteredData?.map((task, index) => {
+          ) : taskData?.length > 0 ? (
+            taskData?.map((task, index) => {
               const assignedBy = task?.assignBy
                 ? task?.assignBy?.name
                 : "Unknown"; // Adjust based on the API response structure
@@ -304,11 +346,10 @@ const TasksContainer = () => {
       </div>
       <div className="w-full flex justify-center pb-4">
         <Pagination
-          page={pageDetails?.currentPage}
-          totalPages={pageDetails?.totalPages}
-          rowsPerPage={9}
-          selectedFilter={filter}
-          onPageChange={getTasks}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          setTotalPages={setTotalPages}
         />
       </div>
     </div>

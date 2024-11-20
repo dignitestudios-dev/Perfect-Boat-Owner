@@ -7,11 +7,13 @@ const JobType = ({
   toggleJobTitleDropdown,
   jobType,
   setJobType,
+  setCurrentPage = "",
 }) => {
   const { dropDown } = useContext(GlobalContext);
 
   const handleCheckboxChange = (job) => {
     setJobType(job);
+    setCurrentPage(1);
   };
 
   return (

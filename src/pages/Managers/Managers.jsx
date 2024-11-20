@@ -8,39 +8,57 @@ import Pagination from "../../components/global/pagination/Pagination";
 const Managers = () => {
   // const {managers, loadingManagers } = useContext(GlobalContext)
   const [managers, setManagers] = useState([]);
-  const [loadingManagers, setLoadingManagers] = useState(false)
-  const [pageDetails, setPageDetails] = useState({})
+  const [loadingManagers, setLoadingManagers] = useState(false);
+  const [pageDetails, setPageDetails] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [findSearch, setFindSearch] = useState("");
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
-  const getManagers = async (pageNumber = 1, rows = 15, jobTitle="all", locations="all") => {
+  const getManagers = async () => {
     setLoadingManagers(true);
     try {
-      const jobQuery = jobTitle !== "all" ? `&jobTitle=${jobTitle}` : "";
-      const locationQuery = locations !== "all" ? `&location=${locations}` : "";
-      const { data } = await axios.get(`/owner/manager?page=${pageNumber}&pageSize=${rows}${jobQuery}${locationQuery}`);
+      const searchText = findSearch ? `&search=${findSearch}` : "";
+      const jobQuery = jobType !== "all" ? `&jobTitle=${jobType}` : "";
+      const locationQuery =
+        locationType !== "all" ? `&location=${locationType}` : "";
+      const { data } = await axios.get(
+        `/owner/manager?page=${currentPage}&pageSize=15${searchText}${jobQuery}${locationQuery}`
+      );
       setManagers(data?.data?.data);
-      setPageDetails(data?.data?.paginationDetails)
+      setPageDetails(data?.data?.paginationDetails);
+      setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
-      
     } finally {
       setLoadingManagers(false);
     }
   };
-  useEffect(()=>{
-    getManagers()
-  },[])
+  useEffect(() => {
+    getManagers();
+  }, [currentPage, findSearch, jobType, locationType]);
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
-      <ManagersTableBig data={managers} loading={loadingManagers} getManagers={getManagers}/>
+      <ManagersTableBig
+        data={managers}
+        loading={loadingManagers}
+        getManagers={getManagers}
+        locationType={locationType}
+        setFindSearch={setFindSearch}
+        setLocationType={setLocationType}
+        jobType={jobType}
+        setJobType={setJobType}
+        setCurrentPage={setCurrentPage}
+      />
       <div className="w-full flex justify-center pb-4">
-            <Pagination
-              page={pageDetails?.currentPage}
-              totalPages={pageDetails?.totalPages}
-              rowsPerPage={15}
-              // selectedFilter={selectedFilter}
-              onPageChange={getManagers}
-            />
-          </div>
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          setTotalPages={setTotalPages}
+        />
+      </div>
     </div>
   );
 };

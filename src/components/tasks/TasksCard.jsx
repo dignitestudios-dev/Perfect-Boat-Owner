@@ -88,7 +88,6 @@ const TasksCard = ({ getTasks, data }) => {
                 {data?.taskType?.length > 30
                   ? data?.taskType?.slice(0, 30) + "..."
                   : data?.taskType}
-                {}
               </span>
             </span>
             <span className="text-[15px] font-normal leading-[21.6px] text-white/50">

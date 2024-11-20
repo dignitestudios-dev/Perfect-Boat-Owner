@@ -12,10 +12,21 @@ import { ErrorToast } from "../global/Toaster";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 import { CiExport } from "react-icons/ci";
-import Pagination from "../global/pagination/Pagination";
 
-const ManagerTableBig = ({ data, loading, getManagers }) => {
+const ManagerTableBig = ({
+  data,
+  loading,
+  getManagers,
+  locationType,
+  setFindSearch,
+  setLocationType,
+  jobType,
+  setJobType,
+  setCurrentPage,
+}) => {
   const { navigate, setUpdateManager } = useContext(GlobalContext);
+  const timeoutRef = useRef(null);
+
   const [search, setSearch] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,15 +37,12 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
   const [deactivateLoading, setDeactivateLoading] = useState(false);
   const [exportLoader, setExportLoader] = useState(false);
 
-  const filteredData = data.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = data?.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -85,9 +93,18 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
     // setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    getManagers(1, 15, jobType, locationType);
-  }, [jobType, locationType]);
+  const handleSearch = (e) => {
+    const search = e.target.value;
+
+    setSearch(search);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    //* Set a new timeout
+    timeoutRef.current = setTimeout(() => {
+      setFindSearch(search);
+      setCurrentPage(1);
+    }, 1000);
+  };
 
   const exportManagers = async () => {
     setExportLoader(true);
@@ -134,7 +151,7 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -179,58 +196,63 @@ const ManagerTableBig = ({ data, loading, getManagers }) => {
                 toggleJobTitleDropdown={toggleJobTitleDropdown}
                 jobType={jobType}
                 setJobType={setJobType}
+                setCurrentPage={setCurrentPage}
               />
               <LocationType
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                setCurrentPage={setCurrentPage}
               />
               <span className="w-full flex justify-start items-center px-[170px]">
                 Action
               </span>
             </div>
-
-            {filteredData?.map((manager, index) => (
-              <div
-                onClick={() => handleEditClick(manager)}
-                className="w-full h-8 grid grid-cols-5 border-b cursor-pointer
-               border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
-              >
-                <span
-                  key={index}
-                  className="w-full flex justify-start items-center"
+            {data?.length > 0 ? (
+              data?.map((manager, index) => (
+                <div
+                  onClick={() => handleEditClick(manager)}
+                  className="w-full h-8 grid grid-cols-5 border-b cursor-pointer
+                 border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                 >
-                  {manager?.name}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {manager?.email}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {manager?.jobtitle ?? "---"}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {manager?.location ?? "---"}
-                </span>
-                <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
                   <span
-                    className="flex justify-start items-center"
-                    onClick={() => handleEditClick(manager)}
+                    key={index}
+                    className="w-full flex justify-start items-center"
                   >
-                    <FaRegEdit />
+                    {manager?.name}
                   </span>
-                  <span
-                    className="flex justify-start items-center"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClick(manager?._id);
-                    }}
-                  >
-                    <RiDeleteBinLine />
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.email}
                   </span>
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.jobtitle ?? "---"}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.location ?? "---"}
+                  </span>
+                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
+                    <span
+                      className="flex justify-start items-center"
+                      onClick={() => handleEditClick(manager)}
+                    >
+                      <FaRegEdit />
+                    </span>
+                    <span
+                      className="flex justify-start items-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(manager?._id);
+                      }}
+                    >
+                      <RiDeleteBinLine />
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>No record found</div>
+            )}
           </div>
         </div>
       )}

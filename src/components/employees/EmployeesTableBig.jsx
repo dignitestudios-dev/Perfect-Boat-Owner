@@ -14,8 +14,20 @@ import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 import { CiExport } from "react-icons/ci";
 
-const EmployeesTableBig = ({ data, loading, getEmployees }) => {
+const EmployeesTableBig = ({
+  data,
+  loading,
+  getEmployees,
+  locationType,
+  setFindSearch,
+  setLocationType,
+  jobType,
+  setJobType,
+  setCurrentPage,
+}) => {
+  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
+  const timeoutRef = useRef(null);
 
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,9 +41,6 @@ const EmployeesTableBig = ({ data, loading, getEmployees }) => {
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [deactivateLoading, setDeactivateLoading] = useState(false);
 
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
-
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
@@ -40,9 +49,9 @@ const EmployeesTableBig = ({ data, loading, getEmployees }) => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const filteredData = data?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
+  // const filteredData = data?.filter((item) =>
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+  // );
 
   const handleEditClick = (id) => {
     navigate(`/edit-employee/${id}`);
@@ -84,9 +93,17 @@ const EmployeesTableBig = ({ data, loading, getEmployees }) => {
     // setIsModalOpen(false); // Close the delete modal when deactivate modal opens
   };
 
-  useEffect(() => {
-    getEmployees(1, 15, jobType, locationType);
-  }, [jobType, locationType]);
+  const handleSearch = (e) => {
+    const search = e.target.value;
+
+    setSearch(search);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    //* Set a new timeout
+    timeoutRef.current = setTimeout(() => {
+      setFindSearch(search);
+    }, 1000);
+  };
 
   const exportManagers = async () => {
     setExportLoader(true);
@@ -133,7 +150,7 @@ const EmployeesTableBig = ({ data, loading, getEmployees }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -180,12 +197,14 @@ const EmployeesTableBig = ({ data, loading, getEmployees }) => {
               toggleJobTitleDropdown={toggleJobTitleDropdown}
               jobType={jobType}
               setJobType={setJobType}
+              setCurrentPage={setCurrentPage}
             />
             <LocationType
               locationDropdownOpen={locationDropdownOpen}
               toggleLocationDropdown={toggleLocationDropdown}
               locationType={locationType}
               setLocationType={setLocationType}
+              setCurrentPage={setCurrentPage}
             />
             <span className="w-full flex justify-start items-center px-[170px]">
               Action
@@ -196,50 +215,53 @@ const EmployeesTableBig = ({ data, loading, getEmployees }) => {
             <ManagerListLoader />
           ) : (
             <>
-              {/* Example Data Rows */}
-              {filteredData?.map((employee, index) => (
-                <div
-                  onClick={() => handleEditClick(employee?._id)}
-                  className=" cursor-pointer w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
+              {data?.length > 0 ? (
+                data?.map((employee, index) => (
+                  <div
+                    onClick={() => handleEditClick(employee?._id)}
+                    className=" cursor-pointer w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
             font-medium leading-[14.85px] text-white justify-start items-center"
-                >
-                  <span
-                    key={index}
-                    className="w-full flex justify-start items-center"
                   >
-                    {employee?.name}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {employee?.email}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {employee?.jobtitle}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {employee?.location || "---"}
-                  </span>
-                  <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
                     <span
-                      className="flex justify-start items-center cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditClick(employee?._id);
-                      }}
+                      key={index}
+                      className="w-full flex justify-start items-center"
                     >
-                      <FaRegEdit />
+                      {employee?.name}
                     </span>
-                    <span
-                      className="flex justify-start items-center cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteClick(employee?._id);
-                      }}
-                    >
-                      <RiDeleteBinLine />
+                    <span className="w-full flex justify-start items-center">
+                      {employee?.email}
                     </span>
+                    <span className="w-full flex justify-start items-center">
+                      {employee?.jobtitle}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {employee?.location || "---"}
+                    </span>
+                    <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
+                      <span
+                        className="flex justify-start items-center cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(employee?._id);
+                        }}
+                      >
+                        <FaRegEdit />
+                      </span>
+                      <span
+                        className="flex justify-start items-center cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(employee?._id);
+                        }}
+                      >
+                        <RiDeleteBinLine />
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div>No record found</div>
+              )}
             </>
           )}
         </div>

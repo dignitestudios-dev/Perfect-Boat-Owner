@@ -7,11 +7,13 @@ const LocationType = ({
   toggleLocationDropdown,
   setLocationType,
   locationType,
+  setCurrentPage = "",
 }) => {
   const { dropDown } = useContext(GlobalContext);
 
   const handleCheckboxChange = (location) => {
     setLocationType(location);
+    setCurrentPage(1);
   };
 
   return (
