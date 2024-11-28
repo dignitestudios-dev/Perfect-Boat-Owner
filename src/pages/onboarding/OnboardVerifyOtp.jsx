@@ -103,7 +103,7 @@ const OnboardVerifyOtp = () => {
 
       if (response.status === 200) {
         // navigate("/select-package");
-        SuccessToast(response?.data?.message);
+        SuccessToast("Otp has been send to your email");
         setResendLoading(false);
         handleRestart();
       } else {

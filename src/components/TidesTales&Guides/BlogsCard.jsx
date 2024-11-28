@@ -90,9 +90,8 @@ const BlogsCard = ({ blog }) => {
             </h1>
             <p className="text-[12px] font-normal leading-[16.2px] text-white/50">
               {parseHTML(blog?.story)?.length > 150
-                ? parseHTML(blog?.story)?.slice(0, 150)
+                ? parseHTML(blog?.story)?.slice(0, 150) + "..."
                 : parseHTML(blog?.story)}
-              ...
             </p>
           </div>
         </div>
