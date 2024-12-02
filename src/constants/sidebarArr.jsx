@@ -9,6 +9,7 @@ import { LuArrowRightLeft, LuUserMinus } from "react-icons/lu";
 import { TiDocumentText } from "react-icons/ti";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlinePrivacyTip } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export const sidebarArr = [
   {
@@ -102,6 +103,11 @@ export const sidebarArr = [
     title: "Tides, Tales & Guides",
     url: "/blogs",
     icon: <TiDocumentText />,
+  },
+  {
+    title: "Settings",
+    url: "/profile",
+    icon: <IoSettingsOutline />,
   },
   {
     title: "Privacy Policy",

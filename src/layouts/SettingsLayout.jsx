@@ -6,7 +6,6 @@ import { IoKeyOutline } from "react-icons/io5";
 import { RiProfileLine } from "react-icons/ri";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 
-
 const SettingsLayout = ({ page }) => {
   const { navigate, activeLink } = useContext(GlobalContext);
   return (
@@ -45,17 +44,13 @@ const SettingsLayout = ({ page }) => {
             <span className="text-sm">Notifications</span>
           </button>
           <button
-            onClick={() =>
-              navigate("/Settings/Billing", "Billing")
-            }
+            onClick={() => navigate("/Settings/Billing", "Billing")}
             className={`w-auto text-lg font-medium ${
-              activeLink == "Billing"
-                ? "text-[#028EE6]"
-                : "text-white/50"
+              activeLink == "Billing" ? "text-[#028EE6]" : "text-white/50"
             }  hover:text-[#028EE6] focus-within:text-[#028EE6] flex justify-start items-center gap-2 `}
           >
-<LiaFileInvoiceDollarSolid />
-<span className="text-sm">Billing</span>
+            <LiaFileInvoiceDollarSolid />
+            <span className="text-sm">Billing</span>
           </button>
         </div>
         <span className="h-full w-[1px] bg-white/10 rounded-full"></span>

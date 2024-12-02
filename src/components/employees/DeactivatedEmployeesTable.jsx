@@ -16,57 +16,6 @@ const DeactivatedEmployeesTable = () => {
 
   const dropDownRef = useRef(null);
 
-  // Dummy data for demonstration
-  // const deletedUsers = [
-  //   {
-  //     name: "Mark Taylor",
-  //     email: "markT@gmail.com",
-  //     jobTitle: "Dock Manager",
-  //     userType: "Employee",
-  //     location: "East California Dock",
-  //   },
-  //   {
-  //     name: "Lisa Johnson",
-  //     email: "lisaJ@gmail.com",
-  //     jobTitle: "Cargo Handler",
-  //     userType: "Employee",
-  //     location: "West California Dock",
-  //   },
-  //   {
-  //     name: "James Brown",
-  //     email: "jamesB@gmail.com",
-  //     jobTitle: "Warehouse Supervisor",
-  //     userType: "Manager",
-  //     location: "East California Dock",
-  //   },
-  //   // Add more deleted users...
-  // ];
-
-  // const deactivatedUsers = [
-  //   {
-  //     name: "Mike Smith",
-  //     email: "mikesmith@gmail.com",
-  //     jobTitle: "Dock Guard",
-  //     userType: "Employee",
-  //     location: "East California Dock",
-  //   },
-  //   {
-  //     name: "Sarah Davis",
-  //     email: "sarahD@gmail.com",
-  //     jobTitle: "Shipping Coordinator",
-  //     userType: "Manager",
-  //     location: "West California Dock",
-  //   },
-  //   {
-  //     name: "David Wilson",
-  //     email: "davidW@gmail.com",
-  //     jobTitle: "Inventory Clerk",
-  //     userType: "Employee",
-  //     location: "East California Dock",
-  //   },
-  //   // Add more deactivated users...
-  // ];
-
   // const users = activeTab === "deleted" ? deletedUsers : deactivatedUsers;
 
   const toggleDropDownFilter = () => {
@@ -90,16 +39,20 @@ const DeactivatedEmployeesTable = () => {
     setIsModalOpen(false);
   };
 
+  const [activateLoading, setActivateLoading] = useState(false);
   const handleReactivate = async () => {
     try {
+      setActivateLoading(true);
       const response = await axios.put(`/owner/user/activate/${userId}`);
 
       if (response.status === 200) {
         setIsModalOpen(false);
         getUsersData();
+        setActivateLoading(false);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
+      setActivateLoading(false);
     }
   };
 
@@ -118,10 +71,13 @@ const DeactivatedEmployeesTable = () => {
       } else {
         const { data } = await axios.get(`/owner/user?isDelete=${false}`);
         if (data.success === true) {
+          console.log("🚀 ~ getUsersData ~ data:", data);
           setUsersData(data?.data);
         }
       }
     } catch (error) {
+      setUsersData([]);
+      setDelUsersData([]);
     } finally {
       setLoading(false);
     }
@@ -448,6 +404,7 @@ const DeactivatedEmployeesTable = () => {
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           reactivate={handleReactivate}
+          activateLoading={activateLoading}
         />
       )}
     </div>

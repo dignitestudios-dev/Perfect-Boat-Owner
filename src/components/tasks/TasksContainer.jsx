@@ -247,7 +247,7 @@ const TasksContainer = () => {
                   <input
                     checked={sortFilter === "all"}
                     onChange={() => handleCheckboxChange("all")}
-                    type="checkbox"
+                    type="radio"
                     className="w-3 h-3 accent-[#199BD1]"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
@@ -258,7 +258,7 @@ const TasksContainer = () => {
                   <input
                     checked={sortFilter === "latest"}
                     onChange={() => handleCheckboxChange("latest")}
-                    type="checkbox"
+                    type="radio"
                     className="w-3 h-3 accent-[#199BD1]"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
@@ -269,7 +269,7 @@ const TasksContainer = () => {
                   <input
                     checked={sortFilter === "earliest"}
                     onChange={() => handleCheckboxChange("earliest")}
-                    type="checkbox"
+                    type="radio"
                     className="w-3 h-3 accent-[#199BD1]"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
@@ -279,7 +279,7 @@ const TasksContainer = () => {
                 <div className="w-full flex justify-start items-start gap-2">
                   <input
                     onChange={() => setIsCalendarOpen(true)}
-                    type="checkbox"
+                    type="radio"
                     className="w-3 h-3 accent-[#199BD1]"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">

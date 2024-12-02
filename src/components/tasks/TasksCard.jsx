@@ -6,11 +6,20 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import { getUnixDate } from "../../data/DateFormat";
 
 const statusColors = {
-  newtask: "#FF007F",
+  newtask: "#FF69B4",
   overdue: "#FF3B30",
   default: "#FFCC00",
   "in-progress": "#36B8F3",
   completed: "#1FBA46",
+  upcomingtask:"#FF007F"
+};
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA461F",
+  upcomingtask:"#FF007F1F"
 };
 
 const statusLiteColors = {
@@ -19,6 +28,7 @@ const statusLiteColors = {
   default: "#FFCC00",
   "in-progress": "#36B8F3",
   completed: "#1FBA46",
+  
 };
 
 const STATUS_ENUM = {
@@ -65,24 +75,25 @@ const TasksCard = ({ getTasks, data }) => {
           }}
         ></div>
         <div className="w-[calc(100%-6px)] h-full py-4 px-6 flex flex-col gap-2 justify-start items-start relative">
-          <div className="w-full h-auto flex justify-between items-center">
-            <h3 className="text-left text-[20px] font-bold leading-[27px]">
+          <div className="w-full h-auto text-nowrap flex justify-between items-center">
+            <h3 className="text-left   text-[20px] font-bold leading-[27px] ">
               {data?.task?.length > 20
-                ? data?.task?.slice(0, 20) + "..."
+                ? data?.task?.slice(0, 15) + "..."
                 : data?.task}
             </h3>
             <span
-              className="w-[70px] capitalize h-[27px] rounded-full
+              className="w-[115px] ms-8 capitalize h-[27px] rounded-full
              bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
               style={{
                 color: statusColors[data?.status] || statusColors["default"],
+                backgroundColor: statusColorsbg[data?.status] || statusColorsbg["default"],
               }}
             >
               {getFormattedStatus(data?.status)}
             </span>
           </div>
           <div className="w-auto flex flex-col justify-start items-start gap-1">
-            <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
+            <span className="text-[15px]  font-normal leading-[21.6px] text-white/50">
               Task Type:{" "}
               <span className="capitalize font-medium">
                 {data?.taskType?.length > 30

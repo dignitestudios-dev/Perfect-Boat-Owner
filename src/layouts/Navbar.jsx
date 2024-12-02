@@ -6,11 +6,12 @@ import Cookies from "js-cookie";
 
 const Navbar = () => {
   const { navigate, notifications } = useContext(GlobalContext);
+  console.log(notifications,"notifications")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const unreadCount = notifications.filter(
-    (notification) => !notification.isRead
-  ).length;
-
+    (notification) => !notification?.isRead
+  )?.length;
+console.log(unreadCount,"unreadCount")
   return (
     <div className="w-full h-[60px] bg-[#001229] flex justify-end items-center px-4">
       <div className="flex items-center gap-6 py-4 font-normal text-gray-900">

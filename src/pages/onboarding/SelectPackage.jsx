@@ -52,7 +52,7 @@ const SelectPackage = () => {
           <h1 className="text-[40px] md:text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px] text-center">
             Select Your Package
           </h1>
-          <p className="w-full md:w-[70%] lg:w-[45%] text-center text-[16px] font-medium leading-[21.6px] tracking-[-1.2px] text-[#fff]/[0.5]">
+          <p className="w-full md:w-[70%] lg:w-[45%] text-center text-[16px] font-medium leading-[21.6px]    text-[#fff]/[0.5]">
             Discover the perfect plan that aligns with your preferences. Each
             subscription tier offers unique features and benefits ensuring a
             tailored experience just for you

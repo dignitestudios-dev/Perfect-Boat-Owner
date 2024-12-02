@@ -362,7 +362,7 @@ const AddFleet = () => {
                         )}
                       </div>
                       <AddFleetInput
-                        label="Size (m)"
+                        label="Size (ft)"
                         placeholder="Enter Size"
                         type="text"
                         register={register(`size`, {
@@ -406,7 +406,7 @@ const AddFleet = () => {
                   <button
                     type="button"
                     onClick={() => setIsManagerOpen(true)}
-                    className="w-full h-[52px] bg-[#1A293D] text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+                    className="w-full h-[52px] bg-[#1A293D] text-left text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
                   >
                     {passSelectedManagers.length > 0
                       ? passSelectedManagers
@@ -487,7 +487,7 @@ const AddFleet = () => {
                 className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
               >
                 <div className="flex items-center">
-                  <span className="mr-1">Save Fleet</span>
+                  <span className="mr-1">Save Boat</span>
                   {submitLoading && (
                     <FiLoader className="animate-spin text-lg mx-auto" />
                   )}

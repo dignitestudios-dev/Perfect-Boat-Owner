@@ -366,7 +366,7 @@ const EditManager = () => {
                   </div>
                   <div className="flex justify-start items-center gap-2 text-white text-[16px] font-normal leading-[21.6px]">
                     <span className="text-white/50">Password:</span>
-                    <span>*********</span>
+                    <span>{manager?.password}</span>
                   </div>
                 </div>
               </div>

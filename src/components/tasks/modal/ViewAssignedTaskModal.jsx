@@ -1,31 +1,58 @@
-import React, { useContext, useState } from 'react'
-import { getUnixDate } from '../../../data/DateFormat';
-import RequestTaskListLoader from '../loaders/RequestTaskListLoader';
-import { FiSearch } from 'react-icons/fi';
-import TaskType from '../../global/headerDropdowns/TaskType';
-import StatusType from '../../global/headerDropdowns/StatusType';
-import { RiDeleteBinLine } from 'react-icons/ri';
-import { FaRegEdit } from 'react-icons/fa';
-import DeletedModal from '../../global/DeletedModal';
-import { useNavigate } from 'react-router-dom';
-import { GlobalContext } from '../../../contexts/GlobalContext';
+import React, { useContext, useState } from "react";
+import { getUnixDate } from "../../../data/DateFormat";
+import RequestTaskListLoader from "../loaders/RequestTaskListLoader";
+import { FiSearch } from "react-icons/fi";
+import TaskType from "../../global/headerDropdowns/TaskType";
+import StatusType from "../../global/headerDropdowns/StatusType";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { FaRegEdit } from "react-icons/fa";
+import DeletedModal from "../../global/DeletedModal";
+import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../../contexts/GlobalContext";
 
 const statusColors = {
-    "newtask": "#FF007F",
-    "overdue": "#FF3B30", 
-    "default": "#FFCC00", 
-    "in-progress":"#36B8F3",
-    "completed":"#1FBA46"
-  };
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA46",
+};
 
-const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleRemoveTask}) => {
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
+};
+
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
+};
+
+const ViewAssignedTaskModal = ({
+  setIsOpen,
+  employeeTasks,
+  loading = false,
+  handleRemoveTask,
+}) => {
   const navigateTo = useNavigate();
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
 
   const [search, setSearch] = useState("");
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter , setStatusFilter] = useState("all");
-  const [taskType, setTaskType] = useState("all")
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [taskType, setTaskType] = useState("all");
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -39,41 +66,49 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
   };
 
   const filteredData = employeeTasks?.filter((item) => {
-    const matchesSearch = search ? item?.boatName?.toLowerCase()?.includes(search?.toLowerCase()) : true;
-    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
-    const taskTypeMatch = taskType && taskType !== "all" ? item?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
+    const matchesSearch = search
+      ? item?.boatName?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const matchesStatus =
+      statusFilter && statusFilter !== "all"
+        ? item?.status === statusFilter
+        : true;
+    const taskTypeMatch =
+      taskType && taskType !== "all"
+        ? item?.taskType?.toLowerCase() === taskType?.toLowerCase()
+        : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
-    
-    return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
-            <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Select Tasks</h3>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-lg font-bold"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
-                  <span className="w-[32px] h-full flex items-center justify-center">
-                    <FiSearch className="text-white/50 text-lg" />
-                  </span>
-                  <input
-                  onChange={(e)=>setSearch(e.target.value)}
-                    type="text"
-                    placeholder="Search here"
-                    className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
-                  />
-                </div>
-              </div>
-              
-              <div className="relative h-full overflow-auto">
-              <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+        <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Select Tasks</h3>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-lg font-bold"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
+              <span className="w-[32px] h-full flex items-center justify-center">
+                <FiSearch className="text-white/50 text-lg" />
+              </span>
+              <input
+                onChange={(e) => setSearch(e.target.value)}
+                type="text"
+                placeholder="Search here"
+                className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
+              />
+            </div>
+          </div>
+
+          <div className="relative h-full overflow-auto">
+            <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
                 <span className="w-full flex justify-start items-center">
                   Boat Name
@@ -81,7 +116,8 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
                 <TaskType
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
-                  taskType={taskType} setTaskType={setTaskType}
+                  taskType={taskType}
+                  setTaskType={setTaskType}
                 />
                 <span className="w-full flex justify-start items-center">
                   Due Date
@@ -124,7 +160,7 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
                           }}
                           className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
                         >
-                          {task?.status}
+                          {getFormattedStatus(task?.status)}
                         </span>
                       </span>
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
@@ -139,7 +175,7 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRemoveTask(task?._id) // Open modal when delete icon is clicked
+                            handleRemoveTask(task?._id); // Open modal when delete icon is clicked
                           }}
                         >
                           <RiDeleteBinLine />
@@ -160,11 +196,11 @@ const ViewAssignedTaskModal = ({setIsOpen, employeeTasks, loading=false, handleR
 
               {/* Add more rows as needed */}
             </div>
-              </div>
-            </div>
           </div>
         </div>
-      );
-}
+      </div>
+    </div>
+  );
+};
 
-export default ViewAssignedTaskModal
+export default ViewAssignedTaskModal;

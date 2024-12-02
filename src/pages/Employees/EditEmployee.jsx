@@ -28,6 +28,24 @@ const statusColors = {
   completed: "#1FBA46",
 };
 
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
+};
+
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  "in-progress": "#36B8F3",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
+};
+
 const Dropdown = ({ options, label }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -80,6 +98,9 @@ const Dropdown = ({ options, label }) => {
 };
 
 const EditEmployee = () => {
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const { id } = useParams();
   const navigateTo = useNavigate();
@@ -407,7 +428,7 @@ const EditEmployee = () => {
                   </div>
                   <div className="flex justify-start items-center gap-2 text-white text-[16px] font-normal leading-[21.6px]">
                     <span className="text-white/50">Password:</span>
-                    <span>*************</span>
+                    <span>{employee?.password}</span>
                   </div>
                 </div>
               </div>
@@ -519,17 +540,20 @@ const EditEmployee = () => {
                       <span className="w-full flex justify-start items-center ">
                         {task?.reoccuringDays}
                       </span>
-                      <span className="w-full flex justify-start items-center ">
-                        <span
-                          style={{
-                            color:
-                              statusColors[task?.status] ||
-                              statusColors["default"],
-                          }}
-                          className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
-                        >
-                          {task?.status}
-                        </span>
+
+                      <span
+                        className="w-[100px] capitalize h-[27px] rounded-full
+                         bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
+                        style={{
+                          color:
+                            statusColors[task?.status] ||
+                            statusColors["default"],
+                          backgroundColor:
+                            statusColorsbg[task?.status] ||
+                            statusColorsbg["default"],
+                        }}
+                      >
+                        {getFormattedStatus(task?.status)}
                       </span>
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
                         <span

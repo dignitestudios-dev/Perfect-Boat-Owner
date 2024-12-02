@@ -24,12 +24,12 @@ instance.interceptors.response.use(
   },
   function (error) {
     // *For unAuthorized
-    if (error.response.status === 401) {
+    if (error.response.status === 401 || error.response.status === 403) {
       Cookies.remove("token");
       Cookies.remove("name");
       Cookies.remove("email");
 
-      // window.location.href = "/login";
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
