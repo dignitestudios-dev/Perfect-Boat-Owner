@@ -90,7 +90,7 @@ const VerifyOtp = () => {
       };
       const response = await axios.post("/auth/forget/otp/email", obj);
       if (response.status === 200) {
-        SuccessToast("Otp Resend Successfully");
+        SuccessToast("OTP Resend Successfully");
       } else {
         ErrorToast(response?.data?.message);
       }

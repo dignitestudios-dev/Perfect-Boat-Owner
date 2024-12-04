@@ -36,7 +36,7 @@ const ForgotPassword = () => {
         sessionStorage.setItem("email", formData.email);
         navigate("/verify-otp");
         setLoading(false);
-        SuccessToast("Otp Send Successfully");
+        SuccessToast("OTP Send Successfully");
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
