@@ -10,7 +10,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 const SelectPackage = () => {
   const { navigate } = useContext(GlobalContext);
   const { isFreeTrial } = useContext(AuthContext);
-  console.log("🚀 ~ SelectPackage ~ isFreeTrial:", isFreeTrial);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -103,9 +102,11 @@ const SelectPackage = () => {
                   <span className="text-[14px] font-normal text-white">
                     /Annual
                   </span>
-                  <span className="absolute -top-4 right-10 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
-                    Includes Free Trial
-                  </span>
+                  {isFreeTrial && (
+                    <span className="absolute -top-4 right-10 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
+                      Includes Free Trial
+                    </span>
+                  )}
                 </div>
 
                 <button
