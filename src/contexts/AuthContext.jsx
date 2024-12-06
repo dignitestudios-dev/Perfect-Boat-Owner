@@ -8,6 +8,7 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => Cookies.get("token"));
   const [name, setName] = useState(Cookies.get("name"));
   const [email, setEmail] = useState(Cookies.get("email"));
+  const [isFreeTrial, SetIsFreeTrial] = useState(false);
 
   const login = (data) => {
     if (data) {
@@ -19,6 +20,7 @@ const AuthProvider = ({ children }) => {
       setToken(data?.data?.token);
       setName(data?.data?.userRecord?.name);
       setEmail(data?.data?.userRecord?.email);
+      SetIsFreeTrial(data?.data?.isFreeTrial);
     }
   };
 
@@ -37,7 +39,9 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, email, name }}>
+    <AuthContext.Provider
+      value={{ token, login, logout, email, name, isFreeTrial }}
+    >
       {children}
     </AuthContext.Provider>
   );

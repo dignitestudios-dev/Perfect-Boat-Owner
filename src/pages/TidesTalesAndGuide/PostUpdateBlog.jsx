@@ -27,6 +27,8 @@ const PostUpdateBlog = () => {
     coverUrl,
     setCoverUrl,
   } = useContext(BlogContext);
+  console.log("🚀 ~ PostUpdateBlog ~ coverUrl:", coverUrl);
+  console.log("🚀 ~ PostUpdateBlog ~ coverFile:", coverFile);
 
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +65,9 @@ const PostUpdateBlog = () => {
       const formdata = new FormData();
       formdata.append("title", title);
       {
-        coverFile && formdata.append("cover", coverFile);
+        coverUrl
+          ? formdata.append("updateCover", coverUrl)
+          : formdata.append("cover", coverFile);
       }
       formdata.append("subTitle", subTitle);
       formdata.append("imageTitle", imageText);

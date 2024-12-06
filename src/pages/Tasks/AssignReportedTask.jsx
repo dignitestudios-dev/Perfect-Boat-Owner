@@ -405,6 +405,7 @@ const AssignReportedTask = () => {
               isOpen={isCalendarOpen}
               setIsOpen={setIsCalendarOpen}
               setDueDate={setDueDate}
+              isTask={true}
             />
           </div>
         </div>

@@ -5,9 +5,13 @@ import { AuthMockup } from "../../assets/export";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const SelectPackage = () => {
   const { navigate } = useContext(GlobalContext);
+  const { isFreeTrial } = useContext(AuthContext);
+  console.log("🚀 ~ SelectPackage ~ isFreeTrial:", isFreeTrial);
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectLoading, setSelectLoading] = useState(false);
@@ -99,15 +103,20 @@ const SelectPackage = () => {
                   <span className="text-[14px] font-normal text-white">
                     /Annual
                   </span>
+                  <span className="absolute -top-4 right-10 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
+                    Includes Free Trial
+                  </span>
                 </div>
 
                 <button
                   onClick={() => selectPlan(subscriptions[0]?._id)}
                   className="outline-none bg-[#55C9FA] text-white rounded-full w-[126px] h-[44px] flex items-center font-[550] justify-center"
                 >
-                <div className="flex items-center">
-                  <span className="mr-1">Buy now </span>
-                  {selectLoading && (<FiLoader className="animate-spin text-lg mx-auto" />)}
+                  <div className="flex items-center">
+                    <span className="mr-1">Buy now </span>
+                    {selectLoading && (
+                      <FiLoader className="animate-spin text-lg mx-auto" />
+                    )}
                   </div>
                 </button>
 

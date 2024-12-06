@@ -19,8 +19,11 @@ const DateModal = ({
   setDueDate,
   setInputError,
   isRange = "",
+  isTask = false,
 }) => {
+  // const today = moment().endOf("day");
   const today = moment();
+  const endOfDay = today.endOf("day").toDate();
   const [date, setDate] = useState(today.toDate());
   const dateRef = useRef();
 
@@ -34,8 +37,14 @@ const DateModal = ({
     const formattedDate = date.toISOString().slice(0, 10);
     setDueDate({ normal: formattedDate });
 
-    const unixTimestamp = Math.floor(date.getTime() / 1000);
-    setDueDate((prev) => ({ ...prev, unix: unixTimestamp }));
+    if (isTask) {
+      const unixTimestamp = Math.floor(endOfDay.getTime() / 1000);
+      setDueDate((prev) => ({ ...prev, unix: unixTimestamp }));
+    } else {
+      const unixTimestamp = Math.floor(date.getTime() / 1000);
+      setDueDate((prev) => ({ ...prev, unix: unixTimestamp }));
+    }
+
     setInputError({});
     setIsOpen(false);
   };
