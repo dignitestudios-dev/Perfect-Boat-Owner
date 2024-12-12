@@ -195,7 +195,9 @@ const AssignManager = () => {
                                 )
                               }
                               type="checkbox"
-                              className="w-3 h-3 accent-[#199BD1]"
+                              className="w-4 h-4 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-xs checked:after:p-0.5"
                             />
                           </div>
                           <span className="col-span-2 flex items-center px-2">

@@ -53,12 +53,12 @@ const SelectPackage = () => {
       <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2">
         <div className="w-full bg-[#001229] h-full flex flex-col items-center justify-center ">
           <h1 className="text-[40px] md:text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px] text-center">
-            Select Your Package
+            Subscribe
           </h1>
           <p className="w-full md:w-[70%] lg:w-[45%] text-center text-[16px] font-medium leading-[21.6px]    text-[#fff]/[0.5]">
-            Discover the perfect plan that aligns with your preferences. Each
-            subscription tier offers unique features and benefits ensuring a
-            tailored experience just for you
+            Find the ideal solution designed with your needs in mind. Our
+            subscription offers exclusive features and benefits, delivering a
+            personalized experience just for you and your organization
           </p>
 
           <div className="w-auto grid grid-cols-1  justify-center items-start mt-4 gap-6">
@@ -84,7 +84,7 @@ const SelectPackage = () => {
                 </ul>
               </div>
             ) : (
-              <div className="w-[390px] h-[598px] rounded-[24px] bg-[#1A293D] p-8 flex flex-col gap-6 justify-start items-center">
+              <div className="w-[390px] h-[648px] rounded-[24px] bg-[#1A293D] pt-8 pb-4 px-8 flex flex-col justify-start items-center">
                 <span
                   className="w-auto h-auto py-2 bg-[#001229] text-[14px] text-center tracking-[3px] font-semibold px-4 text-white
                rounded-full flex items-center justify-center"
@@ -92,7 +92,7 @@ const SelectPackage = () => {
                   {subscriptions[0]?.name}
                 </span>
 
-                <div className="w-auto relative flex gap-2 justify-start items-center">
+                <div className="w-auto relative flex justify-start items-center mt-8">
                   <span className="absolute top-2 -left-4 text-xl font-medium text-white">
                     $
                   </span>
@@ -100,10 +100,10 @@ const SelectPackage = () => {
                     {subscriptions[0]?.annualPrice}
                   </span>
                   <span className="text-[14px] font-normal text-white">
-                    /Annual
+                    /Year
                   </span>
                   {isFreeTrial && (
-                    <span className="absolute -top-4 right-10 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
+                    <span className="absolute -top-4 right-6 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
                       Includes Free Trial
                     </span>
                   )}
@@ -111,7 +111,8 @@ const SelectPackage = () => {
 
                 <button
                   onClick={() => selectPlan(subscriptions[0]?._id)}
-                  className="outline-none bg-[#55C9FA] text-white rounded-full w-[126px] h-[44px] flex items-center font-[550] justify-center"
+                  className="outline-none bg-[#55C9FA] text-white rounded-full w-[126px] h-[44px] flex items-center
+                  justify-center font-[550]"
                 >
                   <div className="flex items-center">
                     <span className="mr-1">Buy now </span>
@@ -121,13 +122,26 @@ const SelectPackage = () => {
                   </div>
                 </button>
 
-                <ul className="w-full px-8 text-[16px] text-white font-normal flex flex-col gap-4 justify-start items-start list-disc">
+                <ul
+                  className="mt-3 w-full px-8 text-[16px] text-white font-normal flex flex-col gap-2
+                 justify-start items-start list-disc border-b border-[#243347] pb-3"
+                >
                   {subscriptions[0]?.features.map((item, index) => {
                     if (index < 5) {
                       return <li key={index}>{item}</li>;
                     }
                   })}
                 </ul>
+
+                <div className="bg-[#199BD11F] text-white rounded-xl px-6 py-2 mt-2">
+                  <p className="font-semibold pb-1">Important Note</p>
+                  <p>
+                    A one-time license fee of ${subscriptions[0]?.annualPrice}{" "}
+                    applies and renews annually. A monthly cost of $
+                    {subscriptions[0]?.price} per user will apply for each
+                    employee added.
+                  </p>
+                </div>
               </div>
             )}
 

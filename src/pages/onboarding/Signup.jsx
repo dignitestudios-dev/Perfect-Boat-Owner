@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { AuthMockup } from "../../assets/export";
 import AuthInput from "../../components/onboarding/AuthInput";
 import AuthSubmitBtn from "../../components/onboarding/AuthSubmitBtn";
@@ -18,8 +18,11 @@ const Signup = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
+  const password = useRef({});
+  password.current = watch("password", "");
 
   const createAccount = async (formData) => {
     setLoading(true);
@@ -112,20 +115,39 @@ const Signup = () => {
               required: "Please enter your password.",
               minLength: {
                 value: 8,
-                message: "Password must be at least 8 characters long.",
+                message:
+                  "Password must be at least 8 characters, including uppercase, lowercase, number, and special character.",
               },
               pattern: {
                 value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/,
                 message:
-                  "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+                  "Password must be at least 8 characters, including uppercase, lowercase, number, and special character.",
               },
             })}
-            maxLength={12}
+            maxLength={18}
             text={"Password"}
             placeholder={"Enter your password here"}
             type={"password"}
             error={errors.password}
+          />
+          <AuthInput
+            register={register("confPassword", {
+              required:
+                "Password must be at least 8 characters, including uppercase, lowercase, number, and special character.",
+              minLength: {
+                value: 8,
+                message:
+                  "Password must be at least 8 characters, including uppercase, lowercase, number, and special character.",
+              },
+              validate: (value) =>
+                value === password.current || "Confirm Password does not match",
+            })}
+            maxLength={18}
+            text={"Confirm Password"}
+            placeholder={"Enter confirm password here"}
+            type={"password"}
+            error={errors.confPassword}
           />
         </div>
 

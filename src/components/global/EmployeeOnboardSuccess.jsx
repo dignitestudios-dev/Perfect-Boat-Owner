@@ -40,8 +40,8 @@ const EmployeeOnboardSuccess = ({ isOpen, setIsOpen }) => {
                 Congratulations
               </h1>
               <span className="text-[16px] leading-[21.6px] text-white font-normal text-center">
-                Credentials have been sent to the employee and the employee has
-                been saved.
+                Credentials have been sent to the employee(s) and the
+                employee(S) has been saved.
               </span>
             </div>
           </div>

@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { TbCaretDownFilled } from "react-icons/tb";
+import JobType from "../global/headerDropdowns/JobType";
+import LocationType from "../global/headerDropdowns/LocationType";
 
-const BoatAccessTable = ({
-  boatsData,
-  setIsManagerModalOpen,
-  togglejobFilter,
-  jobRef,
-  jobFilter,
-  toggleLocationFilter,
-  locationRef,
-  locationFilter,
-}) => {
+const BoatAccessTable = ({ boatsData, setIsManagerModalOpen }) => {
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
+  const filteredData = boatsData?.boatAccess?.filter((item) => {
+    const jobTypeMatch =
+      jobType && jobType !== "all"
+        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
+    return locationTypeMatch && jobTypeMatch;
+  });
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <div className="w-full h-auto flex justify-between items-center">
@@ -18,16 +36,6 @@ const BoatAccessTable = ({
           Boat Access
           <span className="text-[12px] font-normal text-white/50"></span>
         </h3>
-      </div>
-
-      <div className="w-full h-auto flex justify-between items-center">
-        {boatsData?.boatAccess?.length === 0 ? (
-          <div></div>
-        ) : (
-          <div className="flex w-1/2 lg:w-[395px] h-[32px] justify-start items-start rounded-[8px] relative">
-            <p>Manager Names have access to all boats by default</p>
-          </div>
-        )}
 
         <button
           type="button"
@@ -45,76 +53,26 @@ const BoatAccessTable = ({
           <span className="w-full flex justify-start items-center">Name</span>
           <span className="w-full flex justify-start items-center">Email</span>
           <span className="w-full flex justify-start items-center relative">
-            <button
-              type="button"
-              onClick={togglejobFilter}
-              className="flex items-center gap-1"
-            >
-              Job Title
-              <TbCaretDownFilled />
-            </button>
-            <div
-              ref={jobRef}
-              className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                jobFilter ? "scale-100" : "scale-0"
-              } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-            >
-              {["Job Title 1", "Job Title 2", "Job Title 3"].map(
-                (jobTitle, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex justify-start items-start gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      {jobTitle}
-                    </span>
-                  </div>
-                )
-              )}
-            </div>
+            <JobType
+              jobTitleDropdownOpen={jobTitleDropdownOpen}
+              toggleJobTitleDropdown={toggleJobTitleDropdown}
+              jobType={jobType}
+              setJobType={setJobType}
+            />
           </span>
 
           <span className="w-full flex justify-start items-center relative">
-            <button
-              type="button"
-              onClick={toggleLocationFilter}
-              className="flex items-center gap-1"
-            >
-              Location
-              <TbCaretDownFilled />
-            </button>
-            <div
-              ref={locationRef}
-              className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                locationFilter ? "scale-100" : "scale-0"
-              } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-            >
-              {["East California Dock", "West Dock", "South Dock"].map(
-                (location, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex justify-start items-start gap-2"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-3 h-3 accent-[#199BD1]"
-                    />
-                    <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                      {location}
-                    </span>
-                  </div>
-                )
-              )}
-            </div>
+            <LocationType
+              locationDropdownOpen={locationDropdownOpen}
+              toggleLocationDropdown={toggleLocationDropdown}
+              locationType={locationType}
+              setLocationType={setLocationType}
+            />
           </span>
         </div>
         {boatsData?.boatAccess?.length > 0 ? (
           <>
-            {boatsData?.boatAccess?.map((manager, index) => {
+            {filteredData?.map((manager, index) => {
               if (index < 4) {
                 return (
                   <div

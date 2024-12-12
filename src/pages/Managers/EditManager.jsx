@@ -24,56 +24,6 @@ import { FiLoader } from "react-icons/fi";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
 
-// const Dropdown = ({ options, label }) => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const dropdownRef = useRef(null);
-
-//   const handleToggle = () => {
-//     setIsOpen(!isOpen);
-//   };
-
-//   const handleClickOutside = (event) => {
-//     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-//       setIsOpen(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => {
-//       document.removeEventListener("mousedown", handleClickOutside);
-//     };
-//   }, []);
-
-//   return (
-//     <div className="relative" ref={dropdownRef}>
-//       <button
-//         className="text-left w-full flex justify-start items-center gap-1"
-//         onClick={handleToggle}
-//       >
-//         {label}
-//         <FaCaretDown />
-//       </button>
-//       {isOpen && (
-//         <ul className="absolute z-10 bg-[#1A293D] text-white/50 text-[11px] rounded-[8px] mt-1 p-2 w-48">
-//           {options.map((option, index) => (
-//             <li
-//               key={index}
-//               className="py-1 px-2 hover:bg-[#199BD1] cursor-pointer flex items-center gap-2"
-//             >
-//               <input
-//                 type="checkbox"
-//                 className="form-checkbox h-3 w-3 text-[#199BD1]"
-//               />
-//               {option}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
-
 const EditManager = () => {
   const { navigate, setUpdateManager } = useContext(GlobalContext);
   const { id } = useParams();
@@ -281,7 +231,7 @@ const EditManager = () => {
                           },
                         })}
                         error={errors.email}
-                        isDisabled={!isEditable}
+                        isDisabled={true}
                       />
                     </div>
                     <div className="w-full h-auto grid grid-cols-2 gap-12 mb-4">
@@ -376,7 +326,7 @@ const EditManager = () => {
           <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
             <div className="w-auto flex justify-between items-center gap-2">
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-                Assign Employees{" "}
+                Assigned Employee(s){" "}
               </h3>
               <button
                 type="button"
@@ -430,7 +380,9 @@ const EditManager = () => {
                       ))}
                     </>
                   ) : (
-                    <div className="pt-2">No record found</div>
+                    <div className="pt-2">
+                      There are no employees assigned to this manager
+                    </div>
                   )}
                 </>
               )}
@@ -454,7 +406,7 @@ const EditManager = () => {
 
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <p className="mb-2 text-md">
-                {manager?.name} has access to boats by default
+                {manager?.name} has access to ({boatList?.length}) boats
               </p>
               <div className="w-full h-6 grid grid-cols-4 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
                 <span className="w-full flex justify-start items-center">
@@ -481,7 +433,7 @@ const EditManager = () => {
                 <>
                   {boatList?.length > 0 ? (
                     <Fragment>
-                      {boatList?.map((boat, index) => (
+                      {boatList?.slice(0, 4)?.map((boat, index) => (
                         <div
                           key={index}
                           className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
@@ -503,7 +455,9 @@ const EditManager = () => {
                       ))}
                     </Fragment>
                   ) : (
-                    <div className="pt-2">No record found</div>
+                    <div className="pt-2">
+                      There are no boats assigned to this manager
+                    </div>
                   )}
                 </>
               )}

@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
+import moment from "moment";
 
 import { IoCalendarOutline } from "react-icons/io5";
 import DateModal from "../../components/tasks/DateModal";
@@ -228,7 +229,9 @@ const AddTask = () => {
                     setInputError({});
                   }}
                   type="text"
-                  className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+                  autocapitalize="characters"
+                  className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px]
+                   focus:border-[#55C9FA] rounded-xl"
                 ></textarea>
                 {inputError.note && (
                   <p className="text-red-500">{inputError.note}</p>
@@ -248,7 +251,9 @@ const AddTask = () => {
                   onClick={() => setIsCalendarOpen(true)}
                   className="text-xs font-normal text-[#199BD1]"
                 >
-                  {dueDate?.normal || "Select Due Date"}
+                  {dueDate?.normal
+                    ? moment(dueDate?.normal).format("MM-DD-YYYY")
+                    : "Select Due Date"}
                 </button>
               </div>
               {inputError.dueDate && (

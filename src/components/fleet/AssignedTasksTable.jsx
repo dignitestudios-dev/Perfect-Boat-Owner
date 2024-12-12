@@ -5,13 +5,24 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { getUnixDate } from "../../data/DateFormat";
 import DeletedModal from "../global/DeletedModal";
 import { useNavigate } from "react-router-dom";
+import StatusType from "../global/headerDropdowns/StatusType";
 
 const statusColors = {
   newtask: "#FF007F",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
+  upcomingtask: "#FF007F",
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In-Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
 };
 
 const AssignedTasksTable = ({
@@ -21,6 +32,11 @@ const AssignedTasksTable = ({
   openDeleteModal,
   getBoats,
 }) => {
+  console.log("🚀 ~ boatsData:", boatsData?.task);
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
+
   const navigateTo = useNavigate();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const handleDeleteConfirm = () => {
@@ -31,6 +47,22 @@ const AssignedTasksTable = ({
   const handleEditTaskClick = (taskId) => {
     navigateTo(`/tasks/${taskId}`);
   };
+
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const toggleStatusDropdown = () => {
+    setStatusDropdownOpen(!statusDropdownOpen);
+  };
+
+  const filteredData = boatsData?.task?.filter((item) => {
+    const matchesStatus =
+      statusFilter && statusFilter !== "all"
+        ? item?.status === statusFilter
+        : true;
+    return matchesStatus;
+  });
+  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -65,12 +97,17 @@ const AssignedTasksTable = ({
           <span className="w-full flex justify-start items-center">
             Recurring Days
           </span>
-          <span className="w-full flex justify-start items-center">Status</span>
+          <StatusType
+            statusDropdownOpen={statusDropdownOpen}
+            statusFilter={statusFilter}
+            toggleStatusDropdown={toggleStatusDropdown}
+            setStatusFilter={setStatusFilter}
+          />
           <span className="w-full flex justify-start items-center">Action</span>
         </div>
         {boatsData?.task?.length > 0 ? (
           <>
-            {boatsData?.task?.map((item, index) => (
+            {filteredData?.map((item, index) => (
               <button
                 type="button"
                 className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] 
@@ -110,7 +147,7 @@ const AssignedTasksTable = ({
                   className="text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] "
                   // onClick={() => navigate("/tasks/1", "All Tasks")}
                 >
-                  {item?.status}
+                  {getFormattedStatus(item?.status)}
                 </span>
                 <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
                   <span

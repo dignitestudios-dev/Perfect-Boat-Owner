@@ -2,46 +2,38 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { TbCaretDownFilled } from "react-icons/tb";
+import JobType from "../../components/global/headerDropdowns/JobType";
+import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const ManagerDetailModal = ({ setIsOpen, boatAccess }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [jobTitleFilter, setJobTitleFilter] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(false);
-  const jobTitleRef = useRef(null);
-  const locationRef = useRef(null);
-  const jobRef = React.useRef(null);
-  const [jobFilter, setjobFilter] = useState(false);
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
-  const filteredData = boatAccess?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
-
-  const jobTitles = ["Manager", "Engineer", "Developer"];
-  const locations = ["East California Dock", "West California Dock", "South California Dock"];
-
-  const togglejobFilter = () => {
-    setjobFilter((prev) => !prev);
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
 
-  const toggleLocationFilter = () => {
-    setLocationFilter((prev) => !prev);
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleClickOutside = (event) => {
-    if (jobTitleRef.current && !jobTitleRef.current.contains(event.target)) {
-      setJobTitleFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const filteredData = boatAccess?.filter((item) => {
+    const matchesSearch = searchTerm
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType !== "all"
+        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
+    return locationTypeMatch && jobTypeMatch && matchesSearch;
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -80,94 +72,39 @@ const ManagerDetailModal = ({ setIsOpen, boatAccess }) => {
               <span className="w-full flex justify-start items-center">
                 Email
               </span>
-              <span className="w-full flex justify-start items-center relative">
-                <button
-                  type="button"
-                  onClick={togglejobFilter}
-                  className="flex items-center gap-1"
-                >
-                  Job Title
-                  <TbCaretDownFilled />
-                </button>
-                <div
-                  ref={jobRef}
-                  className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    jobFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                >
-                  {["Job Title 1", "Job Title 2", "Job Title 3"].map(
-                    (jobTitle, index) => (
-                      <div
-                        key={index}
-                        className="w-full flex justify-start items-start gap-2"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                          {jobTitle}
-                        </span>
-                      </div>
-                    )
-                  )}
-                </div>
-              </span>
-
-              <span className="w-full flex justify-start items-center relative">
-                <button
-                  type="button"
-                  onClick={toggleLocationFilter}
-                  className="flex items-center gap-1"
-                >
-                  Location
-                  <TbCaretDownFilled />
-                </button>
-                <div
-                  ref={locationRef}
-                  className={`absolute top-6 left-0 w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                    locationFilter ? "scale-100" : "scale-0"
-                  } flex flex-col gap-3 shadow-lg p-3 justify-start items-start`}
-                >
-                  {["East California Dock", "West Dock", "South Dock"].map(
-                    (location, index) => (
-                      <div
-                        key={index}
-                        className="w-full flex justify-start items-start gap-2"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
-                          {location}
-                        </span>
-                      </div>
-                    )
-                  )}
-                </div>
-              </span>
+              <JobType
+                jobTitleDropdownOpen={jobTitleDropdownOpen}
+                toggleJobTitleDropdown={toggleJobTitleDropdown}
+                jobType={jobType}
+                setJobType={setJobType}
+              />
+              <LocationType
+                locationDropdownOpen={locationDropdownOpen}
+                toggleLocationDropdown={toggleLocationDropdown}
+                locationType={locationType}
+                setLocationType={setLocationType}
+              />
             </div>
-            {boatAccess?.map((manager, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-                  >
-                    <span className="w-full flex justify-start items-center">
-                      {manager?.name}
-                    </span>
-                    <span className="w-full flex justify-start items-center">
-                      {manager?.email}
-                    </span>
-                    <span className="w-full flex justify-start items-center">
-                      {manager?.jobtitle || "---"}
-                    </span>
-                    <span className="w-full flex justify-start items-center">
-                      {manager?.location || "---"}
-                    </span>
-                  </div>
-                );
+            {filteredData?.map((manager, index) => {
+              return (
+                <div
+                  key={index}
+                  className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                >
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.name}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.email}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.jobtitle || "---"}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {manager?.location || "---"}
+                  </span>
+                </div>
+              );
             })}
           </div>
           <div className="flex justify-end mt-4">

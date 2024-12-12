@@ -24,13 +24,13 @@ const statusColors = {
   newtask: "#FF007F",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
 };
 
 const STATUS_ENUM = {
   newtask: "New Task",
-  inprogress: "In Progress",
+  inprogress: "In-Progress",
   recurring: "Recurring",
   overdue: "Overdue",
   completed: "Completed",
@@ -41,7 +41,7 @@ const statusColorsbg = {
   newtask: "#FF69B41F",
   overdue: "#FF3B301F",
   default: "#FFCC001F",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F31F",
   completed: "#1FBA461F",
   upcomingtask: "#FF007F1F",
 };
@@ -114,6 +114,7 @@ const EditEmployee = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [employee, setEmployee] = useState("");
+
   const [employeeTasks, setEmployeeTasks] = useState([]);
   const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -329,7 +330,7 @@ const EditEmployee = () => {
                         }}
                       />
                       <AddFleetInput
-                        isDisabled={!isEditing}
+                        isDisabled={true}
                         label="Email"
                         type="email"
                         placeholder="Enter Email"
@@ -468,20 +469,30 @@ const EditEmployee = () => {
                   Location
                 </span>
               </div>
-              <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                <span className="w-full flex justify-start items-center">
-                  {passSelectedManager?.name || employee?.manager?.name}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {employee?.manager?.email}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {employee?.manager?.jobtitle}
-                </span>
-                <span className="w-full flex justify-start items-center ">
-                  {employee?.manager?.location}
-                </span>
-              </div>
+              {employee?.manager !== null ? (
+                <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                  <span className="w-full flex justify-start items-center">
+                    {passSelectedManager?.name || employee?.manager?.name}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {employee?.manager?.email}
+                  </span>
+                  <span className="w-full flex justify-start items-center">
+                    {employee?.manager?.jobtitle}
+                  </span>
+                  <span className="w-full flex justify-start items-center ">
+                    {employee?.manager?.location}
+                  </span>
+                </div>
+              ) : (
+                <div
+                  className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 
+                text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                >
+                  {" "}
+                  No record found
+                </div>
+              )}
             </div>
           </div>
 

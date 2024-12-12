@@ -37,9 +37,8 @@ const ResendModal = ({ isOpen, onClose, id }) => {
             Resend Credentials
           </p>
           <p className="text-[16px] text-white">
-            Are you sure you want to resend the credentials
+            Are you sure you want to resend the credentials to the managers?
           </p>
-          <p className="mb-5 text-md text-white">to the managers?</p>
 
           {/* Container for buttons aligned to the right */}
           <div className="flex justify-end gap-2">

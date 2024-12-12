@@ -8,20 +8,20 @@ import TaskType from "../global/headerDropdowns/TaskType";
 import StatusType from "../global/headerDropdowns/StatusType";
 
 const statusColors = {
-  "newtask": "#FF007F",
-  "overdue": "#FF3B30",
-  "default": "#FFCC00", 
-  "in-progress":"#36B8F3",
-  "completed":"#1FBA46"
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  inprogress: "#36B8F3",
+  completed: "#1FBA46",
 };
 
 const STATUS_ENUM = {
   newtask: "New Task",
-  inprogress: "In Progress",
+  inprogress: "In-Progress",
   recurring: "Recurring",
   overdue: "Overdue",
   completed: "Completed",
-  upcomingtask: "Upcoming Task"
+  upcomingtask: "Upcoming Task",
 };
 
 const NewTaskTable = ({ data, loading }) => {
@@ -32,7 +32,7 @@ const NewTaskTable = ({ data, loading }) => {
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter , setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -43,16 +43,24 @@ const NewTaskTable = ({ data, loading }) => {
   };
 
   const [search, setSearch] = useState("");
-  const [taskType, setTaskType] = useState("")
+  const [taskType, setTaskType] = useState("");
 
   // const filteredData = data?.filter((item) =>
   //   item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
   // );
 
   const filteredData = data?.filter((item) => {
-    const matchesSearch = search ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
-    const matchesStatus = statusFilter && statusFilter !== "all" ? item?.status === statusFilter : true;
-    const taskTypeMatch = taskType && taskType !== "all" ? item?.task?.taskType?.toLowerCase() === taskType?.toLowerCase() : true;
+    const matchesSearch = search
+      ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const matchesStatus =
+      statusFilter && statusFilter !== "all"
+        ? item?.status === statusFilter
+        : true;
+    const taskTypeMatch =
+      taskType && taskType !== "all"
+        ? item?.task?.taskType?.toLowerCase() === taskType?.toLowerCase()
+        : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
 
@@ -71,69 +79,84 @@ const NewTaskTable = ({ data, loading }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-          onChange={(e)=>setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
           />
         </div>
       </div>
-      
-        <div className="w-full flex flex-col gap-1 justify-start items-start">
-          <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
-            <span className="w-full flex justify-start items-center">
-              Boat name
-            </span>
-            <TaskType taskTypeDropdownOpen={taskTypeDropdownOpen} toggleTaskTypeDropdown={toggleTaskTypeDropdown}
-            setTaskType={setTaskType} taskType={taskType}
-            />
-            <span className="w-full flex justify-start items-center">
-              Due Date
-            </span>
-            <StatusType statusDropdownOpen={statusDropdownOpen} toggleStatusDropdown={toggleStatusDropdown}
-             setStatusFilter={setStatusFilter} statusFilter={statusFilter} />
-          </div>
-          {loading ? (
+
+      <div className="w-full flex flex-col gap-1 justify-start items-start">
+        <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
+          <span className="w-full flex justify-start items-center">
+            Boat name
+          </span>
+          <TaskType
+            taskTypeDropdownOpen={taskTypeDropdownOpen}
+            toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+            setTaskType={setTaskType}
+            taskType={taskType}
+          />
+          <span className="w-full flex justify-start items-center">
+            Due Date
+          </span>
+          <StatusType
+            statusDropdownOpen={statusDropdownOpen}
+            toggleStatusDropdown={toggleStatusDropdown}
+            setStatusFilter={setStatusFilter}
+            statusFilter={statusFilter}
+          />
+        </div>
+        {loading ? (
           <MiniListLoader />
         ) : (
           <>
-          {data?.length > 0 ?(
-            <>
-            {filteredData?.slice(0, 4)?.map((task, key) => {
-            return (
+            {data?.length > 0 ? (
+              <>
+                {filteredData?.slice(0, 4)?.map((task, key) => {
+                  return (
+                    <div
+                      key={key}
+                      className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    >
+                      <span className="w-full capitalize flex justify-start items-center">
+                        {task?.boat?.name}
+                      </span>
+                      <span className="w-full capitalize flex justify-start items-center">
+                        {task?.task?.taskType}
+                      </span>
+                      <span className="w-full flex justify-start items-center">
+                        {formatTimestampToDate(task?.task?.dueDate)}
+                      </span>
+                      <span className="w-full flex justify-start items-center ">
+                        <span
+                          style={{
+                            color:
+                              statusColors[task?.task?.status] ||
+                              statusColors["default"],
+                          }}
+                          className="w-auto h-[27px] capitalize rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
+                        >
+                          {getFormattedStatus(task?.task?.status)}
+                        </span>
+                      </span>
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
               <div
-                key={key}
-                className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] 
+            font-normal leading-[21.6px] text-white"
               >
-                <span className="w-full capitalize flex justify-start items-center">
-                  {task?.boat?.name}
-                </span>
-                <span className="w-full capitalize flex justify-start items-center">
-                  {task?.task?.taskType}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {formatTimestampToDate(task?.task?.dueDate)}
-                </span>
-                <span className="w-full flex justify-start items-center ">
-                  <span
-                  style={{ color: statusColors[task?.task?.status] || statusColors["default"] }}
-                   className="w-auto h-[27px] capitalize rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                    {getFormattedStatus(task?.task?.status)}
-                  </span>
-                </span>
+                Ready to dive into action? Stay tuned for upcoming tasks
+                requests by your team.
               </div>
-              );
-          })}
-            </>
-          ):(
-            <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] 
-            font-normal leading-[21.6px] text-white">
-              Ready to dive into action? Stay tuned for upcoming tasks requests by your team.
-            </div>
-          )}
+            )}
           </>
-          )}
-        </div>
+        )}
+      </div>
 
       <div className="w-full h-auto flex justify-center items-center">
         <Link

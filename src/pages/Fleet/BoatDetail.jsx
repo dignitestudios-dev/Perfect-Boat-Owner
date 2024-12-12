@@ -14,7 +14,8 @@ import axios from "../../axios";
 import { FiDownload, FiLoader } from "react-icons/fi";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
-import ManagerDetailModal from "../Managers/ManagerDetailModal";
+// import ManagerDetailModal from "../Managers/ManagerDetailModal";
+import ManagerDetailModal from "../Managers/ManagerListModal";
 import BoatAccessTable from "../../components/fleet/BoatAccessTable";
 import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
@@ -527,19 +528,26 @@ const BoatDetail = () => {
                     </>
                   )}
                 </div>
+                {isEditing ? (
+                  <div className="w-full flex flex-col gap-4 mt-2 ">
+                    <hr class="mt-6 h-[1px] border-t-0 bg-white/20" />
+                    <h3 className="text-[16px] md:text-[18px] font-bold leading-[24.3px]">
+                      Upload Photos Here
+                    </h3>
+                    <p className="text-white/50 text-[12px] md:text-[13px]">
+                      Enhance the boat profile by uploading high-quality
+                      pictures. Showcase its features, design, and condition
+                      with images
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full flex flex-col gap-4">
+                    <h3 className="text-[16px] md:text-[18px] font-bold leading-[24.3px]">
+                      Photos
+                    </h3>
+                  </div>
+                )}
 
-                <div className="w-full flex flex-col gap-4">
-                  <h3 className="text-[16px] md:text-[18px] font-bold leading-[24.3px]">
-                    Upload Photos Here
-                  </h3>
-                  <p className="text-white/50 text-[12px] md:text-[13px]">
-                    Enhance the boat profile by uploading high-quality pictures.
-                    Showcase its features, design, and condition with images
-                  </p>
-                  {/* {isEditing && (
-            <p className="text-white/50 text-[12px] md:text-[13px]">Additional details about the photos can be added here.</p>
-          )} */}
-                </div>
                 {!isEditing && (
                   <div className="w-full h-auto flex flex-wrap gap-4">
                     {displayArray?.length > 0 ? (
@@ -657,12 +665,6 @@ const BoatDetail = () => {
           <BoatAccessTable
             boatsData={boatsData}
             setIsManagerModalOpen={setIsManagerModalOpen}
-            togglejobFilter={togglejobFilter}
-            jobRef={jobRef}
-            jobFilter={jobFilter}
-            toggleLocationFilter={toggleLocationFilter}
-            locationRef={locationRef}
-            locationFilter={locationFilter}
           />
 
           <AssignedTasksTable
@@ -698,7 +700,7 @@ const BoatDetail = () => {
 
           {isMangerModalOpen && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
-              <ManagerDetailModal
+              {/* <ManagerDetailModal
                 isMultiple={true}
                 boatAccess={boatsData?.boatAccess}
                 isOpen={isMangerModalOpen}
@@ -707,6 +709,10 @@ const BoatDetail = () => {
                 handleManagerModal={(managers) => handleAssignManager(managers)}
                 selectedManagers={selectedManagers}
                 setSelectedManagers={setSelectedManagers}
+              /> */}
+              <ManagerDetailModal
+                boatAccess={boatsData?.boatAccess}
+                setIsOpen={setIsManagerModalOpen}
               />
             </div>
           )}

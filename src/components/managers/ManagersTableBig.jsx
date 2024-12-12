@@ -12,6 +12,8 @@ import { ErrorToast } from "../global/Toaster";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 import { CiExport } from "react-icons/ci";
+import { TfiReload } from "react-icons/tfi";
+import ReactivateModal from "../employees/ReactiveModal";
 
 const ManagerTableBig = ({
   data,
@@ -24,6 +26,7 @@ const ManagerTableBig = ({
   setJobType,
   setCurrentPage,
 }) => {
+  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateManager } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
 
@@ -54,6 +57,30 @@ const ManagerTableBig = ({
 
   const handleEditClick = (managerData) => {
     navigate(`/edit-manager/${managerData?._id}`, { state: managerData });
+  };
+  const [userId, setUserId] = useState();
+  const [isReactivateModalOpen, setIsReactivateModalOpen] = useState(false);
+
+  const handleActionClick = (id) => {
+    setUserId(id);
+    setIsReactivateModalOpen(true);
+  };
+
+  const [activateLoading, setActivateLoading] = useState(false);
+  const handleReactivate = async () => {
+    try {
+      setActivateLoading(true);
+      const response = await axios.put(`/owner/user/activate/${userId}`);
+
+      if (response.status === 200) {
+        setIsReactivateModalOpen(false);
+        getManagers();
+        setActivateLoading(false);
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+      setActivateLoading(false);
+    }
   };
 
   const handleDeleteClick = (managerID) => {
@@ -184,7 +211,10 @@ const ManagerTableBig = ({
       ) : (
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
-            <div className="w-full grid grid-cols-5 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start">
+            <div
+              className="w-full grid grid-cols-5 text-[11px] font-medium leading-[14.85px]
+            space-y-4 text-white/50 justify-start items-start"
+            >
               <span className="w-full flex justify-start items-center">
                 Manager Name
               </span>
@@ -238,15 +268,27 @@ const ManagerTableBig = ({
                     >
                       <FaRegEdit />
                     </span>
-                    <span
-                      className="flex justify-start items-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteClick(manager?._id);
-                      }}
-                    >
-                      <RiDeleteBinLine />
-                    </span>
+                    {manager?.isActive === true ? (
+                      <span
+                        className="flex justify-start items-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(manager?._id);
+                        }}
+                      >
+                        <RiDeleteBinLine />
+                      </span>
+                    ) : (
+                      <span
+                        className="flex justify-start items-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleActionClick(manager?._id);
+                        }}
+                      >
+                        <TfiReload />
+                      </span>
+                    )}
                   </div>
                 </div>
               ))
@@ -269,6 +311,15 @@ const ManagerTableBig = ({
         isOpen={isDeactivateModalOpen}
         setIsOpen={setIsDeactivateModalOpen}
       />
+
+      {isReactivateModalOpen && (
+        <ReactivateModal
+          isOpen={isReactivateModalOpen}
+          onClose={handleCloseModal}
+          reactivate={handleReactivate}
+          activateLoading={activateLoading}
+        />
+      )}
 
       <DeleteManagerAccountModal
         managerId={managerId}

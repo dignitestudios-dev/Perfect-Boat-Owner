@@ -78,9 +78,9 @@ const ForgotPassword = () => {
                 message: "Please enter a valid email address.",
               },
             })}
-            text={"Email Address"}
-            placeholder={"Type your email address here"}
-            type={"text"}
+            text={"Email "}
+            placeholder={"Type your email here"}
+            type={"email"}
             error={errors.email}
           />
         </div>

@@ -9,6 +9,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import PaymentInput from "../../components/onboarding/PaymentInput";
 import PaymentForm from "./PaymentForm";
 
 const AddCard = () => {
@@ -17,6 +18,8 @@ const AddCard = () => {
   const [loading, setLoading] = useState(false);
 
   const stripePromise = loadStripe(import.meta.env.VITE_APP_STRIPE_KEY);
+  const [cardHolderName, setCardHolderName] = useState("");
+  const [nameError, setNameError] = useState(null);
 
   return (
     <div className="w-screen h-screen flex items-start justify-start">
@@ -25,8 +28,20 @@ const AddCard = () => {
           Add Card Details
         </h1>
         <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
+          <PaymentInput
+            text={"Card Holder Name"}
+            placeholder={"Mike Smith"}
+            type={"text"}
+            state={cardHolderName}
+            setState={setCardHolderName}
+            error={nameError}
+            setNameError={setNameError}
+          />
           <Elements stripe={stripePromise}>
-            <PaymentForm />
+            <PaymentForm
+              cardHolderName={cardHolderName}
+              setNameError={setNameError}
+            />
           </Elements>
           {/* <AuthInput
             text={"Card Number"}

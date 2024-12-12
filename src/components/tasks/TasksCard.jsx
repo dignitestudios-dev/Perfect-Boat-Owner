@@ -9,31 +9,30 @@ const statusColors = {
   newtask: "#FF69B4",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
-  upcomingtask:"#FF007F"
+  upcomingtask: "#FF007F",
 };
 const statusColorsbg = {
   newtask: "#FF69B41F",
   overdue: "#FF3B301F",
   default: "#FFCC001F",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F31F",
   completed: "#1FBA461F",
-  upcomingtask:"#FF007F1F"
+  upcomingtask: "#FF007F1F",
 };
 
 const statusLiteColors = {
   newtask: "#FF007F", // Pink for new task
   overdue: "#FF3B30", // Red for overdue
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
-  
 };
 
 const STATUS_ENUM = {
   newtask: "New Task",
-  inprogress: "In Progress",
+  inprogress: "In-Progress",
   recurring: "Recurring",
   overdue: "Overdue",
   completed: "Completed",
@@ -86,7 +85,8 @@ const TasksCard = ({ getTasks, data }) => {
              bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
               style={{
                 color: statusColors[data?.status] || statusColors["default"],
-                backgroundColor: statusColorsbg[data?.status] || statusColorsbg["default"],
+                backgroundColor:
+                  statusColorsbg[data?.status] || statusColorsbg["default"],
               }}
             >
               {getFormattedStatus(data?.status)}

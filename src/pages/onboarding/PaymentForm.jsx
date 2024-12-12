@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -8,8 +8,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import axios from "../../axios";
-import AuthInput from "../../components/onboarding/AuthInput";
-import { useForm } from "react-hook-form";
+import { FiLoader } from "react-icons/fi";
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -35,25 +34,22 @@ const CARD_ELEMENT_OPTIONS = {
   hidePostalCode: true,
 };
 
-const PaymentForm = () => {
+const PaymentForm = ({ cardHolderName, setNameError }) => {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
 
   const [loading, setLoading] = useState(false);
-  const [cardHolderName, setCardHolderName] = useState("");
-  const [cardError, setCardError] = useState(false);
 
-  const addCard = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
+    if (!cardHolderName) {
+      setNameError("User name is required");
       return;
     }
-
-    if (cardHolderName == "") {
-      setCardError("Card Holder Name cannot be left empty.");
+    if (!stripe || !elements) {
       return;
     }
 
@@ -75,7 +71,7 @@ const PaymentForm = () => {
       try {
         const response = await axios.post("/owner/subscription/addCard", {
           name: cardHolderName,
-          paymentMethodId: paymentMethod?.id,
+          paymentMethodId: paymentMethod.id,
         });
 
         if (response.status === 200) {
@@ -85,76 +81,40 @@ const PaymentForm = () => {
         }
       } catch (apiError) {
         setError("An error occurred while processing the payment.");
+        console.error(apiError);
       } finally {
         setLoading(false);
       }
     }
   };
 
-  useEffect(() => {
-    if (cardHolderName == "") {
-      setCardError("Card Holder Name cannot be left empty.");
-    } else {
-      setCardError(false);
-    }
-  }, [cardHolderName]);
-
   return (
-    <form onSubmit={addCard}>
-      <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
-        <div className="w-full h-auto flex   flex-col gap-1 justify-start items-start  ">
-          <label className="ml-1 text-sm font-medium text-[#fff] capitalize">
-            Card Holder Name
-          </label>
-          <div
-            className={`w-full h-[52px] lg:w-[434px] focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-[12px] bg-[#1A293D] flex items-center justify-start  ${
-              cardError && "error"
-            } `}
-          >
-            <div
-              className={` w-full  h-full flex items-center justify-center    rounded-[12px] relative`}
-            >
-              <input
-                type="text"
-                placeholder="e.g. Mike Smith"
-                className="w-full outline-none  rounded-[12px] placeholder:text-[13px] placeholder:font-normal placeholder:text-[#6B737E] text-white bg-transparent h-full px-3 text-sm font-medium "
-                value={cardHolderName}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === "" || /^[^\s]/.test(value)) {
-                    setCardHolderName(value);
-                  }
-                }}
-              />
-            </div>
+    <form onSubmit={handleSubmit}>
+      <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+        <label className="ml-1 text-sm font-medium text-[#fff] capitalize">
+          Payment method
+        </label>
+        <div
+          className={`w-full pt-4 h-[52px] lg:w-[434px] rounded-[12px] bg-[#1A293D] flex items-center justify-start ${
+            error && "error"
+          }`}
+        >
+          <div className="w-full h-full flex items-center justify-center rounded-[12px] relative">
+            <CardElement
+              options={CARD_ELEMENT_OPTIONS}
+              className="w-full h-full px-3 text-sm font-medium text-white bg-transparent"
+            />
           </div>
-          {cardError && <p className="text-red-500 text-sm">{cardError}</p>}
         </div>
-        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-          <label className="ml-1 text-sm font-medium text-[#fff] capitalize">
-            Payment method
-          </label>
-          <div
-            className={`w-full pt-4 h-[52px] lg:w-[434px] rounded-[12px] bg-[#1A293D] flex items-center justify-start ${
-              error && "error"
-            }`}
-          >
-            <div className="w-full h-full flex items-center justify-center rounded-[12px] relative">
-              <CardElement
-                options={CARD_ELEMENT_OPTIONS}
-                className="w-full h-full px-3 text-sm font-medium text-white bg-transparent"
-              />
-            </div>
-          </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
-
-      <div className="w-full grid grid-cols-2 justify-start gap-2 mt-8">
+      {/* Buttons */}
+      <div className="w-full grid grid-cols-6 md:grid-cols-12 lg:grid-cols-1 md:justify-start gap-4 mt-8">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="w-full h-[48px] md:h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[14px] md:text-[16px] font-bold"
+          className="w-full px-8 md:px-0   h-[48px] md:h-[52px] bg-[#02203A] text-[#199BD1] 
+          rounded-[12px] flex items-center justify-center text-[14px] md:text-[16px] font-bold"
         >
           Back
         </button>
@@ -162,9 +122,13 @@ const PaymentForm = () => {
           type="submit"
           disabled={loading}
           // onClick={() => navigate("/summary")}
-          className="w-full h-[48px] md:h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[14px] md:text-[16px] font-bold"
+          className="w-full px-14 md:px-0 h-[48px] md:h-[52px] bg-[#199BD1] text-white rounded-[12px] 
+          flex items-center justify-center text-[14px] md:text-[16px] font-bold"
         >
-          {loading ? "Loading" : "Proceed"}
+          <div className="flex items-center">
+            <span className="mr-1">Proceed</span>
+            {loading && <FiLoader className="animate-spin text-lg mx-auto" />}
+          </div>
         </button>
       </div>
     </form>

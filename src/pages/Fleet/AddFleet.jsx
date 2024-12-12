@@ -14,7 +14,7 @@ import { boatType } from "../../data/TaskTypeData";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import Papa from "papaparse";
 import AddFleetInternalCsv from "../../components/fleet/AddFleetInternalCsv";
-import { FaTrashAlt } from "react-icons/fa";
+import { CiTrash } from "react-icons/ci";
 
 const AddFleet = () => {
   const { boatDropDown, setUpdateDropDown, setUpdateBoat } =
@@ -421,9 +421,9 @@ const AddFleet = () => {
                 <div className="w-full flex flex-col justify-start items-start gap-4">
                   <h3 className="text-[18px] font-bold leading-[24.3px]">
                     Upload Pictures
-                    <span className="text-[14px] font-normal leading-[24px] mr-1">
+                    {/* <span className="text-[14px] font-normal leading-[24px] mr-1">
                       (Supported Files Type: JPG, PNG, GIF)
-                    </span>
+                    </span> */}
                   </h3>
 
                   <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
@@ -447,19 +447,23 @@ const AddFleet = () => {
 
                               <input
                                 name={`formsImages`}
-                                accept="image/*"
+                                accept="image/jpeg, image/png, image/bmp, image/webp"
                                 className="hidden"
                                 type="file"
                                 onChange={(e) => handleUploadedImage(e, index)}
                               />
                             </label>
 
-                            <div className="absolute top-1 right-1 bg-white p-1 rounded-full">
-                              <FaTrashAlt
-                                className="text-black cursor-pointer text-[15px]"
-                                onClick={() => handleRemoveImage(index)}
-                              />
-                            </div>
+                            {imagesArray[index] ? (
+                              <div className="absolute top-3 right-3 bg-[#ffffff9f] p-1 rounded-full">
+                                <CiTrash
+                                  className="text-black cursor-pointer text-[15px]"
+                                  onClick={() => handleRemoveImage(index)}
+                                />
+                              </div>
+                            ) : (
+                              <></>
+                            )}
                           </div>
                           <div className="w-auto ml-1 mt-1 flex gap-2 justify-start items-center">
                             <input

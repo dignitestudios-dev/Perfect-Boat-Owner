@@ -18,7 +18,7 @@ const CountDown = ({ isActive, setIsActive, seconds, setSeconds }) => {
   return (
     <div className="countdown">
       <p className="text-[13px] text-[#199BD1] font-bold">
-        Resend In {seconds}
+        Resend In 00:{seconds}
       </p>
     </div>
   );

@@ -14,13 +14,13 @@ const statusColors = {
   newtask: "#FF007F",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
 };
 
 const STATUS_ENUM = {
   newtask: "New Task",
-  inprogress: "In Progress",
+  inprogress: "In-Progress",
   recurring: "Recurring",
   overdue: "Overdue",
   completed: "Completed",
@@ -31,7 +31,7 @@ const statusColorsbg = {
   newtask: "#FF69B41F",
   overdue: "#FF3B301F",
   default: "#FFCC001F",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F31F",
   completed: "#1FBA461F",
   upcomingtask: "#FF007F1F",
 };
@@ -157,6 +157,9 @@ const ViewAssignedTaskModal = ({
                             color:
                               statusColors[task?.status] ||
                               statusColors["default"],
+                            backgroundColor:
+                              statusColorsbg[task?.status] ||
+                              statusColorsbg["default"],
                           }}
                           className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
                         >

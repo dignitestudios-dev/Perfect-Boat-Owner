@@ -9,6 +9,7 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import getFCMToken from "../../firebase/getFcmToken";
+import CountDown from "../../components/onboarding/CountDown";
 
 const VerifyOtp = () => {
   const { navigate } = useContext(GlobalContext);
@@ -16,6 +17,9 @@ const VerifyOtp = () => {
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [resendLoading, setResendLoading] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [seconds, setSeconds] = useState(30);
+  const [navigateString, setNavigateString] = useState("");
 
   const inputs = useRef([]);
   const { login } = useContext(AuthContext);
@@ -57,6 +61,8 @@ const VerifyOtp = () => {
     return parseInt(otp.join(""), 10);
   };
 
+  const [isVerified, setIsVerified] = useState(false);
+
   const handleVerifyOtp = async (otp) => {
     setLoading(true);
     try {
@@ -70,7 +76,7 @@ const VerifyOtp = () => {
         login(response?.data);
         setLoading(false);
         navigate("/update-password");
-        SuccessToast("Otp Verified");
+        SuccessToast("OTP Verified");
       } else {
         ErrorToast("Error");
       }
@@ -90,7 +96,10 @@ const VerifyOtp = () => {
       };
       const response = await axios.post("/auth/forget/otp/email", obj);
       if (response.status === 200) {
-        SuccessToast("OTP Resend Successfully");
+        SuccessToast("OTP has been send to your email");
+        setResendLoading(false);
+        setOtp(Array(6).fill(""));
+        handleRestart();
       } else {
         ErrorToast(response?.data?.message);
       }
@@ -99,6 +108,11 @@ const VerifyOtp = () => {
     } finally {
       setResendLoading(false);
     }
+  };
+
+  const handleRestart = () => {
+    setSeconds(30);
+    setIsActive(true);
   };
 
   return (
@@ -120,7 +134,7 @@ const VerifyOtp = () => {
             Update your Password
           </h1>
           <p className=" font-normal text-[16px] text-white leading-[21.6px] tracking-[0.2px]">
-            Enter the code we just sent to {email}
+            Enter the OTP we just sent to {email}
           </p>
         </div>
         <div className="w-full h-auto flex justify-start items-center gap-4 my-4 ">
@@ -142,16 +156,25 @@ const VerifyOtp = () => {
         <div className="w-full h-auto flex mb-20 -mt-4 flex-col gap-1 justify-start items-start  ">
           <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
             <span className="text-[13px] font-medium text-[#C2C6CB]">
-              Didn't recieve a code?
+              Didn't receive a code?
             </span>
-            <button
-              onClick={handleResendOtp}
-              type="button"
-              disabled={resendLoading}
-              className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
-            >
-              {resendLoading ? "Resending..." : "Resend now"}
-            </button>
+            {isActive ? (
+              <CountDown
+                isActive={isActive}
+                setIsActive={setIsActive}
+                seconds={seconds}
+                setSeconds={setSeconds}
+              />
+            ) : (
+              <button
+                type="button"
+                disabled={resendLoading}
+                onClick={handleResendOtp}
+                className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
+              >
+                {resendLoading ? "Resending..." : "Resend now"}
+              </button>
+            )}
           </div>
         </div>
         <AuthSubmitBtn text={"Verify"} loader={loading} />

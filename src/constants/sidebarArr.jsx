@@ -84,7 +84,7 @@ export const sidebarArr = [
         url: "/boats",
       },
       {
-        title: "Boat Access",
+        title: "Boats Access",
         url: "/boats-access",
       },
     ],

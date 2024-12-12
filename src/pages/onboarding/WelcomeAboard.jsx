@@ -22,6 +22,7 @@ const WelcomeAboard = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [forms, setForms] = useState([0]);
+
   const [csvUploaded, setCsvUploaded] = useState(false);
 
   const [data, setData] = useState([
@@ -80,17 +81,6 @@ const WelcomeAboard = () => {
     }));
   };
 
-  const handleCoverImage = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setValue(`forms.${formIndex}.images.${imageIndex}`, [file], {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-    }
-  };
-
   const handleRemoveImage = (formIndex, imageIndex) => {
     const currentImages = getValues(`forms.${formIndex}.images`) || [];
 
@@ -104,7 +94,6 @@ const WelcomeAboard = () => {
     });
   };
 
-  const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isAddManagerOpen, setIsAddManagerOpen] = useState(false); // State for new modal
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
 
@@ -117,7 +106,7 @@ const WelcomeAboard = () => {
       // Use `for...of` loop to handle async code correctly
       for (const formIndex of forms) {
         const data = new FormData();
-        console.log("form =? ", formData.forms[formIndex].name);
+        // console.log("form =? images ? ", formData.forms[formIndex].images);
         data.append("name", formData.forms[formIndex].name);
         data.append("make", formData.forms[formIndex].make);
         data.append("size", formData.forms[formIndex].size);
@@ -145,29 +134,46 @@ const WelcomeAboard = () => {
               } else {
                 data.append("pictures", fileList[0]);
               }
+            } else {
+              if (coverImages[formIndex] === imageIndex) {
+                formErrors[formIndex] = "Please upload a cover image.";
+                setCoverError((prevErrors) => {
+                  const newErrors = [...prevErrors];
+                  newErrors[formIndex] = formErrors[formIndex];
+                  return newErrors;
+                });
+              }
             }
           });
         }
 
-        try {
-          const response = await axios.post("/owner/boat", data);
-          if (response.status === 200) {
-            successfulForms.push(formIndex);
-            if (formIndex + 1 === forms.length) {
-              setIsAddManagerOpen(true); // Open modal if it's the last form
+        if (formErrors[formIndex]) {
+          // setForms((prevForms) =>
+          //   prevForms.filter((_, index) => successfulForms.includes(index))
+          // );
+          return;
+        } else {
+          try {
+            const response = await axios.post("/owner/boat", data);
+            if (response.status === 200) {
+              successfulForms.push(formIndex);
+              if (formIndex + 1 === forms.length) {
+                setIsAddManagerOpen(true); // Open modal if it's the last form
+              }
             }
+          } catch (error) {
+            ErrorToast(error?.response?.data?.message);
           }
-        } catch (error) {
-          ErrorToast(error?.response?.data?.message);
         }
       }
 
-      if (successfulForms.length > 0) {
-        setForms((prevForms) =>
-          prevForms.filter((_, index) => !successfulForms.includes(index))
-        );
-      }
+      // if (successfulForms.length > 0) {
+      //   setForms((prevForms) =>
+      //     prevForms.filter((_, index) => !successfulForms.includes(index))
+      //   );
+      // }
     } catch (error) {
+      console.log("error outside loop", error);
       ErrorToast(error?.response?.data?.message);
     } finally {
       setLoading(false); // Stop loader after all forms are processed
@@ -274,15 +280,15 @@ const WelcomeAboard = () => {
                             </span>
                             <div
                               className="group-hover:flex z-20 flex-col justify-start items-start gap-3 transition-all
-                         duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
+                         duration-700 px-5 py-3 hidden absolute top-12 shadow-xl left-0 w-full h-48 max-h-48 bg-[#21344C] rounded-b-2xl "
                             >
-                              <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
+                              <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-1">
                                 {boatType?.map((boat, index) => (
                                   <button
                                     type="button"
                                     key={index}
                                     onClick={() => handleSelect(boat, idx)}
-                                    className={`w-full text-left px-4 py-2 text-gray-300 hover:bg-[#1A293D] ${
+                                    className={`w-full text-left px-4 py-2 text-gray-300 hover:bg-[#1A293D] hover:rounded-lg ${
                                       selectedBoat === boat
                                         ? "bg-[#1A293D] text-white"
                                         : ""
@@ -297,7 +303,7 @@ const WelcomeAboard = () => {
                         </div>
                         <AddFleetInput
                           label="Name"
-                          placeholder="Enter Name"
+                          placeholder="Enter Boat Name"
                           type="text"
                           register={register(`forms.${idx}.name`, {
                             required: "Name is required",
@@ -317,16 +323,16 @@ const WelcomeAboard = () => {
                       </div>
                       <div className="w-full grid grid-cols-1 md:grid-cols-3 justify-start items-start  gap-3 lg:gap-12">
                         <AddFleetInput
-                          label="Model"
-                          placeholder="Enter Model"
+                          label="Year"
+                          placeholder="Year"
                           type="text"
                           register={register(`forms.${idx}.model`, {
-                            required: "Model is required",
+                            required: "Year is required",
                             validate: {
                               // Custom validation for numeric year format and within range
                               isValidYear: (value) =>
                                 /^\d{4}$/.test(value) ||
-                                "Model must be a 4-digit number",
+                                "Year must be a 4-digit number",
                               withinRange: (value) =>
                                 (value >= minYear && value <= maxYear) ||
                                 `Please enter a year between ${minYear} and ${maxYear}`,
@@ -335,7 +341,7 @@ const WelcomeAboard = () => {
                           error={errors?.forms?.[idx]?.model}
                         />
                         <AddFleetInput
-                          label="Size (m)"
+                          label="Size (ft)"
                           placeholder="Enter Size"
                           type="text"
                           maxLength={4}
@@ -421,19 +427,33 @@ const WelcomeAboard = () => {
                                     className="hidden"
                                     id={`form-${idx}-image-${imageIndex}`}
                                     accept="image/*"
-                                    onChange={(e) =>
-                                      handleCoverImage(e, idx, imageIndex)
-                                    }
                                     key={imageIndex}
                                     name={`forms.${idx}.images.${imageIndex}`}
                                     {...register(
                                       `forms.${idx}.images.${imageIndex}`,
                                       {
-                                        required: false,
+                                        required:
+                                          idx === forms.length - 1 &&
+                                          imageIndex === 0
+                                            ? "Image is required"
+                                            : false,
+                                        onChange: (e) => {
+                                          setCoverError(
+                                            Array(forms.length).fill(null)
+                                          );
+                                        },
                                       }
                                     )}
                                   />
                                 </label>
+                                {errors?.forms?.[idx]?.images?.[imageIndex] ? (
+                                  <p>image is required </p>
+                                ) : (
+                                  <></>
+                                )}
+                                {/* {errors?.forms?.[idx]?.images?.imageIndex && (
+                                  <p>image is required </p>
+                                )} */}
                                 <div className="absolute top-1 right-2 bg-white p-1 rounded-full">
                                   <FaTrashAlt
                                     className="text-black cursor-pointer text-[15px]"
@@ -451,8 +471,20 @@ const WelcomeAboard = () => {
                                   onChange={() =>
                                     handleImageSelect(idx, imageIndex)
                                   }
-                                  className="w-3 h-3 rounded-full accent-white outline-none border-none"
+                                  className={`w-3 h-3 rounded-full accent-white outline-none border-none 
+                                   ${
+                                     coverImages[idx] === imageIndex && "hidden"
+                                   } `}
                                 />
+                                {coverImages[idx] === imageIndex ? (
+                                  <span className="text-slate-600 text-[10px] mr-4 bg-white rounded-full px-1">
+                                    ✔
+                                  </span>
+                                ) : (
+                                  <span className="text-transparent text-[10px]">
+                                    ✔
+                                  </span>
+                                )}
                                 <span className="text-[12px] font-medium leading-[16.3px]">
                                   {" "}
                                   Set as cover photo{" "}

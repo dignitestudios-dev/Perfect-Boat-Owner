@@ -11,6 +11,7 @@ const AuthProvider = ({ children }) => {
   const [isFreeTrial, SetIsFreeTrial] = useState(false);
 
   const login = (data) => {
+    console.log("🚀 ~ login ~ data:", data);
     if (data) {
       Cookies.set("token", data?.data?.token);
       Cookies.set("name", data?.data?.userRecord?.name);

@@ -51,8 +51,8 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
                 Congratulations
               </h1>
               <span className="text-[16px] leading-[21.6px] text-white font-normal text-center">
-                Credentials have been sent to the managers and the manager has
-                been saved.
+                Credentials have been sent to the manager(s) and the manager(s)
+                has been saved.
               </span>
             </div>
             {createManager ? (

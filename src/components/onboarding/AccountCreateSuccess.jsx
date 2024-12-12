@@ -18,7 +18,7 @@ const AccountCreateSuccess = ({ isOpen, setIsOpen }) => {
       const timeout = setTimeout(() => {
         setIsOpen(false); // Close the modal before navigating
         navigate("/welcome-aboard");
-      }, 3000); // Adjust the timeout duration as needed (3000 ms = 3 seconds)
+      }, 5000); // Adjust the timeout duration as needed (3000 ms = 3 seconds)
 
       // Cleanup function to clear the timeout if the component unmounts
       return () => clearTimeout(timeout);
@@ -39,8 +39,9 @@ const AccountCreateSuccess = ({ isOpen, setIsOpen }) => {
             Congratulations
           </h1>
           <span className="text-[16px] leading-[21.6px] text-white font-normal text-center">
-            You’ve successfully subscribed to Fleet Enterprise. Enjoy premium
-            features and benefits.
+            Your 120-day free trial has started. Once the trial ends, you will
+            be charged the annual license fee and for all active users at that
+            time.
           </span>
         </div>
         {/* Close Button */}

@@ -103,8 +103,9 @@ const OnboardVerifyOtp = () => {
 
       if (response.status === 200) {
         // navigate("/select-package");
-        SuccessToast("Otp has been send to your email");
+        SuccessToast("OTP has been send to your email");
         setResendLoading(false);
+        setOtp(Array(6).fill(""));
         handleRestart();
       } else {
         ErrorToast(response?.data?.message);
@@ -136,7 +137,7 @@ const OnboardVerifyOtp = () => {
             Verification
           </h1>
           <p className=" font-normal text-[16px] text-white leading-[21.6px] tracking-[0.2px]">
-            Enter the OTP code sent to your email
+            Enter the OTP sent to your email
           </p>
         </div>
         <div className="w-full h-auto flex justify-start items-center gap-4 my-4 ">
@@ -148,6 +149,7 @@ const OnboardVerifyOtp = () => {
               value={digit}
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
+              onPaste={(e) => e.preventDefault()}
               ref={(el) => (inputs.current[index] = el)}
               className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#c2c6cb] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
             />
@@ -156,7 +158,7 @@ const OnboardVerifyOtp = () => {
         <div className="w-full h-auto flex  mb-20 flex-col gap-1 justify-start items-start  ">
           <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
             <span className="text-[13px] font-medium text-[#C2C6CB]">
-              Didn't recieve a code?
+              Didn't receive a code?
             </span>
             {isActive ? (
               <CountDown

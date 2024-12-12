@@ -26,16 +26,39 @@ const statusColors = {
   newtask: "#FF007F",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
 };
 
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  inprogress: "#36B8F31F",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In-Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
+};
+
 const TaskDetail = () => {
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
+
   const { taskDropDown, setUpdateDropDown } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [taskDetail, setTaskDetail] = useState({});
+
   const [noteText, setNoteText] = useState("");
   const [selectedTaskType, setSelectedTaskType] = useState("");
   const [displaySelectedTask, setDisplaySelectedTask] = useState("");
@@ -221,9 +244,12 @@ const TaskDetail = () => {
                     color:
                       statusColors[taskDetail?.status] ||
                       statusColors["default"],
+                    backgroundColor:
+                      statusColorsbg[taskDetail?.status] ||
+                      statusColorsbg["default"],
                   }}
                 >
-                  {taskDetail?.status}
+                  {getFormattedStatus(taskDetail?.status)}
                 </span>
               </div>
               {!isEdit && (

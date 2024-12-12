@@ -81,11 +81,6 @@ export const normalRoutes = [
     page: <Summary />,
   },
   {
-    title: "Update Password",
-    url: "/update-password",
-    page: <UpdatePassword />,
-  },
-  {
     title: "Welcome Aboard",
     url: "/welcome-aboard",
     page: <OnboardLayout page={<WelcomeAboard />} />,

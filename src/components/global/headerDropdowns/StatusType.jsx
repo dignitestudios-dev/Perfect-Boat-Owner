@@ -9,7 +9,7 @@ const StatusType = ({
 }) => {
   const statuses = [
     "all",
-    "upcoming",
+    "upcomingtask",
     "in-progress",
     "completed",
     "recurring",

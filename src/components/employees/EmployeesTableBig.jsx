@@ -13,6 +13,8 @@ import axios from "../../axios";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 import { CiExport } from "react-icons/ci";
+import { TfiReload } from "react-icons/tfi";
+import ReactivateModal from "./ReactiveModal";
 
 const EmployeesTableBig = ({
   data,
@@ -55,6 +57,31 @@ const EmployeesTableBig = ({
 
   const handleEditClick = (id) => {
     navigate(`/edit-employee/${id}`);
+  };
+
+  const [userId, setUserId] = useState();
+  const [isReactivateModalOpen, setIsReactivateModalOpen] = useState(false);
+
+  const handleActionClick = (id) => {
+    setUserId(id);
+    setIsReactivateModalOpen(true);
+  };
+
+  const [activateLoading, setActivateLoading] = useState(false);
+  const handleReactivate = async () => {
+    try {
+      setActivateLoading(true);
+      const response = await axios.put(`/owner/user/activate/${userId}`);
+
+      if (response.status === 200) {
+        setIsReactivateModalOpen(false);
+        getEmployees();
+        setActivateLoading(false);
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+      setActivateLoading(false);
+    }
   };
 
   const handleDeleteClick = (id) => {
@@ -247,15 +274,27 @@ const EmployeesTableBig = ({
                       >
                         <FaRegEdit />
                       </span>
-                      <span
-                        className="flex justify-start items-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteClick(employee?._id);
-                        }}
-                      >
-                        <RiDeleteBinLine />
-                      </span>
+                      {employee?.isActive === true ? (
+                        <span
+                          className="flex justify-start items-center cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(employee?._id);
+                          }}
+                        >
+                          <RiDeleteBinLine />
+                        </span>
+                      ) : (
+                        <span
+                          className="flex justify-start items-center"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleActionClick(employee?._id);
+                          }}
+                        >
+                          <TfiReload />
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))
@@ -272,6 +311,15 @@ const EmployeesTableBig = ({
           onDelete={() => handleDelete()}
           deactivateLoading={deactivateLoading}
         />
+
+        {isReactivateModalOpen && (
+          <ReactivateModal
+            isOpen={isReactivateModalOpen}
+            onClose={handleCloseModal}
+            reactivate={handleReactivate}
+            activateLoading={activateLoading}
+          />
+        )}
 
         <DeactivateAccountModal
           isOpen={isDeactivateModalOpen}

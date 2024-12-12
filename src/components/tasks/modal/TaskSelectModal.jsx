@@ -8,7 +8,7 @@ const statusColors = {
   newtask: "#FF007F",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
 };
 

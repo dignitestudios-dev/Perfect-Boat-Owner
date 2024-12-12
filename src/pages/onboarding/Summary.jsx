@@ -86,7 +86,7 @@ const Summary = () => {
 
                 <div className="w-auto flex flex-col justify-start items-start gap-1">
                   <span className="text-[16px] font-medium leading-5 text-white">
-                    Your Debit Card
+                    Your Card
                   </span>
                   <div className="w-full p-4 bg-[#21344C] rounded-xl border border-[#55C9FA] grid gap-4 grid-cols-1 lg:grid-cols-8">
                     <img

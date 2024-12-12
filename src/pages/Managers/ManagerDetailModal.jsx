@@ -5,13 +5,23 @@ import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 
-const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelectedManagers, isMultiple, boatAccess,
-   handleManagerModal, selectedManager, setSelectedManager, selectedManagers, setSelectedManagers}) => {
+const ManagerDetailModal = ({
+  setIsOpen,
+  SetPassSelectedManager,
+  SetPassSelectedManagers,
+  isMultiple,
+  boatAccess,
+  handleManagerModal,
+  selectedManager,
+  setSelectedManager,
+  selectedManagers,
+  setSelectedManagers,
+}) => {
   const { managers, getManagers, loadingManagers } = useContext(GlobalContext);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationType, setLocationType] = useState("all")
-  const [jobType, setJobType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
@@ -28,51 +38,68 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
   );
 
   const handleSelectManager = (managerId, managerName) => {
-    if(isMultiple){
-      const isSelected = selectedManagers.some((manager) => manager?.id === managerId);
-      if(isSelected){
-        setSelectedManagers(selectedManagers.filter((manager) => manager?.id !== managerId));
-      }else{
-        setSelectedManagers([...selectedManagers, { id: managerId, name: managerName }]);
+    if (isMultiple) {
+      const isSelected = selectedManagers.some(
+        (manager) => manager?.id === managerId
+      );
+      if (isSelected) {
+        setSelectedManagers(
+          selectedManagers.filter((manager) => manager?.id !== managerId)
+        );
+      } else {
+        setSelectedManagers([
+          ...selectedManagers,
+          { id: managerId, name: managerName },
+        ]);
       }
-    }else{
+    } else {
       if (selectedManager?.id === managerId) {
         setSelectedManager(null);
       } else {
-        setSelectedManager({id: managerId, name: managerName});
+        setSelectedManager({ id: managerId, name: managerName });
       }
     }
   };
 
-  const handleManagerSelection = () =>{
+  const handleManagerSelection = () => {
     if (isMultiple) {
       SetPassSelectedManagers(selectedManagers);
       setIsOpen(false);
       handleManagerModal(selectedManagers);
     } else {
       if (selectedManager) {
-        SetPassSelectedManager(selectedManager)
-        setIsOpen(false)
+        SetPassSelectedManager(selectedManager);
+        setIsOpen(false);
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (filteredData?.length) {
       if (isMultiple) {
-        if(boatAccess){
-        setSelectedManagers(boatAccess?.map(manager => ({ id: manager._id, name: manager.name })));
-        }else{
-          if(selectedManagers.length === 0)
-            setSelectedManagers(managers?.map(manager => ({ id: manager._id, name: manager.name })));
+        if (boatAccess) {
+          setSelectedManagers(
+            boatAccess?.map((manager) => ({
+              id: manager._id,
+              name: manager.name,
+            }))
+          );
+        } else {
+          if (selectedManagers.length === 0)
+            setSelectedManagers(
+              managers?.map((manager) => ({
+                id: manager._id,
+                name: manager.name,
+              }))
+            );
         }
-      } 
+      }
     }
   }, [managers, isMultiple]);
 
-  useEffect(()=>{
-    getManagers( jobType, locationType)
-  },[locationType, jobType])
+  useEffect(() => {
+    getManagers(jobType, locationType);
+  }, [locationType, jobType]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -82,7 +109,7 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Select Manager</h3>
               <button
-              type="button"
+                type="button"
                 onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                 className="text-lg font-bold"
               >
@@ -95,15 +122,15 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
                   <FiSearch className="text-white/50 text-lg" />
                 </span>
                 <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search here"
                   className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
                 />
               </div>
               <button
-              type="button"
+                type="button"
                 onClick={() => handleManagerSelection()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
               >
@@ -123,17 +150,25 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
                     Email
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
-                  <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-                   jobType={jobType} setJobType={setJobType}/>
+                    <JobType
+                      jobTitleDropdownOpen={jobTitleDropdownOpen}
+                      toggleJobTitleDropdown={toggleJobTitleDropdown}
+                      jobType={jobType}
+                      setJobType={setJobType}
+                    />
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
-                    <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-                    locationType={locationType} setLocationType={setLocationType}/>
+                    <LocationType
+                      locationDropdownOpen={locationDropdownOpen}
+                      toggleLocationDropdown={toggleLocationDropdown}
+                      locationType={locationType}
+                      setLocationType={setLocationType}
+                    />
                   </th>
                 </tr>
               </thead>
               {loadingManagers ? (
-                  <tbody>
+                <tbody>
                   {[...Array(10)].map((_, index) => (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-0 py-2">
@@ -154,44 +189,53 @@ const ManagerDetailModal = ({ setIsOpen, SetPassSelectedManager, SetPassSelected
                     </tr>
                   ))}
                 </tbody>
-                ):(
-              <tbody>
-                  {filteredData?.map((manager, index) =>{
-                  const isSelected = selectedManager?.id === manager._id;
-                  const isMultiSelected = selectedManagers?.some((selected) => selected.id === manager._id);
-                  return (
-                    <tr key={index} className="border-b-[1px] border-white/10">
-                      <td className="px-0 py-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                          checked={isMultiple ? isMultiSelected : isSelected} 
-                          onChange={() => handleSelectManager(manager._id, manager.name)}
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.name}
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.email}
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.jobtitle}
-                      </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        {manager?.location}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
+              ) : (
+                <tbody>
+                  {filteredData?.map((manager, index) => {
+                    const isSelected = selectedManager?.id === manager._id;
+                    const isMultiSelected = selectedManagers?.some(
+                      (selected) => selected.id === manager._id
+                    );
+                    return (
+                      <tr
+                        key={index}
+                        className="border-b-[1px] border-white/10"
+                      >
+                        <td className="px-0 py-2">
+                          <input
+                            type="checkbox"
+                            className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
+                            checked={isMultiple ? isMultiSelected : isSelected}
+                            onChange={() =>
+                              handleSelectManager(manager._id, manager.name)
+                            }
+                          />
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.name}
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.email}
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.jobtitle}
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.location}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
               )}
             </table>
           </div>
           <div className="flex justify-end mt-4">
             <button
-            type="button"
-              onClick={()=>setIsOpen(false)}
+              type="button"
+              onClick={() => setIsOpen(false)}
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >
               Done

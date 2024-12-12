@@ -29,7 +29,9 @@ const TaskTypeInputField = ({
         } bg-[#1A293D] outline-none flex justify-between items-center px-3 focus:border-[1px]
                    focus:border-[#55C9FA] relative`}
       >
-        <span className="text-gray-400">
+        <span
+          className={`${selectedTaskType ? "text-white" : "text-gray-400"}`}
+        >
           {" "}
           {selectedTaskType?.replace(/([A-Z])/g, " $1")?.trim() ||
             "Select Task Type"}{" "}
@@ -45,7 +47,7 @@ const TaskTypeInputField = ({
           className={`${
             isTaskTypeDropdownOpen ? "flex" : "hidden"
           } flex-col justify-start items-start gap-3 transition-all duration-500 py-3 absolute -bottom-40 shadow-xl
-                     left-0 w-full h-40 max-h-40 bg-[#1A293D] rounded-b-2xl`}
+                     left-0 w-full h-40 max-h-40 bg-[#21344C] rounded-b-2xl`}
         >
           <div className="w-full h-auto overflow-y-auto">
             {taskDropDown?.map((item, index) => (

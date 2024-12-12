@@ -1,4 +1,4 @@
-import SplashLogo from "./splash_logo.png";
+import SplashLogo from "./splash_logo_new.png";
 import QR from "./qr.png";
 import AuthMockup from "./auth_mockup.png";
 import SuccessVector from "./success_vector.png";

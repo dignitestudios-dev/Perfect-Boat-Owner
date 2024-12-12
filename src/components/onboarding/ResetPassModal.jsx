@@ -6,19 +6,47 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 const ResetPasswordModal = ({ isOpen, onClose, id }) => {
   if (!isOpen) return null;
   const [password, setPassword] = useState({ new: "", confirm: "" });
-  const [formErrors, setFormErrors] = useState({});
+  const [formErrors, setFormErrors] = useState({ new: "", confirm: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPassVisible, setIsPassVisible] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
 
   const handleChange = (e) => {
-    setFormErrors({});
     const { name, value } = e.target;
-    setPassword((prevPassword) => ({
-      ...prevPassword,
-      [name]: value,
-    }));
+    setPassword({ ...password, [name]: value });
+
+    // Initialize error state for the field
+    let errors = { ...formErrors };
+
+    // Password validation logic
+    if (name === "new") {
+      // Check for minimum length
+      if (
+        value.length < 8 &&
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/.test(
+          value
+        )
+      ) {
+        errors.new =
+          "Password must be at least 8 characters, including uppercase, lowercase, number, and special character.";
+      }
+      // Check for pattern (uppercase, lowercase, number, special character)
+      else {
+        errors.new = ""; // Clear errors if input is valid
+      }
+    }
+
+    if (name === "confirm") {
+      if (value !== password.new) {
+        errors.confirm = "Passwords do not match.";
+      } else {
+        errors.confirm = ""; // Clear errors if passwords match
+      }
+    }
+
+    // Update error state
+    setFormErrors(errors);
   };
 
   const handleResetPassword = async () => {
@@ -74,7 +102,12 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
               onChange={(e) => handleChange(e)}
               value={password.new}
               type={isPassVisible ? "text" : "password"}
-              className="w-[485px] h-[52px] p-2 mb-4 bg-[#1A293D] rounded-xl"
+              className={`w-[485px] h-[52px] p-2 mb-4 bg-[#1A293D] outline-none rounded-xl
+                ${
+                  formErrors.new === ""
+                    ? "focus:border-[#55C9FA] focus:ring-[#55C9FA]"
+                    : "focus:ring-[#FF453A] focus:border-[#FF453A]"
+                } focus:ring-1 `}
             />
             <span
               type="button"
@@ -99,7 +132,12 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
               onChange={(e) => handleChange(e)}
               value={password.confirm}
               type={isConfirm ? "text" : "password"}
-              className="w-[485px] h-[52px] p-2 mb-8 bg-[#1A293D] rounded-xl focus:outline-none"
+              className={`w-[485px] h-[52px] p-2 mb-4 bg-[#1A293D] outline-none rounded-xl
+              ${
+                formErrors.confirm === ""
+                  ? "focus:border-[#55C9FA] focus:ring-[#55C9FA]"
+                  : "focus:ring-[#FF453A] focus:border-[#FF453A]"
+              } focus:ring-1 `}
             />
             <span
               type="button"
@@ -113,7 +151,7 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
             </span>
           </div>
           {formErrors.confirm && (
-            <p className="text-red-500 text-sm -mt-6 mb-3">
+            <p className="text-red-500 text-sm -mt-3 mb-3">
               {formErrors.confirm}
             </p>
           )}

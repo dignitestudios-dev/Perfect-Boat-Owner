@@ -38,6 +38,11 @@ export const AuthenticationRoutes = [
     page: <VerifyOtp />,
   },
   {
+    title: "Update Password",
+    url: "/update-password",
+    page: <UpdatePassword />,
+  },
+  {
     title: "Not found",
     url: "*",
     page: <Navigate to="/404" />,
