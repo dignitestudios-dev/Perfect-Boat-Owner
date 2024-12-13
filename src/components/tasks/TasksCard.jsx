@@ -22,14 +22,6 @@ const statusColorsbg = {
   upcomingtask: "#FF007F1F",
 };
 
-const statusLiteColors = {
-  newtask: "#FF007F", // Pink for new task
-  overdue: "#FF3B30", // Red for overdue
-  default: "#FFCC00",
-  inprogress: "#36B8F3",
-  completed: "#1FBA46",
-};
-
 const STATUS_ENUM = {
   newtask: "New Task",
   inprogress: "In-Progress",

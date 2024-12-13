@@ -69,6 +69,13 @@ const BoatDetail = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [loadingBoats, setLoadingBoats] = useState(false);
 
+  const currentYear = new Date().getFullYear();
+  const minYear = 1970;
+  const maxYear = currentYear + 1;
+
+  const [model, setModel] = useState("");
+  const [modelError, setModelError] = useState(false);
+
   const {
     register,
     setValue,
@@ -112,12 +119,30 @@ const BoatDetail = () => {
       setValue("name", boatsData?.boat?.name);
       setValue("make", boatsData?.boat?.make);
       setValue("model", boatsData?.boat?.model);
+      setModel(boatsData?.boat?.model);
       setValue("size", boatsData?.boat?.size);
       setValue("location", boatsData?.boat?.location);
       // setFormsImages(boatsData?.boat?.images || [{}]);
       setSelectedBoat(boatsData?.boat?.boatType);
     }
   }, [boatsData, setValue]);
+
+  const handleModelChange = (event) => {
+    const inputYear = event.target.value;
+    console.log("🚀 ~ handleModelChange ~ inputYear:", inputYear);
+
+    // Ensure input is a number
+    if (/^\d{0,4}$/.test(inputYear)) {
+      setModel(inputYear);
+
+      // Check if year is within the allowed range
+      if (inputYear && (inputYear < minYear || inputYear > maxYear)) {
+        setModelError(`Please enter a year between ${minYear} and ${maxYear}.`);
+      } else {
+        setModelError(false);
+      }
+    }
+  };
 
   const handleImageUpdate = async (event, index) => {
     const file = event.files[0];
@@ -255,7 +280,8 @@ const BoatDetail = () => {
       data.append("name", formData.name);
       data.append("make", formData.make);
       data.append("size", formData.size);
-      data.append("model", formData.model);
+      // data.append("model", formData.model);
+      data.append("model", model);
       data.append("location", formData.location);
       data.append("boatType", selectedBoat);
       picturesArray.forEach((picture, index) => {
@@ -393,9 +419,9 @@ const BoatDetail = () => {
                           </span>
                           <div
                             className="group-hover:flex  flex-col justify-start items-start gap-3 transition-all
-                         duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
+                         duration-700 px-5 py-3 hidden absolute top-12 shadow-xl left-0 w-full h-48 max-h-48 bg-[#21344C] rounded-b-2xl "
                           >
-                            <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
+                            <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-1">
                               {boatDropDown?.map((boat, index) => (
                                 <button
                                   type="button"
@@ -424,7 +450,7 @@ const BoatDetail = () => {
                         })}
                         error={errors.make}
                       />
-                      <AddFleetInput
+                      {/* <AddFleetInput
                         label="Model"
                         placeholder="Enter Model"
                         type="text"
@@ -432,14 +458,46 @@ const BoatDetail = () => {
                           required: "Model is required",
                         })}
                         error={errors.model}
-                      />
+                      /> */}
+                      <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                        <label className="text-[16px] font-medium leading-[21.6px]">
+                          Year
+                        </label>
+                        <div
+                          className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center ${
+                            modelError && "border-red-500"
+                          }`}
+                        >
+                          <input
+                            type="text"
+                            id="year"
+                            value={model}
+                            onChange={handleModelChange}
+                            placeholder="YYYY"
+                            className="w-full h-full bg-transparent autofill:bg-transparent autofill:text-white outline-none text-white placeholder:text-gray-400"
+                          />
+                        </div>
+                        {modelError && (
+                          <p className="text-red-500 text-sm">{modelError}</p>
+                        )}
+                      </div>
                       <AddFleetInput
-                        label="Size (m)"
+                        label="Size (ft)"
                         placeholder="Enter Size"
-                        type="number"
+                        type="text"
                         register={register(`size`, {
                           required: "Size is required",
+                          pattern: {
+                            value: /^[1-9][0-9]{0,3}(\.[0-9]+)?$/,
+                            message: "Size must be positive",
+                          },
                         })}
+                        maxLength={4}
+                        onInput={(e) => {
+                          e.target.value = e.target.value
+                            .replace(/[^0-9.]/g, "")
+                            .replace(/(\..*?)\..*/g, "$1");
+                        }}
                         error={errors.size}
                       />
                       <AddFleetInput
@@ -529,12 +587,12 @@ const BoatDetail = () => {
                   )}
                 </div>
                 {isEditing ? (
-                  <div className="w-full flex flex-col gap-4 mt-2 ">
+                  <div className=" flex flex-col gap-4 mt-2 w-[600px] ">
                     <hr class="mt-6 h-[1px] border-t-0 bg-white/20" />
                     <h3 className="text-[16px] md:text-[18px] font-bold leading-[24.3px]">
                       Upload Photos Here
                     </h3>
-                    <p className="text-white/50 text-[12px] md:text-[13px]">
+                    <p className="text-white/90 text-[12px] md:text-[14px]">
                       Enhance the boat profile by uploading high-quality
                       pictures. Showcase its features, design, and condition
                       with images
@@ -636,10 +694,10 @@ const BoatDetail = () => {
                     })}
                     <>
                       {displayArray?.length < 5 && (
-                        <div className="w-full md:w-[175px] h-[147px] flex items-center justify-center">
+                        <div className="w-full md:w-[175px] h-[147px] flex items-center justify-center rounded-xl bg-[#1A293D]">
                           <label
                             htmlFor="upload-new-image"
-                            className="cursor-pointer"
+                            className="cursor-pointer "
                           >
                             <FiDownload className="text-white text-4xl" />
                             <input

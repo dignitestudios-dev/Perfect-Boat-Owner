@@ -22,8 +22,10 @@ const AuthInput = ({
       </label>
       <div
         className={`w-full h-[52px] lg:w-[434px] focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-[12px] bg-[#1A293D] flex items-center justify-start  ${
-          error && "error"
-        } `}
+          error
+            ? "focus-within:border-[#FF453A]"
+            : "focus-within:border-[#55C9FA]"
+        }  `}
       >
         <div
           className={` w-full  h-full flex items-center justify-center rounded-[12px] relative`}

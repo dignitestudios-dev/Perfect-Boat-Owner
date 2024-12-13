@@ -6,7 +6,13 @@ import AuthSubmitBtn from "../onboarding/AuthSubmitBtn";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "./Toaster";
 
-const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated, phoneNum, setPhoneNumber }) => {
+const VerifyPhoneEditOtp = ({
+  isOpen,
+  setIsOpen,
+  setPhoneUpdated,
+  phoneNum,
+  setPhoneNumber,
+}) => {
   const { navigate } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
@@ -59,11 +65,11 @@ const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated, phoneNum, setP
   const handleVerifyOtp = async (otp) => {
     setLoading(true);
     try {
-      let obj = { phone: phoneNum?.phone, otp: getOtpValue(), };
+      let obj = { phone: phoneNum?.phone, otp: getOtpValue() };
       const response = await axios.put("/owner/profile/verify/phone", obj);
       if (response?.status === 200) {
-        setPhoneUpdated(true)
-        setIsOpen(false)
+        setPhoneUpdated(true);
+        setIsOpen(false);
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
@@ -81,8 +87,8 @@ const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated, phoneNum, setP
       const response = await axios.put("/owner/profile/resend/phone", obj);
 
       if (response.status === 200) {
-        SuccessToast("Otp Resend")
-        setOtp(Array(6).fill(""))
+        SuccessToast("OTP has been sent to your email");
+        setOtp(Array(6).fill(""));
       } else {
         ErrorToast(response?.data?.message);
       }
@@ -113,41 +119,44 @@ const VerifyPhoneEditOtp = ({ isOpen, setIsOpen, setPhoneUpdated, phoneNum, setP
               Please enter the code that we send to your new phone number.
             </span>
           </div>
-          <form  onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}
-          className="w-full h-auto"
-         >
-          <div className="w-full h-auto flex justify-start items-center gap-4 my-4 ">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              type="text"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => handleChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              ref={(el) => (inputs.current[index] = el)}
-              className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#c2c6cb] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
-            />
-          ))}
-        </div>
-        <div className="w-full h-auto flex  mb-20 flex-col gap-1 justify-start items-start  ">
-          <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
-            <span className="text-[13px] font-medium text-[#C2C6CB]">
-              Didn't recieve a code?
-            </span>
-            <button
-              type="button"
-              disabled={resendLoading}
-              onClick={handleResendOtp}
-              className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
-            >
-              Resend now
-            </button>
-            
-          </div>
-        </div>
-        <AuthSubmitBtn text={"Verify"} loader={loading} />
-        </form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleVerifyOtp();
+            }}
+            className="w-full h-auto"
+          >
+            <div className="w-full h-auto flex justify-start items-center gap-4 my-4 ">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleChange(e, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  ref={(el) => (inputs.current[index] = el)}
+                  className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#c2c6cb] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
+                />
+              ))}
+            </div>
+            <div className="w-full h-auto flex  mb-20 flex-col gap-1 justify-start items-start  ">
+              <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
+                <span className="text-[13px] font-medium text-[#C2C6CB]">
+                  Didn't recieve a code?
+                </span>
+                <button
+                  type="button"
+                  disabled={resendLoading}
+                  onClick={handleResendOtp}
+                  className="outline-none text-[13px] border-none text-[#199BD1] font-bold"
+                >
+                  Resend now
+                </button>
+              </div>
+            </div>
+            <AuthSubmitBtn text={"Verify"} loader={loading} />
+          </form>
         </div>
       </div>
     </div>

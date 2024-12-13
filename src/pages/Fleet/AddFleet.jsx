@@ -341,7 +341,7 @@ const AddFleet = () => {
                     <div className="w-full grid grid-cols-1 md:grid-cols-3 items-start justify-start gap-3 lg:gap-12">
                       <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                         <label className="text-[16px] font-medium leading-[21.6px]">
-                          Model
+                          Year
                         </label>
                         <div
                           className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center ${
@@ -368,16 +368,15 @@ const AddFleet = () => {
                         register={register(`size`, {
                           required: "Size is required",
                           pattern: {
-                            value: /^[1-9][0-9]{0,3}$/,
+                            value: /^[1-9][0-9]{0,3}(\.[0-9]+)?$/,
                             message: "Size must be positive",
                           },
                         })}
                         maxLength={4}
                         onInput={(e) => {
-                          e.target.value = e.target.value.replace(
-                            /(?!^\+)[^\d]/g,
-                            ""
-                          );
+                          e.target.value = e.target.value
+                            .replace(/[^0-9.]/g, "")
+                            .replace(/(\..*?)\..*/g, "$1");
                         }}
                         error={errors.size}
                       />

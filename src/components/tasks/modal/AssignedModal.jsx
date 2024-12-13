@@ -37,7 +37,37 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
+const statusColors = {
+  newtask: "#FF69B4",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  inprogress: "#36B8F3",
+  completed: "#1FBA46",
+  upcomingtask: "#FF007F",
+};
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  inprogress: "#36B8F31F",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In-Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
+};
+
 const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
+
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleDeleteConfirm = () => {
@@ -103,20 +133,30 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
                   {tasksList?.map((task, index) => (
                     <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                       <span className="w-full flex justify-start items-center">
-                        {task?.name}
+                        {task?.name || task?.boat?.name}
                       </span>
                       <span className="w-full flex justify-start items-center">
-                        {task?.type}
+                        {task?.type || task?.boat?.boatType}
                       </span>
                       <span className="w-full flex justify-start items-center">
                         {getUnixDate(task?.dueDate)}
                       </span>
                       <span className="w-full flex justify-start items-center ">
-                        {task?.recurringDays}
+                        {task?.recurringDays || task?.reoccuringDays}
                       </span>
                       <span className="w-full flex justify-start items-center ">
-                        <span className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2">
-                          {task?.status}
+                        <span
+                          className="w-auto h-[27px] rounded-full flex items-center justify-center px-2"
+                          style={{
+                            color:
+                              statusColors[task?.status] ||
+                              statusColors["default"],
+                            backgroundColor:
+                              statusColorsbg[task?.status] ||
+                              statusColorsbg["default"],
+                          }}
+                        >
+                          {getFormattedStatus(task?.status)}
                         </span>
                       </span>
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
@@ -132,7 +172,7 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
                       </div>
                       <DeletedModal
                         isOpen={isDeleteModalOpen}
-                        _id={data?._id}
+                        _id={task?._id}
                         onClose={() => setDeleteModalOpen(false)}
                         refreshTasks={handleDeleteConfirm}
                       />
