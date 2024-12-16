@@ -44,7 +44,6 @@ const TasksContainer = () => {
 
   const handleSearch = (e) => {
     const search = e.target.value;
-    console.log("🚀 ~ handleSearch ~ search:", search);
     setSearch(search);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -142,7 +141,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == ""
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               All
@@ -155,7 +154,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "newtask"
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               New
@@ -168,7 +167,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "upcomingtask"
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               Upcoming
@@ -181,7 +180,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "inprogress"
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               In-Progress
@@ -194,7 +193,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "completed"
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               Completed
@@ -207,7 +206,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "recurring"
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               Recurring
@@ -220,7 +219,7 @@ const TasksContainer = () => {
               className={`w-auto outline-none focus-within:bg-[#fff] focus-within:text-[#001229] ${
                 filter == "overdue"
                   ? "bg-[#fff] text-[#001229]"
-                  : "bg-[#1A293D] text-[#fff]"
+                  : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
               Overdue
@@ -312,7 +311,7 @@ const TasksContainer = () => {
               );
             })
           ) : (
-            <div className="p-1">No record found</div>
+            <div className="p-1">There are no tasks to show</div>
           )}
           {/* {!loading ? (
             filteredData?.length > 0 &&

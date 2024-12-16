@@ -129,7 +129,7 @@ const BoatAccess = () => {
             />
             <span className="flex justify-start items-center">Name</span>
             <span className="flex justify-start items-center">
-              Model/Make/Size
+              Year/Make/Size
             </span>
             <span className="flex justify-center items-center ml-16">
               <LocationType

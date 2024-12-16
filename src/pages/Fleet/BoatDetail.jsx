@@ -564,7 +564,7 @@ const BoatDetail = () => {
                         </div>
                         <AddFleetInput
                           isDisabled={!isEditing}
-                          label={"Model/Make/Size"}
+                          label={"Year/Make/Size"}
                           state={"2019/Toyotaa/Class A"}
                           disabled={true}
                           className="text-lg md:text-xl lg:text-2xl"

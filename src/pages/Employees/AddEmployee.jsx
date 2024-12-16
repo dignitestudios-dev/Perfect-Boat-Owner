@@ -20,7 +20,8 @@ import AddEmployeeCsv from "../../components/employees/AddEmployeeCsv";
 const AddEmployee = () => {
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
-  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [employeePassword, setEmployeePassword] = useState("");
+
   const [isImportCSVModalOpen, setIsImportCSVModalOpen] = useState(false);
   const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [selectedManager, setSelectedManager] = useState(null);
@@ -30,6 +31,17 @@ const AddEmployee = () => {
 
   const [addLoading, setAddLoading] = useState(false);
   const [csvUploaded, setCsvUploaded] = useState(false);
+
+  function generateRandomPassword(length = 4) {
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&";
+    let password = "Perfect@";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+      password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    setEmployeePassword(password);
+    return password;
+  }
 
   const {
     register,
@@ -43,6 +55,7 @@ const AddEmployee = () => {
   useEffect(() => {
     setManagerError(null);
     setValue("manager", passSelectedManager?.name);
+    generateRandomPassword();
   }, [passSelectedManager?.name, setValue]);
 
   const openManagerModal = () => {
@@ -68,7 +81,7 @@ const AddEmployee = () => {
       setAddLoading(true);
       const employeeData = {
         ...data,
-        password: "Test@123",
+        password: employeePassword,
         manager: passSelectedManager?.id,
         // tasks: tasks?.map(item=>item?.id)
       };

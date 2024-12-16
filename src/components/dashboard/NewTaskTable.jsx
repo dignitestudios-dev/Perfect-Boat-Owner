@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { FiSearch, FiChevronDown } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import MiniListLoader from "../global/MiniListLoader";
 import TaskType from "../global/headerDropdowns/TaskType";
@@ -25,6 +25,7 @@ const STATUS_ENUM = {
 };
 
 const NewTaskTable = ({ data, loading }) => {
+  const navigate = useNavigate();
   const { formatTimestampToDate } = useContext(GlobalContext);
   const getFormattedStatus = (status) => {
     return STATUS_ENUM[status] || status;
@@ -117,8 +118,11 @@ const NewTaskTable = ({ data, loading }) => {
                 {filteredData?.slice(0, 4)?.map((task, key) => {
                   return (
                     <div
+                      onClick={() =>
+                        navigate(`/new-tasks-request/${task?._id}`)
+                      }
                       key={key}
-                      className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                      className="cursor-pointer w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                     >
                       <span className="w-full capitalize flex justify-start items-center">
                         {task?.boat?.name}

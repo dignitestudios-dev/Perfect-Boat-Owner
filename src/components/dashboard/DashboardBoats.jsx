@@ -8,12 +8,11 @@ import BoatType from "../global/headerDropdowns/BoatType";
 import LocationType from "../global/headerDropdowns/LocationType";
 
 const DashboardBoats = ({ data, loading }) => {
-  
   const { navigate, formatTimestampToDate } = useContext(GlobalContext);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType,setLocationType] = useState("")
-  const [boatType, setBoatType] = useState("")
+  const [locationType, setLocationType] = useState("");
+  const [boatType, setBoatType] = useState("");
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -26,16 +25,23 @@ const DashboardBoats = ({ data, loading }) => {
   const [search, setSearch] = useState("");
 
   // const filteredData = data?.filter((item) =>
-  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase()) 
+  //   item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   // );
 
   const filteredData = data?.filter((item) => {
-    const matchesSearch = search ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) : true;
-    const boatTypeMatch = boatType && boatType !== "all" ? item?.boatType?.toLowerCase() === boatType?.toLowerCase() : true;
-    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    const matchesSearch = search
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const boatTypeMatch =
+      boatType && boatType !== "all"
+        ? item?.boatType?.toLowerCase() === boatType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
     return matchesSearch && locationTypeMatch && boatTypeMatch;
   });
-
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
@@ -52,7 +58,7 @@ const DashboardBoats = ({ data, loading }) => {
             <FiSearch className="text-white/50 text-lg" />
           </span>
           <input
-          onChange={(e)=>setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             placeholder="Search here"
             className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full"
@@ -66,46 +72,61 @@ const DashboardBoats = ({ data, loading }) => {
           + Add Boat
         </button>
       </div>
-      {loading?(
-        <MiniListLoader/>
-      ):(
+      {loading ? (
+        <MiniListLoader />
+      ) : (
         <>
-        {data?.length > 0 ? (
-        <div className="w-full flex flex-col gap-1 justify-start items-start">
-          <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
-            <BoatType boatTypeDropdownOpen={boatTypeDropdownOpen} toggleBoatTypeDropdown={toggleBoatTypeDropdown}
-            boatType={boatType} setBoatType={setBoatType}/> 
-            <span className="w-full flex justify-start items-center">Name</span>
-            <span className="w-full flex justify-start items-center">
-              Model / Make / Size
-            </span>
-            <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
-          </div>
-          {filteredData?.slice(0, 4)?.map((boat, key) => {
-            return (
-              <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center">
-                <span className="w-full capitalize flex justify-start items-center">
-                  {boat?.boatType}
-                </span>
-                <span className="w-full capitalize flex justify-start items-center">
-                  {boat?.name}
+          {data?.length > 0 ? (
+            <div className="w-full flex flex-col gap-1 justify-start items-start">
+              <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
+                <BoatType
+                  boatTypeDropdownOpen={boatTypeDropdownOpen}
+                  toggleBoatTypeDropdown={toggleBoatTypeDropdown}
+                  boatType={boatType}
+                  setBoatType={setBoatType}
+                />
+                <span className="w-full flex justify-start items-center">
+                  Name
                 </span>
                 <span className="w-full flex justify-start items-center">
-                  {boat?.model}/{boat?.make}/{boat?.size}
+                  Year / Make / Size
                 </span>
-                <span className="w-full flex justify-start items-center ">
-                  {boat?.location}
-                </span>
+                <LocationType
+                  locationDropdownOpen={locationDropdownOpen}
+                  toggleLocationDropdown={toggleLocationDropdown}
+                  locationType={locationType}
+                  setLocationType={setLocationType}
+                />
               </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
-          No boats on the horizon? Add boat to keep track of its maintenance!
-        </div>
-      )}
+              {filteredData?.slice(0, 4)?.map((boat, key) => {
+                return (
+                  <div
+                    key={key}
+                    onClick={() => navigate(`/boats/${boat?._id}`)}
+                    className="cursor-pointer w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  >
+                    <span className="w-full capitalize flex justify-start items-center">
+                      {boat?.boatType}
+                    </span>
+                    <span className="w-full capitalize flex justify-start items-center">
+                      {boat?.name}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.model}/{boat?.make}/{boat?.size}
+                    </span>
+                    <span className="w-full flex justify-start items-center ">
+                      {boat?.location}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
+              No boats on the horizon? Add boat to keep track of its
+              maintenance!
+            </div>
+          )}
         </>
       )}
 

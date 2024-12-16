@@ -22,12 +22,14 @@ const AddManagerpage = () => {
   const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
 
-  const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
+  const [passSelectedEmployee, SetPassSelectedEmployee] = useState([]);
+
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [passSelectedBoat, setPassSelectedBoat] = useState([]);
   const [inputError, setInputError] = useState({});
   const [csvUploaded, setCsvUploaded] = useState(false);
+  const [managerPassword, setManagerPassword] = useState("");
 
   const [data, setData] = useState([
     {
@@ -51,9 +53,23 @@ const AddManagerpage = () => {
     defaultValues: { employee: passSelectedEmployee?.name },
   });
 
+  function generateRandomPassword(length = 4) {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&";
+    let password = "Perfec1@";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+      password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    setManagerPassword(password);
+    return password;
+  }
+
   useEffect(() => {
-    setValue("employee", passSelectedEmployee?.name);
-  }, [passSelectedEmployee?.name, setValue]);
+    const employeeNames = passSelectedEmployee
+      ?.map((emp) => emp.name)
+      .join(", ");
+    setValue("employee", employeeNames);
+    generateRandomPassword();
+  }, [passSelectedEmployee, setValue]);
 
   // const toggleLocationFilter = () => {
   //   setLocationFilter((prev) => !prev);
@@ -109,10 +125,10 @@ const AddManagerpage = () => {
         jobtitle: data.jobtitle,
         location: data.location,
         name: data.name,
-        password: "Test@123",
+        password: managerPassword,
         phone: `+1${data.phone}`,
-        ...(passSelectedEmployee?.id && {
-          assignEmployees: [passSelectedEmployee.id],
+        ...(passSelectedEmployee?.length > 0 && {
+          assignEmployees: passSelectedEmployee.map((employee) => employee.id),
         }),
         // accessBoat: passSelectedBoat?.map(item =>item.id),
       };
@@ -270,7 +286,7 @@ const AddManagerpage = () => {
                   className="flex flex-col gap-4"
                 >
                   <AddFleetInput
-                    label={"Assign Employee"}
+                    label={"Assign Employee(s)"}
                     type="text"
                     placeholder="Click here to assign"
                     register={register("employee")}
@@ -399,6 +415,7 @@ const AddManagerpage = () => {
           isOpen={isEmployeeModalOpen}
           SetPassSelectedEmployee={SetPassSelectedEmployee}
           setInputError={setInputError}
+          isMultiple={true}
         />
       )}
       {isBoatModalOpen && (

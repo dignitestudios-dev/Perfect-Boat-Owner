@@ -417,7 +417,7 @@ const EditManager = () => {
                   Name
                 </span>
                 <span className="w-full flex justify-start items-center">
-                  Model/Make/Size
+                  Year/Make/Size
                 </span>
 
                 <div className="w-full flex justify-start items-center">

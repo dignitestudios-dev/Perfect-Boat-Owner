@@ -191,7 +191,7 @@ const BoatSelectModal = ({
                 Name
               </span>
               <span className="w-full flex justify-start items-center">
-                Model/Make/Size
+                Year/Make/Size
               </span>
               <LocationType
                 locationDropdownOpen={locationDropdownOpen}

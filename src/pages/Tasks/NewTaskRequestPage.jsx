@@ -44,7 +44,7 @@ const NewTaskRequestPage = () => {
         <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
           <div className="w-full h-auto flex flex-col gap-6 justify-start items-start">
             <div className="w-full flex text-[16px] font-normal leading-[21.6px] text-white/50 flex-col justify-start items-start gap-4">
-              {task.note}
+              {task?.note}
             </div>
 
             <div className="w-full flex flex-col pt-4 border-t-[1px] border-[#fff]/[0.14] justify-start items-start gap-4">
@@ -154,7 +154,7 @@ const NewTaskRequestPage = () => {
 
                   <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
-                      {"Model/Make/Size"}
+                      {"Year/Make/Size"}
                     </label>
                     <div className="group transition-all duration-500 w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center  px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl  relative">
                       <span className="text-gray-400">

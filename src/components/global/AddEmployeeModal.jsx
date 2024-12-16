@@ -24,7 +24,7 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
           <button
             onClick={() => {
               setIsOpen(false);
-              navigate("/dashboard");
+              navigate("/managers");
             }}
             className="absolute right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
           >

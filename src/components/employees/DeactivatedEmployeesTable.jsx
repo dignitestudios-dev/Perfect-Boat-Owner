@@ -16,6 +16,12 @@ const DeactivatedEmployeesTable = () => {
 
   const dropDownRef = useRef(null);
 
+  // mahad -
+  const [sortFilter, setSortFilter] = useState("none");
+  const handleCheckboxChange = (sort) => {
+    setSortFilter(sort);
+  };
+
   // const users = activeTab === "deleted" ? deletedUsers : deactivatedUsers;
 
   const toggleDropDownFilter = () => {
@@ -57,7 +63,12 @@ const DeactivatedEmployeesTable = () => {
   };
 
   const [usersData, setUsersData] = useState([]);
+
   const [delUsersData, setDelUsersData] = useState([]);
+
+  const [filteredData, setFilteredData] = useState([]);
+  const [filteredDeactivateData, setFilteredDeactivateData] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
   const getUsersData = async () => {
@@ -87,6 +98,26 @@ const DeactivatedEmployeesTable = () => {
     getUsersData();
   }, [activeTab]);
 
+  useEffect(() => {
+    let filtered = delUsersData;
+    let deactivateFiltered = usersData;
+
+    if (sortFilter === "manager") {
+      filtered = delUsersData?.filter((item) => item?.userType === "Manager");
+      deactivateFiltered = usersData?.filter(
+        (item) => item?.userType === "Manager"
+      );
+    } else if (sortFilter === "employee") {
+      filtered = delUsersData?.filter((item) => item?.userType === "Employee");
+      deactivateFiltered = usersData?.filter(
+        (item) => item?.userType === "Employee"
+      );
+    }
+
+    setFilteredData(filtered);
+    setFilteredDeactivateData(deactivateFiltered);
+  }, [sortFilter, delUsersData, usersData]);
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -99,7 +130,7 @@ const DeactivatedEmployeesTable = () => {
             onClick={() => setActiveTab("deleted")}
             className={`p-1 rounded-none border-b-[3px] ${
               activeTab === "deleted"
-                ? "text-blue-500 border-blue-500"
+                ? "text-[#199BD1] border-[#199BD1]"
                 : "text-white/50 border-transparent"
             }`}
           >
@@ -109,7 +140,7 @@ const DeactivatedEmployeesTable = () => {
             onClick={() => setActiveTab("deactivated")}
             className={`p-1 rounded-none border-b-[3px] ${
               activeTab === "deactivated"
-                ? "text-blue-500 border-blue-500"
+                ? "text-[#199BD1] border-[#199BD1]"
                 : "text-white/50 border-transparent"
             }`}
           >
@@ -130,27 +161,36 @@ const DeactivatedEmployeesTable = () => {
             } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-9 right-0`}
           >
             <div className="w-full flex justify-start items-start gap-2">
-              <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+              <input
+                checked={sortFilter === "none"}
+                onChange={() => handleCheckboxChange("none")}
+                type="checkbox"
+                className="w-3 h-3 accent-[#199BD1]"
+              />
               <span className="text-white text-[11px] font-medium leading-[14.85px]">
                 None
               </span>
             </div>
             <div className="w-full flex justify-start items-start gap-2">
-              <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+              <input
+                checked={sortFilter === "managers"}
+                onChange={() => handleCheckboxChange("managers")}
+                type="checkbox"
+                className="w-3 h-3 accent-[#199BD1]"
+              />
               <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                Latest
+                Managers
               </span>
             </div>
             <div className="w-full flex justify-start items-start gap-2">
-              <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
+              <input
+                checked={sortFilter === "employees"}
+                onChange={() => handleCheckboxChange("employees")}
+                type="checkbox"
+                className="w-3 h-3 accent-[#199BD1]"
+              />
               <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                Earliest
-              </span>
-            </div>
-            <div className="w-full flex justify-start items-start gap-2">
-              <input type="checkbox" className="w-3 h-3 accent-[#199BD1]" />
-              <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                Calendar
+                Employees
               </span>
             </div>
           </div>
@@ -251,7 +291,7 @@ const DeactivatedEmployeesTable = () => {
                   </span>
                 </div>
 
-                {delUsersData?.map((user, index) => (
+                {filteredData?.map((user, index) => (
                   <div
                     key={index}
                     className="w-full grid grid-cols-6 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
@@ -368,7 +408,7 @@ const DeactivatedEmployeesTable = () => {
                   </span>
                 </div>
 
-                {usersData?.map((user, index) => (
+                {filteredDeactivateData?.map((user, index) => (
                   <div
                     key={index}
                     className="w-full grid grid-cols-7 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"

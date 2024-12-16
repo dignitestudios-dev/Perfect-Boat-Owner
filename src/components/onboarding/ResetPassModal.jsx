@@ -24,7 +24,7 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
       // Check for minimum length
       if (
         value.length < 8 &&
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/.test(
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(
           value
         )
       ) {
@@ -99,6 +99,7 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
           <div className="relative">
             <input
               name="new"
+              maxLength={18}
               onChange={(e) => handleChange(e)}
               value={password.new}
               type={isPassVisible ? "text" : "password"}
@@ -129,6 +130,7 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
           <div className="relative">
             <input
               name="confirm"
+              maxLength={18}
               onChange={(e) => handleChange(e)}
               value={password.confirm}
               type={isConfirm ? "text" : "password"}
