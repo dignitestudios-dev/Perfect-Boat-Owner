@@ -1,9 +1,9 @@
 import moment from "moment/moment";
 
-// *Date Format
 export const getUnixDate = (date) => {
   if (date && moment(date).isValid()) {
-    return moment(date * 1000).format("MM-DD-YYYY");
+    // Convert Unix timestamp to local time and format it
+    return moment.unix(date).local().format("MM-DD-YYYY");
   }
   return undefined;
 };

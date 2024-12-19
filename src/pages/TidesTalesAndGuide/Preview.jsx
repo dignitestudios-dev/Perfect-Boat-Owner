@@ -30,12 +30,12 @@ const Preview = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
-  console.log("🚀 ~ Preview ~ viewers:", viewers);
-  const navigate = useNavigate(); // Initialize the navigate function
+
+  const navigate = useNavigate();
 
   const handleScheduleClick = () => {
     setIsScheduling(true);
-    setIsDateModalOpen(true); // Open the date modal
+    setIsDateModalOpen(true);
   };
 
   const handleClose = () => {

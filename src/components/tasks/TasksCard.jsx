@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import { MdDelete } from "react-icons/md";
-import axios from "../../axios";
 import DeletedModal from "../../components/global/DeletedModal";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { getUnixDate } from "../../data/DateFormat";

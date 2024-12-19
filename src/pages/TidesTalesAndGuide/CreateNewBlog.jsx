@@ -7,8 +7,7 @@ import {
   GrTextAlignCenter,
   GrTextAlignRight,
 } from "react-icons/gr";
-import { ImListNumbered } from "react-icons/im";
-import { MdFormatListBulleted } from "react-icons/md";
+
 import { BiLink, BiUndo, BiRedo, BiChevronDown } from "react-icons/bi";
 import { BlogContext } from "../../contexts/BlogContext";
 

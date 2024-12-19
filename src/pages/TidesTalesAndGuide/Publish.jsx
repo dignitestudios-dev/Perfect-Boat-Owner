@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import PublishModal from "./PublishModal"; // Make sure the path is correct
-import { GlobalContext } from "../../contexts/GlobalContext"; // Adjust the path as needed
 import { BlogContext } from "../../contexts/BlogContext";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +27,7 @@ const Publish = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
+  console.log("🚀 ~ Publish ~ dueDate:", dueDate);
 
   const [loading, setLoading] = useState(false);
 
@@ -63,8 +63,8 @@ const Publish = () => {
       if (imageText) {
         formdata.append("imageTitle", imageText);
       }
-      if (dueDate) {
-        formdata.append("scheduleDate", dueDate?.unix);
+      if (dueDate && dueDate.unix) {
+        formdata.append("scheduleDate", dueDate.unix);
       }
       formdata.append("story", createHtmlTemplate(story, title, subTitle));
       formdata.append("viewer", viewers);
@@ -77,6 +77,7 @@ const Publish = () => {
 
         setCoverFile(null);
         setCoverUrl(null);
+        setDueDate({});
         setTitle("");
         setStory("");
         setSubTitle("");
@@ -97,6 +98,12 @@ const Publish = () => {
 
   useEffect(() => {
     setViewers("everyone");
+  }, []);
+
+  useEffect(() => {
+    if (coverFile == null || title === "") {
+      navigate("/blog/createnewblog");
+    }
   }, []);
   return (
     <div className="h-full w-full p-6 flex flex-col gap-4 bg-[#0D1B2A]">
