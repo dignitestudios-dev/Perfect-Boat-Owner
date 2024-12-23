@@ -109,6 +109,7 @@ const BoatAccessModal = ({
                     <th className="px-4 py-2">Email</th>
                     <th className="px-4 py-2 relative">
                       <JobType
+                        setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                         jobTitleDropdownOpen={jobTitleDropdownOpen}
                         toggleJobTitleDropdown={toggleJobTitleDropdown}
                         jobType={jobType}
@@ -117,6 +118,7 @@ const BoatAccessModal = ({
                     </th>
                     <th className="px-4 py-2 relative">
                       <LocationType
+                        setLocationDropdownOpen={setLocationDropdownOpen}
                         locationDropdownOpen={locationDropdownOpen}
                         toggleLocationDropdown={toggleLocationDropdown}
                         locationType={locationType}

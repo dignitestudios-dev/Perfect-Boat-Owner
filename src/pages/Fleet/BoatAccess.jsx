@@ -123,6 +123,7 @@ const BoatAccess = () => {
             <span className="flex justify-start items-center">Boat Image</span>
             <BoatType
               boatTypeDropdownOpen={boatTypeDropdownOpen}
+              setBoatTypeDropdownOpen={setBoatTypeDropdownOpen}
               toggleBoatTypeDropdown={toggleBoatTypeDropdown}
               boatType={boatType}
               setBoatType={setBoatType}
@@ -133,6 +134,7 @@ const BoatAccess = () => {
             </span>
             <span className="flex justify-center items-center ml-16">
               <LocationType
+                setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}

@@ -46,57 +46,6 @@ const statusColorsbg = {
   upcomingtask: "#FF007F1F",
 };
 
-const Dropdown = ({ options, label }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        className="text-left w-full flex justify-start items-center gap-1"
-        onClick={handleToggle}
-      >
-        {label}
-        <FaCaretDown />
-      </button>
-      {isOpen && (
-        <ul className="absolute z-10 bg-[#1A293D] text-white/50 text-[11px] rounded-[8px] mt-1 p-2 w-48">
-          {options.map((option, index) => (
-            <li
-              key={index}
-              className="py-1 px-2 hover:bg-[#199BD1] cursor-pointer flex items-center gap-2"
-            >
-              <input
-                type="checkbox"
-                className="form-checkbox h-3 w-3 text-[#199BD1]"
-              />
-              {option}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
-
 const EditEmployee = () => {
   const getFormattedStatus = (status) => {
     return STATUS_ENUM[status] || status;
@@ -315,6 +264,13 @@ const EditEmployee = () => {
                         type="text"
                         placeholder="Enter Name"
                         register={register("name", {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Please enter your name.",
                           pattern: {
                             value: /^[A-Za-z\s]+$/,
@@ -324,7 +280,7 @@ const EditEmployee = () => {
                         error={errors.name}
                         onInput={(e) => {
                           e.target.value = e.target.value.replace(
-                            /[^A-Za-z]/g,
+                            /[^A-Za-z\s]/g,
                             ""
                           );
                         }}
@@ -351,6 +307,13 @@ const EditEmployee = () => {
                         type="text"
                         placeholder="Enter Job Title"
                         register={register("jobtitle", {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Please enter your job title",
                         })}
                         error={errors.jobtitle}
@@ -361,6 +324,13 @@ const EditEmployee = () => {
                         type="text"
                         placeholder="Enter Location"
                         register={register("location", {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Please enter a location",
                           minLength: {
                             value: 2,
@@ -516,6 +486,7 @@ const EditEmployee = () => {
                   Boat Name
                 </span>
                 <TaskType
+                  setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                 />
@@ -526,6 +497,7 @@ const EditEmployee = () => {
                   Recurring Days
                 </span>
                 <StatusType
+                  setStatusDropdownOpen={setStatusDropdownOpen}
                   statusDropdownOpen={statusDropdownOpen}
                   toggleStatusDropdown={toggleStatusDropdown}
                   setStatusFilter={setStatusFilter}

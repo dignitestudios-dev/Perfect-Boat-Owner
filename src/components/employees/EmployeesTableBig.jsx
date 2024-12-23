@@ -220,6 +220,7 @@ const EmployeesTableBig = ({
               Email
             </span>
             <JobType
+              setJobTitleDropdownOpen={setJobTitleDropdownOpen}
               jobTitleDropdownOpen={jobTitleDropdownOpen}
               toggleJobTitleDropdown={toggleJobTitleDropdown}
               jobType={jobType}
@@ -227,6 +228,7 @@ const EmployeesTableBig = ({
               setCurrentPage={setCurrentPage}
             />
             <LocationType
+              setLocationDropdownOpen={setLocationDropdownOpen}
               locationDropdownOpen={locationDropdownOpen}
               toggleLocationDropdown={toggleLocationDropdown}
               locationType={locationType}

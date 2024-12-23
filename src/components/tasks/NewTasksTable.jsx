@@ -7,9 +7,10 @@ import axios from "../../axios";
 import { ErrorToast } from "../global/Toaster";
 import RequestTaskListLoader from "./loaders/RequestTaskListLoader";
 import LocationType from "../global/headerDropdowns/LocationType";
+import { useNavigate } from "react-router-dom";
 
 const NewTaskTable = () => {
-  const { navigate } = useContext(GlobalContext);
+  const navigate = useNavigate();
   // const [locationFilter, setLocationFilter] = useState(false);
   // const locationRef = useRef(null);
   const [locationType, setLocationType] = useState("all");
@@ -95,6 +96,7 @@ const NewTaskTable = () => {
             Boat Name
           </span>
           <LocationType
+            setLocationDropdownOpen={setLocationDropdownOpen}
             locationDropdownOpen={locationDropdownOpen}
             toggleLocationDropdown={toggleLocationDropdown}
             locationType={locationType}

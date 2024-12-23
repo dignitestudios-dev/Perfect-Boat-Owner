@@ -402,6 +402,13 @@ const BoatDetail = () => {
                         placeholder="Enter Name"
                         type="text"
                         register={register(`name`, {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Name is required",
                         })}
                         error={errors.name}
@@ -446,6 +453,13 @@ const BoatDetail = () => {
                         placeholder="Enter Make"
                         type="text"
                         register={register(`make`, {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Make is required",
                         })}
                         error={errors.make}
@@ -505,6 +519,13 @@ const BoatDetail = () => {
                         placeholder="Enter Location"
                         type="text"
                         register={register(`location`, {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Location is required",
                         })}
                         error={errors.location}

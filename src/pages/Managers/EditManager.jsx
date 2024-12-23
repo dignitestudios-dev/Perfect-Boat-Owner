@@ -58,6 +58,8 @@ const EditManager = () => {
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [locationDropdownIsOpen, setLocationDropdownIsOpen] = useState(false);
+
   const [locationBDropdownOpen, setLocationBDropdownOpen] = useState(false);
 
   const toggleJobTitleDropdown = () => {
@@ -66,6 +68,10 @@ const EditManager = () => {
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
+  const toggleLocationIsDropdown = () => {
+    setLocationDropdownIsOpen(!locationBDropdownOpen);
   };
 
   const toggleLocationBDropdown = () => {
@@ -204,6 +210,13 @@ const EditManager = () => {
                         type="text"
                         placeholder="Enter Name"
                         register={register("name", {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Please enter your name.",
                           pattern: {
                             value: /^[A-Za-z\s]+$/,
@@ -240,6 +253,13 @@ const EditManager = () => {
                         type="text"
                         placeholder="Enter Job Title"
                         register={register("jobtitle", {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Please enter your job title",
                         })}
                         error={errors.jobtitle}
@@ -250,6 +270,13 @@ const EditManager = () => {
                         type="text"
                         placeholder="Enter Location"
                         register={register("location", {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Please enter a location",
                           minLength: {
                             value: 2,
@@ -329,6 +356,7 @@ const EditManager = () => {
                 Assigned Employee(s){" "}
               </h3>
               <button
+                disabled={employeesList?.length == 0}
                 type="button"
                 onClick={() => setIsAssignDetailModalOpen(true)}
                 className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199BD1]"
@@ -347,10 +375,12 @@ const EditManager = () => {
                   Email
                 </span>
                 <JobType
+                  setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                 />
                 <LocationType
+                  setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
                   toggleLocationDropdown={toggleLocationDropdown}
                 />
@@ -422,8 +452,9 @@ const EditManager = () => {
 
                 <div className="w-full flex justify-start items-center">
                   <LocationType
-                    locationDropdownOpen={locationBDropdownOpen}
-                    toggleLocationDropdown={toggleLocationBDropdown}
+                    setLocationDropdownOpen={setLocationDropdownIsOpen}
+                    locationDropdownOpen={locationDropdownIsOpen}
+                    toggleLocationDropdown={toggleLocationIsDropdown}
                   />
                 </div>
               </div>

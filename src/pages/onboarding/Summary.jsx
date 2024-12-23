@@ -62,7 +62,9 @@ const Summary = () => {
               <div className="w-full flex flex-col justify-start items-start gap-1">
                 <div className="w-auto h-8 flex justify-start items-center gap-2">
                   <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
-                    {summary?.subscriptionPlan?.name}
+                    {/* {summary?.subscriptionPlan?.name} */}
+                    Take your operations to the next level with robust tools for
+                    managing employee hierarchies and optimizing workflows
                   </h1>
                   {/* <Link
                 to="/select-package"
@@ -73,7 +75,10 @@ const Summary = () => {
                 </div>
 
                 <span className="text-[16px] font-normal leading-5 text-white">
-                  {summary?.subscriptionPlan?.description}
+                  {/* {summary?.subscriptionPlan?.description} */}
+                  Rest assured, you won't be charged today! Your 120-day free
+                  trial begins immediately, giving you plenty of time to explore
+                  the full benefits of the plan before any billing occurs.
                 </span>
               </div>
 

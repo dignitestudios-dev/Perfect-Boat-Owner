@@ -56,6 +56,11 @@ const AddManager = () => {
       },
     ]);
   };
+
+  const removeForm = (index) => {
+    setData((prevData) => prevData.filter((_, i) => i !== index));
+  };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
 
@@ -165,6 +170,16 @@ const AddManager = () => {
                         </h3>
                       </div>
                     </div> */}
+                    {index > 0 && (
+                      <div className="w-full flex justify-end">
+                        <p
+                          onClick={() => removeForm(index)}
+                          className="px-1.5 hover:text-red-500 rounded-full text-xl font-bold cursor-pointer"
+                        >
+                          ✕
+                        </p>
+                      </div>
+                    )}
                     <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -178,9 +193,13 @@ const AddManager = () => {
                               name="name"
                               type="text"
                               value={form?.name}
-                              onChange={(e) =>
-                                handleChange(index, "name", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const capitalizedValue =
+                                  value.charAt(0).toUpperCase() +
+                                  value.slice(1);
+                                handleChange(index, "name", capitalizedValue);
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
@@ -229,9 +248,17 @@ const AddManager = () => {
                               name="jobTitle"
                               type="text"
                               value={form?.jobtitle}
-                              onChange={(e) =>
-                                handleChange(index, "jobtitle", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const capitalizedValue =
+                                  value.charAt(0).toUpperCase() +
+                                  value.slice(1);
+                                handleChange(
+                                  index,
+                                  "jobtitle",
+                                  capitalizedValue
+                                );
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Job Title"}
                             />
@@ -253,9 +280,17 @@ const AddManager = () => {
                               name="location"
                               type="text"
                               value={form?.location}
-                              onChange={(e) =>
-                                handleChange(index, "location", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const capitalizedValue =
+                                  value.charAt(0).toUpperCase() +
+                                  value.slice(1);
+                                handleChange(
+                                  index,
+                                  "location",
+                                  capitalizedValue
+                                );
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Location"}
                             />
@@ -315,15 +350,15 @@ const AddManager = () => {
               })}
 
               <div className="w-full flex justify-end mt-10 items-center gap-4">
-                {/* <button
-              type="button"
-              onClick={() => {
-                navigate("/add-employee");
-              }}
-              className="w-auto h-[52px] text-[#fff]/[0.5] hover:text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-            >
-              {"Skip"}
-            </button> */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("/add-employee-onboard");
+                  }}
+                  className="w-auto h-[52px] text-[#199BD1] hover:text-[#199BD1]/[0.5] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+                >
+                  {"Skip"}
+                </button>
                 <button
                   type="button"
                   onClick={addNewManager}

@@ -21,7 +21,7 @@ const WelcomeAboard = () => {
   const [loading, setLoading] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [forms, setForms] = useState([0]);
+  const [forms, setForms] = useState([{ id: Date.now() }]);
 
   const [csvUploaded, setCsvUploaded] = useState(false);
 
@@ -51,11 +51,14 @@ const WelcomeAboard = () => {
   // console.log("🚀 ~ WelcomeAboard ~ isImages:", isImages)
 
   const addForm = () => {
-    setForms((prev) => [...prev, prev.length]);
+    // setForms((prev) => [...prev, prev.length]);
+    const newForm = { id: Date.now() };
+    setForms((prev) => [...prev, newForm]);
   };
-  const removeForm = (index) => {
+
+  const removeForm = (id, index) => {
     if (index > 0) {
-      setForms((prev) => prev.filter((_, i) => i !== index));
+      setForms((prev) => prev.filter((form) => form.id !== id));
     }
   };
 
@@ -262,6 +265,16 @@ const WelcomeAboard = () => {
                   key={idx}
                   className="w-full h-auto flex flex-col gap-6 justify-start items-start"
                 >
+                  {idx > 0 && (
+                    <div className="w-full flex justify-end">
+                      <p
+                        onClick={() => removeForm(form.id, idx)}
+                        className="px-1.5 hover:text-red-500 rounded-full text-xl font-bold cursor-pointer"
+                      >
+                        ✕
+                      </p>
+                    </div>
+                  )}
                   <div className="w-full flex flex-col justify-start items-start gap-4">
                     <div className="w-full h-auto flex flex-col justify-start items-start gap-8">
                       <div className="w-full grid grid-cols-1 md:grid-cols-3 justify-start items-start gap-3 lg:gap-12">
@@ -306,6 +319,13 @@ const WelcomeAboard = () => {
                           placeholder="Enter Boat Name"
                           type="text"
                           register={register(`forms.${idx}.name`, {
+                            onChange: (e) => {
+                              const value = e.target.value;
+                              e.target.value =
+                                value.charAt(0).toUpperCase() + value.slice(1);
+                            },
+                            setValueAs: (v) =>
+                              String(v[0]).toUpperCase() + String(v).slice(1),
                             required: "Name is required",
                           })}
                           error={errors?.forms?.[idx]?.name}
@@ -316,6 +336,13 @@ const WelcomeAboard = () => {
                           placeholder="Enter Make"
                           type="text"
                           register={register(`forms.${idx}.make`, {
+                            onChange: (e) => {
+                              const value = e.target.value;
+                              e.target.value =
+                                value.charAt(0).toUpperCase() + value.slice(1);
+                            },
+                            setValueAs: (v) =>
+                              String(v[0]).toUpperCase() + String(v).slice(1),
                             required: "Make is required",
                           })}
                           error={errors?.forms?.[idx]?.make}
@@ -366,6 +393,13 @@ const WelcomeAboard = () => {
                           placeholder="Enter Location"
                           type="text"
                           register={register(`forms.${idx}.location`, {
+                            onChange: (e) => {
+                              const value = e.target.value;
+                              e.target.value =
+                                value.charAt(0).toUpperCase() + value.slice(1);
+                            },
+                            setValueAs: (v) =>
+                              String(v[0]).toUpperCase() + String(v).slice(1),
                             required: "Location is required",
                             minLength: {
                               value: 2,

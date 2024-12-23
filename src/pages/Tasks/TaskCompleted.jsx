@@ -30,7 +30,6 @@ const TaskCompleted = () => {
   const formsImages = watch("formsImages", []);
 
   const [fleetPictures, setFleetPictures] = useState([0]);
-  const [noteText, setNoteText] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleFleetImage = (index, event) => {
@@ -164,7 +163,16 @@ const TaskCompleted = () => {
                   </label>
                   <textarea
                     type="text"
-                    {...register("note", { required: "Please enter a note" })}
+                    {...register("note", {
+                      onChange: (e) => {
+                        const value = e.target.value;
+                        e.target.value =
+                          value.charAt(0).toUpperCase() + value.slice(1);
+                      },
+                      setValueAs: (v) =>
+                        String(v[0]).toUpperCase() + String(v).slice(1),
+                      required: "Please enter a note",
+                    })}
                     className="w-full h-[315px] disabled:text-white/50 resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
                   ></textarea>
                   {errors.note && (

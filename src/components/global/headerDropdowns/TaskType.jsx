@@ -1,18 +1,46 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../../contexts/GlobalContext";
 
 const TaskType = ({
+  setTaskTypeDropdownOpen,
   taskTypeDropdownOpen,
   toggleTaskTypeDropdown,
   setTaskType,
   taskType,
 }) => {
   const { dropDown } = useContext(GlobalContext);
+  const taskTypeDropdownRef = useRef(null);
 
   const handleCheckboxChange = (task) => {
-    setTaskType(task);
+    if (task === "all") {
+      setTaskType([]);
+    } else {
+      setTaskType((prev) => {
+        if (prev.includes(task)) {
+          return prev.filter((t) => t !== task);
+        } else {
+          return [...prev, task];
+        }
+      });
+    }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        taskTypeDropdownRef.current &&
+        !taskTypeDropdownRef.current.contains(event.target)
+      ) {
+        setTaskTypeDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <span className="w-full flex justify-start items-center relative">
@@ -30,7 +58,7 @@ const TaskType = ({
         >
           <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
             <input
-              checked={taskType === "all"}
+              checked={taskType.length === 0}
               onChange={() => handleCheckboxChange("all")}
               type="checkbox"
               className="form-checkbox text-[#199BD1] mr-2"
@@ -43,7 +71,7 @@ const TaskType = ({
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"
             >
               <input
-                checked={taskType === task}
+                checked={taskType.includes(task)}
                 onChange={() => handleCheckboxChange(task)}
                 type="checkbox"
                 className="form-checkbox text-[#199BD1] mr-2"

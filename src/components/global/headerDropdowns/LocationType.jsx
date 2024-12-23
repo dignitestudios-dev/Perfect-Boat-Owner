@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../../contexts/GlobalContext";
 
 const LocationType = ({
+  setLocationDropdownOpen,
   locationDropdownOpen,
   toggleLocationDropdown,
   setLocationType,
@@ -10,11 +11,28 @@ const LocationType = ({
   setCurrentPage = "",
 }) => {
   const { dropDown } = useContext(GlobalContext);
+  const locationDropdownRef = useRef(null);
 
   const handleCheckboxChange = (location) => {
     setLocationType(location);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target)
+      ) {
+        setLocationDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <span className="w-full flex justify-start items-center relative">
@@ -27,6 +45,7 @@ const LocationType = ({
       />
       {locationDropdownOpen && (
         <div
+          ref={locationDropdownRef}
           className="max-h-[300px] overflow-auto absolute top-full -left-4 mt-1 w-52 bg-[#1A293D]
          text-white rounded-md shadow-lg z-10"
         >

@@ -225,9 +225,13 @@ const AddTask = () => {
                 </label>
                 <textarea
                   onChange={(e) => {
-                    setNoteText(e.target.value);
+                    const value = e.target.value;
+                    const capitalizedValue =
+                      value.charAt(0).toUpperCase() + value.slice(1);
+                    setNoteText(capitalizedValue);
                     setInputError({});
                   }}
+                  value={noteText}
                   type="text"
                   autocapitalize="characters"
                   className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px]

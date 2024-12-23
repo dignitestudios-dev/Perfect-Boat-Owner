@@ -196,7 +196,6 @@ export const normalRoutes = [
     url: "/add-fleet",
     page: <GlobalLayout page={<AddFleet />} />,
   },
-
   {
     title: "Boat Details",
     url: "/boats/:id",

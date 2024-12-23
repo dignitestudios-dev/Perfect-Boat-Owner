@@ -9,12 +9,12 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
 
   // const filteredData = employeesList?.filter((item) =>
   //   item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  // ); 
+  // );
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all")
-  const [jobType, setJobType] = useState("all")
+  const [locationType, setLocationType] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -25,12 +25,20 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
   };
 
   const filteredData = employeesList?.filter((item) => {
-    const matchesSearch = searchTerm ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) : true;
-    const jobTypeMatch = jobType && jobType !== "all" ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase() : true;
-    const locationTypeMatch = locationType && locationType !== "all" ? item?.location?.toLowerCase() === locationType?.toLowerCase() : true;
+    const matchesSearch = searchTerm
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType !== "all"
+        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+        : true;
+    const locationTypeMatch =
+      locationType && locationType !== "all"
+        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+        : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch;
   });
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -51,7 +59,7 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                   <FiSearch className="text-white/50 text-lg" />
                 </span>
                 <input
-                onChange={(e)=>setSearchTerm(e.target.value)} 
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search here"
                   className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -73,17 +81,27 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                   <th className="px-4 py-2">Employee Name</th>
                   <th className="px-4 py-2">Email</th>
                   <th className="px-4 py-2 relative">
-                  <JobType jobTitleDropdownOpen={jobTitleDropdownOpen} toggleJobTitleDropdown={toggleJobTitleDropdown}
-            jobType={jobType} setJobType={setJobType}/>
+                    <JobType
+                      setJobTitleDropdownOpen={setJobTitleDropdownOpen}
+                      jobTitleDropdownOpen={jobTitleDropdownOpen}
+                      toggleJobTitleDropdown={toggleJobTitleDropdown}
+                      jobType={jobType}
+                      setJobType={setJobType}
+                    />
                   </th>
                   <th className="px-4 py-2 relative">
-                  <LocationType locationDropdownOpen={locationDropdownOpen} toggleLocationDropdown={toggleLocationDropdown} 
-            locationType={locationType} setLocationType={setLocationType}/>
+                    <LocationType
+                      setLocationDropdownOpen={setLocationDropdownOpen}
+                      locationDropdownOpen={locationDropdownOpen}
+                      toggleLocationDropdown={toggleLocationDropdown}
+                      locationType={locationType}
+                      setLocationType={setLocationType}
+                    />
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredData?.map((employee, index) =>{
+                {filteredData?.map((employee, index) => {
                   return (
                     <tr key={index} className="border-b-[1px] border-white/10">
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
@@ -99,7 +117,7 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                         {employee?.location || "---"}
                       </td>
                     </tr>
-                  )
+                  );
                 })}
               </tbody>
             </table>

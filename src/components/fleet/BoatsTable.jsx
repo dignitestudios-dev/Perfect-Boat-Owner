@@ -109,6 +109,7 @@ const BoatsTable = ({
             Boat Image
           </span>
           <BoatType
+            setBoatTypeDropdownOpen={setBoatTypeDropdownOpen}
             boatTypeDropdownOpen={boatTypeDropdownOpen}
             toggleBoatTypeDropdown={toggleBoatTypeDropdown}
             boatType={boatType}
@@ -119,6 +120,7 @@ const BoatsTable = ({
             Year/Make/Size
           </span>
           <LocationType
+            setLocationDropdownOpen={setLocationDropdownOpen}
             locationDropdownOpen={locationDropdownOpen}
             toggleLocationDropdown={toggleLocationDropdown}
             locationType={locationType}

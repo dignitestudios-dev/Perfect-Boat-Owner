@@ -32,7 +32,7 @@ const ListBoatAccess = ({ isOpen, setIsOpen }) => {
   };
 
   const handleClickOutside = (event) => {
-    if (boatTypeRef.current && !boatTypeRef.current.contains(event.target)) {   
+    if (boatTypeRef.current && !boatTypeRef.current.contains(event.target)) {
       setBoatTypeFilter(false);
     }
     if (locationRef.current && !locationRef.current.contains(event.target)) {
@@ -140,7 +140,7 @@ const ListBoatAccess = ({ isOpen, setIsOpen }) => {
                 Name
               </span>
               <span className="w-full flex justify-start items-center">
-                Model/Make/Size
+                Year/Make/Size
               </span>
               <button
                 onClick={toggleLocationFilter}

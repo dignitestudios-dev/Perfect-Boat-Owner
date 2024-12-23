@@ -26,7 +26,6 @@ const AddFleet = () => {
   const [isCongratsOpen, setIsCongratsOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
   const [coverImage, setCoverImage] = useState(0);
-  console.log("🚀 ~ AddFleet ~ coverImage:", coverImage);
   const [imagesBox, setImagesBox] = useState([0]);
 
   const [imagesArray, setImagesArray] = useState([]);
@@ -321,6 +320,13 @@ const AddFleet = () => {
                         placeholder="Enter Name"
                         type="text"
                         register={register(`name`, {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Name is required",
                         })}
                         error={errors.name}
@@ -331,6 +337,13 @@ const AddFleet = () => {
                         placeholder="Enter Make"
                         type="text"
                         register={register(`make`, {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Make is required",
                         })}
                         error={errors.make}
@@ -385,6 +398,13 @@ const AddFleet = () => {
                         placeholder="Enter Location"
                         type="text"
                         register={register(`location`, {
+                          onChange: (e) => {
+                            const value = e.target.value;
+                            e.target.value =
+                              value.charAt(0).toUpperCase() + value.slice(1);
+                          },
+                          setValueAs: (v) =>
+                            String(v[0]).toUpperCase() + String(v).slice(1),
                           required: "Location is required",
                           minLength: {
                             value: 2,

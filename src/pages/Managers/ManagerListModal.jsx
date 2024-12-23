@@ -73,12 +73,14 @@ const ManagerDetailModal = ({ setIsOpen, boatAccess }) => {
                 Email
               </span>
               <JobType
+                setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                 jobTitleDropdownOpen={jobTitleDropdownOpen}
                 toggleJobTitleDropdown={toggleJobTitleDropdown}
                 jobType={jobType}
                 setJobType={setJobType}
               />
               <LocationType
+                setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}

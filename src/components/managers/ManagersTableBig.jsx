@@ -222,6 +222,7 @@ const ManagerTableBig = ({
                 Email
               </span>
               <JobType
+                setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                 jobTitleDropdownOpen={jobTitleDropdownOpen}
                 toggleJobTitleDropdown={toggleJobTitleDropdown}
                 jobType={jobType}
@@ -229,6 +230,7 @@ const ManagerTableBig = ({
                 setCurrentPage={setCurrentPage}
               />
               <LocationType
+                setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}

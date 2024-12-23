@@ -114,6 +114,7 @@ const ViewAssignedTaskModal = ({
                   Boat Name
                 </span>
                 <TaskType
+                  setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                   taskType={taskType}
@@ -126,6 +127,7 @@ const ViewAssignedTaskModal = ({
                   Recurring Days
                 </span>
                 <StatusType
+                  setStatusDropdownOpen={setStatusDropdownOpen}
                   statusDropdownOpen={statusDropdownOpen}
                   toggleStatusDropdown={toggleStatusDropdown}
                   setStatusFilter={setStatusFilter}

@@ -175,6 +175,13 @@ const AddEmployee = () => {
                   type="text"
                   placeholder="Enter Name"
                   register={register("name", {
+                    onChange: (e) => {
+                      const value = e.target.value;
+                      e.target.value =
+                        value.charAt(0).toUpperCase() + value.slice(1);
+                    },
+                    setValueAs: (v) =>
+                      String(v[0]).toUpperCase() + String(v).slice(1),
                     required: "Please enter your name.",
                     pattern: {
                       value: /^[A-Za-z\s]+$/,
@@ -207,6 +214,13 @@ const AddEmployee = () => {
                     type="text"
                     placeholder="Enter Job Title"
                     register={register("jobtitle", {
+                      onChange: (e) => {
+                        const value = e.target.value;
+                        e.target.value =
+                          value.charAt(0).toUpperCase() + value.slice(1);
+                      },
+                      setValueAs: (v) =>
+                        String(v[0]).toUpperCase() + String(v).slice(1),
                       required: "Please enter your job title",
                     })}
                     error={errors.jobtitle}
@@ -217,6 +231,13 @@ const AddEmployee = () => {
                   type="text"
                   placeholder="Enter location"
                   register={register("location", {
+                    onChange: (e) => {
+                      const value = e.target.value;
+                      e.target.value =
+                        value.charAt(0).toUpperCase() + value.slice(1);
+                    },
+                    setValueAs: (v) =>
+                      String(v[0]).toUpperCase() + String(v).slice(1),
                     required: "Please enter a location",
                     minLength: {
                       value: 2,

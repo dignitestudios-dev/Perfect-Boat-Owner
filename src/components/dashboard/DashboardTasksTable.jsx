@@ -34,8 +34,8 @@ const DashboardTasksTable = ({ data, loading }) => {
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [taskType, setTaskType] = useState("");
+  const [statusFilter, setStatusFilter] = useState([]);
+  const [taskType, setTaskType] = useState([]);
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -48,17 +48,17 @@ const DashboardTasksTable = ({ data, loading }) => {
   const [search, setSearch] = useState("");
 
   // const filteredData = data?.filter((item) => item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) );
-  const filteredData = data?.filter((item) => {
+  const filteredData = data?.filter((item, index) => {
     const matchesSearch = search
       ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const matchesStatus =
-      statusFilter && statusFilter !== "all"
-        ? item?.status === statusFilter
+      statusFilter && statusFilter.length !== 0
+        ? item?.status?.toLowerCase() === statusFilter[index]?.toLowerCase()
         : true;
     const taskTypeMatch =
-      taskType && taskType !== "all"
-        ? item?.taskType?.toLowerCase() === taskType?.toLowerCase()
+      taskType && taskType.length !== 0
+        ? item?.taskType?.toLowerCase() === taskType[index]?.toLowerCase()
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
@@ -99,6 +99,7 @@ const DashboardTasksTable = ({ data, loading }) => {
             Boat name
           </span>
           <TaskType
+            setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
             taskTypeDropdownOpen={taskTypeDropdownOpen}
             toggleTaskTypeDropdown={toggleTaskTypeDropdown}
             setTaskType={setTaskType}
@@ -108,6 +109,7 @@ const DashboardTasksTable = ({ data, loading }) => {
             Due Date
           </span>
           <StatusType
+            setStatusDropdownOpen={setStatusDropdownOpen}
             statusDropdownOpen={statusDropdownOpen}
             statusFilter={statusFilter}
             toggleStatusDropdown={toggleStatusDropdown}

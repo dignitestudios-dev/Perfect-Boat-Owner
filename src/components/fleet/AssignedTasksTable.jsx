@@ -32,7 +32,6 @@ const AssignedTasksTable = ({
   openDeleteModal,
   getBoats,
 }) => {
-  console.log("🚀 ~ boatsData:", boatsData?.task);
   const getFormattedStatus = (status) => {
     return STATUS_ENUM[status] || status;
   };
@@ -98,6 +97,7 @@ const AssignedTasksTable = ({
             Recurring Days
           </span>
           <StatusType
+            setStatusDropdownOpen={setStatusDropdownOpen}
             statusDropdownOpen={statusDropdownOpen}
             statusFilter={statusFilter}
             toggleStatusDropdown={toggleStatusDropdown}

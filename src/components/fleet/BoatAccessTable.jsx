@@ -38,6 +38,7 @@ const BoatAccessTable = ({ boatsData, setIsManagerModalOpen }) => {
         </h3>
 
         <button
+          disabled={boatsData?.boatAccess?.length === 0}
           type="button"
           onClick={() => setIsManagerModalOpen(true)}
           className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
@@ -54,6 +55,7 @@ const BoatAccessTable = ({ boatsData, setIsManagerModalOpen }) => {
           <span className="w-full flex justify-start items-center">Email</span>
           <span className="w-full flex justify-start items-center relative">
             <JobType
+              setJobTitleDropdownOpen={setJobTitleDropdownOpen}
               jobTitleDropdownOpen={jobTitleDropdownOpen}
               toggleJobTitleDropdown={toggleJobTitleDropdown}
               jobType={jobType}
@@ -63,6 +65,7 @@ const BoatAccessTable = ({ boatsData, setIsManagerModalOpen }) => {
 
           <span className="w-full flex justify-start items-center relative">
             <LocationType
+              setLocationDropdownOpen={setLocationDropdownOpen}
               locationDropdownOpen={locationDropdownOpen}
               toggleLocationDropdown={toggleLocationDropdown}
               locationType={locationType}

@@ -112,6 +112,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 Boat Image
               </span>
               <BoatType
+                setBoatTypeDropdownOpen={setBoatTypeDropdownOpen}
                 boatTypeDropdownOpen={boatTypeDropdownOpen}
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 boatType={boatType}
@@ -125,6 +126,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 Year/Make/Size
               </span>
               <LocationType
+                setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}

@@ -80,6 +80,7 @@ const DashboardBoats = ({ data, loading }) => {
             <div className="w-full flex flex-col gap-1 justify-start items-start">
               <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
                 <BoatType
+                  setBoatTypeDropdownOpen={setBoatTypeDropdownOpen}
                   boatTypeDropdownOpen={boatTypeDropdownOpen}
                   toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                   boatType={boatType}
@@ -92,6 +93,7 @@ const DashboardBoats = ({ data, loading }) => {
                   Year / Make / Size
                 </span>
                 <LocationType
+                  setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
                   toggleLocationDropdown={toggleLocationDropdown}
                   locationType={locationType}

@@ -202,6 +202,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                 Boat Image
               </span>
               <BoatType
+                setBoatTypeDropdownOpen={setBoatTypeDropdownOpen}
                 boatTypeDropdownOpen={boatTypeDropdownOpen}
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 setBoatType={setBoatType}
@@ -215,6 +216,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                 Year/Make/Size
               </span>
               <LocationType
+                setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}

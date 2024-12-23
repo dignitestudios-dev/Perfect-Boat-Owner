@@ -178,6 +178,7 @@ const SelectTaskModal = ({
                 </span>
                 <div className="flex items-center justify-start">
                   <TaskType
+                    setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
                     taskTypeDropdownOpen={taskTypeDropdownOpen}
                     toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                     setTaskType={setTaskType}
@@ -192,6 +193,7 @@ const SelectTaskModal = ({
                 </span>
                 <div className="flex items-center justify-start">
                   <StatusType
+                    setStatusDropdownOpen={setStatusDropdownOpen}
                     statusDropdownOpen={statusDropdownOpen}
                     statusFilter={statusFilter}
                     toggleStatusDropdown={toggleStatusDropdown}

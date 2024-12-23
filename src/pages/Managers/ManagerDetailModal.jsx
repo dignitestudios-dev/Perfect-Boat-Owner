@@ -151,6 +151,7 @@ const ManagerDetailModal = ({
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <JobType
+                      setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                       jobTitleDropdownOpen={jobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
@@ -159,6 +160,7 @@ const ManagerDetailModal = ({
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <LocationType
+                      setLocationDropdownOpen={setLocationDropdownOpen}
                       locationDropdownOpen={locationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}

@@ -188,6 +188,7 @@ const DeleteManagerAccount = () => {
                   </div>
                   <div className="flex items-center px-2 col-span-2 relative">
                     <JobType
+                      setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                       jobTitleDropdownOpen={jobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
@@ -196,6 +197,7 @@ const DeleteManagerAccount = () => {
                   </div>
                   <div className="flex items-center px-2 col-span-2 relative">
                     <LocationType
+                      setLocationDropdownOpen={setLocationDropdownOpen}
                       locationDropdownOpen={locationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}

@@ -25,7 +25,10 @@ const EmployeeDetailModal = ({
 
   const filteredData = employees?.filter((item) => {
     const matchesSearch = searchTerm
-      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.jobtitle?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase())
       : true;
     const jobTypeMatch =
       jobType && jobType !== "all"
@@ -49,12 +52,12 @@ const EmployeeDetailModal = ({
   const handleSelectEmployee = (employeeId, employeeName) => {
     setInputError({});
     if (isMultiple) {
-      const isSelected = selectedEmployee.some(
+      const isSelected = selectedEmployee?.some(
         (employee) => employee?.id === employeeId
       );
       if (isSelected) {
         setSelectedEmployee(
-          selectedEmployee.filter((employee) => employee?.id !== employeeId)
+          selectedEmployee?.filter((employee) => employee?.id !== employeeId)
         );
       } else {
         setSelectedEmployee([
@@ -62,7 +65,7 @@ const EmployeeDetailModal = ({
           { id: employeeId, name: employeeName },
         ]);
       }
-      if (selectedEmployee.length + (isSelected ? -1 : 1) === 0) {
+      if (selectedEmployee?.length + (isSelected ? -1 : 1) === 0) {
         setAllSelected(false);
       }
     } else {
@@ -163,6 +166,7 @@ const EmployeeDetailModal = ({
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <JobType
                       jobTitleDropdownOpen={jobTitleDropdownOpen}
+                      setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
@@ -171,6 +175,7 @@ const EmployeeDetailModal = ({
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <LocationType
                       locationDropdownOpen={locationDropdownOpen}
+                      setLocationDropdownOpen={setLocationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
@@ -206,10 +211,13 @@ const EmployeeDetailModal = ({
                     <>
                       {filteredData?.map((employee, index) => {
                         const isSelected =
-                          selectedEmployee?.id === employee._id;
-                        const isMultiSelected = selectedEmployee.some(
-                          (selected) => selected?.id === employee?._id
-                        );
+                          selectedEmployee?.id === employee?._id;
+                        const isMultiSelected =
+                          isMultiple && Array.isArray(selectedEmployee)
+                            ? selectedEmployee.some(
+                                (selected) => selected?.id === employee?._id
+                              )
+                            : false;
                         return (
                           <tr
                             key={index}

@@ -153,6 +153,13 @@ const AssignReportedTask = () => {
                 <AddFleetInput
                   label={"Name"}
                   register={register("name", {
+                    onChange: (e) => {
+                      const value = e.target.value;
+                      e.target.value =
+                        value.charAt(0).toUpperCase() + value.slice(1);
+                    },
+                    setValueAs: (v) =>
+                      String(v[0]).toUpperCase() + String(v).slice(1),
                     required: "Please enter your name",
                   })}
                   error={errors.name}
@@ -340,6 +347,13 @@ const AssignReportedTask = () => {
                   </label>
                   <textarea
                     {...register("note", {
+                      onChange: (e) => {
+                        const value = e.target.value;
+                        e.target.value =
+                          value.charAt(0).toUpperCase() + value.slice(1);
+                      },
+                      setValueAs: (v) =>
+                        String(v[0]).toUpperCase() + String(v).slice(1),
                       required: "Please enter note",
                     })}
                     type="text"

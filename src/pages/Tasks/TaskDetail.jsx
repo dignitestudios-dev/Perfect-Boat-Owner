@@ -340,7 +340,10 @@ const TaskDetail = () => {
                     disabled={!isEdit}
                     value={noteText}
                     onChange={(e) => {
-                      setNoteText(e.target.value);
+                      const value = e.target.value;
+                      const capitalizedValue =
+                        value.charAt(0).toUpperCase() + value.slice(1);
+                      setNoteText(capitalizedValue);
                       setInputError({});
                     }}
                     className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"

@@ -50,17 +50,17 @@ const NewTaskTable = ({ data, loading }) => {
   //   item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
   // );
 
-  const filteredData = data?.filter((item) => {
+  const filteredData = data?.filter((item, index) => {
     const matchesSearch = search
       ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const matchesStatus =
-      statusFilter && statusFilter !== "all"
-        ? item?.status === statusFilter
+      statusFilter && statusFilter.length !== 0
+        ? item?.status?.toLowerCase() === statusFilter[index]?.toLowerCase()
         : true;
     const taskTypeMatch =
-      taskType && taskType !== "all"
-        ? item?.task?.taskType?.toLowerCase() === taskType?.toLowerCase()
+      taskType && taskType.length !== 0
+        ? item?.taskType?.toLowerCase() === taskType[index]?.toLowerCase()
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
@@ -94,6 +94,7 @@ const NewTaskTable = ({ data, loading }) => {
             Boat name
           </span>
           <TaskType
+            setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
             taskTypeDropdownOpen={taskTypeDropdownOpen}
             toggleTaskTypeDropdown={toggleTaskTypeDropdown}
             setTaskType={setTaskType}
@@ -103,6 +104,7 @@ const NewTaskTable = ({ data, loading }) => {
             Due Date
           </span>
           <StatusType
+            setStatusDropdownOpen={setStatusDropdownOpen}
             statusDropdownOpen={statusDropdownOpen}
             toggleStatusDropdown={toggleStatusDropdown}
             setStatusFilter={setStatusFilter}

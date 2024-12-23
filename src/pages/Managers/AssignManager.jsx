@@ -153,6 +153,7 @@ const AssignManager = () => {
               </div>
               <div className="flex items-center px-2 col-span-2">
                 <JobType
+                  setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
@@ -162,6 +163,7 @@ const AssignManager = () => {
 
               <div className="flex items-center px-2 col-span-1">
                 <LocationType
+                  setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
                   toggleLocationDropdown={toggleLocationDropdown}
                   setLocationType={setLocationType}

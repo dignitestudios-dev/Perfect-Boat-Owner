@@ -182,6 +182,7 @@ const BoatSelectModal = ({
                 Boat Image
               </span>
               <BoatType
+                setBoatTypeDropdownOpen={setBoatTypeDropdownOpen}
                 boatTypeDropdownOpen={boatTypeDropdownOpen}
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 boatType={boatType}
@@ -194,6 +195,7 @@ const BoatSelectModal = ({
                 Year/Make/Size
               </span>
               <LocationType
+                setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
@@ -217,7 +219,9 @@ const BoatSelectModal = ({
                       <div className="flex items-center">
                         <input
                           type="checkbox"
-                          className="accent-[#199BD1] mr-2 cursor-pointer"
+                          className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] mr-2
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
                           checked={isMultiple ? isMultiSelected : isSelected}
                           onChange={() =>
                             handleSelectBoat(
@@ -229,7 +233,7 @@ const BoatSelectModal = ({
                             )
                           }
                         />
-                        <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                        <span className="w-[106px] h-[76px] flex justify-start items-center relative ml-1">
                           <img
                             src={boat?.cover}
                             alt="boat_image"
