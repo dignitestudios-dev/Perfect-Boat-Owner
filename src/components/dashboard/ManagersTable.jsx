@@ -11,8 +11,8 @@ const ManagersTable = ({ data, loading }) => {
   const { navigate } = useContext(GlobalContext);
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("");
-  const [jobType, setJobType] = useState("");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -30,15 +30,18 @@ const ManagersTable = ({ data, loading }) => {
 
   const filteredData = data?.filter((item) => {
     const matchesSearch = search
-      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.email?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.jobtitle?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const jobTypeMatch =
-      jobType && jobType !== "all"
-        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
-        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
         : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch;
   });

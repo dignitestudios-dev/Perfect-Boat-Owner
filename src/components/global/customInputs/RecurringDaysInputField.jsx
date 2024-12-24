@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { TbCalendarStats } from "react-icons/tb";
 import { recurringOptions } from "../../../data/TaskTypeData";
@@ -12,8 +12,17 @@ const RecurringDaysInputField = ({
   customDays,
   setCustomRecurring,
   customRecurring,
-  isEdit,
+  isEdit = false,
 }) => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    // Focus the input field when customDays is true
+    if (customDays && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [customDays]); // Re-run effect when customDays changes
+
   return (
     <div className="w-auto flex justify-start items-center gap-3">
       <TbCalendarStats className="text-2xl text-white/40" />
@@ -30,7 +39,7 @@ const RecurringDaysInputField = ({
         </span>
         <div
           ref={RecurringRef}
-          className={`w-[164px] h-32 overflow-y-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
+          className={`w-[164px] h-40 overflow-y-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
             RecurringDropdown ? "scale-100" : "scale-0"
           } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-6 left-0`}
         >
@@ -40,7 +49,13 @@ const RecurringDaysInputField = ({
               className="w-full flex justify-start items-start gap-2 cursor-pointer"
               onClick={() => handleSelectDay(option.value, option.label)}
             >
-              <span className="text-white/50 text-[11px] font-medium leading-[14.85px]">
+              <span
+                className={` text-[11px] ${
+                  selectedDay === option.label
+                    ? "text-[#199BD1]"
+                    : "text-white/50"
+                } font-medium leading-[14.85px]`}
+              >
                 {option.label}
               </span>
             </div>
@@ -48,6 +63,7 @@ const RecurringDaysInputField = ({
           {customDays && (
             <div className="w-full flex flex-col justify-start items-start">
               <input
+                ref={inputRef}
                 placeholder="In count"
                 value={customRecurring}
                 onChange={(e) => {

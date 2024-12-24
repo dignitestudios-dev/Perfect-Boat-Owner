@@ -28,13 +28,13 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingManagers, setLoadingManagers] = useState(false);
   const [updateManager, setUpdateManager] = useState(false);
 
-  const getManagers = async (jobType = "all", locationType = "all") => {
+  const getManagers = async (jobType = [], locationType = []) => {
     if (token) {
       setLoadingManagers(true);
       try {
-        const boatQuery = jobType !== "all" ? `jobTitle=${jobType}` : "";
+        const boatQuery = jobType.length !== 0 ? `jobTitle=${jobType}` : "";
         const locationQuery =
-          locationType !== "all" ? `locations=${locationType}` : "";
+          locationType.length !== 0 ? `location=${locationType}` : "";
         const queryString = [boatQuery, locationQuery]
           .filter(Boolean)
           .join("&");
@@ -55,13 +55,13 @@ export const GlobalContextProvider = ({ children }) => {
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [updateEmployee, setUpdateEmployee] = useState(false);
 
-  const getEmployees = async (jobType = "all", locationType = "all") => {
+  const getEmployees = async (jobType = [], locationType = []) => {
     if (token) {
       setLoadingEmployees(true);
       try {
-        const boatQuery = jobType !== "all" ? `jobTitle=${jobType}` : "";
+        const boatQuery = jobType.length !== 0 ? `jobTitle=${jobType}` : "";
         const locationQuery =
-          locationType !== "all" ? `locations=${locationType}` : "";
+          locationType.length !== 0 ? `location=${locationType}` : "";
         const queryString = [boatQuery, locationQuery]
           .filter(Boolean)
           .join("&");

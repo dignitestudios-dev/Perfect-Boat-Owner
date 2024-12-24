@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { TbCaretDownFilled } from "react-icons/tb";
 // import { taskTypeData } from '../../../data/TaskTypeData';
 
@@ -7,14 +7,23 @@ const TaskTypeInputField = ({
   selectedTaskType,
   isTaskTypeDropdownOpen,
   isEdit,
-  setInputError,
   taskTypeDropdownRef,
   handleTaskTypeSelection,
   customInput,
   setCustomTypeText,
   customTypeText,
   taskDropDown,
+  setTaskTypeDropdownOpen,
+  setCustomInput,
 }) => {
+  const customInputRef = useRef(null);
+
+  useEffect(() => {
+    if (customInput && customInputRef.current) {
+      customInputRef.current.focus();
+    }
+  }, [customInput]);
+
   return (
     <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
       <label className="text-[16px] font-medium leading-[21.6px]">
@@ -62,7 +71,9 @@ const TaskTypeInputField = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleTaskTypeSelection("custom");
+                // handleTaskTypeSelection("custom");
+                // setTaskTypeDropdownOpen(true);
+                setCustomInput(true);
               }}
               className="w-full text-gray-300 h-8 px-5 hover:bg-[#000]/10 flex flex-col gap-1 justify-center 
                         relative items-start"
@@ -71,6 +82,7 @@ const TaskTypeInputField = ({
               {customInput && (
                 <div className="absolute w-full top-10 left-0 flex flex-col justify-start items-start gap-2 px-5">
                   <input
+                    ref={customInputRef}
                     onChange={(e) => setCustomTypeText(e.target.value)}
                     type="text"
                     className="w-[95%] h-[42px] mb-2 bg-[#1A293D] disabled:text-white/50 outline-none px-3
@@ -81,6 +93,7 @@ const TaskTypeInputField = ({
                     onClick={(e) => {
                       e.stopPropagation();
                       handleTaskTypeSelection(customTypeText);
+                      setTaskTypeDropdownOpen(false);
                     }}
                     className="w-[95%] h-[42px] rounded-md bg-[#119bd1] text-white flex items-center 
                             justify-center text-sm font-medium"

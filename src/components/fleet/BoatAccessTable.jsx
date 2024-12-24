@@ -3,7 +3,12 @@ import { TbCaretDownFilled } from "react-icons/tb";
 import JobType from "../global/headerDropdowns/JobType";
 import LocationType from "../global/headerDropdowns/LocationType";
 
-const BoatAccessTable = ({ boatsData, setIsManagerModalOpen }) => {
+const BoatAccessTable = ({
+  boatsData,
+  setIsManagerModalOpen,
+  isEditing,
+  setIsBoatModalOpen,
+}) => {
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [locationType, setLocationType] = useState("all");
@@ -32,10 +37,23 @@ const BoatAccessTable = ({ boatsData, setIsManagerModalOpen }) => {
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <div className="w-full h-auto flex justify-between items-center">
-        <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-          Boat Access
-          <span className="text-[12px] font-normal text-white/50"></span>
-        </h3>
+        <div className="flex">
+          <h3 className="text-[18px] font-bold leading-[24.3px] text-white mr-2">
+            Boat Access
+            <span className="text-[12px] font-normal text-white/50"></span>
+          </h3>
+          {isEditing ? (
+            <button
+              type="button"
+              onClick={() => setIsBoatModalOpen(true)}
+              className="text-[14px] font-medium text-[#199bd1] ml-2"
+            >
+              Change
+            </button>
+          ) : (
+            <span></span>
+          )}
+        </div>
 
         <button
           disabled={boatsData?.boatAccess?.length === 0}

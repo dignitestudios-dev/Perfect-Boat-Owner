@@ -158,7 +158,7 @@ const OnboardVerifyOtp = () => {
         <div className="w-full h-auto flex  mb-20 flex-col gap-1 justify-start items-start  ">
           <div className="w-full lg:w-[434px] flex gap-1 justify-center items-center ">
             <span className="text-[13px] font-medium text-[#C2C6CB]">
-              Didn't receive a code?
+              Didn't receive an OTP?
             </span>
             {isActive ? (
               <CountDown

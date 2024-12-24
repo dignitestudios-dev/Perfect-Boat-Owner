@@ -72,7 +72,8 @@ const EditEmployee = () => {
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [selectedManager, setSelectedManager] = useState(null);
   const [tasksError, setTasksError] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState([]);
+  const [taskType, setTaskType] = useState([]);
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
@@ -214,6 +215,18 @@ const EditEmployee = () => {
       id: employee?.manager?._id,
     });
   }, [employee, setValue]);
+
+  const employeeFilteredData = employeeTasks?.filter((item, index) => {
+    const matchesStatus =
+      statusFilter && statusFilter.length !== 0
+        ? statusFilter?.includes(item?.status?.toLowerCase())
+        : true;
+    const taskTypeMatch =
+      taskType && taskType.length !== 0
+        ? taskType?.includes(item?.taskType?.toLowerCase())
+        : true;
+    return matchesStatus && taskTypeMatch;
+  });
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -486,6 +499,8 @@ const EditEmployee = () => {
                   Boat Name
                 </span>
                 <TaskType
+                  setTaskType={setTaskType}
+                  taskType={taskType}
                   setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
@@ -507,9 +522,9 @@ const EditEmployee = () => {
                   Action
                 </span>
               </div>
-              {employeeTasks?.length > 0 ? (
+              {employeeFilteredData?.length > 0 ? (
                 <>
-                  {employeeTasks?.slice(0, 4)?.map((task, index) => (
+                  {employeeFilteredData?.slice(0, 4)?.map((task, index) => (
                     <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
@@ -618,7 +633,12 @@ const EditEmployee = () => {
           </div>
         </form>
       )}
-      <ResetPassModal id={id} isOpen={isModalOpen} onClose={handleCloseModal} />
+      <ResetPassModal
+        id={id}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        getEmployeeData={getEmployeeData}
+      />
 
       {isAssignedModalOpen && (
         <AssignedModal

@@ -40,8 +40,8 @@ const AssignEmployee = () => {
   const [passSelectedManager, SetPassSelectedManager] = useState("");
 
   const [selectedEmployees, setSelectedEmployees] = useState([]);
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const handleSelectEmployee = (employeeId, employeeName) => {
     const isSelected = selectedEmployees.some(

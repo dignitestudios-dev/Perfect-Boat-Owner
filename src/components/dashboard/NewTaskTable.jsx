@@ -52,15 +52,17 @@ const NewTaskTable = ({ data, loading }) => {
 
   const filteredData = data?.filter((item, index) => {
     const matchesSearch = search
-      ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      ? item?.taskType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.status?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const matchesStatus =
       statusFilter && statusFilter.length !== 0
-        ? item?.status?.toLowerCase() === statusFilter[index]?.toLowerCase()
+        ? statusFilter?.includes(item?.status?.toLowerCase())
         : true;
     const taskTypeMatch =
       taskType && taskType.length !== 0
-        ? item?.taskType?.toLowerCase() === taskType[index]?.toLowerCase()
+        ? taskType?.includes(item?.taskType?.toLowerCase())
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
@@ -94,8 +96,8 @@ const NewTaskTable = ({ data, loading }) => {
             Boat name
           </span>
           <TaskType
-            setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
             taskTypeDropdownOpen={taskTypeDropdownOpen}
+            setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
             toggleTaskTypeDropdown={toggleTaskTypeDropdown}
             setTaskType={setTaskType}
             taskType={taskType}

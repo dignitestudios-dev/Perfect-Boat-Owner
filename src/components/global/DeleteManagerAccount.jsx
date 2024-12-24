@@ -13,6 +13,7 @@ const DeleteManagerAccount = () => {
   const { id } = useParams();
   const location = useLocation();
   const { reasonForDelete } = location.state || {};
+  console.log("🚀 ~ DeleteManagerAccount ~ reasonForDelete:", reasonForDelete);
   const { setUpdateManager } = useContext(GlobalContext);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
@@ -31,6 +32,8 @@ const DeleteManagerAccount = () => {
   const [deleteLoad, setDeleteLoad] = useState(false);
   const [userData, setUserData] = useState("");
   const [managers, setManagers] = useState([]);
+
+  const [deactivateLoading, setDeactivateLoading] = useState(false);
 
   const filteredData = userData?.employees?.filter((item) => {
     const jobTypeMatch =
@@ -59,6 +62,28 @@ const DeleteManagerAccount = () => {
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
+  };
+
+  const handleDeactivate = async () => {
+    try {
+      setDeactivateLoading(true);
+      const obj = { reason: "Deactivate" };
+      const response = await axios.delete(
+        `/owner/manager/${id}?deactivate=true`,
+        { data: obj }
+      );
+
+      if (response?.status === 200) {
+        setUpdateManager((prev) => !prev);
+        navigate("/managers");
+      }
+    } catch (err) {
+      console.log("🚀 ~ handleDeactivate ~ err:", err);
+      console.log("error call");
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setDeactivateLoading(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -147,9 +172,15 @@ const DeleteManagerAccount = () => {
         ) : (
           <>
             <div className="flex w-full items-center justify-between">
-              <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-                Delete Account
-              </h3>
+              {reasonForDelete === "deactivation" ? (
+                <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
+                  Deactivate Account
+                </h3>
+              ) : (
+                <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
+                  Delete Account
+                </h3>
+              )}
               <button
                 onClick={handleViewProfile}
                 className="w-full lg:w-[135px] h-[35px] flex items-center gap-1 rounded-[10px] justify-center
@@ -159,9 +190,15 @@ const DeleteManagerAccount = () => {
               </button>
             </div>
             <p className="text-[16px]">
-              Before deleting the account of {userData?.managers?.name}, please
-              reassign the following employees that are currently assigned to
-              this manager to another manager.
+              Before{" "}
+              <span>
+                {reasonForDelete === "deactivation"
+                  ? "deactivating"
+                  : "deleting"}
+              </span>{" "}
+              the account of {userData?.managers?.name}, please reassign the
+              following employees that are currently assigned to this manager to
+              another manager.
             </p>
             <div className="w-full max-w-[500px] flex flex-col gap-2 sm:gap-4 lg:gap-6">
               <label className="text-[16px] font-medium leading-[21.6px] text-white">
@@ -246,19 +283,35 @@ const DeleteManagerAccount = () => {
         >
           Back
         </button>
-        <button
-          disabled={deleteLoad}
-          onClick={handleDelete} // Trigger delete action
-          className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center
+        {reasonForDelete === "deactivation" ? (
+          <button
+            disabled={deactivateLoading}
+            onClick={handleDeactivate} // Trigger delete action
+            className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center
              justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
-        >
-          <div className="flex items-center">
-            <span className="mr-1">Delete Account</span>
-            {deleteLoad && (
-              <FiLoader className="animate-spin text-lg mx-auto" />
-            )}
-          </div>
-        </button>
+          >
+            <div className="flex items-center">
+              <span className="mr-1">Deactivate Account</span>
+              {deactivateLoading && (
+                <FiLoader className="animate-spin text-lg mx-auto" />
+              )}
+            </div>
+          </button>
+        ) : (
+          <button
+            disabled={deleteLoad}
+            onClick={handleDelete} // Trigger delete action
+            className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center
+             justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+          >
+            <div className="flex items-center">
+              <span className="mr-1">Delete Account</span>
+              {deleteLoad && (
+                <FiLoader className="animate-spin text-lg mx-auto" />
+              )}
+            </div>
+          </button>
+        )}
       </div>
 
       {/* EmployeeDetailModal Component */}

@@ -13,8 +13,8 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -26,15 +26,18 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
 
   const filteredData = employeesList?.filter((item) => {
     const matchesSearch = searchTerm
-      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.jobtitle?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase())
       : true;
     const jobTypeMatch =
-      jobType && jobType !== "all"
-        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
-        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
         : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch;
   });

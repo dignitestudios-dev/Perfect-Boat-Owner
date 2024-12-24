@@ -384,6 +384,7 @@ const TaskDetail = () => {
                   customDays={customDays}
                   setCustomRecurring={setCustomRecurring}
                   customRecurring={customRecurring}
+                  isEdit={isEdit}
                 />
               </div>
             </div>

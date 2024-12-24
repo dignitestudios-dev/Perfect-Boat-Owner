@@ -11,16 +11,16 @@ const Boats = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [findSearch, setFindSearch] = useState("");
-  const [locationType, setLocationType] = useState("all");
-  const [boatType, setBoatType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [boatType, setBoatType] = useState([]);
 
   const getBoats = async () => {
     setLoadingBoats(true);
     try {
       const searchText = findSearch ? `&search=${findSearch}` : "";
-      const boatQuery = boatType !== "all" ? `&boatType=${boatType}` : "";
+      const boatQuery = boatType.length !== 0 ? `&boatType=${boatType}` : "";
       const locationQuery =
-        locationType !== "all" ? `&locationType=${locationType}` : "";
+        locationType.length !== 0 ? `&locationType=${locationType}` : "";
       const { data } = await axios.get(
         `/owner/boat?page=${currentPage}&pageSize=15${boatQuery}${locationQuery}${searchText}`
       );

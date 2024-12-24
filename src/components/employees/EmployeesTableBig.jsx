@@ -27,7 +27,6 @@ const EmployeesTableBig = ({
   setJobType,
   setCurrentPage,
 }) => {
-  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
 
@@ -247,9 +246,15 @@ const EmployeesTableBig = ({
               {data?.length > 0 ? (
                 data?.map((employee, index) => (
                   <div
-                    onClick={() => handleEditClick(employee?._id)}
-                    className=" cursor-pointer w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
-            font-medium leading-[14.85px] text-white justify-start items-center"
+                    onClick={() => {
+                      if (employee?.isActive) {
+                        handleEditClick(employee?._id);
+                      }
+                    }}
+                    className={` ${
+                      employee?.isActive === true ? "cursor-pointer" : ""
+                    } w-full h-8 grid grid-cols-5 border-b border-white/10  text-[11px]
+            font-medium leading-[14.85px] text-white justify-start items-center`}
                   >
                     <span
                       key={index}

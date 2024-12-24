@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { TbCaretDownFilled } from "react-icons/tb";
 
 const TaskInputField = ({
@@ -9,6 +9,8 @@ const TaskInputField = ({
   displaySelectedTask,
   additionalDropdownRef,
   tasks,
+  setCustomTask,
+  customTask,
 }) => {
   return (
     <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
@@ -43,14 +45,38 @@ const TaskInputField = ({
             tasks.map((task, index) => (
               <button
                 key={index}
-                onClick={() => handleTaskSelection(task)}
-                className="text-gray-300 w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTaskSelection(task);
+                }}
+                className="text-gray-300 text-left w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
               >
                 {task}
               </button>
             ))
           ) : (
-            <span className="text-gray-400 px-5">Task type is custom</span>
+            <div className="w-full flex flex-col justify-start items-start gap-2 px-6">
+              <input
+                onChange={(e) => setCustomTask(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+                type="text"
+                className="w-[95%] h-[42px] mb-2 bg-[#1A293D] disabled:text-white/50 outline-none px-3
+                               border-[1px] border-[#55C9FA] rounded-md"
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  // e.stopPropagation();
+                  // handleTaskTypeSelection(customTypeText);
+                  // setTaskTypeDropdownOpen(false);
+                  handleTaskSelection(customTask);
+                }}
+                className="w-[95%] h-[42px] rounded-md bg-[#119bd1] text-white flex items-center 
+                            justify-center text-sm font-medium"
+              >
+                Apply
+              </button>
+            </div>
           )}
         </div>
       </div>

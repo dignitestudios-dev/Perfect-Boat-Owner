@@ -15,8 +15,8 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
 
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all");
-  const [boatType, setBoatType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [boatType, setBoatType] = useState([]);
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -28,33 +28,36 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
 
   const filteredData = boatList?.filter((item) => {
     const matchesSearch = searchTerm
-      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.boatType?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.make?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase())
       : true;
-    const jobTypeMatch =
-      boatType && boatType !== "all"
-        ? item?.boatType?.toLowerCase() === boatType?.toLowerCase()
+    const boatTypeMatch =
+      boatType && boatType.length !== 0
+        ? boatType?.includes(item?.boatType?.toLowerCase())
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
-        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
         : true;
-    return matchesSearch && locationTypeMatch && jobTypeMatch;
+    return matchesSearch && locationTypeMatch && boatTypeMatch;
   });
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedBoats([]);
-    } else {
-      setSelectedBoats(Array(5).fill(true));
-    }
-    setSelectAll(!selectAll);
-  };
+  // const handleSelectAll = () => {
+  //   if (selectAll) {
+  //     setSelectedBoats([]);
+  //   } else {
+  //     setSelectedBoats(Array(5).fill(true));
+  //   }
+  //   setSelectAll(!selectAll);
+  // };
 
-  const handleSelectBoat = (index) => {
-    const updatedSelection = [...selectedBoats];
-    updatedSelection[index] = !updatedSelection[index];
-    setSelectedBoats(updatedSelection);
-  };
+  // const handleSelectBoat = (index) => {
+  //   const updatedSelection = [...selectedBoats];
+  //   updatedSelection[index] = !updatedSelection[index];
+  //   setSelectedBoats(updatedSelection);
+  // };
 
   if (!isOpen) return null;
 

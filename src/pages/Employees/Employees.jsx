@@ -13,16 +13,16 @@ const Employees = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [findSearch, setFindSearch] = useState("");
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const getEmployees = async () => {
     setLoadingEmployees(true);
     try {
       const searchText = findSearch ? `&search=${findSearch}` : "";
-      const jobQuery = jobType !== "all" ? `&jobTitle=${jobType}` : "";
+      const jobQuery = jobType.length !== 0 ? `&jobTitle=${jobType}` : "";
       const locationQuery =
-        locationType !== "all" ? `&locations=${locationType}` : "";
+        locationType.length !== 0 ? `&location=${locationType}` : "";
       const { data } = await axios.get(
         `/owner/employees?page=${currentPage}&pageSize=15${searchText}${jobQuery}${locationQuery}`
       );

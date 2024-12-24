@@ -23,6 +23,8 @@ import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 import { FiLoader } from "react-icons/fi";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
+import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
+import BoatAccessList from "../Fleet/BoatAccessList";
 
 const EditManager = () => {
   const { navigate, setUpdateManager } = useContext(GlobalContext);
@@ -42,8 +44,7 @@ const EditManager = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignedModalOpen, setIsAssignedModalOpen] = useState(false);
-  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
-    useState(false);
+
   const [isResendModalOpen, setIsResendModalOpen] = useState(false);
   const [isAssignDetailModalOpen, setIsAssignDetailModalOpen] = useState(false);
   const [isResetPassModalOpen, setIsResetPassModalOpen] = useState(false);
@@ -61,6 +62,20 @@ const EditManager = () => {
   const [locationDropdownIsOpen, setLocationDropdownIsOpen] = useState(false);
 
   const [locationBDropdownOpen, setLocationBDropdownOpen] = useState(false);
+  const [jobType, setJobType] = useState([]);
+  const [locationType, setLocationType] = useState([]);
+  const [locationBoatType, setLocationBoatType] = useState([]);
+
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
+    useState(false);
+
+  const [isEmployeeDetailModalOpen, setIsEmployeeDetailModalOpen] =
+    useState(false);
+
+  const [selectedEmployeeList, setSelectedEmployeeList] = useState([]);
+  const [inputError, setInputError] = useState({});
+
+  const [isBoatAccessModalOpen, setIsBoatAccessModalOpen] = useState(false);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -167,6 +182,58 @@ const EditManager = () => {
       setSubmitLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (selectedEmployeeList.length > 0) {
+      handleAssignEmployees();
+    }
+  }, [selectedEmployeeList]);
+
+  const handleAssignEmployees = async () => {
+    if (selectedEmployeeList?.length === 0) {
+      ErrorToast("Select employee");
+      return;
+    }
+    try {
+      setLoading(true);
+      const obj = {
+        employees: selectedEmployeeList?.map((item) => item.id),
+      };
+      const response = await axios.put(
+        `/owner/manager/${id}/employees/assign`,
+        obj
+      );
+      if (response.status === 200) {
+        getDataById();
+        setIsEmployeeDetailModalOpen(false);
+      }
+    } catch (err) {
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const boatFilteredData = boatList?.filter((item) => {
+    const locationTypeMatch =
+      locationBoatType && locationBoatType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return locationTypeMatch;
+  });
+
+  const employeeFilteredData = employeesList?.filter((item) => {
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationBoatType && locationBoatType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return locationTypeMatch && jobTypeMatch;
+  });
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -352,9 +419,22 @@ const EditManager = () => {
 
           <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
             <div className="w-auto flex justify-between items-center gap-2">
-              <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-                Assigned Employee(s){" "}
-              </h3>
+              <div className="flex">
+                <h3 className="text-[18px] font-bold leading-[24.3px] text-white mr-2">
+                  Assigned Employee(s){" "}
+                </h3>
+                {isEditable ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsEmployeeDetailModalOpen(true)}
+                    className="text-[14px] font-medium text-[#199bd1] ml-2"
+                  >
+                    Change
+                  </button>
+                ) : (
+                  <span></span>
+                )}
+              </div>
               <button
                 disabled={employeesList?.length == 0}
                 type="button"
@@ -375,11 +455,15 @@ const EditManager = () => {
                   Email
                 </span>
                 <JobType
+                  jobType={jobType}
+                  setJobType={setJobType}
                   setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                 />
                 <LocationType
+                  setLocationType={setLocationType}
+                  locationType={locationType}
                   setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
                   toggleLocationDropdown={toggleLocationDropdown}
@@ -389,25 +473,27 @@ const EditManager = () => {
                 <ManagerDetailLoader />
               ) : (
                 <>
-                  {employeesList?.length > 0 ? (
+                  {employeeFilteredData?.length > 0 ? (
                     <>
-                      {employeesList?.slice(0, 4)?.map((employ, index) => (
-                        <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                          <span className="w-full flex justify-start items-center">
-                            {employ?.name || "--"}
-                          </span>
-                          <span className="w-full flex justify-start items-center">
-                            {employ?.email || "--"}
-                          </span>
-                          <span className="w-full flex justify-start items-center">
-                            {employ?.jobtitle || "---"}
-                          </span>
-                          <span className="w-full flex justify-start items-center ">
-                            {employ?.location || "---"}
-                          </span>
-                          <span className="w-full flex justify-start items-center "></span>
-                        </div>
-                      ))}
+                      {employeeFilteredData
+                        ?.slice(0, 4)
+                        ?.map((employ, index) => (
+                          <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                            <span className="w-full flex justify-start items-center">
+                              {employ?.name || "--"}
+                            </span>
+                            <span className="w-full flex justify-start items-center">
+                              {employ?.email || "--"}
+                            </span>
+                            <span className="w-full flex justify-start items-center">
+                              {employ?.jobtitle || "---"}
+                            </span>
+                            <span className="w-full flex justify-start items-center ">
+                              {employ?.location || "---"}
+                            </span>
+                            <span className="w-full flex justify-start items-center "></span>
+                          </div>
+                        ))}
                     </>
                   ) : (
                     <div className="pt-2">
@@ -425,6 +511,17 @@ const EditManager = () => {
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
                 Access Boats{" "}
               </h3>
+              {isEditable ? (
+                <button
+                  type="button"
+                  onClick={() => setIsBoatAccessModalOpen(true)}
+                  className="text-[14px] font-medium text-[#199bd1] ml-2"
+                >
+                  Change
+                </button>
+              ) : (
+                <span></span>
+              )}
               <button
                 type="button"
                 onClick={handleViewBoatsClick}
@@ -452,6 +549,8 @@ const EditManager = () => {
 
                 <div className="w-full flex justify-start items-center">
                   <LocationType
+                    setLocationType={setLocationBoatType}
+                    locationType={locationBoatType}
                     setLocationDropdownOpen={setLocationDropdownIsOpen}
                     locationDropdownOpen={locationDropdownIsOpen}
                     toggleLocationDropdown={toggleLocationIsDropdown}
@@ -462,9 +561,9 @@ const EditManager = () => {
                 <ManagerDetailLoader />
               ) : (
                 <>
-                  {boatList?.length > 0 ? (
+                  {boatFilteredData?.length > 0 ? (
                     <Fragment>
-                      {boatList?.slice(0, 4)?.map((boat, index) => (
+                      {boatFilteredData?.slice(0, 4)?.map((boat, index) => (
                         <div
                           key={index}
                           className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
@@ -540,14 +639,12 @@ const EditManager = () => {
         isOpen={isResetPassModalOpen}
         onClose={() => setIsResetPassModalOpen(false)}
       />
-
       {isAssignedModalOpen && (
         <AssignedModal
           handleViewAllClick={handleViewAllClick} // Pass the function if needed in the modal
           setIsOpen={setIsAssignedModalOpen}
         />
       )}
-
       {isManagerDetailModalOpen && (
         <ManagerDetailModal
           setIsOpen={setIsManagerDetailModalOpen}
@@ -555,7 +652,6 @@ const EditManager = () => {
           setSelectedManager={setSelectedManager}
         />
       )}
-
       {isResendModalOpen && (
         <ResendModal
           id={managerId}
@@ -563,13 +659,28 @@ const EditManager = () => {
           onClose={() => setIsResendModalOpen(false)} // Close ResendModal
         />
       )}
-
       {isAssignDetailModalOpen && (
         <AssignEmployeeDetailModal
           setIsOpen={setIsAssignDetailModalOpen}
           employeesList={employeesList}
         />
       )}
+
+      {isEmployeeDetailModalOpen && (
+        <EmployeeDetailModal
+          setIsOpen={setIsEmployeeDetailModalOpen}
+          SetPassSelectedEmployee={setSelectedEmployeeList}
+          setInputError={setInputError}
+          isMultiple={true}
+        />
+      )}
+
+      <BoatAccessList
+        managerId={managerId}
+        // managerName={managerName}
+        isOpen={isBoatAccessModalOpen}
+        setIsOpen={setIsBoatAccessModalOpen}
+      />
 
       <BoatsRightsModal
         isOpen={isModalOpen}

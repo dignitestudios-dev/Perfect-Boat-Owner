@@ -14,6 +14,7 @@ import LocationType from "../global/headerDropdowns/LocationType";
 import { CiExport } from "react-icons/ci";
 import { TfiReload } from "react-icons/tfi";
 import ReactivateModal from "../employees/ReactiveModal";
+import { useNavigate } from "react-router-dom";
 
 const ManagerTableBig = ({
   data,
@@ -26,8 +27,8 @@ const ManagerTableBig = ({
   setJobType,
   setCurrentPage,
 }) => {
-  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateManager } = useContext(GlobalContext);
+  const navigation = useNavigate();
   const timeoutRef = useRef(null);
 
   const [search, setSearch] = useState("");
@@ -93,26 +94,9 @@ const ManagerTableBig = ({
   };
 
   const handleDeactivate = async () => {
-    try {
-      setDeactivateLoading(true);
-      const obj = { reason: "Deactivate" };
-      const response = await axios.delete(
-        `/owner/manager/${managerId}?deactivate=true`,
-        { data: obj }
-      );
-
-      if (response?.status === 200) {
-        setUpdateManager((prev) => !prev);
-        setIsDeactivateModalOpen(true);
-        setIsModalOpen(false);
-        getManagers();
-      }
-    } catch (err) {
-      console.log("error call");
-      ErrorToast(err?.response?.data?.message);
-    } finally {
-      setDeactivateLoading(false);
-    }
+    navigation(`/delete-manager-account/${managerId}`, {
+      state: { reasonForDelete: "deactivation" },
+    });
   };
 
   const handleDelete = () => {

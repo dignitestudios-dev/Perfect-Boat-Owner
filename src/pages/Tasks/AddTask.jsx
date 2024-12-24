@@ -46,7 +46,7 @@ const AddTask = () => {
     if (day === "custom") {
       setRecurringDays(day);
       setSelectedDay(text);
-      setCustomDays(true);
+      setCustomDays(!customDays);
       setRecurringDropdown(true);
     } else {
       setRecurringDays(day);
@@ -71,6 +71,7 @@ const AddTask = () => {
   const [displaySelectedTask, setDisplaySelectedTask] = useState("");
   const [dueDate, setDueDate] = useState({});
   const [customTypeText, setCustomTypeText] = useState("");
+  const [customTask, setCustomTask] = useState("");
   const [inputError, setInputError] = useState({});
 
   const toggleTaskTypeDropdown = () => {
@@ -83,18 +84,19 @@ const AddTask = () => {
 
   const handleTaskTypeSelection = (taskType) => {
     setInputError({});
-    if (taskType === "custom") {
-      setTaskTypeDropdownOpen(true);
-      setCustomInput(true);
-      setTaskDropdownOpen(false);
-    } else {
-      setSelectedTaskType(taskType);
-      setTasks(
-        taskDropDown?.find((item) => item?.taskType === taskType)?.task || []
-      );
-      setTaskDropdownOpen(false);
-      setDisplaySelectedTask(null);
-    }
+    setSelectedTaskType(taskType);
+    setTasks(
+      taskDropDown?.find((item) => item?.taskType === taskType)?.task || []
+    );
+    setTaskDropdownOpen(false);
+    setDisplaySelectedTask(null);
+    // if (taskType === "custom") {
+    //   setTaskTypeDropdownOpen(true);
+    //   setCustomInput(true);
+    //   setTaskDropdownOpen(false);
+    // } else {
+
+    // }
   };
 
   const handleTaskSelection = (task) => {
@@ -123,7 +125,7 @@ const AddTask = () => {
       setSubmitLoading(true);
       const obj = {
         boat: passSelectedBoat?.id,
-        task: displaySelectedTask ? displaySelectedTask : selectedTaskType,
+        task: displaySelectedTask ? displaySelectedTask : customTask,
         taskType: selectedTaskType?.replace(/([A-Z])/g, " $1")?.trim(),
         dueDate: dueDate?.unix,
         description: noteText,
@@ -194,8 +196,9 @@ const AddTask = () => {
                   handleTaskTypeSelection={handleTaskTypeSelection}
                   customInput={customInput}
                   setCustomTypeText={setCustomTypeText}
-                  setInputError={setInputError}
                   taskDropDown={taskDropDown}
+                  setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
+                  setCustomInput={setCustomInput}
                 />
                 {inputError.task && (
                   <p className="text-red-500">{inputError.task}</p>
@@ -212,6 +215,8 @@ const AddTask = () => {
                   tasks={tasks}
                   isEdit={true}
                   setInputError={setInputError}
+                  customTask={customTask}
+                  setCustomTask={setCustomTask}
                 />
                 {inputError.task && (
                   <p className="text-red-500">{inputError.task}</p>

@@ -12,8 +12,22 @@ const BoatType = ({
   const { dropDown } = useContext(GlobalContext);
   const boatTypeDropdownRef = useRef(null);
 
+  // const handleCheckboxChange = (boat) => {
+  //   setBoatType(boat);
+  // };
+
   const handleCheckboxChange = (boat) => {
-    setBoatType(boat);
+    if (boat === "all") {
+      setBoatType([]);
+    } else {
+      setBoatType((prev) => {
+        if (prev.includes(boat)) {
+          return prev.filter((t) => t !== boat);
+        } else {
+          return [...prev, boat];
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -47,7 +61,7 @@ const BoatType = ({
         >
           <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
             <input
-              checked={boatType === "all"}
+              checked={boatType.length === 0}
               onChange={() => handleCheckboxChange("all")}
               type="checkbox"
               className="form-checkbox text-[#199BD1] mr-2"
@@ -60,8 +74,8 @@ const BoatType = ({
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"
             >
               <input
-                checked={boatType === boat}
-                onChange={() => handleCheckboxChange(boat)}
+                checked={boatType.includes(boat?.toLowerCase())}
+                onChange={() => handleCheckboxChange(boat?.toLowerCase())}
                 type="checkbox"
                 className="form-checkbox text-[#199BD1] mr-2"
               />

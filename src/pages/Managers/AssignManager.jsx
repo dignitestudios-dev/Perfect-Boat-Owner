@@ -24,8 +24,8 @@ const AssignManager = () => {
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);

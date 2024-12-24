@@ -8,13 +8,23 @@ const JobType = ({
   toggleJobTitleDropdown,
   jobType,
   setJobType,
-  setCurrentPage = "",
+  setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
   const dropdownRef = useRef(null);
 
   const handleCheckboxChange = (job) => {
-    setJobType(job);
+    if (job === "all") {
+      setJobType([]);
+    } else {
+      setJobType((prev) => {
+        if (prev.includes(job)) {
+          return prev.filter((t) => t !== job);
+        } else {
+          return [...prev, job];
+        }
+      });
+    }
     setCurrentPage(1);
   };
 
@@ -46,7 +56,7 @@ const JobType = ({
         >
           <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
             <input
-              checked={jobType === "all"}
+              checked={jobType.length === 0}
               onChange={() => handleCheckboxChange("all")}
               type="checkbox"
               className="form-checkbox text-[#199BD1] mr-2"
@@ -59,8 +69,8 @@ const JobType = ({
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"
             >
               <input
-                checked={jobType === job}
-                onChange={() => handleCheckboxChange(job)}
+                checked={jobType?.includes(job?.toLowerCase())}
+                onChange={() => handleCheckboxChange(job?.toLowerCase())}
                 type="checkbox"
                 className="form-checkbox text-[#199BD1] mr-2"
               />

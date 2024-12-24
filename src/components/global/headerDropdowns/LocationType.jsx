@@ -8,13 +8,23 @@ const LocationType = ({
   toggleLocationDropdown,
   setLocationType,
   locationType,
-  setCurrentPage = "",
+  setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
   const locationDropdownRef = useRef(null);
 
   const handleCheckboxChange = (location) => {
-    setLocationType(location);
+    if (location === "all") {
+      setLocationType([]);
+    } else {
+      setLocationType((prev) => {
+        if (prev.includes(location)) {
+          return prev.filter((t) => t !== location);
+        } else {
+          return [...prev, location];
+        }
+      });
+    }
     setCurrentPage(1);
   };
 
@@ -51,7 +61,7 @@ const LocationType = ({
         >
           <label className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10">
             <input
-              checked={locationType === "all"}
+              checked={locationType.length === 0}
               onChange={() => handleCheckboxChange("all")}
               type="checkbox"
               className="form-checkbox text-[#199BD1] mr-2"
@@ -64,8 +74,8 @@ const LocationType = ({
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"
             >
               <input
-                checked={locationType === location}
-                onChange={() => handleCheckboxChange(location)}
+                checked={locationType.includes(location?.toLowerCase())}
+                onChange={() => handleCheckboxChange(location?.toLowerCase())}
                 type="checkbox"
                 className="form-checkbox text-[#199BD1] mr-2"
               />

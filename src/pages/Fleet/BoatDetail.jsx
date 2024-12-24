@@ -14,11 +14,12 @@ import axios from "../../axios";
 import { FiDownload, FiLoader } from "react-icons/fi";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
-// import ManagerDetailModal from "../Managers/ManagerDetailModal";
-import ManagerDetailModal from "../Managers/ManagerListModal";
+import ManagerDetailModal from "../Managers/ManagerDetailModal";
+// import ManagerDetailModal from "../Managers/ManagerListModal";
 import BoatAccessTable from "../../components/fleet/BoatAccessTable";
 import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
+import BoatAccessModal from "./BoatAccessModal";
 
 const BoatDetail = () => {
   const { navigate, boatDropDown, setUpdateBoat } = useContext(GlobalContext);
@@ -38,6 +39,11 @@ const BoatDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   // const { boat } = location.state || {};
+
+  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
+    useState(false);
+  const [passManagersList, SetPassManagersList] = useState([]);
 
   const [boatsData, setBoatsData] = useState([]);
 
@@ -60,7 +66,6 @@ const BoatDetail = () => {
   ]);
 
   const [selectedBoat, setSelectedBoat] = useState(boatsData?.boatType || "");
-  const [passSelectedManagers, setPassSelectedManagers] = useState([]);
   const [formsImages, setFormsImages] = useState([]);
 
   const [coverImage, setCoverImage] = useState(null);
@@ -126,6 +131,31 @@ const BoatDetail = () => {
       setSelectedBoat(boatsData?.boat?.boatType);
     }
   }, [boatsData, setValue]);
+
+  // useEffect(() => {
+  //   if (passManagersList?.length > 0) {
+  //     const handleAssignManager = async () => {
+  //       try {
+  //         const obj = {
+  //           managers: passManagersList?.map((item) => item?.id),
+  //         };
+  //         const response = await axios.put(`/owner/boat/${id}/access`, obj);
+  //         if (response.status === 200) {
+  //           // setIsManagerDetailModalOpen(false)
+  //           SetPassManagersList(null);
+  //           SuccessToast("Boat access assigned");
+  //           getBoats();
+  //         }
+  //       } catch (err) {
+  //         console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+  //         SetPassManagersList(null);
+  //         ErrorToast(err?.response?.data?.message);
+  //       } finally {
+  //       }
+  //     };
+  //     handleAssignManager();
+  //   }
+  // }, []);
 
   const handleModelChange = (event) => {
     const inputYear = event.target.value;
@@ -742,6 +772,8 @@ const BoatDetail = () => {
 
           {/* Boat Access Table */}
           <BoatAccessTable
+            setIsBoatModalOpen={setIsBoatModalOpen}
+            isEditing={isEditing}
             boatsData={boatsData}
             setIsManagerModalOpen={setIsManagerModalOpen}
           />
@@ -841,6 +873,21 @@ const BoatDetail = () => {
         onClose={closeDeleteModal}
         onConfirm={handleDeleteConfirm}
       />
+
+      {isBoatModalOpen && (
+        <ManagerDetailModal
+          boatId={id}
+          setIsOpen={setIsBoatModalOpen}
+          isManagerDetailModalOpen={isManagerDetailModalOpen}
+          setIsManagerDetailModalOpen={setIsManagerDetailModalOpen}
+          SetPassSelectedManagers={SetPassManagersList}
+          isMultiple={true}
+          selectedManagers={selectedManagers}
+          setSelectedManagers={setSelectedManagers}
+          boatAccess={boatsData?.boatAccess}
+          handleManagerModal={(managers) => handleAssignManager(managers)}
+        />
+      )}
     </div>
   );
 };

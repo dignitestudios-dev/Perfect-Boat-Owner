@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { SuccessToast } from "../global/Toaster";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-const ResetPasswordModal = ({ isOpen, onClose, id }) => {
+const ResetPasswordModal = ({ isOpen, onClose, id, getEmployeeData }) => {
   if (!isOpen) return null;
   const [password, setPassword] = useState({ new: "", confirm: "" });
   const [formErrors, setFormErrors] = useState({ new: "", confirm: "" });
@@ -70,6 +70,7 @@ const ResetPasswordModal = ({ isOpen, onClose, id }) => {
       const response = await axios.put(`/owner/manager/${id}/credentials`, obj);
       if (response.status === 200) {
         SuccessToast("Password Reset Success");
+        getEmployeeData();
         onClose();
       }
     } catch (err) {

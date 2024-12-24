@@ -20,8 +20,8 @@ const BoatAccessRights = () => {
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
 
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);

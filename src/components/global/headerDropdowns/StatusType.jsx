@@ -10,7 +10,7 @@ const StatusType = ({
 }) => {
   const statuses = [
     "upcomingtask",
-    "in-progress",
+    "inprogress",
     "completed",
     "recurring",
     "overdue",

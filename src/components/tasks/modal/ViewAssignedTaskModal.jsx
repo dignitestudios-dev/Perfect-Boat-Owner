@@ -42,6 +42,7 @@ const ViewAssignedTaskModal = ({
   loading = false,
   handleRemoveTask,
 }) => {
+  console.log("🚀 ~ employeeTasks:", employeeTasks);
   const navigateTo = useNavigate();
 
   const getFormattedStatus = (status) => {
@@ -51,8 +52,8 @@ const ViewAssignedTaskModal = ({
   const [search, setSearch] = useState("");
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [taskType, setTaskType] = useState("all");
+  const [statusFilter, setStatusFilter] = useState([]);
+  const [taskType, setTaskType] = useState([]);
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -67,15 +68,17 @@ const ViewAssignedTaskModal = ({
 
   const filteredData = employeeTasks?.filter((item) => {
     const matchesSearch = search
-      ? item?.boatName?.toLowerCase()?.includes(search?.toLowerCase())
+      ? item?.taskType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.boatName?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.status?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const matchesStatus =
-      statusFilter && statusFilter !== "all"
-        ? item?.status === statusFilter
+      statusFilter && statusFilter.length !== 0
+        ? statusFilter?.includes(item?.status?.toLowerCase())
         : true;
     const taskTypeMatch =
-      taskType && taskType !== "all"
-        ? item?.taskType?.toLowerCase() === taskType?.toLowerCase()
+      taskType && taskType.length !== 0
+        ? taskType?.includes(item?.taskType?.toLowerCase())
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
