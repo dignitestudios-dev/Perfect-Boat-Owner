@@ -36,6 +36,9 @@ const AddTask = () => {
 
   const RecurringRef = useRef(null);
   const toggleRecurringDropdown = (e) => {
+    setTaskTypeDropdownOpen(false);
+    setTaskDropdownOpen(false);
+
     if (RecurringRef.current && !RecurringRef.current.contains(e.target)) {
       setRecurringDropdown((prev) => !prev);
       // setRecurringDropdown(!RecurringDropdown);
@@ -76,10 +79,14 @@ const AddTask = () => {
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
+    setTaskDropdownOpen(false);
+    setRecurringDropdown(false);
   };
 
   const toggleTaskDropdown = () => {
     setTaskDropdownOpen(!isTaskDropdownOpen);
+    setTaskTypeDropdownOpen(false);
+    setRecurringDropdown(false);
   };
 
   const handleTaskTypeSelection = (taskType) => {

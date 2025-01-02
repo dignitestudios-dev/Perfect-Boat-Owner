@@ -1,27 +1,38 @@
 import React, { Fragment, useState } from "react";
-import AddFleetInput from "../../components/fleet/AddFleetInput";
-import AddFleetImage from "../../components/fleet/AddFleetImage";
 import { FiDownload, FiLoader } from "react-icons/fi";
 import { TbCaretDownFilled } from "react-icons/tb";
-import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import ImportCSVModal from "../../components/global/ImportCSVModal";
 import AddManagerModal from "../../components/global/AddManagerModal";
-import { useForm } from "react-hook-form";
 import axios from "../../axios";
-import { FaTrashAlt } from "react-icons/fa";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { boatType } from "../../data/TaskTypeData";
 import FleetExternalCsv from "../../components/fleet/FleetExternalCsv";
 import Papa from "papaparse";
+import { FleetInput } from "../../components/onboarding/FleetInput";
+import FleetImages from "../../components/onboarding/FleetImages";
+import { validateForms } from "../../data/boatValidation";
 
 const WelcomeAboard = () => {
-  const [selectedBoat, setSelectedBoat] = useState([]);
+  const [forms, setForms] = useState([
+    {
+      boatType: "",
+      name: "",
+      make: "",
+      year: "",
+      size: "",
+      location: "",
+    },
+  ]);
 
-  const [formImage, setFormImage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [selectedBoat, setSelectedBoat] = useState([]);
+  const [coverImage, setCoverImage] = useState([]);
+  const [imagesBox, setImagesBox] = useState([[0]]);
+  const [imagesArray, setImagesArray] = useState([[]]);
+
+  const [uploadImages, setUploadImages] = useState([[]]);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [forms, setForms] = useState([{ id: Date.now() }]);
+  const [loading, setLoading] = useState(false);
 
   const [csvUploaded, setCsvUploaded] = useState(false);
 
@@ -38,27 +49,40 @@ const WelcomeAboard = () => {
     },
   ]);
 
-  const {
-    watch,
-    getValues,
-    setValue,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  // const isImages = watch("forms.0.images.0");
-  // console.log("🚀 ~ WelcomeAboard ~ isImages:", isImages)
-
   const addForm = () => {
-    // setForms((prev) => [...prev, prev.length]);
-    const newForm = { id: Date.now() };
-    setForms((prev) => [...prev, newForm]);
+    setForms((prev) => [
+      ...prev,
+      {
+        boatType: "",
+        name: "",
+        make: "",
+        year: "",
+        size: "",
+        location: "",
+      },
+    ]);
+    setImagesBox((prev) => [...prev, [0]]);
+    setImagesArray((prev) => [...prev, []]);
   };
 
-  const removeForm = (id, index) => {
-    if (index > 0) {
-      setForms((prev) => prev.filter((form) => form.id !== id));
+  const removeForm = (formIndexToRemove) => {
+    if (formIndexToRemove > 0) {
+      const filteredData = forms?.filter(
+        (item, idx) => idx !== formIndexToRemove
+      );
+      setForms(filteredData);
+      const filteredBoat = selectedBoat.filter(
+        (_, idx) => idx !== formIndexToRemove
+      );
+      setSelectedBoat(filteredBoat);
+
+      const filteredImagesArray = imagesArray.filter(
+        (_, idx) => idx !== formIndexToRemove
+      );
+      const updatedImagesArray = filteredImagesArray.map((subArray, idx) => {
+        return subArray.filter((_, itemIdx) => itemIdx !== formIndexToRemove);
+      });
+      setImagesArray(updatedImagesArray);
     }
   };
 
@@ -67,120 +91,202 @@ const WelcomeAboard = () => {
     updatedBoats[idx] = boat;
     setSelectedBoat(updatedBoats);
     setIsOpen(false); // Close dropdown after selection
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[idx] = {
+        ...updatedForms[idx],
+        boatType: boat,
+        errors: { ...updatedForms[idx].errors, ["boatType"]: undefined },
+      };
+      return updatedForms;
+    });
   };
 
   const currentYear = new Date().getFullYear();
   const minYear = 1970;
   const maxYear = currentYear + 1;
 
-  const [coverImages, setCoverImages] = useState("");
-  const [coverError, setCoverError] = useState(Array(forms.length).fill(null));
-
-  const handleImageSelect = (formIndex, imageIndex) => {
-    setCoverError(Array(forms.length).fill(null));
-    setCoverImages((prevCoverImages) => ({
-      ...prevCoverImages,
-      [formIndex]: imageIndex, // Set the specific image index for this form
-    }));
-  };
-
-  const handleRemoveImage = (formIndex, imageIndex) => {
-    const currentImages = getValues(`forms.${formIndex}.images`) || [];
-
-    const updatedImages = currentImages.filter(
-      (_, index) => index !== imageIndex
-    );
-
-    setValue(`forms.${formIndex}.images`, updatedImages, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
-
   const [isAddManagerOpen, setIsAddManagerOpen] = useState(false); // State for new modal
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
 
-  const submitBoatData = async (formData) => {
+  const handleRemoveBeforeIndex = (index, error) => {
+    const filteredData = forms?.filter((item, idx) => idx >= index);
+    setForms(filteredData);
+    const filteredBoat = selectedBoat.filter((_, idx) => idx >= index);
+    setSelectedBoat(filteredBoat);
+
+    const filteredImagesArray = imagesArray.filter((_, idx) => idx >= index);
+    const updatedImagesArray = filteredImagesArray.map((subArray, idx) => {
+      return subArray.filter((_, itemIdx) => itemIdx >= index);
+    });
+    setImagesArray(updatedImagesArray);
+
+    const filteredUploadImages = uploadImages.filter((_, idx) => idx >= index);
+    const updatedUploadImages = filteredUploadImages.map((subArray, idx) => {
+      return subArray.filter((_, itemIdx) => itemIdx >= index);
+    });
+    setUploadImages(updatedUploadImages);
+
+    const filteredImagesBox = imagesBox.filter((_, idx) => idx >= index);
+    const updatedImagesBox = filteredImagesBox.map((subArray, idx) => {
+      return subArray.filter((_, itemIdx) => itemIdx >= index);
+    });
+    setImagesBox(updatedImagesBox);
+
+    if (error?.response?.data?.message.includes("Cover")) {
+      setForms((prevForms) => {
+        const updatedForms = [...prevForms];
+        updatedForms[0] = {
+          ...updatedForms[0],
+          errors: {
+            ...updatedForms[0].errors,
+            ["cover"]: "Select/Upload Cover Image",
+          },
+        };
+        return updatedForms;
+      });
+    }
+  };
+
+  const submitBoatData = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    const successfulForms = [];
-    const formErrors = {};
-
+    const { validatedForms, isValid } = validateForms(forms);
+    if (!isValid) {
+      setForms(validatedForms);
+    }
     try {
-      // Use `for...of` loop to handle async code correctly
-      for (const formIndex of forms) {
-        const data = new FormData();
-        // console.log("form =? images ? ", formData.forms[formIndex].images);
-        data.append("name", formData.forms[formIndex].name);
-        data.append("make", formData.forms[formIndex].make);
-        data.append("size", formData.forms[formIndex].size);
-        data.append("location", formData.forms[formIndex].location);
-        data.append("boatType", selectedBoat[formIndex]);
-        data.append("model", formData.forms[formIndex].model);
-
-        // Handle cover image validation
-        if (coverImages[formIndex] === undefined) {
-          formErrors[formIndex] = "Please select a cover image.";
-          setCoverError((prevErrors) => {
-            const newErrors = [...prevErrors];
-            newErrors[formIndex] = formErrors[formIndex];
-            return newErrors;
-          });
-          continue; // Skip this form if there's an error
-        }
-
-        // Handle other images
-        if (formData.forms[formIndex].images) {
-          formData.forms[formIndex].images.forEach((fileList, imageIndex) => {
-            if (fileList.length > 0 && fileList[0]) {
-              if (coverImages[formIndex] === imageIndex) {
-                data.append("cover", fileList[0]);
+      if (isValid) {
+        for (const formIndex in forms) {
+          const data = new FormData();
+          data.append("name", forms[formIndex]?.name);
+          data.append("make", forms[formIndex].make);
+          data.append("size", forms[formIndex].size);
+          data.append("location", forms[formIndex].location);
+          data.append("boatType", forms[formIndex].boatType);
+          data.append("model", forms[formIndex].year);
+          uploadImages[formIndex]?.forEach((fileList, imageIndex) => {
+            if (fileList) {
+              if (coverImage[formIndex] === imageIndex) {
+                data.append("cover", fileList);
               } else {
-                data.append("pictures", fileList[0]);
-              }
-            } else {
-              if (coverImages[formIndex] === imageIndex) {
-                formErrors[formIndex] = "Please upload a cover image.";
-                setCoverError((prevErrors) => {
-                  const newErrors = [...prevErrors];
-                  newErrors[formIndex] = formErrors[formIndex];
-                  return newErrors;
-                });
+                data.append("pictures", fileList);
               }
             }
           });
-        }
-
-        if (formErrors[formIndex]) {
-          // setForms((prevForms) =>
-          //   prevForms.filter((_, index) => successfulForms.includes(index))
-          // );
-          return;
-        } else {
           try {
             const response = await axios.post("/owner/boat", data);
-            if (response.status === 200) {
-              successfulForms.push(formIndex);
-              if (formIndex + 1 === forms.length) {
-                setIsAddManagerOpen(true); // Open modal if it's the last form
+            if (response?.status === 200) {
+              if (parseInt(formIndex) + 1 === forms?.length) {
+                setIsAddManagerOpen(true);
               }
             }
           } catch (error) {
+            console.log("🚀 ~ submitBoatData ~ error:", error);
+            if (formIndex > 0) {
+              const index = formIndex;
+              handleRemoveBeforeIndex(index, error);
+            } else {
+              if (error?.response?.data?.message.includes("Cover")) {
+                setForms((prevForms) => {
+                  const updatedForms = [...prevForms];
+                  updatedForms[formIndex] = {
+                    ...updatedForms[formIndex],
+                    errors: {
+                      ...updatedForms[formIndex].errors,
+                      ["cover"]: "Select/Upload Cover Image",
+                    },
+                  };
+                  return updatedForms;
+                });
+              }
+            }
             ErrorToast(error?.response?.data?.message);
+            return;
           }
         }
       }
-
-      // if (successfulForms.length > 0) {
-      //   setForms((prevForms) =>
-      //     prevForms.filter((_, index) => !successfulForms.includes(index))
-      //   );
-      // }
     } catch (error) {
       console.log("error outside loop", error);
       ErrorToast(error?.response?.data?.message);
     } finally {
-      setLoading(false); // Stop loader after all forms are processed
+      setLoading(false);
     }
+  };
+
+  const handleChange = (formIndex, key, e) => {
+    const value = e.target.value;
+    const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[formIndex] = {
+        ...updatedForms[formIndex],
+        [key]: capitalizedValue,
+        errors: { ...updatedForms[formIndex].errors, [key]: undefined },
+      };
+      return updatedForms;
+    });
+  };
+
+  const handleNumeric = (formIndex, key, e) => {
+    const value = e.target.value; // Validate and update year
+    if (key === "year") {
+      handleYearValidation(formIndex, key, value);
+    } else {
+      handleOtherValidation(formIndex, key, value);
+    }
+  };
+
+  const handleYearValidation = (formIndex, key, value) => {
+    if (!/^\d{0,4}$/.test(value)) {
+      return;
+    }
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[formIndex] = { ...updatedForms[formIndex], [key]: value };
+      return updatedForms;
+    });
+    if (value.length === 4) {
+      const year = parseInt(value, 10);
+      if (year >= minYear && year <= maxYear) {
+        updateFormState(formIndex, key, year, undefined);
+      } else {
+        setError(
+          formIndex,
+          key,
+          `Please enter a year between ${minYear} and ${maxYear}`
+        );
+      }
+    }
+  };
+  const handleOtherValidation = (formIndex, key, value) => {
+    if (value > 0 || value === "") {
+      updateFormState(formIndex, key, value, undefined);
+    } else {
+      setError(formIndex, key, "Enter a number greater than 0");
+    }
+  };
+
+  const updateFormState = (formIndex, key, value, error) => {
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[formIndex] = {
+        ...updatedForms[formIndex],
+        [key]: value,
+        errors: { ...updatedForms[formIndex].errors, [key]: error },
+      };
+      return updatedForms;
+    });
+  };
+  const setError = (formIndex, key, error) => {
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[formIndex] = {
+        ...updatedForms[formIndex],
+        errors: { ...updatedForms[formIndex].errors, [key]: error },
+      };
+      return updatedForms;
+    });
   };
 
   const handleFileChange = (event) => {
@@ -253,22 +359,22 @@ const WelcomeAboard = () => {
             />
           </>
         ) : (
-          <form onSubmit={handleSubmit(submitBoatData)}>
+          <form onSubmit={submitBoatData}>
             <div className="pt-2 pb-6">
               <p className="text-[20px] font-semibold leading-[21.6px]">
                 Add Fleet
               </p>
             </div>
             <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
-              {forms?.map((form, idx) => (
+              {forms?.map((form, formIndex) => (
                 <div
-                  key={idx}
+                  key={formIndex}
                   className="w-full h-auto flex flex-col gap-6 justify-start items-start"
                 >
-                  {idx > 0 && (
+                  {formIndex > 0 && (
                     <div className="w-full flex justify-end">
                       <p
-                        onClick={() => removeForm(form.id, idx)}
+                        onClick={() => removeForm(formIndex)}
                         className="px-1.5 hover:text-red-500 rounded-full text-xl font-bold cursor-pointer"
                       >
                         ✕
@@ -282,10 +388,18 @@ const WelcomeAboard = () => {
                           <label className="text-[16px] font-medium leading-[21.6px]">
                             Boat Type
                           </label>
-                          <div className="group  w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl hover:rounded-b-none hover:rounded-t-xl relative">
+                          <div
+                            className={`group  w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center
+                           px-3 focus:border-[1px] rounded-xl hover:rounded-b-none hover:rounded-t-xl
+                          relative ${
+                            forms[formIndex]?.errors?.boatType
+                              ? "? focus:border-red-500"
+                              : "focus:border-[#55C9FA]"
+                          }  `}
+                          >
                             <span className="text-white">
-                              {selectedBoat.length > 0
-                                ? selectedBoat[idx]
+                              {selectedBoat?.length > 0
+                                ? selectedBoat[formIndex]
                                 : "--Select--"}
                             </span>
                             <span className="text-gray-400">
@@ -300,7 +414,9 @@ const WelcomeAboard = () => {
                                   <button
                                     type="button"
                                     key={index}
-                                    onClick={() => handleSelect(boat, idx)}
+                                    onClick={() =>
+                                      handleSelect(boat, formIndex)
+                                    }
                                     className={`w-full text-left px-4 py-2 text-gray-300 hover:bg-[#1A293D] hover:rounded-lg ${
                                       selectedBoat === boat
                                         ? "bg-[#1A293D] text-white"
@@ -313,101 +429,75 @@ const WelcomeAboard = () => {
                               </div>
                             </div>
                           </div>
+                          {forms[formIndex]?.errors?.boatType && (
+                            <p className="text-red-500 text-sm">
+                              {forms[formIndex]?.errors?.boatType}
+                            </p>
+                          )}
                         </div>
-                        <AddFleetInput
+                        <FleetInput
                           label="Name"
                           placeholder="Enter Boat Name"
                           type="text"
-                          register={register(`forms.${idx}.name`, {
-                            onChange: (e) => {
-                              const value = e.target.value;
-                              e.target.value =
-                                value.charAt(0).toUpperCase() + value.slice(1);
-                            },
-                            setValueAs: (v) =>
-                              String(v[0]).toUpperCase() + String(v).slice(1),
-                            required: "Name is required",
-                          })}
-                          error={errors?.forms?.[idx]?.name}
+                          value={forms[formIndex].name}
+                          onChange={(e) => handleChange(formIndex, "name", e)}
+                          error={forms[formIndex]?.errors?.name}
                         />
 
-                        <AddFleetInput
+                        <FleetInput
                           label="Make"
                           placeholder="Enter Make"
                           type="text"
-                          register={register(`forms.${idx}.make`, {
-                            onChange: (e) => {
-                              const value = e.target.value;
-                              e.target.value =
-                                value.charAt(0).toUpperCase() + value.slice(1);
-                            },
-                            setValueAs: (v) =>
-                              String(v[0]).toUpperCase() + String(v).slice(1),
-                            required: "Make is required",
-                          })}
-                          error={errors?.forms?.[idx]?.make}
+                          value={forms[formIndex].make}
+                          onChange={(e) => handleChange(formIndex, "make", e)}
+                          error={forms[formIndex]?.errors?.make}
                         />
                       </div>
                       <div className="w-full grid grid-cols-1 md:grid-cols-3 justify-start items-start  gap-3 lg:gap-12">
-                        <AddFleetInput
+                        <FleetInput
                           label="Year"
                           placeholder="Year"
                           type="text"
-                          register={register(`forms.${idx}.model`, {
-                            required: "Year is required",
-                            validate: {
-                              // Custom validation for numeric year format and within range
-                              isValidYear: (value) =>
-                                /^\d{4}$/.test(value) ||
-                                "Year must be a 4-digit number",
-                              withinRange: (value) =>
-                                (value >= minYear && value <= maxYear) ||
-                                `Please enter a year between ${minYear} and ${maxYear}`,
-                            },
-                          })}
-                          error={errors?.forms?.[idx]?.model}
-                        />
-                        <AddFleetInput
-                          label="Size (ft)"
-                          placeholder="Enter Size"
-                          type="text"
                           maxLength={4}
-                          register={register(`forms.${idx}.size`, {
-                            required: "Size is required",
-                            pattern: {
-                              value: /^[1-9][0-9]{0,3}$/,
-                              message:
-                                "Size must be positive and 4 digits long",
-                            },
-                          })}
+                          value={forms[formIndex].year}
+                          onChange={(e) => handleNumeric(formIndex, "year", e)}
                           onInput={(e) => {
                             e.target.value = e.target.value.replace(
                               /(?!^\+)[^\d]/g,
                               ""
                             );
                           }}
-                          error={errors?.forms?.[idx]?.size}
+                          error={forms[formIndex]?.errors?.year}
                         />
-                        <AddFleetInput
+                        <FleetInput
+                          label="Size (ft)"
+                          placeholder="Enter Size"
+                          type="text"
+                          maxLength={4}
+                          value={forms[formIndex].size}
+                          onChange={(e) => handleNumeric(formIndex, "size", e)}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(
+                              /[^0-9.]/g,
+                              ""
+                            );
+                            const parts = e.target.value.split(".");
+                            if (parts.length > 2) {
+                              e.target.value =
+                                parts[0] + "." + parts.slice(1).join("");
+                            }
+                          }}
+                          error={forms[formIndex]?.errors?.size}
+                        />
+                        <FleetInput
                           label="Location"
                           placeholder="Enter Location"
                           type="text"
-                          register={register(`forms.${idx}.location`, {
-                            onChange: (e) => {
-                              const value = e.target.value;
-                              e.target.value =
-                                value.charAt(0).toUpperCase() + value.slice(1);
-                            },
-                            setValueAs: (v) =>
-                              String(v[0]).toUpperCase() + String(v).slice(1),
-                            required: "Location is required",
-                            minLength: {
-                              value: 2,
-                              message:
-                                "Location must be at least 2 characters long",
-                            },
-                          })}
-                          error={errors?.forms?.[idx]?.location}
+                          value={forms[formIndex].location}
+                          onChange={(e) =>
+                            handleChange(formIndex, "location", e)
+                          }
+                          error={forms[formIndex]?.errors?.location}
                         />
                       </div>
                     </div>
@@ -422,119 +512,23 @@ const WelcomeAboard = () => {
                   Click Here To Select Manager
                 </button>
               </div> */}
-
-                  <div className="w-full flex flex-col justify-start items-start gap-4">
-                    <>
-                      <h3 className="text-[18px] font-bold leading-[24.3px]">
-                        Upload Pictures{" "}
-                        <span className="text-[14px] font-normal leading-[24px]">
-                          (Supported Files Type: JPG, PNG, GIF)
-                        </span>
-                      </h3>
-                      <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
-                        {[...Array(5)].map((_, imageIndex) => {
-                          const formsImage = watch(
-                            `forms.${idx}.images.${imageIndex}`
-                          );
-                          // console.log("formsImages---", formsImage[idx], " ?? ", formsImage)
-                          // const imageError = errors?.forms?.[idx]?.images?.[imageIndex];
-
-                          return (
-                            <div key={imageIndex}>
-                              <div className="relative w-full h-[147px] rounded-xl flex flex-col items-center justify-center gap-2">
-                                <label
-                                  htmlFor={`form-${idx}-image-${imageIndex}`}
-                                  className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
-                            text-3xl flex items-center justify-center cursor-pointer"
-                                >
-                                  {formsImage && formsImage.length > 0 ? (
-                                    <img
-                                      src={URL.createObjectURL(formsImage[0])}
-                                      alt={`Uploaded preview ${imageIndex}`}
-                                      className="w-full h-full object-cover rounded-xl"
-                                    />
-                                  ) : (
-                                    <FiDownload />
-                                  )}
-                                  <input
-                                    type="file"
-                                    className="hidden"
-                                    id={`form-${idx}-image-${imageIndex}`}
-                                    accept="image/*"
-                                    key={imageIndex}
-                                    name={`forms.${idx}.images.${imageIndex}`}
-                                    {...register(
-                                      `forms.${idx}.images.${imageIndex}`,
-                                      {
-                                        required:
-                                          idx === forms.length - 1 &&
-                                          imageIndex === 0
-                                            ? "Image is required"
-                                            : false,
-                                        onChange: (e) => {
-                                          setCoverError(
-                                            Array(forms.length).fill(null)
-                                          );
-                                        },
-                                      }
-                                    )}
-                                  />
-                                </label>
-                                {errors?.forms?.[idx]?.images?.[imageIndex] ? (
-                                  <p>image is required </p>
-                                ) : (
-                                  <></>
-                                )}
-                                {/* {errors?.forms?.[idx]?.images?.imageIndex && (
-                                  <p>image is required </p>
-                                )} */}
-                                <div className="absolute top-1 right-2 bg-white p-1 rounded-full">
-                                  <FaTrashAlt
-                                    className="text-black cursor-pointer text-[15px]"
-                                    onClick={() =>
-                                      handleRemoveImage(idx, imageIndex)
-                                    }
-                                  />
-                                </div>
-                              </div>
-                              {/* {imageError && ( <p className="text-red-500 text-sm">{imageError.message} </p>)} */}
-                              <div className="w-auto mt-2 ml-1 flex gap-2 justify-start items-center">
-                                <input
-                                  checked={coverImages[idx] === imageIndex}
-                                  type="radio"
-                                  onChange={() =>
-                                    handleImageSelect(idx, imageIndex)
-                                  }
-                                  className={`w-3 h-3 rounded-full accent-white outline-none border-none 
-                                   ${
-                                     coverImages[idx] === imageIndex && "hidden"
-                                   } `}
-                                />
-                                {coverImages[idx] === imageIndex ? (
-                                  <span className="text-slate-600 text-[10px] mr-4 bg-white rounded-full px-1">
-                                    ✔
-                                  </span>
-                                ) : (
-                                  <span className="text-transparent text-[10px]">
-                                    ✔
-                                  </span>
-                                )}
-                                <span className="text-[12px] font-medium leading-[16.3px]">
-                                  {" "}
-                                  Set as cover photo{" "}
-                                </span>
-                              </div>
-                              {coverError[idx] && (
-                                <p className="text-red-500 text-sm">
-                                  {coverError[idx]}
-                                </p>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </>
-                  </div>
+                  <FleetImages
+                    error={forms[formIndex]?.errors?.image}
+                    formIndex={formIndex}
+                    coverImage={coverImage}
+                    setForms={setForms}
+                    setCoverImage={setCoverImage}
+                    setUploadImages={setUploadImages}
+                    setImagesArray={setImagesArray}
+                    imagesBox={imagesBox}
+                    setImagesBox={setImagesBox}
+                    imagesArray={imagesArray}
+                  />
+                  {forms[formIndex]?.errors?.cover && (
+                    <p className="text-red-500 text-sm -mt-2">
+                      {forms[formIndex]?.errors?.cover}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

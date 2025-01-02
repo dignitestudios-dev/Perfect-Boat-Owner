@@ -140,7 +140,7 @@ const AddManagerpage = () => {
       }
     } catch (error) {
       console.error("Error adding manager:", error);
-      ErrorToast(error.message);
+      ErrorToast(error?.response?.data?.message);
     } finally {
       setSubmitLoading(false);
     }

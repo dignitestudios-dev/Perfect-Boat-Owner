@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import AddEmployeeModal from "../../components/global/AddEmployeeModal";
+import { validateManagers } from "../../data/boatValidation";
 const AddManager = () => {
   const { navigate } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -87,6 +88,7 @@ const AddManager = () => {
   const handleChange = (index, field, value) => {
     const newData = [...data];
     newData[index][field] = value;
+    newData[index]["errors"][field] = undefined;
     setData(newData);
   };
 
@@ -97,15 +99,21 @@ const AddManager = () => {
 
   const submitManagerData = async (e) => {
     e.preventDefault();
+    const { validatedForms, isValid } = validateManagers(data);
+    if (!isValid) {
+      setData(validatedForms);
+    }
     try {
-      const dataToSubmit = data.map((item) => ({
-        ...item,
-        phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
-      }));
-      setSubmitLoading(true);
-      const response = await axios.post("/owner/manager/csv", dataToSubmit);
-      if (response.status === 200) {
-        setIsEmployeeOpen(true);
+      if (isValid) {
+        const dataToSubmit = data.map((item) => ({
+          ...item,
+          phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+        }));
+        setSubmitLoading(true);
+        const response = await axios.post("/owner/manager/csv", dataToSubmit);
+        if (response.status === 200) {
+          setIsEmployeeOpen(true);
+        }
       }
     } catch (error) {
       if (error?.response?.data?.index > 0) {
@@ -187,7 +195,12 @@ const AddManager = () => {
                             {"Name"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.name
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              }  rounded-xl flex items-center `}
                           >
                             <input
                               name="name"
@@ -204,11 +217,11 @@ const AddManager = () => {
                               placeholder={"Enter Name"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form?.errors?.name && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.name}
+                              {form?.errors?.name}
                             </p>
-                          )} */}
+                          )}
                         </div>
 
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -216,7 +229,12 @@ const AddManager = () => {
                             {"Email"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.email
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              } rounded-xl flex items-center `}
                           >
                             <input
                               type="email"
@@ -229,11 +247,11 @@ const AddManager = () => {
                               placeholder={"Enter Email"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form?.errors?.email && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.email}
+                              {form?.errors?.email}
                             </p>
-                          )} */}
+                          )}
                         </div>
                       </div>
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
@@ -242,7 +260,12 @@ const AddManager = () => {
                             {"Job Title"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.jobtitle
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              } rounded-xl flex items-center `}
                           >
                             <input
                               name="jobTitle"
@@ -263,18 +286,23 @@ const AddManager = () => {
                               placeholder={"Enter Job Title"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form.errors?.jobtitle && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.jobTitle}
+                              {form.errors?.jobtitle}
                             </p>
-                          )} */}
+                          )}
                         </div>
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                           <label className="text-[16px] font-medium leading-[21.6px]">
                             {"Location"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.location
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              } rounded-xl flex items-center `}
                           >
                             <input
                               name="location"
@@ -295,11 +323,11 @@ const AddManager = () => {
                               placeholder={"Enter Location"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form.errors?.location && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.location}
+                              {form.errors?.location}
                             </p>
-                          )} */}
+                          )}
                         </div>
                       </div>
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
@@ -308,7 +336,12 @@ const AddManager = () => {
                             {"Phone Number"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px]
+                              ${
+                                form?.errors?.phone
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              }  rounded-xl flex items-center `}
                           >
                             <div
                               className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
@@ -337,11 +370,11 @@ const AddManager = () => {
                               />
                             </div>
                           </div>
-                          {/* {errors.length && (
+                          {form.errors?.phone && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.phoneNo}
+                              {form.errors?.phone}
                             </p>
-                          )} */}
+                          )}
                         </div>
                       </div>
                     </div>

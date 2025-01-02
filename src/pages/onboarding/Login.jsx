@@ -43,7 +43,12 @@ const Login = () => {
         login(response.data);
         if (response?.data?.data?.isEmailVerified === true) {
           if (response?.data?.data?.isSubscribed === true) {
-            navigate("/dashboard");
+            if (response?.data?.data?.isBoat === true) {
+              navigate("/dashboard");
+            } else {
+              navigate("/welcome-aboard");
+            }
+
             SuccessToast("Logged in successfully");
           } else {
             navigate("/select-package");

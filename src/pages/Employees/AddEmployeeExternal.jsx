@@ -8,6 +8,7 @@ import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 import EmployeeOnboardSuccess from "../../components/global/EmployeeOnboardSuccess";
+import { validateManagers } from "../../data/boatValidation";
 
 const AddEmployeeExternal = () => {
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
@@ -94,6 +95,7 @@ const AddEmployeeExternal = () => {
   const handleChange = (index, field, value) => {
     const newData = [...data];
     newData[index][field] = value;
+    newData[index]["errors"][field] = undefined;
     setData(newData);
   };
 
@@ -102,15 +104,21 @@ const AddEmployeeExternal = () => {
 
   const submitEmployeeData = async (e) => {
     e.preventDefault();
+    const { validatedForms, isValid } = validateManagers(data);
+    if (!isValid) {
+      setData(validatedForms);
+    }
     try {
-      const dataToSubmit = data.map((item) => ({
-        ...item,
-        phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
-      }));
-      setSubmitLoading(true);
-      const response = await axios.post("/owner/employees/csv", dataToSubmit);
-      if (response.status === 200) {
-        setIsEmployeeOpen(true);
+      if (isValid) {
+        const dataToSubmit = data.map((item) => ({
+          ...item,
+          phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+        }));
+        setSubmitLoading(true);
+        const response = await axios.post("/owner/employees/csv", dataToSubmit);
+        if (response.status === 200) {
+          setIsEmployeeOpen(true);
+        }
       }
     } catch (error) {
       if (error?.response?.data?.index > 0) {
@@ -196,24 +204,33 @@ const AddEmployeeExternal = () => {
                             {"Name"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.name
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              }  rounded-xl flex items-center `}
                           >
                             <input
                               name="name"
                               type="text"
                               value={form?.name}
-                              onChange={(e) =>
-                                handleChange(index, "name", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const capitalizedValue =
+                                  value.charAt(0).toUpperCase() +
+                                  value.slice(1);
+                                handleChange(index, "name", capitalizedValue);
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Name"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form?.errors?.name && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.name}
+                              {form?.errors?.name}
                             </p>
-                          )} */}
+                          )}
                         </div>
 
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -221,7 +238,12 @@ const AddEmployeeExternal = () => {
                             {"Email"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.email
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              } rounded-xl flex items-center `}
                           >
                             <input
                               type="email"
@@ -229,15 +251,16 @@ const AddEmployeeExternal = () => {
                               onChange={(e) =>
                                 handleChange(index, "email", e.target.value)
                               }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Name"}
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400
+                               autofill:bg-transparent autofill:text-white"
+                              placeholder={"Enter Email"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form?.errors?.email && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.email}
+                              {form?.errors?.email}
                             </p>
-                          )} */}
+                          )}
                         </div>
                       </div>
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
@@ -246,48 +269,74 @@ const AddEmployeeExternal = () => {
                             {"Job Title"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.jobtitle
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              } rounded-xl flex items-center `}
                           >
                             <input
-                              type="text"
                               name="jobTitle"
+                              type="text"
                               value={form?.jobtitle}
-                              onChange={(e) =>
-                                handleChange(index, "jobtitle", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const capitalizedValue =
+                                  value.charAt(0).toUpperCase() +
+                                  value.slice(1);
+                                handleChange(
+                                  index,
+                                  "jobtitle",
+                                  capitalizedValue
+                                );
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Job Title"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form.errors?.jobtitle && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.jobTitle}
+                              {form.errors?.jobtitle}
                             </p>
-                          )} */}
+                          )}
                         </div>
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                           <label className="text-[16px] font-medium leading-[21.6px]">
                             {"Location"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                              ${
+                                form?.errors?.location
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              } rounded-xl flex items-center `}
                           >
                             <input
-                              type="text"
                               name="location"
+                              type="text"
                               value={form?.location}
-                              onChange={(e) =>
-                                handleChange(index, "location", e.target.value)
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const capitalizedValue =
+                                  value.charAt(0).toUpperCase() +
+                                  value.slice(1);
+                                handleChange(
+                                  index,
+                                  "location",
+                                  capitalizedValue
+                                );
+                              }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Location"}
                             />
                           </div>
-                          {/* {errors.length && (
+                          {form.errors?.location && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.location}
+                              {form.errors?.location}
                             </p>
-                          )} */}
+                          )}
                         </div>
                       </div>
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
@@ -296,7 +345,12 @@ const AddEmployeeExternal = () => {
                             {"Phone Number"}
                           </label>
                           <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px]
+                              ${
+                                form?.errors?.phone
+                                  ? "? focus-within:border-red-500"
+                                  : "focus-within:border-[#55C9FA]"
+                              }  rounded-xl flex items-center `}
                           >
                             <div
                               className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
@@ -325,11 +379,11 @@ const AddEmployeeExternal = () => {
                               />
                             </div>
                           </div>
-                          {/* {errors.length && (
+                          {form.errors?.phone && (
                             <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.phoneNo}
+                              {form.errors?.phone}
                             </p>
-                          )} */}
+                          )}
                         </div>
                       </div>
                     </div>

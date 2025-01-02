@@ -33,8 +33,7 @@ const AddEmployee = () => {
   const [csvUploaded, setCsvUploaded] = useState(false);
 
   function generateRandomPassword(length = 4) {
-    const charset =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&";
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&";
     let password = "Perfect@";
     for (let i = 0, n = charset.length; i < length; ++i) {
       password += charset.charAt(Math.floor(Math.random() * n));

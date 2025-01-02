@@ -23,8 +23,8 @@ import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 import { FiLoader } from "react-icons/fi";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
-import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
-import BoatAccessList from "../Fleet/BoatAccessList";
+import AssignedEmployeeModal from "../Employees/AssignedEmployeeModal";
+import ManagerBoatAccessModal from "../../components/managers/ManagerBoatAccessModal";
 
 const EditManager = () => {
   const { navigate, setUpdateManager } = useContext(GlobalContext);
@@ -218,7 +218,7 @@ const EditManager = () => {
   const boatFilteredData = boatList?.filter((item) => {
     const locationTypeMatch =
       locationBoatType && locationBoatType.length !== 0
-        ? locationType?.includes(item?.location?.toLowerCase())
+        ? locationBoatType?.includes(item?.location?.toLowerCase())
         : true;
     return locationTypeMatch;
   });
@@ -427,7 +427,7 @@ const EditManager = () => {
                   <button
                     type="button"
                     onClick={() => setIsEmployeeDetailModalOpen(true)}
-                    className="text-[14px] font-medium text-[#199bd1] ml-2"
+                    className="text-[14px] font-medium text-[#199bd1] ml-1"
                   >
                     Change
                   </button>
@@ -508,20 +508,22 @@ const EditManager = () => {
 
           <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
             <div className="w-auto flex justify-between items-center gap-2">
-              <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
-                Access Boats{" "}
-              </h3>
-              {isEditable ? (
-                <button
-                  type="button"
-                  onClick={() => setIsBoatAccessModalOpen(true)}
-                  className="text-[14px] font-medium text-[#199bd1] ml-2"
-                >
-                  Change
-                </button>
-              ) : (
-                <span></span>
-              )}
+              <div className="flex">
+                <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
+                  Access Boats{" "}
+                </h3>
+                {isEditable ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsBoatAccessModalOpen(true)}
+                    className="text-[14px] font-medium text-[#199bd1] ml-2"
+                  >
+                    Change
+                  </button>
+                ) : (
+                  <span></span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={handleViewBoatsClick}
@@ -667,17 +669,17 @@ const EditManager = () => {
       )}
 
       {isEmployeeDetailModalOpen && (
-        <EmployeeDetailModal
+        <AssignedEmployeeModal
           setIsOpen={setIsEmployeeDetailModalOpen}
           SetPassSelectedEmployee={setSelectedEmployeeList}
           setInputError={setInputError}
-          isMultiple={true}
+          assignedEmployee={employeesList}
         />
       )}
 
-      <BoatAccessList
+      <ManagerBoatAccessModal
         managerId={managerId}
-        // managerName={managerName}
+        assignedBoats={boatList}
         isOpen={isBoatAccessModalOpen}
         setIsOpen={setIsBoatAccessModalOpen}
       />

@@ -60,7 +60,7 @@ const Summary = () => {
           <>
             <div className="w-full flex flex-col justify-start items-start gap-8">
               <div className="w-full flex flex-col justify-start items-start gap-1">
-                <div className="w-auto h-8 flex justify-start items-center gap-2">
+                <div className="w-auto h-8 flex justify-start items-center gap-2 mb-2">
                   <h1 className="text-[18px] font-bold text-white leading-[24.3px]">
                     {/* {summary?.subscriptionPlan?.name} */}
                     Take your operations to the next level with robust tools for
