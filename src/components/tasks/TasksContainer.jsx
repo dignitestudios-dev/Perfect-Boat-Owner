@@ -20,6 +20,7 @@ const TasksContainer = () => {
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [dueDate, setDueDate] = useState({});
+  console.log("🚀 ~ TasksContainer ~ dueDate:", dueDate);
 
   const [inputError, setInputError] = useState({});
 
@@ -61,7 +62,7 @@ const TasksContainer = () => {
     try {
       const searchText = findSearch ? `&search=${findSearch}` : "";
       const searchFilter = filter ? `&status=${filter}` : "";
-      const sortByDate = sortDate
+      const sortByDate = dueDate?.normal
         ? `&startDate=${dueDate?.normal}&endDate=${dueDate?.normal}`
         : "";
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
@@ -85,7 +86,7 @@ const TasksContainer = () => {
 
   useEffect(() => {
     getTasks();
-  }, [filter, sortFilter, findSearch, currentPage]);
+  }, [filter, sortFilter, findSearch, currentPage, dueDate]);
 
   // const filteredData = taskData?.filter((item) =>
   //   item?.task?.toLowerCase()?.includes(search?.toLowerCase())

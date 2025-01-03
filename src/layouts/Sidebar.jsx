@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Logo } from "../assets/export";
+import { Logo, SideLogo } from "../assets/export";
 import { sidebarArr } from "../constants/sidebarArr";
 import SidebarLink from "./SidebarLink";
 import { RiLogoutCircleLine, RiMenuLine } from "react-icons/ri";
@@ -36,10 +36,10 @@ const Sidebar = () => {
         } lg:translate-x-0 z-40 h-screen overflow-y-auto`}
       >
         <Link to="/dashboard" className="">
-          <img src={Logo} alt="perfectboat_logo" className=" " />
+          <img src={SideLogo} alt="perfectboat_logo" className="w-32 " />
         </Link>
 
-        <div className="w-full mt-20 flex flex-col justify-start items-start gap-2">
+        <div className="w-full mt-10 flex flex-col justify-start items-start gap-2">
           {sidebarArr?.map((link, index) => (
             <SidebarLink
               key={index}

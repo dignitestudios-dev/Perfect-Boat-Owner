@@ -5,6 +5,7 @@ import SuccessVector from "./success_vector.png";
 import MasterCardIcon from "./master_card_icon.png";
 import CheckMark from "./check_success.png";
 import Logo from "./logo.png";
+import SideLogo from "./splash_logo.png";
 import HomeMockup from "./home_mockup.png";
 import TableBoatImage from "./table_boat_image.png";
 import BlogBoat from "./blog_boat.png";
@@ -18,6 +19,7 @@ export {
   MasterCardIcon,
   CheckMark,
   Logo,
+  SideLogo,
   HomeMockup,
   TableBoatImage,
   BlogBoat,

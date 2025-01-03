@@ -117,7 +117,7 @@ const DateModal = ({
                   onChange={(value) => {
                     setDate(value);
                   }}
-                  selectionType={isRange}
+                  selectionType="range"
                 />
               </Card>
             </Application>
