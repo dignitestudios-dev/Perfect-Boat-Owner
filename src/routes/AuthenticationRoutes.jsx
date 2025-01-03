@@ -9,6 +9,8 @@ import Summary from "../pages/onboarding/Summary";
 import UpdatePassword from "../pages/onboarding/UpdatePassword";
 import VerifyOtp from "../pages/onboarding/VerifyOtp";
 import PageNotFound from "../pages/PageNotFound";
+import TermsOfServices from "../pages/Settings/TermsOfServices";
+import PrivacyPolicy from "../pages/Settings/PrivacyPolicy";
 
 export const AuthenticationRoutes = [
   {
@@ -20,6 +22,18 @@ export const AuthenticationRoutes = [
     title: "Verify Otp Onboard",
     url: "/onboard-verify-otp",
     page: <OnboardVerifyOtp />,
+  },
+
+  {
+    title: "Terms Of Services",
+    url: "/terms-of-services",
+    page: <TermsOfServices />,
+  },
+
+  {
+    title: "Privacy Policy",
+    url: "/privacy-policy",
+    page: <PrivacyPolicy />,
   },
 
   {

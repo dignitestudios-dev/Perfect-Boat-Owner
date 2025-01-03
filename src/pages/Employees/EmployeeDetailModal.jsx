@@ -11,6 +11,7 @@ const EmployeeDetailModal = ({
   SetPassSelectedEmployee,
   setInputError,
   isMultiple = false,
+  employeeId = "",
 }) => {
   const { employees, loadingEmployees } = useContext(GlobalContext);
   const [allSelected, setAllSelected] = useState(false);
@@ -24,6 +25,8 @@ const EmployeeDetailModal = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredData = employees?.filter((item) => {
+    const employees = employeeId ? employeeId !== item._id : true;
+    console.log("🚀 ~ filteredData ~ employees:", employees);
     const matchesSearch = searchTerm
       ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
         item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
@@ -38,8 +41,9 @@ const EmployeeDetailModal = ({
       locationType && locationType.length !== 0
         ? locationType?.includes(item?.location?.toLowerCase())
         : true;
-    return matchesSearch && locationTypeMatch && jobTypeMatch;
+    return matchesSearch && locationTypeMatch && jobTypeMatch && employees;
   });
+  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);

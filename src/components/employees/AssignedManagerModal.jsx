@@ -1,19 +1,19 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { FaCaretDown } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
-import { ErrorToast } from "../../components/global/Toaster";
+import JobType from "../../components/global/headerDropdowns/JobType";
 
-const AssignedEmployeeModal = ({
+const AssignedManagerModal = ({
   setIsOpen,
-  SetPassSelectedEmployee,
-  setInputError,
-  isMultiple = true,
-  assignedEmployee,
+  SetPassSelectedManager,
+  selectedManager,
+  setSelectedManager,
+  assignedManagers,
 }) => {
-  const { employees, loadingEmployees } = useContext(GlobalContext);
+  console.log("🚀 ~ assignedManagers:", assignedManagers);
+  const { managers, loadingManagers } = useContext(GlobalContext);
+
   const [allSelected, setAllSelected] = useState(false);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
@@ -21,10 +21,9 @@ const AssignedEmployeeModal = ({
   const [jobType, setJobType] = useState([]);
   const [locationType, setLocationType] = useState([]);
 
-  const [selectedEmployee, setSelectedEmployee] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredData = employees?.filter((item) => {
+  const filteredData = managers?.filter((item) => {
     const matchesSearch = searchTerm
       ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
         item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
@@ -50,62 +49,47 @@ const AssignedEmployeeModal = ({
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleSelectEmployee = (employeeId, employeeName) => {
-    setInputError({});
-    if (isMultiple) {
-      const isSelected = selectedEmployee?.some(
-        (employee) => employee?.id === employeeId
-      );
-      if (isSelected) {
-        setSelectedEmployee(
-          selectedEmployee?.filter((employee) => employee?.id !== employeeId)
-        );
-      } else {
-        setSelectedEmployee([
-          ...selectedEmployee,
-          { id: employeeId, name: employeeName },
-        ]);
-      }
-      if (selectedEmployee?.length + (isSelected ? -1 : 1) === 0) {
-        setAllSelected(false);
-      }
+  const handleSelectManager = (managerId, managerName) => {
+    if (selectedManager?.id === managerId) {
+      setSelectedManager(null);
+    } else {
+      setSelectedManager({ id: managerId, name: managerName });
     }
   };
 
-  const handleEmployeeSelection = () => {
-    if (selectedEmployee) {
-      SetPassSelectedEmployee(selectedEmployee);
+  const handleManagerSelection = () => {
+    if (selectedManager) {
+      SetPassSelectedManager(selectedManager);
       setIsOpen(false);
     } else {
-      ErrorToast("Select Employee");
+      ErrorToast("Select Manager");
     }
   };
 
   useEffect(() => {
-    if (assignedEmployee) {
-      const selectedEmployees = assignedEmployee?.map((employee) => ({
-        id: employee._id,
-        name: employee.name,
-      }));
-      setSelectedEmployee(selectedEmployees);
+    if (assignedManagers) {
+      setSelectedManager({
+        id: assignedManagers._id,
+        name: assignedManagers.name,
+      });
     }
-  }, [assignedEmployee]);
+  }, [assignedManagers]);
 
-  const handleSelectAll = () => {
-    if (allSelected) {
-      // Deselect all employee
-      setSelectedEmployee([]);
-    } else {
-      // Select all employee
-      setSelectedEmployee(
-        filteredData?.map((employee) => ({
-          id: employee._id,
-          name: employee.name,
-        }))
-      );
-    }
-    setAllSelected(!allSelected);
-  };
+  //   const handleSelectAll = () => {
+  //     if (allSelected) {
+  //       // Deselect all employee
+  //       setSelectedManager([]);
+  //     } else {
+  //       // Select all employee
+  //       setSelectedManager(
+  //         filteredData?.map((employee) => ({
+  //           id: employee._id,
+  //           name: employee.name,
+  //         }))
+  //       );
+  //     }
+  //     setAllSelected(!allSelected);
+  //   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -113,8 +97,9 @@ const AssignedEmployeeModal = ({
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Select Employee(s)</h3>
+              <h3 className="text-lg font-semibold">Select Manager</h3>
               <button
+                type="button"
                 onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                 className="text-lg font-bold"
               >
@@ -127,6 +112,7 @@ const AssignedEmployeeModal = ({
                   <FiSearch className="text-white/50 text-lg" />
                 </span>
                 <input
+                  value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search here"
@@ -134,27 +120,12 @@ const AssignedEmployeeModal = ({
                 />
               </div>
               <button
-                onClick={() => handleEmployeeSelection()}
+                type="button"
+                onClick={() => handleManagerSelection()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
               >
                 Done
               </button>
-            </div>
-            <div className="mt-4 mb-2">
-              {isMultiple && (
-                <label className="flex items-center text-white/50">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
-                    mr-1.5 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
-                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
-                                 checked:after:text-md checked:after:p-1"
-                    checked={allSelected}
-                    onChange={handleSelectAll}
-                  />
-                  Select All
-                </label>
-              )}
             </div>
           </div>
           <div className="relative h-full overflow-auto">
@@ -163,15 +134,15 @@ const AssignedEmployeeModal = ({
                 <tr>
                   <th className="px-0 py-2"></th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                    Employee Name
+                    Manager Name
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                     Email
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <JobType
-                      jobTitleDropdownOpen={jobTitleDropdownOpen}
                       setJobTitleDropdownOpen={setJobTitleDropdownOpen}
+                      jobTitleDropdownOpen={jobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
@@ -179,8 +150,8 @@ const AssignedEmployeeModal = ({
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <LocationType
-                      locationDropdownOpen={locationDropdownOpen}
                       setLocationDropdownOpen={setLocationDropdownOpen}
+                      locationDropdownOpen={locationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
@@ -188,7 +159,7 @@ const AssignedEmployeeModal = ({
                   </th>
                 </tr>
               </thead>
-              {loadingEmployees ? (
+              {loadingManagers ? (
                 <tbody>
                   {[...Array(10)].map((_, index) => (
                     <tr key={index} className="border-b-[1px] border-white/10">
@@ -212,62 +183,48 @@ const AssignedEmployeeModal = ({
                 </tbody>
               ) : (
                 <tbody>
-                  {filteredData.length > 0 ? (
-                    <>
-                      {filteredData?.map((employee, index) => {
-                        const isMultiSelected = selectedEmployee?.some(
-                          (selected) => selected?.id === employee?._id
-                        );
-                        return (
-                          <tr
-                            key={index}
-                            className="border-b-[1px] border-white/10"
-                          >
-                            <td className="px-0 py-2">
-                              <input
-                                type="checkbox"
-                                className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
-                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
-                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] 
-                                checked:after:text-md checked:after:p-1"
-                                checked={isMultiSelected}
-                                onChange={() =>
-                                  handleSelectEmployee(
-                                    employee._id,
-                                    employee.name
-                                  )
-                                }
-                              />
-                            </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.name}
-                            </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.email}
-                            </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.jobtitle}
-                            </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.location}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </>
-                  ) : (
-                    <tr>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        <div className="pt-4 ">No record found</div>
-                      </td>
-                    </tr>
-                  )}
+                  {filteredData?.map((manager, index) => {
+                    const isSelected = selectedManager?.id === manager._id;
+
+                    return (
+                      <tr
+                        key={index}
+                        className="border-b-[1px] border-white/10"
+                      >
+                        <td className="px-0 py-2">
+                          <input
+                            type="checkbox"
+                            className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                   checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                  checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
+                            checked={isSelected}
+                            onChange={() =>
+                              handleSelectManager(manager._id, manager.name)
+                            }
+                          />
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.name}
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.email}
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.jobtitle}
+                        </td>
+                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                          {manager?.location}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               )}
             </table>
           </div>
           <div className="flex justify-end mt-4">
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >
@@ -280,4 +237,4 @@ const AssignedEmployeeModal = ({
   );
 };
 
-export default AssignedEmployeeModal;
+export default AssignedManagerModal;

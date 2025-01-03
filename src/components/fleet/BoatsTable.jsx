@@ -1,11 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useContext, useState, Fragment, useRef } from "react";
 import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { AuthMockup } from "../../assets/export";

@@ -102,12 +102,12 @@ const DeactivatedEmployeesTable = () => {
     let filtered = delUsersData;
     let deactivateFiltered = usersData;
 
-    if (sortFilter === "manager") {
+    if (sortFilter === "managers") {
       filtered = delUsersData?.filter((item) => item?.userType === "Manager");
       deactivateFiltered = usersData?.filter(
         (item) => item?.userType === "Manager"
       );
-    } else if (sortFilter === "employee") {
+    } else if (sortFilter === "employees") {
       filtered = delUsersData?.filter((item) => item?.userType === "Employee");
       deactivateFiltered = usersData?.filter(
         (item) => item?.userType === "Employee"
@@ -128,7 +128,7 @@ const DeactivatedEmployeesTable = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab("deleted")}
-            className={`p-1 rounded-none border-b-[3px] ${
+            className={`p-1 rounded-none border-b-[3px] font-semibold ${
               activeTab === "deleted"
                 ? "text-[#199BD1] border-[#199BD1]"
                 : "text-white/50 border-transparent"
@@ -138,7 +138,7 @@ const DeactivatedEmployeesTable = () => {
           </button>
           <button
             onClick={() => setActiveTab("deactivated")}
-            className={`p-1 rounded-none border-b-[3px] ${
+            className={`p-1 rounded-none border-b-[3px] font-semibold ${
               activeTab === "deactivated"
                 ? "text-[#199BD1] border-[#199BD1]"
                 : "text-white/50 border-transparent"

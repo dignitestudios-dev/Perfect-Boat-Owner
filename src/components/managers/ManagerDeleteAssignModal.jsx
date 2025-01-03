@@ -13,14 +13,27 @@ const ManagerDeleteAssignModal = ({
   setSelectedManager,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const jobTitleRef = useRef(null);
-  const locationRef = useRef(null);
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
-  const filteredData = managers?.filter(
-    (item) =>
-      item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) &&
-      item._id !== managerId
-  );
+  const filteredData = managers?.filter((item) => {
+    const managers = managerId ? managerId !== item._id : true;
+    const matchesSearch = searchTerm
+      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.jobtitle?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch && managers;
+  });
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -31,15 +44,6 @@ const ManagerDeleteAssignModal = ({
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
-  };
-
-  const handleClickOutside = (event) => {
-    if (jobTitleRef.current && !jobTitleRef.current.contains(event.target)) {
-      setJobTitleFilter(false);
-    }
-    if (locationRef.current && !locationRef.current.contains(event.target)) {
-      setLocationFilter(false);
-    }
   };
 
   const handleSelectManager = (manager) => {
@@ -56,13 +60,6 @@ const ManagerDeleteAssignModal = ({
       setIsOpen(false);
     }
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
@@ -116,6 +113,8 @@ const ManagerDeleteAssignModal = ({
                       setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                       jobTitleDropdownOpen={jobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
+                      setJobType={setJobType}
+                      jobType={jobType}
                     />
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
@@ -123,6 +122,8 @@ const ManagerDeleteAssignModal = ({
                       setLocationDropdownOpen={setLocationDropdownOpen}
                       locationDropdownOpen={locationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
+                      setLocationType={setLocationType}
+                      locationType={locationType}
                     />
                   </th>
                 </tr>
@@ -140,7 +141,10 @@ const ManagerDeleteAssignModal = ({
                           <td className="px-0 py-2">
                             <input
                               type="checkbox"
-                              className="w-3 h-3 accent-[#199BD1]"
+                              className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] 
+                                checked:after:text-md checked:after:p-1"
                               checked={isSelected}
                               onChange={() => handleSelectManager(manager)}
                             />
@@ -169,7 +173,7 @@ const ManagerDeleteAssignModal = ({
               </tbody>
             </table>
           </div>
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <button
               type="button"
               onClick={() => setIsOpen(false)}
@@ -177,7 +181,7 @@ const ManagerDeleteAssignModal = ({
             >
               Done
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

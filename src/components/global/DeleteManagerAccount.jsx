@@ -13,7 +13,7 @@ const DeleteManagerAccount = () => {
   const { id } = useParams();
   const location = useLocation();
   const { reasonForDelete } = location.state || {};
-  console.log("🚀 ~ DeleteManagerAccount ~ reasonForDelete:", reasonForDelete);
+
   const { setUpdateManager } = useContext(GlobalContext);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);

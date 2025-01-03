@@ -50,20 +50,34 @@ const SelectTaskModal = ({
     newtask: "#FF007F",
     overdue: "#FF3B30",
     default: "#FFCC00",
-    "in-progress": "#36B8F3",
+    inprogress: "#36B8F3",
     completed: "#1FBA46",
+  };
+
+  const STATUS_ENUM = {
+    newtask: "New Task",
+    inprogress: "In-Progress",
+    recurring: "Recurring",
+    overdue: "Overdue",
+    completed: "Completed",
+    upcomingtask: "Upcoming Task",
+  };
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
   };
 
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [allSelected, setAllSelected] = useState(false);
   const [openAssignSuccess, setOpenAssignSuccess] = useState(false);
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [taskType, setTaskType] = useState("all");
+  const [statusFilter, setStatusFilter] = useState([]);
+  const [taskType, setTaskType] = useState([]);
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -91,21 +105,19 @@ const SelectTaskModal = ({
     }
   };
 
-  // const filteredData = taskData?.filter((item) =>
-  //   item?.task?.toLowerCase()?.includes(search?.toLowerCase())
-  // );
-
-  const filteredData = taskData?.filter((item) => {
+  const filteredData = taskData?.filter((item, index) => {
     const matchesSearch = search
-      ? item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      ? item?.taskType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.status?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const matchesStatus =
-      statusFilter && statusFilter !== "all"
-        ? item?.status === statusFilter
+      statusFilter && statusFilter.length !== 0
+        ? statusFilter?.includes(item?.status?.toLowerCase())
         : true;
     const taskTypeMatch =
-      taskType && taskType !== "all"
-        ? item?.taskType?.toLowerCase() === taskType?.toLowerCase()
+      taskType && taskType.length !== 0
+        ? taskType?.includes(item?.taskType?.toLowerCase())
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
@@ -126,7 +138,22 @@ const SelectTaskModal = ({
   const handleTaskSubmit = () => {
     passSelectedTask(selectedTasks);
     handleOpenAssignSuccess();
+
     // setIsOpen(false);
+  };
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setSelectedTasks([]);
+    } else {
+      setSelectedTasks(
+        filteredData?.map((task) => ({
+          id: task._id,
+          name: task.name,
+        }))
+      );
+    }
+    setAllSelected(!allSelected);
   };
 
   return (
@@ -155,11 +182,21 @@ const SelectTaskModal = ({
               />
             </div>
           </div>
-          <div className="flex justify-end items-center mb-4">
-            {/* <div className="flex items-center gap-2">
-              <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" />
-              <span className="text-white text-[13px] font-medium">Select All</span>
-            </div> */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center ">
+              {/* <label className="flex items-center text-white/90 ">
+                <input
+                  type="checkbox"
+                  className="w-[17px] h-[18.5px] border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                    checked:border-[#FFFFFF80] checked:ring-1 checked:pb-2 checked:after:font-[500]
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
+                                 checked:after:text-[13px] checked:after:p-0.5"
+                  checked={allSelected}
+                  onChange={handleSelectAll}
+                />
+                <p className="ml-2">Select All</p>
+              </label> */}
+            </div>
             <button
               onClick={() => handleTaskSubmit()}
               className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
@@ -170,7 +207,7 @@ const SelectTaskModal = ({
           <div className="relative h-full overflow-auto">
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-8 grid grid-cols-[auto_1fr_1fr_1fr_1fr_1fr] text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center mb-2">
-                <span className="flex items-center justify-start mr-2">
+                <span className="flex items-center justify-start mr-8">
                   {/* <input type="checkbox" className="w-4 h-4 accent-[#199BD1]" /> */}
                 </span>
                 <span className="flex items-center justify-start">
@@ -206,9 +243,9 @@ const SelectTaskModal = ({
                 <RequestTaskListLoader /> // Show loading spinner while loading
               ) : (
                 <>
-                  {filteredData.length > 0 ? ( // Check if there's any data to display
+                  {filteredData?.length > 0 ? ( // Check if there's any data to display
                     <>
-                      {filteredData.map((task, index) => {
+                      {filteredData?.map((task, index) => {
                         const isMultiSelected = selectedTasks?.some(
                           (selected) => selected.id === task._id
                         );
@@ -224,7 +261,10 @@ const SelectTaskModal = ({
                                   handleSelectTask(task?._id, task?.task)
                                 }
                                 type="checkbox"
-                                className="w-4 h-4 accent-[#199BD1]"
+                                className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
+                                 checked:after:text-[14px] checked:after:p-1"
                               />
                             </span>
                             <p className="flex items-center justify-start">
@@ -243,14 +283,14 @@ const SelectTaskModal = ({
                             </span>
                             <span className="flex items-center justify-start">
                               <span
-                                className="w-auto h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
                                 style={{
                                   color:
                                     statusColors[task?.status] ||
                                     statusColors["default"],
                                 }}
+                                className="w-auto h-[27px] capitalize rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
                               >
-                                {task?.status}
+                                {getFormattedStatus(task?.status)}
                               </span>
                             </span>
                           </div>

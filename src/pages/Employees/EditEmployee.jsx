@@ -6,9 +6,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { useNavigate, useParams } from "react-router-dom";
 import ResetPassModal from "../../components/onboarding/ResetPassModal";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
-import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import ResendModal from "../onboarding/ResendModal";
-import DeletedModal from "../../components/global/DeletedModal";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
@@ -17,8 +15,8 @@ import { getUnixDate } from "./../../data/DateFormat";
 import AssignTaskModal from "../../components/tasks/modal/AssignTaskModal";
 import TaskType from "../../components/global/headerDropdowns/TaskType";
 import StatusType from "../../components/global/headerDropdowns/StatusType";
-import SelectTaskModal from "../../components/tasks/modal/SelectTaskModal";
 import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
+import AssignedManagerModal from "../../components/employees/AssignedManagerModal";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -657,11 +655,12 @@ const EditEmployee = () => {
       )}
 
       {isManagerDetailModalOpen && (
-        <ManagerDetailModal
+        <AssignedManagerModal
           setIsOpen={setIsManagerDetailModalOpen}
           SetPassSelectedManager={SetPassSelectedManager}
           selectedManager={selectedManager}
           setSelectedManager={setSelectedManager}
+          assignedManagers={employee?.manager}
         />
       )}
 

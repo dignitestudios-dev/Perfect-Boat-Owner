@@ -92,15 +92,28 @@ const AssignEmployeeInternal = () => {
             <h3 className="text-[18px] font-bold leading-[24.3px]">
               Assign Employees
             </h3>
-            <button
-              type="button"
-              className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-              onClick={() => {
-                document.getElementById("input").click();
-              }}
-            >
-              Import CSV
-            </button>
+            <div className="w-72 flex justify-between items-center">
+              <a
+                href="https://api.theperfectboat.com/public/Image/Assign_Employee_CSV_Template.csv"
+                download
+              >
+                <button
+                  type="button"
+                  className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-xl"
+                >
+                  Download Template
+                </button>
+              </a>
+              <button
+                type="button"
+                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                onClick={() => {
+                  document.getElementById("input").click();
+                }}
+              >
+                Import CSV
+              </button>
+            </div>
             <input
               type="file"
               id="input"

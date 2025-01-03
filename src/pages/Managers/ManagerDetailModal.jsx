@@ -9,16 +9,18 @@ const ManagerDetailModal = ({
   setIsOpen,
   SetPassSelectedManager,
   SetPassSelectedManagers,
-  isMultiple,
+  isMultiple = false,
   boatAccess,
   handleManagerModal,
   selectedManager,
   setSelectedManager,
   selectedManagers,
   setSelectedManagers,
+  isBoat = false,
 }) => {
   const { managers, getManagers, loadingManagers } = useContext(GlobalContext);
 
+  const [allSelected, setAllSelected] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationType, setLocationType] = useState([]);
   const [jobType, setJobType] = useState([]);
@@ -101,12 +103,28 @@ const ManagerDetailModal = ({
     getManagers(jobType, locationType);
   }, [locationType, jobType]);
 
+  const handleSelectAll = () => {
+    if (allSelected) {
+      // Deselect all employee
+      setSelectedManagers([]);
+    } else {
+      // Select all employee
+      setSelectedManagers(
+        filteredData?.map((manager) => ({
+          id: manager._id,
+          name: manager.name,
+        }))
+      );
+    }
+    setAllSelected(!allSelected);
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-1">
               <h3 className="text-lg font-semibold">Select Manager</h3>
               <button
                 type="button"
@@ -116,7 +134,7 @@ const ManagerDetailModal = ({
                 ✕
               </button>
             </div>
-            <div className="w-full h-auto flex justify-between items-center mt-4">
+            <div className="w-[95%] h-auto flex justify-between items-center mt-4">
               <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
                 <span className="w-[32px] h-full flex items-center justify-center">
                   <FiSearch className="text-white/50 text-lg" />
@@ -136,6 +154,22 @@ const ManagerDetailModal = ({
               >
                 Done
               </button>
+            </div>
+            <div className="mt-4 mb-2">
+              {isBoat && (
+                <label className="flex items-center text-white/50">
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                    mr-1.5 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
+                                 checked:after:text-md checked:after:p-1"
+                    checked={allSelected}
+                    onChange={handleSelectAll}
+                  />
+                  Select All
+                </label>
+              )}
             </div>
           </div>
           <div className="relative h-full overflow-auto">

@@ -184,7 +184,7 @@ const Signup = () => {
             <button
               className="outline-none text-[16px] border-none text-[#199BD1] font-bold"
               onClick={() => {
-                navigate("/terms-and-conditions");
+                navigate("/terms-of-services");
               }}
             >
               Terms & conditions

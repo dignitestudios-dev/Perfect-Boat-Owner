@@ -15,11 +15,12 @@ import { FiDownload, FiLoader } from "react-icons/fi";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
-// import ManagerDetailModal from "../Managers/ManagerListModal";
+import ManagerListModal from "../Managers/ManagerListModal";
 import BoatAccessTable from "../../components/fleet/BoatAccessTable";
 import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 import BoatAccessModal from "./BoatAccessModal";
+import { CiTrash } from "react-icons/ci";
 
 const BoatDetail = () => {
   const { navigate, boatDropDown, setUpdateBoat } = useContext(GlobalContext);
@@ -357,6 +358,7 @@ const BoatDetail = () => {
 
   const handleAssignManager = async (managers) => {
     try {
+      setLoadingBoats(true);
       const obj = {
         managers: managers?.map((item) => item?.id),
       };
@@ -372,6 +374,8 @@ const BoatDetail = () => {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       // SetPassSelectedManagers(null)
       ErrorToast(err?.response?.data?.message);
+    } finally {
+      setLoadingBoats(false);
     }
   };
 
@@ -719,9 +723,10 @@ const BoatDetail = () => {
                                 }
                               />
                             </label>
-                            <div className="absolute top-1 right-2 bg-white p-1 rounded-full">
-                              <FaTrashAlt
-                                className="text-black cursor-pointer text-[15px]"
+
+                            <div className="absolute top-2 right-2 bg-[#ffffff9f] p-1 rounded-full">
+                              <CiTrash
+                                className="text-black cursor-pointer text-[16px] "
                                 onClick={() => {
                                   handleImageDelete(index);
                                 }}
@@ -805,23 +810,14 @@ const BoatDetail = () => {
             // employeeTasks={boatsData?.task} getEmployeeData={()=>getBoats()} loading={loadingBoats} />
           )}
           <ServiceHistoryModal
+            id={id}
             isOpen={isServiceHistoryModalOpen}
             onClose={() => setServiceHistoryModalOpen(false)}
           />
 
           {isMangerModalOpen && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
-              {/* <ManagerDetailModal
-                isMultiple={true}
-                boatAccess={boatsData?.boatAccess}
-                isOpen={isMangerModalOpen}
-                setIsOpen={setIsManagerModalOpen}
-                SetPassSelectedManagers={setPassSelectedManagers}
-                handleManagerModal={(managers) => handleAssignManager(managers)}
-                selectedManagers={selectedManagers}
-                setSelectedManagers={setSelectedManagers}
-              /> */}
-              <ManagerDetailModal
+              <ManagerListModal
                 boatAccess={boatsData?.boatAccess}
                 setIsOpen={setIsManagerModalOpen}
               />
@@ -886,6 +882,7 @@ const BoatDetail = () => {
           setSelectedManagers={setSelectedManagers}
           boatAccess={boatsData?.boatAccess}
           handleManagerModal={(managers) => handleAssignManager(managers)}
+          isBoat={true}
         />
       )}
     </div>

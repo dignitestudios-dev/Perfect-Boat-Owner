@@ -1,7 +1,59 @@
-import React from "react";
+import axios from "../../axios";
+import React, { useState } from "react";
+import { FiLoader } from "react-icons/fi";
 import { MdAccessTime } from "react-icons/md";
+import { SuccessToast } from "../../components/global/Toaster";
 
-const ServiceHistoryModal = ({ isOpen, onClose }) => {
+const ServiceHistoryModal = ({ isOpen, onClose, id }) => {
+  const [loadingDownload, setLoadingDownload] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState(false);
+
+  const handleDownload = async () => {
+    setLoadingDownload(true);
+    try {
+      const response = await axios.get(`/owner/boat/${id}/excel`);
+      console.log("response is --> ", response);
+      if (response?.status === 200) {
+        const result = response?.data;
+        if (result?.success && result?.data) {
+          const result = response?.data;
+          if (result?.success && result?.data) {
+            const downloadUrl = result?.data.fileAddress;
+            const link = document.createElement("a");
+            link.href = downloadUrl;
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } else {
+          console.error("Failed to fetch download link:", response?.message);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching revenue data:", error);
+    } finally {
+      setLoadingDownload(false);
+    }
+  };
+
+  const handleEmail = async () => {
+    setLoadingEmail(true);
+    try {
+      const response = await axios.get(`/owner/boat/${id}/excel/email`);
+      console.log("email response is --> ", response);
+      if (response?.status === 200) {
+        const result = response?.data;
+        console.log("🚀 ~ handleDownload ~ result:", result);
+        SuccessToast("Boat History Sent");
+      }
+    } catch (error) {
+      console.error("Error fetching revenue data:", error);
+    } finally {
+      setLoadingEmail(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -36,19 +88,33 @@ const ServiceHistoryModal = ({ isOpen, onClose }) => {
           </p>
           {/* Add your modal content here */}
           <button
-            onClick={onClose}
+            onClick={handleEmail}
+            disabled={loadingEmail}
             type="button"
             className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-lg"
           >
-            Send a copy via email
+            <div className="flex items-center">
+              <span className=" w-full mr-1 text-center">
+                Send a copy via email
+              </span>
+              {loadingEmail && (
+                <FiLoader className="animate-spin text-lg mx-auto" />
+              )}
+            </div>
           </button>
           &nbsp; &nbsp;
           <button
-            onClick={onClose}
+            onClick={handleDownload}
+            disabled={loadingDownload}
             type="button"
-            className="bg-[#36B8F3] text-white py-2 px-4 rounded-lg w-44"
+            className="bg-[#36B8F3] text-white py-2 px-4 rounded-lg w-44 "
           >
-            Download
+            <div className="flex items-center">
+              <span className=" w-full mr-1 text-center">Download</span>
+              {loadingDownload && (
+                <FiLoader className="animate-spin text-lg mx-auto" />
+              )}
+            </div>
           </button>
         </div>
       </div>

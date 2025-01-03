@@ -33,6 +33,7 @@ const TasksContainer = () => {
 
   const handleCheckboxChange = (sort) => {
     setSortFilter(sort);
+    setIsCalendarOpen(false);
     setCurrentPage(1);
   };
 
@@ -246,8 +247,10 @@ const TasksContainer = () => {
                   <input
                     checked={sortFilter === "all"}
                     onChange={() => handleCheckboxChange("all")}
-                    type="radio"
-                    className="w-3 h-3 accent-[#199BD1]"
+                    type="checkbox"
+                    className="w-3 h-3 border-2 border-[#324865] bg-[#324865] rounded-sm appearance-none
+                     checked:bg-[#199BD1] checked:border-[#199BD1] checked:ring-1 checked:after:font-[500] checked:ring-[#199BD1]
+                     checked:after:text-md checked:after:p-1"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     None
@@ -257,8 +260,10 @@ const TasksContainer = () => {
                   <input
                     checked={sortFilter === "latest"}
                     onChange={() => handleCheckboxChange("latest")}
-                    type="radio"
-                    className="w-3 h-3 accent-[#199BD1]"
+                    type="checkbox"
+                    className="w-3 h-3 border-2 border-[#324865] bg-[#324865] rounded-sm appearance-none
+                     checked:bg-[#199BD1] checked:border-[#199BD1] checked:ring-1 checked:after:font-[500] checked:ring-[#199BD1]
+                     checked:after:text-md checked:after:p-1"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Latest
@@ -268,8 +273,10 @@ const TasksContainer = () => {
                   <input
                     checked={sortFilter === "earliest"}
                     onChange={() => handleCheckboxChange("earliest")}
-                    type="radio"
-                    className="w-3 h-3 accent-[#199BD1]"
+                    type="checkbox"
+                    className="w-3 h-3 border-2 border-[#324865] bg-[#324865] rounded-sm appearance-none
+                     checked:bg-[#199BD1] checked:border-[#199BD1] checked:ring-1 checked:after:font-[500] checked:ring-[#199BD1]
+                     checked:after:text-md checked:after:p-1"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Earliest
@@ -277,9 +284,15 @@ const TasksContainer = () => {
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
                   <input
-                    onChange={() => setIsCalendarOpen(true)}
-                    type="radio"
-                    className="w-3 h-3 accent-[#199BD1]"
+                    checked={isCalendarOpen}
+                    onChange={() => {
+                      setIsCalendarOpen(true);
+                      setOpenDropdownFilter(false);
+                    }}
+                    type="checkbox"
+                    className="w-3 h-3 border-2 border-[#324865] bg-[#324865] rounded-sm appearance-none
+                     checked:bg-[#199BD1] checked:border-[#199BD1] checked:ring-1 checked:after:font-[500] checked:ring-[#199BD1]
+                     checked:after:text-md checked:after:p-1"
                   />
                   <span className="text-white text-[11px] font-medium leading-[14.85px]">
                     Calendar
