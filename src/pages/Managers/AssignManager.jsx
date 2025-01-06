@@ -43,8 +43,11 @@ const AssignManager = () => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [assignLoading, setAssignLoading] = useState(false);
   const [selectedManager, setSelectedManager] = useState(null);
+  const [selectedEmployeesError, setSelectedEmployeesError] = useState(false);
+  const [selectedManagerError, setSelectedManagerError] = useState(false);
 
   const handleSelectEmployee = (employeeId, employeeName) => {
+    setSelectedEmployeesError(false);
     const isSelected = selectedEmployees.some(
       (employee) => employee?.id === employeeId
     );
@@ -63,6 +66,14 @@ const AssignManager = () => {
   const handleAssignManager = async () => {
     setAssignLoading(true);
     try {
+      if (!passSelectedManager?.id) {
+        setSelectedManagerError(true);
+        return;
+      }
+      if (selectedEmployees.length === 0) {
+        setSelectedEmployeesError(true);
+        return;
+      }
       const obj = {
         employees: selectedEmployees?.map((item) => item.id),
       };
@@ -105,13 +116,18 @@ const AssignManager = () => {
               Select Manager
             </label>
             <button
-              onClick={() => setIsBoatModalOpen(true)} // Open the Employee Detail Modal
+              onClick={() => {
+                setIsBoatModalOpen(true);
+                setSelectedManagerError(false);
+              }} // Open the Employee Detail Modal
               className="w-full h-[52px] text-gray-400 bg-[#1A293D] text-left disabled:text-50 outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl mb-6"
             >
               {passSelectedManager?.name || "Click here to select manager"}
             </button>
+            {selectedManagerError && (
+              <p className="text-red-500 -mt-12">Select Manager</p>
+            )}
           </div>
-
           <button
             disabled={assignLoading}
             onClick={handleAssignManager}
@@ -139,7 +155,9 @@ const AssignManager = () => {
             />
           </div>
         </div>
-
+        {selectedEmployeesError && (
+          <p className="text-red-500 ">Select Employee</p>
+        )}
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[600px]">
             {/* Table Headings */}
@@ -158,6 +176,7 @@ const AssignManager = () => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  isManager={false}
                 />
               </div>
 

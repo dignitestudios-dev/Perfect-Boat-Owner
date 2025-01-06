@@ -225,6 +225,7 @@ const EmployeesTableBig = ({
               jobType={jobType}
               setJobType={setJobType}
               setCurrentPage={setCurrentPage}
+              isManager={false}
             />
             <LocationType
               setLocationDropdownOpen={setLocationDropdownOpen}

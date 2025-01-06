@@ -81,6 +81,7 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
                 toggleJobTitleDropdown={toggleJobTitleDropdown}
                 jobType={jobType}
                 setJobType={setJobType}
+                isManager={true}
               />
               <LocationType
                 setLocationDropdownOpen={setLocationDropdownOpen}

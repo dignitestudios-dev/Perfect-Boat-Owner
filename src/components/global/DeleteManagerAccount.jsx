@@ -230,6 +230,7 @@ const DeleteManagerAccount = () => {
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
+                      isManager={true}
                     />
                   </div>
                   <div className="flex items-center px-2 col-span-2 relative">

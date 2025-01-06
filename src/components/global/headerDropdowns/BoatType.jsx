@@ -9,6 +9,7 @@ const BoatType = ({
   boatType,
   setBoatType,
 }) => {
+  console.log("🚀 ~ boatType:", boatType);
   const { dropDown } = useContext(GlobalContext);
   const boatTypeDropdownRef = useRef(null);
 

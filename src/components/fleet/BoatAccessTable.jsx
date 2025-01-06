@@ -78,6 +78,7 @@ const BoatAccessTable = ({
               toggleJobTitleDropdown={toggleJobTitleDropdown}
               jobType={jobType}
               setJobType={setJobType}
+              isManager={true}
             />
           </span>
 

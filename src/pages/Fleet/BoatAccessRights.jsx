@@ -79,6 +79,7 @@ const BoatAccessRights = () => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  isManager={true}
                 />
                 <LocationType
                   setLocationDropdownOpen={setLocationDropdownOpen}

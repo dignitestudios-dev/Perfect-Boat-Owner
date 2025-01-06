@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../../contexts/GlobalContext";
 
@@ -8,10 +8,12 @@ const JobType = ({
   toggleJobTitleDropdown,
   jobType,
   setJobType,
+  isManager,
   setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
   const dropdownRef = useRef(null);
+  const [jobDropDown, setJobDropDown] = useState([]);
 
   const handleCheckboxChange = (job) => {
     if (job === "all") {
@@ -40,6 +42,14 @@ const JobType = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (isManager) {
+      setJobDropDown(dropDown?.managerJobtitleDropDown);
+    } else {
+      setJobDropDown(dropDown?.employeeJobtitleDropDown);
+    }
+  }, [isManager]);
+
   return (
     <span className="w-full flex justify-start items-center relative">
       Job Title
@@ -63,7 +73,7 @@ const JobType = ({
             />
             All
           </label>
-          {dropDown?.jobtitleDropDown?.map((job, index) => (
+          {jobDropDown?.map((job, index) => (
             <label
               key={index}
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"

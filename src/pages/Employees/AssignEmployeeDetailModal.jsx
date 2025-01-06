@@ -90,6 +90,7 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
+                      isManager={false}
                     />
                   </th>
                   <th className="px-4 py-2 relative">

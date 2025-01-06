@@ -95,6 +95,7 @@ const ManagersTable = ({ data, loading }) => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  isManager={true}
                 />
                 <LocationType
                   setLocationDropdownOpen={setLocationDropdownOpen}

@@ -15,7 +15,8 @@ import AddManagersCsv from "../../components/managers/AddManagersCsv";
 import Papa from "papaparse";
 
 const AddManagerpage = () => {
-  const { navigate, setUpdateManager } = useContext(GlobalContext);
+  const { navigate, setUpdateManager, setUpdateDropDown } =
+    useContext(GlobalContext);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -135,6 +136,7 @@ const AddManagerpage = () => {
       const response = await axios.post("/owner/manager", managerData);
       if (response.status === 200) {
         setUpdateManager((prev) => !prev);
+        setUpdateDropDown((prev) => !prev);
         setIsEmployeeOpen(true);
         reset();
       }

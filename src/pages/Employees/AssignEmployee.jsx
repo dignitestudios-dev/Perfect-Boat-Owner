@@ -184,6 +184,7 @@ const AssignEmployee = () => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  isManager={false}
                 />
               </div>
               <div className="flex items-center px-2 col-span-2">

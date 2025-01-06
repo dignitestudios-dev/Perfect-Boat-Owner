@@ -460,6 +460,7 @@ const EditManager = () => {
                   setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
+                  isManager={false}
                 />
                 <LocationType
                   setLocationType={setLocationType}

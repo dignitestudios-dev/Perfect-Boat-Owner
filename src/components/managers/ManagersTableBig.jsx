@@ -212,6 +212,7 @@ const ManagerTableBig = ({
                 jobType={jobType}
                 setJobType={setJobType}
                 setCurrentPage={setCurrentPage}
+                isManager={true}
               />
               <LocationType
                 setLocationDropdownOpen={setLocationDropdownOpen}
