@@ -121,7 +121,6 @@ const EmployeesTableBig = ({
 
   const handleSearch = (e) => {
     const search = e.target.value;
-
     setSearch(search);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 

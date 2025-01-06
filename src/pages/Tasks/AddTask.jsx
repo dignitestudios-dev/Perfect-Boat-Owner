@@ -20,6 +20,7 @@ import { formValidation } from "../../constants/formValidation";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddTask = () => {
+  const today = moment();
   const { taskDropDown, setUpdateDropDown } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [noteText, setNoteText] = useState("");
@@ -294,6 +295,7 @@ const AddTask = () => {
           setIsOpen={setIsCalendarOpen}
           setDueDate={setDueDate}
           setInputError={setInputError}
+          minDate={today.toDate()}
         />
         {isEmployeeModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">

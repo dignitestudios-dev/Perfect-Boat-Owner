@@ -7,12 +7,15 @@ import axios from "../../axios";
 import TasksListLoader from "./loaders/TasksListLoader";
 import Pagination from "../global/pagination/Pagination";
 import DateModal from "./DateModal";
+import moment from "moment";
+import { Calendar } from "react-rainbow-components";
 
 const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);
   const [openDropDownFilter, setOpenDropdownFilter] = useState(false);
   const dropDownRef = useRef(null);
   const timeoutRef = useRef(null);
+  const today = moment("01-01-2024");
 
   const [pageDetails, setPageDetails] = useState({});
   const [taskData, setTaskData] = useState([]);
@@ -20,7 +23,6 @@ const TasksContainer = () => {
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [dueDate, setDueDate] = useState({});
-  console.log("🚀 ~ TasksContainer ~ dueDate:", dueDate);
 
   const [inputError, setInputError] = useState({});
 
@@ -35,6 +37,7 @@ const TasksContainer = () => {
   const handleCheckboxChange = (sort) => {
     setSortFilter(sort);
     setIsCalendarOpen(false);
+    setDueDate({ calendar: undefined });
     setCurrentPage(1);
   };
 
@@ -62,9 +65,10 @@ const TasksContainer = () => {
     try {
       const searchText = findSearch ? `&search=${findSearch}` : "";
       const searchFilter = filter ? `&status=${filter}` : "";
-      const sortByDate = dueDate?.normal
-        ? `&startDate=${dueDate?.normal}&endDate=${dueDate?.normal}`
+      const sortByDate = dueDate?.calendar
+        ? `&startDate=${dueDate?.calendar}&endDate=${dueDate?.calendar}&isdue=true`
         : "";
+      console.log("🚀 ~ getTasks ~ sortByDate:", sortByDate);
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
 
       const { data } = await axios.get(
@@ -355,6 +359,7 @@ const TasksContainer = () => {
           setDueDate={setDueDate}
           setInputError={setInputError}
           isRange={"range"}
+          minDate={today.toDate()}
         />
       </div>
       <div className="w-full flex justify-center pb-4">

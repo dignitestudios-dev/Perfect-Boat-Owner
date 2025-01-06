@@ -30,6 +30,7 @@ const Preview = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
+  const today = moment();
 
   const navigate = useNavigate();
 
@@ -213,6 +214,7 @@ const Preview = () => {
         setIsOpen={setIsDateModalOpen}
         setDueDate={setDueDate}
         setInputError={setInputError}
+        minDate={today.toDate()}
       />
     </div>
   );

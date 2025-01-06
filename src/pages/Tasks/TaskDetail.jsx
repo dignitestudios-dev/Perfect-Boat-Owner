@@ -51,11 +51,15 @@ const TaskDetail = () => {
     return STATUS_ENUM[status] || status;
   };
 
+  const today = moment();
+
   const { taskDropDown, setUpdateDropDown } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const [tasks, setTasks] = useState([]);
   const [taskDetail, setTaskDetail] = useState({});
+  const [customTask, setCustomTask] = useState("");
 
   const [noteText, setNoteText] = useState("");
   const [selectedTaskType, setSelectedTaskType] = useState("");
@@ -67,7 +71,7 @@ const TaskDetail = () => {
   const [isTaskDropdownOpen, setTaskDropdownOpen] = useState(false);
   const [customInput, setCustomInput] = useState(false);
   const [customTypeText, setCustomTypeText] = useState("");
-  const [tasks, setTasks] = useState([]);
+
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
   const [passSelectedBoat, setPassSelectedBoat] = useState("");
@@ -86,10 +90,14 @@ const TaskDetail = () => {
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
+    setTaskDropdownOpen(false);
+    setRecurringDropdown(false);
   };
 
   const toggleTaskDropdown = () => {
     setTaskDropdownOpen(!isTaskDropdownOpen);
+    setTaskTypeDropdownOpen(false);
+    setRecurringDropdown(false);
   };
 
   const [RecurringDropdown, setRecurringDropdown] = useState(false);
@@ -102,6 +110,8 @@ const TaskDetail = () => {
   const toggleRecurringDropdown = (e) => {
     if (RecurringRef.current && !RecurringRef.current.contains(e.target)) {
       setRecurringDropdown((prev) => !prev);
+      setTaskTypeDropdownOpen(false);
+      setTaskDropdownOpen(false);
       // setRecurringDropdown(!RecurringDropdown);
     }
   };
@@ -132,6 +142,7 @@ const TaskDetail = () => {
       setTaskTypeDropdownOpen(false);
       setTaskDropdownOpen(false);
     }
+    setDisplaySelectedTask(null);
   };
 
   const handleTaskSelection = (task) => {
@@ -148,6 +159,10 @@ const TaskDetail = () => {
         setTaskDetail(data);
         setNoteText(data?.description || "");
         setSelectedTaskType(data?.taskType || "");
+        // setTasks(
+        //   taskDropDown?.find((item) => item?.taskType === data?.taskType)
+        //     ?.tasks || []
+        // );
         setDisplaySelectedTask(data?.task || "");
         setPassSelectedBoat(data?.boat || null);
         setPassSelectedEmployee(data?.assignTo[0] || null);
@@ -309,6 +324,8 @@ const TaskDetail = () => {
                     handleTaskTypeSelection={handleTaskTypeSelection}
                     customInput={customInput}
                     setCustomTypeText={setCustomTypeText}
+                    setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
+                    setCustomInput={setCustomInput}
                   />
                   {inputError.task && (
                     <p className="text-red-500">{inputError.task}</p>
@@ -323,6 +340,8 @@ const TaskDetail = () => {
                     displaySelectedTask={displaySelectedTask}
                     tasks={tasks}
                     isEdit={isEdit}
+                    customTask={customTask}
+                    setCustomTask={setCustomTask}
                   />
                   {inputError.task && (
                     <p className="text-red-500">{inputError.task}</p>
@@ -393,6 +412,7 @@ const TaskDetail = () => {
               setIsOpen={setIsCalendarOpen}
               setDueDate={setDueDate}
               setInputError={setInputError}
+              minDate={today.toDate()}
             />
             {isBoatModalOpen && (
               <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">

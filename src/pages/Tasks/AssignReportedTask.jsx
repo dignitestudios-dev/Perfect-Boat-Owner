@@ -25,6 +25,7 @@ const AssignReportedTask = () => {
     formState: { errors },
   } = useForm();
   const { navigate } = useContext(GlobalContext);
+  const today = moment();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
@@ -419,6 +420,7 @@ const AssignReportedTask = () => {
               isOpen={isCalendarOpen}
               setIsOpen={setIsCalendarOpen}
               setDueDate={setDueDate}
+              minDate={today.toDate()}
             />
           </div>
         </div>

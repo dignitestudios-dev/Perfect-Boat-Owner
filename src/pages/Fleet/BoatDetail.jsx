@@ -23,6 +23,7 @@ import BoatAccessModal from "./BoatAccessModal";
 import { CiTrash } from "react-icons/ci";
 
 const BoatDetail = () => {
+  const today = moment();
   const { navigate, boatDropDown, setUpdateBoat } = useContext(GlobalContext);
   const [isEditing, setIsEditing] = useState(false); // New state for edit mode
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -868,6 +869,7 @@ const BoatDetail = () => {
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleDeleteConfirm}
+        minDate={today.toDate()}
       />
 
       {isBoatModalOpen && (

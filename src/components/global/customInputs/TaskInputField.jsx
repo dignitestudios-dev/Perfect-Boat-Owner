@@ -12,6 +12,7 @@ const TaskInputField = ({
   setCustomTask,
   customTask,
 }) => {
+  console.log("🚀 ~ tasks:", tasks);
   return (
     <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
       <label className="text-[16px] font-medium leading-[21.6px]">Task</label>
