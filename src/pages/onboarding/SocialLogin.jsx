@@ -60,6 +60,7 @@ const SocialLogin = () => {
         }
       }
     } catch (err) {
+      console.log("🚀 ~ handleAppleLogin ~ err:", err);
       setAppleLoading(false);
       //   setError("Cannot open apple signin modal.");
     }
@@ -105,6 +106,7 @@ const SocialLogin = () => {
         }
       }
     } catch (err) {
+      console.log("🚀 ~ handleFacebookLogin ~ err:", err);
       setFacebookLoading(false);
       //   setError("Cannot open apple signin modal.");
     }
@@ -151,6 +153,7 @@ const SocialLogin = () => {
         }
       }
     } catch (err) {
+      console.log("🚀 ~ handleGoogleLogin ~ err:", err);
       setGoogleLoading(false);
       //   setError("Cannot open google signin modal.");
     }

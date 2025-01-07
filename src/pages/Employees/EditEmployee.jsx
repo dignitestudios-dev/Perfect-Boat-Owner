@@ -150,7 +150,7 @@ const EditEmployee = () => {
 
       const updatedEmployeeData = {
         ...data,
-        phone: `+1${data.phone}`,
+        phone: `+1${data?.phone}`,
         manager: passSelectedManager?.id,
         password: "Test@123",
         tasks: tasks
