@@ -232,7 +232,9 @@ const AssignManager = () => {
                             {employee?.email}
                           </span>
                           <span className="flex items-center px-2 col-span-3">
-                            {employee?.manager?.name}
+                            {employee?.manager?.name
+                              ? employee?.manager?.name
+                              : "Not assigned"}
                           </span>
                           <span className="flex items-center px-2 col-span-2">
                             {employee?.jobtitle}

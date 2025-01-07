@@ -170,13 +170,16 @@ const AssignEmployee = () => {
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
             {/* Table Headings */}
-            <div className="w-full grid h-10 grid-cols-[1fr_4fr_4fr_4fr_2fr] text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
+            <div className="w-full grid h-10 grid-cols-[1fr_4fr_4fr_4fr_4fr_2fr] text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
               <div></div>
               <div className="flex items-center ">
                 <span className="text-white/50">Employee Name</span>
               </div>
               <div className="flex items-center ">
                 <span className="text-white/50">Email</span>
+              </div>
+              <div className="flex items-center ">
+                <span className="text-white/50">Manager</span>
               </div>
               <div className="flex items-center ">
                 <JobType
@@ -212,7 +215,7 @@ const AssignEmployee = () => {
                     return (
                       <div
                         key={index}
-                        className="w-full h-10 grid grid-cols-[1fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] 
+                        className="w-full h-10 grid grid-cols-[1fr_4fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] 
                         text-[11px] font-medium leading-[14.85px] text-white"
                       >
                         <div className="flex items-center ">
@@ -238,6 +241,11 @@ const AssignEmployee = () => {
 
                         <span className="flex items-center ">
                           {employee?.email}
+                        </span>
+                        <span className="flex items-center ">
+                          {employee?.manager?.name
+                            ? employee?.manager?.name
+                            : "Not assigned"}
                         </span>
                         <span className="flex items-center ">
                           {employee?.jobtitle}

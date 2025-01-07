@@ -270,7 +270,9 @@ const EmployeesTableBig = ({
                       {employee?.email}
                     </span>
                     <span className="w-full flex justify-start items-center">
-                      {employee?.manager?.name}
+                      {employee?.manager?.name
+                        ? employee?.manager?.name
+                        : "Not assigned"}
                     </span>
                     <span className="w-full flex justify-start items-center">
                       {employee?.jobtitle}
