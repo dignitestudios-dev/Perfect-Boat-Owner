@@ -136,60 +136,69 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 setLocationType={setLocationType}
               />
             </div>
-
-            {filteredData?.map((boat, index) => (
-              <div
-                key={index}
-                // onClick={() => navigate(`/boats/${boat?._id}`, "Boat")}
-                className="w-full h-auto grid grid-cols-5  border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
-              >
-                <div className="flex items-center">
-                  {/* <input
+            {filteredData?.length > 0 ? (
+              <>
+                {filteredData?.map((boat, index) => (
+                  <div
+                    key={index}
+                    // onClick={() => navigate(`/boats/${boat?._id}`, "Boat")}
+                    className="w-full h-auto grid grid-cols-5  border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  >
+                    <div className="flex items-center">
+                      {/* <input
                     type="checkbox"
                     className="accent-[#199BD1] mr-2"
                     checked={selectedBoats[index] || false}
                     onChange={() => handleSelectBoat(index)}
                   />*/}
-                  <span className="w-[106px] h-[76px] flex justify-start items-center relative">
-                    <img
-                      src={boat?.cover}
-                      alt="boat_image"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "8px",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <div
-                      style={{
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        left: "70%",
-                        background:
-                          "linear-gradient(to right, transparent, #111111)",
-                      }}
-                    />
-                  </span>
-                </div>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.boatType}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.name}
-                </span>
-                <span className="w-full flex justify-start items-center">
-                  {boat?.make}, {boat?.model}, {boat?.size}
-                </span>
-                <span className="w-full flex justify-start items-center ">
-                  {boat?.location}
-                </span>
-                <span className="w-full flex justify-start items-center "></span>
-              </div>
-            ))}
+                      <span className="w-[106px] h-[76px] flex justify-start items-center relative">
+                        <img
+                          src={boat?.cover}
+                          alt="boat_image"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "8px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <div
+                          style={{
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: "70%",
+                            background:
+                              "linear-gradient(to right, transparent, #111111)",
+                          }}
+                        />
+                      </span>
+                    </div>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.boatType}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.name}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {boat?.make}, {boat?.model}, {boat?.size}
+                    </span>
+                    <span className="w-full flex justify-start items-center ">
+                      {boat?.location}
+                    </span>
+                    <span className="w-full flex justify-start items-center "></span>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center py-4 text-white">
+                  There are no boats assigned to this manager
+                </td>
+              </tr>
+            )}
           </div>
         </div>
       </div>

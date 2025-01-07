@@ -26,7 +26,7 @@ const EmployeeDetailModal = ({
 
   const filteredData = employees?.filter((item) => {
     const employees = employeeId ? employeeId !== item._id : true;
-    console.log("🚀 ~ filteredData ~ employees:", employees);
+
     const matchesSearch = searchTerm
       ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
         item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
@@ -43,7 +43,6 @@ const EmployeeDetailModal = ({
         : true;
     return matchesSearch && locationTypeMatch && jobTypeMatch && employees;
   });
-  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -212,7 +211,7 @@ const EmployeeDetailModal = ({
                 </tbody>
               ) : (
                 <tbody>
-                  {filteredData.length > 0 ? (
+                  {filteredData?.length > 0 ? (
                     <>
                       {filteredData?.map((employee, index) => {
                         const isSelected =
@@ -232,8 +231,8 @@ const EmployeeDetailModal = ({
                               <input
                                 type="checkbox"
                                 className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
-                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
-                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
+                               checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
+                              checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
                                 checked={
                                   isMultiple ? isMultiSelected : isSelected
                                 }
@@ -263,8 +262,11 @@ const EmployeeDetailModal = ({
                     </>
                   ) : (
                     <tr>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                        <div className="pt-4 ">No record found</div>
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-sm font-medium text-white"
+                      >
+                        No record found
                       </td>
                     </tr>
                   )}

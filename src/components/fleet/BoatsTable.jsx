@@ -97,7 +97,7 @@ const BoatsTable = ({
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
-        <div className="w-full grid grid-cols-5 text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
+        <div className="w-full grid grid-cols-[3fr_4fr_4fr_4fr_2fr] text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
           <span className="w-full flex justify-start items-center">
             Boat Image
           </span>
@@ -138,7 +138,7 @@ const BoatsTable = ({
                   <div
                     key={index}
                     onClick={() => handleBoatDetails(boat)}
-                    className="w-full h-auto grid grid-cols-5 cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    className="w-full h-auto grid grid-cols-[3fr_4fr_4fr_4fr_2fr] cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
                     <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                       <img

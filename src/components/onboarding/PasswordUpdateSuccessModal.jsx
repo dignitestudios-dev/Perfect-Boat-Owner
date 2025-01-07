@@ -8,7 +8,7 @@ const PasswordUpdateSuccessModal = ({ isOpen, setIsOpen }) => {
     setTimeout(() => {
       setIsOpen(false);
       navigate("/login");
-    }, 2000);
+    }, 3000);
   }, []);
   return (
     <div
@@ -18,7 +18,7 @@ const PasswordUpdateSuccessModal = ({ isOpen, setIsOpen }) => {
     >
       <img src={SuccessVector} alt="success_vector" />
       <p className="text-[36px] font-bold  text-white leading-[48.6px]">
-        Password updated succesfully!
+        Password updated successfully!
       </p>
     </div>
   );

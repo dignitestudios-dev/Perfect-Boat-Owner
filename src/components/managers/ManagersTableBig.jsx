@@ -196,13 +196,13 @@ const ManagerTableBig = ({
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
             <div
-              className="w-full grid grid-cols-5 text-[11px] font-medium leading-[14.85px]
-            space-y-4 text-white/50 justify-start items-start"
+              className="w-full grid grid-cols-[6fr_6fr_5fr_1fr_0fr] text-[11px] font-medium leading-[14.85px]
+             text-white/50 justify-start items-start"
             >
-              <span className="w-full flex justify-start items-center">
+              <span className="w-full flex justify-start items-start">
                 Manager Name
               </span>
-              <span className="w-full flex justify-start items-center">
+              <span className="w-full flex justify-start items-start">
                 Email
               </span>
               <JobType
@@ -222,7 +222,7 @@ const ManagerTableBig = ({
                 setLocationType={setLocationType}
                 setCurrentPage={setCurrentPage}
               />
-              <span className="w-full flex justify-start items-center px-[170px]">
+              <span className="w-full flex justify-end items-center pl-[170px] pr-[60px] ">
                 Action
               </span>
             </div>
@@ -230,8 +230,8 @@ const ManagerTableBig = ({
               data?.map((manager, index) => (
                 <div
                   onClick={() => handleEditClick(manager)}
-                  className="w-full h-8 grid grid-cols-5 border-b cursor-pointer
-                 border-white/10  text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  className="w-full h-8 grid grid-cols-[6fr_6fr_5fr_1.3fr_1fr] border-b cursor-pointer
+                 border-white/10  text-[11px] font-medium leading-[14.85px] text-white"
                 >
                   <span
                     key={index}
@@ -245,10 +245,10 @@ const ManagerTableBig = ({
                   <span className="w-full flex justify-start items-center">
                     {manager?.jobtitle ?? "---"}
                   </span>
-                  <span className="w-full flex justify-start items-center">
+                  <span className="w-full flex justify-start items-center  ">
                     {manager?.location ?? "---"}
                   </span>
-                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 px-[170px]">
+                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 pl-[170px] pr-[55px]">
                     <span
                       className="flex justify-start items-center"
                       onClick={() => handleEditClick(manager)}

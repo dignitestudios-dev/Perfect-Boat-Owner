@@ -73,7 +73,8 @@ const VerifyOtp = () => {
 
       const response = await axios.post("/auth/forget/verify/email", obj);
       if (response.status === 200) {
-        login(response?.data);
+        // login(response?.data);
+        sessionStorage.setItem("authToken", response?.data?.data?.token);
         setLoading(false);
         navigate("/update-password");
         SuccessToast("OTP Verified");
@@ -96,7 +97,7 @@ const VerifyOtp = () => {
       };
       const response = await axios.post("/auth/forget/otp/email", obj);
       if (response.status === 200) {
-        SuccessToast("OTP has been send to your email");
+        SuccessToast("OTP has been sent to your email");
         setResendLoading(false);
         setOtp(Array(6).fill(""));
         handleRestart();

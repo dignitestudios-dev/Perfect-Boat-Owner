@@ -170,14 +170,15 @@ const AssignEmployee = () => {
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
             {/* Table Headings */}
-            <div className="w-full grid h-10 grid-cols-8 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
-              <div className="flex items-center px-2 col-span-2">
+            <div className="w-full grid h-10 grid-cols-[1fr_4fr_4fr_4fr_2fr] text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
+              <div></div>
+              <div className="flex items-center ">
                 <span className="text-white/50">Employee Name</span>
               </div>
-              <div className="flex items-center px-2 col-span-2">
+              <div className="flex items-center ">
                 <span className="text-white/50">Email</span>
               </div>
-              <div className="flex items-center px-2 col-span-2">
+              <div className="flex items-center ">
                 <JobType
                   setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
@@ -187,7 +188,7 @@ const AssignEmployee = () => {
                   isManager={false}
                 />
               </div>
-              <div className="flex items-center px-2 col-span-2">
+              <div className="flex items-center">
                 <LocationType
                   setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
@@ -211,10 +212,10 @@ const AssignEmployee = () => {
                     return (
                       <div
                         key={index}
-                        className="w-full h-20 grid grid-cols-8 border-b border-[#fff]/[0.14] text-[11px] font-medium
-                   leading-[14.85px] text-white"
+                        className="w-full h-10 grid grid-cols-[1fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] 
+                        text-[11px] font-medium leading-[14.85px] text-white"
                       >
-                        <div className="flex items-center col-span-2 px-1">
+                        <div className="flex items-center ">
                           <input
                             checked={isMultiSelected}
                             onChange={() =>
@@ -224,20 +225,24 @@ const AssignEmployee = () => {
                               )
                             }
                             type="checkbox"
-                            className="w-3 h-3 accent-[#199BD1]"
+                            className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                   checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                  checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
                           />
-                          <span className="col-span-2 flex items-center px-2">
+                        </div>
+                        <div className="flex items-center ">
+                          <span className=" flex items-center">
                             {employee?.name}
                           </span>
                         </div>
 
-                        <span className="flex items-center px-2 col-span-2">
+                        <span className="flex items-center ">
                           {employee?.email}
                         </span>
-                        <span className="flex items-center px-2 col-span-2">
+                        <span className="flex items-center ">
                           {employee?.jobtitle}
                         </span>
-                        <span className="flex items-center px-2 col-span-2">
+                        <span className="flex items-center ">
                           {employee?.location || "---"}
                         </span>
                       </div>

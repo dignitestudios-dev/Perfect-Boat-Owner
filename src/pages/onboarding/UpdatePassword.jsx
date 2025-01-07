@@ -7,12 +7,13 @@ import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { BiArrowBack } from "react-icons/bi";
 import PasswordUpdateSuccessModal from "../../components/onboarding/PasswordUpdateSuccessModal";
 import { useForm } from "react-hook-form";
-import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import axios from "axios";
 
 const UpdatePassword = () => {
   const { navigate } = useContext(GlobalContext);
   const [isUpdated, setIsUpdated] = useState(false);
+  console.log("🚀 ~ UpdatePassword ~ isUpdated:", isUpdated);
 
   const [loading, setLoading] = useState(false);
 
@@ -27,18 +28,26 @@ const UpdatePassword = () => {
   const password = useRef({});
   password.current = watch("password", "");
 
+  const token = sessionStorage.getItem("authToken");
+
   const handleUpdatePassword = async (formData) => {
     setLoading(true);
     try {
+      const config = { headers: { Authorization: `Bearer ${token}` } };
       let obj = {
         newPassword: formData.password,
         confirmPassword: formData.confirmPassword,
       };
 
-      const response = await axios.post("/auth/forget/update/pass", obj);
+      const response = await axios.post(
+        "https://api.theperfectboat.com/auth/forget/update/pass",
+        obj,
+        config
+      );
       if (response.status === 200) {
         setIsUpdated(true);
         setLoading(false);
+        sessionStorage.removeItem("authToken");
         SuccessToast(response?.data?.message);
       } else {
         SuccessToast(response?.data?.message);

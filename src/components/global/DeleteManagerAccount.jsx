@@ -87,28 +87,9 @@ const DeleteManagerAccount = () => {
   };
 
   const handleDelete = async () => {
-    if (!passSelectedManager?._id && userData?.employees.length > 0) {
-      ErrorToast("Select Managers");
-      return;
-    }
-    setDeleteLoad(true);
     try {
-      const employeeData = {
-        employees: [
-          ...new Set([
-            ...(userData?.employees?.map((employee) => employee?._id) || []),
-            ...(passSelectedManager?.employees?.map(
-              (employee) => employee?._id
-            ) || []),
-          ]),
-        ],
-      };
-
-      const putResponse = await axios.put(
-        `/owner/manager/${passSelectedManager?._id}/employees/assign`,
-        employeeData
-      );
-      if (putResponse?.status === 200) {
+      if (userData?.employees.length === 0) {
+        setDeleteLoad(true);
         const obj = {
           reason: reasonForDelete,
         };
@@ -117,8 +98,43 @@ const DeleteManagerAccount = () => {
         });
 
         if (deleteResponse?.status === 200) {
+          setDeleteLoad(false);
           setIsAccountDeletedModalOpen(true);
           setUpdateManager((prev) => !prev);
+        }
+      } else {
+        if (!passSelectedManager?._id && userData?.employees.length > 0) {
+          ErrorToast("Select Managers");
+          return;
+        }
+        setDeleteLoad(true);
+        const employeeData = {
+          employees: [
+            ...new Set([
+              ...(userData?.employees?.map((employee) => employee?._id) || []),
+              ...(passSelectedManager?.employees?.map(
+                (employee) => employee?._id
+              ) || []),
+            ]),
+          ],
+        };
+
+        const putResponse = await axios.put(
+          `/owner/manager/${passSelectedManager?._id}/employees/assign`,
+          employeeData
+        );
+        if (putResponse?.status === 200) {
+          const obj = {
+            reason: reasonForDelete,
+          };
+          const deleteResponse = await axios.delete(`/owner/manager/${id}`, {
+            data: obj,
+          });
+
+          if (deleteResponse?.status === 200) {
+            setIsAccountDeletedModalOpen(true);
+            setUpdateManager((prev) => !prev);
+          }
         }
       }
     } catch (error) {

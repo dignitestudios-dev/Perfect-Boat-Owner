@@ -11,7 +11,6 @@ const AssignedManagerModal = ({
   setSelectedManager,
   assignedManagers,
 }) => {
-  console.log("🚀 ~ assignedManagers:", assignedManagers);
   const { managers, loadingManagers } = useContext(GlobalContext);
 
   const [allSelected, setAllSelected] = useState(false);
@@ -184,41 +183,54 @@ const AssignedManagerModal = ({
                 </tbody>
               ) : (
                 <tbody>
-                  {filteredData?.map((manager, index) => {
-                    const isSelected = selectedManager?.id === manager._id;
+                  {filteredData?.length > 0 ? (
+                    <>
+                      {filteredData?.map((manager, index) => {
+                        const isSelected = selectedManager?.id === manager._id;
 
-                    return (
-                      <tr
-                        key={index}
-                        className="border-b-[1px] border-white/10"
-                      >
-                        <td className="px-0 py-2">
-                          <input
-                            type="checkbox"
-                            className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                        return (
+                          <tr
+                            key={index}
+                            className="border-b-[1px] border-white/10"
+                          >
+                            <td className="px-0 py-2">
+                              <input
+                                type="checkbox"
+                                className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
                                    checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
                                   checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
-                            checked={isSelected}
-                            onChange={() =>
-                              handleSelectManager(manager._id, manager.name)
-                            }
-                          />
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.name}
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.email}
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.jobtitle}
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.location}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                                checked={isSelected}
+                                onChange={() =>
+                                  handleSelectManager(manager._id, manager.name)
+                                }
+                              />
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.name}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.email}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.jobtitle}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.location}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-sm font-medium text-white"
+                      >
+                        No record found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               )}
             </table>

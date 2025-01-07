@@ -167,9 +167,14 @@ const ManagerDeleteAssignModal = ({
                     })}
                   </>
                 ) : (
-                  <div className="w-full cursor-pointer py-8 flex justify-center items-center text-[16px] font-normal leading-[21.6px] text-white">
-                    No managers available
-                  </div>
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="text-center py-4 text-sm font-medium text-white"
+                    >
+                      No managers available
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
