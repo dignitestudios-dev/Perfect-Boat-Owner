@@ -27,6 +27,7 @@ const EmployeesTableBig = ({
   setJobType,
   setCurrentPage,
 }) => {
+  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
 
@@ -208,7 +209,7 @@ const EmployeesTableBig = ({
       <div className="w-full overflow-x-auto lg:overflow-visible">
         <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
           <div
-            className="w-full grid grid-cols-[6fr_6fr_5fr_1fr_0fr] border-b border-white/10 h-6 text-[11px] font-medium 
+            className="w-full grid grid-cols-[5fr_5fr_4fr_4fr_0fr_0fr] border-b border-white/10 h-6 text-[11px] font-medium 
           leading-[14.85px] text-white/50 justify-start items-start"
           >
             <span className="w-full flex justify-start items-center">
@@ -216,6 +217,9 @@ const EmployeesTableBig = ({
             </span>
             <span className="w-full flex justify-start items-center">
               Email
+            </span>
+            <span className="w-full flex justify-start items-center">
+              Manager
             </span>
             <JobType
               setJobTitleDropdownOpen={setJobTitleDropdownOpen}
@@ -253,7 +257,7 @@ const EmployeesTableBig = ({
                     }}
                     className={` ${
                       employee?.isActive === true ? "cursor-pointer" : ""
-                    } w-full h-8 grid grid-cols-[6fr_6fr_5fr_1.3fr_1fr] border-b border-white/10  text-[11px]
+                    } w-full h-8 grid grid-cols-[5fr_5fr_4fr_4fr_1.3fr_1fr] border-b border-white/10  text-[11px]
             font-medium leading-[14.85px] text-white justify-start items-center`}
                   >
                     <span
@@ -264,6 +268,9 @@ const EmployeesTableBig = ({
                     </span>
                     <span className="w-full flex justify-start items-center">
                       {employee?.email}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {employee?.manager?.name}
                     </span>
                     <span className="w-full flex justify-start items-center">
                       {employee?.jobtitle}

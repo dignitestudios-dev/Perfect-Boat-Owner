@@ -21,6 +21,7 @@ const AssignManager = () => {
   const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
+  console.log("🚀 ~ AssignManager ~ filteredData:", filteredData);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -161,13 +162,16 @@ const AssignManager = () => {
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[600px]">
             {/* Table Headings */}
-            <div className="w-full grid h-10 grid-cols-10 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
+            <div className="w-full grid h-10 grid-cols-12 text-[11px] font-medium leading-[14.85px] text-white/50 border-b border-[#fff]/[0.14] py-1">
               <div className="flex items-center px-2 col-span-1"></div>
               <div className="flex items-center px-2 col-span-2">
                 <span className="text-white/50">Employee Name</span>
               </div>
               <div className="flex items-center px-2 col-span-3">
                 <span className="text-white/50">Email</span>
+              </div>
+              <div className="flex items-center px-2 col-span-3">
+                <span className="text-white/50">Manager</span>
               </div>
               <div className="flex items-center px-2 col-span-2">
                 <JobType
@@ -204,7 +208,7 @@ const AssignManager = () => {
                       return (
                         <div
                           key={index}
-                          className="w-full h-10 grid grid-cols-10 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
+                          className="w-full h-10 grid grid-cols-12 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
                         >
                           <div className="flex items-center col-span-1 px-2">
                             <input
@@ -227,10 +231,13 @@ const AssignManager = () => {
                           <span className="flex items-center px-2 col-span-3">
                             {employee?.email}
                           </span>
+                          <span className="flex items-center px-2 col-span-3">
+                            {employee?.manager?.name}
+                          </span>
                           <span className="flex items-center px-2 col-span-2">
                             {employee?.jobtitle}
                           </span>
-                          <span className="flex items-center px-2 col-span-2">
+                          <span className="flex items-center px-2 col-span-1">
                             {employee?.location}
                           </span>
                         </div>
