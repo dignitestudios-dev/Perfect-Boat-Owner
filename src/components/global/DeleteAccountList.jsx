@@ -8,13 +8,24 @@ import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "./Toaster";
 import { GlobalContext } from "../../contexts/GlobalContext";
+import StatusType from "./headerDropdowns/StatusType";
+import TaskType from "./headerDropdowns/TaskType";
 
 const statusColors = {
   newtask: "#FF007F",
   overdue: "#FF3B30",
   default: "#FFCC00",
-  "in-progress": "#36B8F3",
+  inprogress: "#36B8F3",
   completed: "#1FBA46",
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In-Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
 };
 
 const DeleteAccountList = () => {
@@ -40,6 +51,10 @@ const DeleteAccountList = () => {
 
   const locationRef = useRef(null);
   const jobRef = useRef(null);
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
 
   const toggleLocationDropdown = (e) => {
     if (locationRef.current && !locationRef.current.contains(e.target)) {
@@ -178,33 +193,15 @@ const DeleteAccountList = () => {
                   <span className="w-full flex justify-start items-center">
                     Boat name
                   </span>
-                  <span className="w-full flex justify-start items-center relative">
+                  {/* <TaskType
+            setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
+            taskTypeDropdownOpen={taskTypeDropdownOpen}
+            toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+            setTaskType={setTaskType}
+            taskType={taskType}
+          /> */}
+                  <span className="w-full flex justify-start items-center">
                     Task Type
-                    <FaCaretDown
-                      className={`ml-2 cursor-pointer ${
-                        jobFilter ? "rotate-180" : "rotate-0"
-                      }`}
-                      onClick={toggleJobDropdown}
-                    />
-                    <div
-                      ref={jobRef}
-                      className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        jobFilter ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 absolute top-full left-0 mt-1`}
-                    >
-                      <div className="text-white/50 text-[11px] font-medium">
-                        Maintenance
-                      </div>
-                      <div className="text-white/50 text-[11px] font-medium">
-                        Cleaning
-                      </div>
-                      <div className="text-white/50 text-[11px] font-medium">
-                        Inspection
-                      </div>
-                      <div className="text-white/50 text-[11px] font-medium">
-                        Repair
-                      </div>
-                    </div>
                   </span>
                   <span className="w-full flex justify-start items-center">
                     Due Date
@@ -212,32 +209,18 @@ const DeleteAccountList = () => {
                   <span className="w-full flex justify-start items-center">
                     Recurring
                   </span>{" "}
-                  {/* New column */}
-                  <span className="w-full flex justify-start items-center relative">
-                    Status
-                    <FaCaretDown
-                      className={`ml-2 cursor-pointer ${
-                        locationFilter ? "rotate-180" : "rotate-0"
-                      }`}
-                      onClick={toggleLocationDropdown}
-                    />
-                    <div
-                      ref={locationRef}
-                      className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        locationFilter ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 absolute top-full left-0 mt-1`}
-                    >
-                      <div className="text-white/50 text-[11px] font-medium">
-                        In-Progress
-                      </div>
-                      <div className="text-white/50 text-[11px] font-medium">
-                        Completed
-                      </div>
-                      <div className="text-white/50 text-[11px] font-medium">
-                        Overdue
-                      </div>
-                    </div>
+                  <span className="w-full flex justify-start items-center">
+                    Status Type
                   </span>
+                  {/* New column */}
+                  {/* <StatusType
+            setStatusDropdownOpen={setStatusDropdownOpen}
+            statusDropdownOpen={statusDropdownOpen}
+            statusFilter={statusFilter}
+            toggleStatusDropdown={toggleStatusDropdown}
+            setStatusFilter={setStatusFilter}
+            setSearch={setSearch}
+          /> */}
                 </div>
 
                 {userData?.tasks?.length > 0 ? (
@@ -266,9 +249,10 @@ const DeleteAccountList = () => {
                                 statusColors[task?.status] ||
                                 statusColors["default"],
                             }}
-                            className="w-[100px] h-[27px] rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] px-2"
+                            className="w-auto h-[27px] capitalize rounded-full flex items-center
+                             justify-center bg-[#FFCC00]/[0.12] px-2"
                           >
-                            {task?.status}
+                            {getFormattedStatus(task?.status)}
                           </span>
                         </span>
                       </div>
