@@ -33,7 +33,9 @@ const DateModal = ({
     }
   };
   const handleDueDate = () => {
+    console.log("--> datis -> ", date);
     const utcDate = new Date();
+    console.log("🚀 ~ handleDueDate ~ utcDate:", utcDate);
 
     // Convert the UTC time to Unix timestamp (epoch time) in seconds
     const calendarDate = moment(utcDate).format("MM DD YYYY");
