@@ -153,7 +153,11 @@ const BoatAccessModal = ({
                         ))}
                       </>
                     ) : (
-                      <div className="pt-4">No record found</div>
+                      <tr>
+                        <td className="px-4 py-2 text-[14px] font-medium leading-[14.85px]">
+                          <div className="pt-4 ">No record found</div>
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 )}

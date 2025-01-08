@@ -50,8 +50,8 @@ const UserManagementPage = () => {
                 User Information
               </h1>
               <p className="text-[12px] leading-[16.2px] text-white/50">
-                View your information below. Please contact the owner for any
-                changes or updates.
+                Navigate through your user details effortlessly, managing your
+                account settings for seamless and personalized experience.
               </p>
             </div>
             <button

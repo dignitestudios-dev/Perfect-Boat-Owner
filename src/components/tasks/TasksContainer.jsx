@@ -72,7 +72,7 @@ const TasksContainer = () => {
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
 
       const { data } = await axios.get(
-        `/owner/task?page=${currentPage}&pageSize=9${searchText}${searchFilter}${sortByFilter}${sortByDate}`
+        `/owner/task?page=${currentPage}&pageSize=18${searchText}${searchFilter}${sortByFilter}${sortByDate}`
       );
 
       // const { data } = await axios.get(

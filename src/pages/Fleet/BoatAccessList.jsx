@@ -11,8 +11,9 @@ import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
-  const { navigate, boats, setUpdateBoat } = useContext(GlobalContext);
-  const [selectAll, setSelectAll] = useState(false);
+  const { navigate, boats, setUpdateBoat, setUpdateManager } =
+    useContext(GlobalContext);
+  const [allSelected, setAllSelected] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
 
   const [search, setSearch] = useState("");
@@ -25,8 +26,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   const [isBoatManagerAccessOpen, setIsBoatManagerAccessOpen] = useState(false);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("");
-  const [boatType, setBoatType] = useState("");
+  const [locationType, setLocationType] = useState([]);
+  const [boatType, setBoatType] = useState([]);
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -42,30 +43,38 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
 
   const filteredData = managersBoat?.filter((item) => {
     const matchesSearch = search
-      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.boatType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.make?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.model?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const boatTypeMatch =
-      boatType && boatType !== "all"
-        ? item?.boatType?.toLowerCase() === boatType?.toLowerCase()
+      boatType && boatType.length !== 0
+        ? boatType?.includes(item?.boatType?.toLowerCase())
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
-        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
         : true;
     return matchesSearch && locationTypeMatch && boatTypeMatch;
   });
 
   const filteredBoats = boats?.filter((item) => {
     const matchesSearch = search
-      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.boatType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.make?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.model?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const boatTypeMatch =
-      boatType && boatType !== "all"
-        ? item?.boatType?.toLowerCase() === boatType?.toLowerCase()
+      boatType && boatType.length !== 0
+        ? boatType?.includes(item?.boatType?.toLowerCase())
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
-        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
         : true;
     return matchesSearch && locationTypeMatch && boatTypeMatch;
   });
@@ -84,14 +93,14 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     setIsOpen(false);
   };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedBoats([]);
-    } else {
-      setSelectedBoats(Array(5).fill(true));
-    }
-    setSelectAll(!selectAll);
-  };
+  // const handleSelectAll = () => {
+  //   if (selectAll) {
+  //     setSelectedBoats([]);
+  //   } else {
+  //     setSelectedBoats(Array(5).fill(true));
+  //   }
+  //   setSelectAll(!selectAll);
+  // };
 
   const handleSelectBoat = (boats) => {
     const isSelected = selectedBoats.some((boat) => boat?._id === boats._id);
@@ -126,6 +135,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
         setIsBoatManagerAccessOpen(true);
         setIsSelectBoatsModalOpen(false);
         setUpdateBoat((prev) => !prev);
+        setUpdateManager((prev) => !prev);
         getManagerById();
       }
     } catch (err) {
@@ -141,6 +151,17 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
       getManagerById();
     }
   }, [managerId]);
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      // Deselect all employee
+      setSelectedBoats([]);
+    } else {
+      // Select all employee
+      setSelectedBoats(filteredBoats?.map((employee) => employee));
+    }
+    setAllSelected(!allSelected);
+  };
 
   if (!isOpen) return null;
 
@@ -196,6 +217,23 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
               </button>
             )}
           </div>
+          {isSelectBoatsModalOpen && (
+            <div className="mt-4 mb-2">
+              <label className="flex items-center text-white/50">
+                <input
+                  type="checkbox"
+                  className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                    mr-1.5 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
+                                 checked:after:text-[15px] checked:after:p-[2px] "
+                  checked={allSelected}
+                  onChange={handleSelectAll}
+                />
+                Select All
+              </label>
+            </div>
+          )}
+
           <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">
             <div className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
               <span className="w-full flex justify-start items-center">
@@ -242,7 +280,10 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                           <div className="flex items-center">
                             <input
                               type="checkbox"
-                              className="accent-[#199BD1] mr-2 cursor-pointer"
+                              className="w-4 h-4 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                              mr-1.5 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                          checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
+                                           checked:after:text-[14px] "
                               checked={isMultiSelected}
                               onChange={() => handleSelectBoat(boat)}
                             />

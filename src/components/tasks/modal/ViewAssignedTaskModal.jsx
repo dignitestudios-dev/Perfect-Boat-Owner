@@ -42,7 +42,6 @@ const ViewAssignedTaskModal = ({
   loading = false,
   handleRemoveTask,
 }) => {
-  console.log("🚀 ~ employeeTasks:", employeeTasks);
   const navigateTo = useNavigate();
 
   const getFormattedStatus = (status) => {

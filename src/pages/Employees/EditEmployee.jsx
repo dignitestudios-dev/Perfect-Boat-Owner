@@ -481,6 +481,10 @@ const EditEmployee = () => {
             <div className="w-auto flex justify-between items-center gap-2">
               <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
                 Assigned Tasks{" "}
+                <span className="text-[14px] leading-[24.3px] text-[#ffffff98]">
+                  {" "}
+                  ({employeeTasks?.length})
+                </span>
               </h3>
               <button
                 type="button"

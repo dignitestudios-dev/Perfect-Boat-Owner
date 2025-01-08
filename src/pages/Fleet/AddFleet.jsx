@@ -544,6 +544,7 @@ const AddFleet = () => {
           selectedManagers={selectedManagers}
           setSelectedManagers={setSelectedManagers}
           handleManagerModal={() => console.log("manager modal")}
+          isBoat={true}
         />
       )}
 
