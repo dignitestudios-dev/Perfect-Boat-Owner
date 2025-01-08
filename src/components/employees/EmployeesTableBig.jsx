@@ -302,7 +302,7 @@ const EmployeesTableBig = ({
                         </span>
                       ) : (
                         <span
-                          className="flex justify-start items-center"
+                          className="flex justify-start items-center cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleActionClick(employee?._id);

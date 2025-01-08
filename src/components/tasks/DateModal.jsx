@@ -24,6 +24,7 @@ const DateModal = ({
   // const today = moment().endOf("day");
   const today = moment();
   const [date, setDate] = useState(today.toDate());
+  console.log("🚀 ~ date:", date);
   const dateRef = useRef();
 
   const toggleModal = (e) => {
@@ -121,6 +122,7 @@ const DateModal = ({
                   value={date}
                   minDate={minDate}
                   onChange={(value) => {
+                    console.log("🚀 ~ value:", value);
                     setDate(value);
                   }}
                   selectionType="range"

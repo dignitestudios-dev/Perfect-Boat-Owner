@@ -68,7 +68,7 @@ const TasksContainer = () => {
       const sortByDate = dueDate?.calendar
         ? `&startDate=${dueDate?.calendar}&endDate=${dueDate?.calendar}&isdue=true`
         : "";
-      console.log("🚀 ~ getTasks ~ sortByDate:", sortByDate);
+
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
 
       const { data } = await axios.get(
