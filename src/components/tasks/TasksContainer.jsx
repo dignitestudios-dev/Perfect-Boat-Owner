@@ -29,14 +29,14 @@ const TasksContainer = () => {
   const [search, setSearch] = useState("");
   const [findSearch, setFindSearch] = useState("");
   const [filter, setFilter] = useState("");
-  const [sortDate, setSortDate] = useState("");
+
   const [sortFilter, setSortFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const handleCheckboxChange = (sort) => {
     setSortFilter(sort);
-    setIsCalendarOpen(false);
+    // setIsCalendarOpen(false);
     setDueDate({ calendar: undefined });
     setCurrentPage(1);
   };
@@ -163,7 +163,7 @@ const TasksContainer = () => {
                   : "bg-[#1A293D] text-white/50"
               } min-w-12 h-8 rounded-full px-2 flex items-center justify-center text-[11px] font-medium leading-[28px] /[0.5]`}
             >
-              New
+              New Task
             </button>
             <button
               onClick={() => {
@@ -289,9 +289,10 @@ const TasksContainer = () => {
                 </div>
                 <div className="w-full flex justify-start items-start gap-2">
                   <input
-                    checked={isCalendarOpen}
+                    checked={sortFilter === "calendar"}
                     onChange={() => {
                       setIsCalendarOpen(true);
+                      setSortFilter("calendar");
                       setOpenDropdownFilter(false);
                     }}
                     type="checkbox"

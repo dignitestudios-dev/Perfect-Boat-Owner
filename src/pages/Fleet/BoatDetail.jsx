@@ -21,6 +21,7 @@ import AssignedTasksTable from "../../components/fleet/AssignedTasksTable";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 import BoatAccessModal from "./BoatAccessModal";
 import { CiTrash } from "react-icons/ci";
+import moment from "moment";
 
 const BoatDetail = () => {
   const today = moment();

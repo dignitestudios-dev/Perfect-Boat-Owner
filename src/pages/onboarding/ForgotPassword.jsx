@@ -49,7 +49,8 @@ const ForgotPassword = () => {
     <div className="w-screen h-screen flex items-start justify-start">
       <form
         onSubmit={handleSubmit(handleForgot)}
-        className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col overflow-y-auto justify-start items-center gap-8"
+        className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col 
+        overflow-y-auto justify-start items-center gap-8"
       >
         <button
           type="button"
@@ -90,7 +91,11 @@ const ForgotPassword = () => {
       <div className="w-1/2 lg:flex hidden relative h-full">
         <span className="w-20 h-full bg-gradient-to-r from-black/70 via-black/30 to-black/0  absolute top-0 -left-4"></span>
 
-        <img src={AuthMockup} alt="auth_mockup" className="w-full h-full" />
+        <img
+          src={AuthMockup}
+          alt="auth_mockup"
+          className="w-full h-full object-cover"
+        />
       </div>
     </div>
   );
