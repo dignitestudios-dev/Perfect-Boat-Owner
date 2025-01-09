@@ -3,6 +3,7 @@ import { MdDelete } from "react-icons/md";
 import DeletedModal from "../../components/global/DeletedModal";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { getUnixDate } from "../../data/DateFormat";
+import moment from "moment";
 
 const statusColors = {
   newtask: "#FF69B4",
@@ -55,7 +56,7 @@ const TasksCard = ({ getTasks, data }) => {
       />
       <button
         onClick={() => navigate(`/tasks/${data?._id}`, "All Tasks")}
-        className="w-full h-[172px] flex justify-start items-start rounded-l-[6px] rounded-r-[16px] bg-[#1A293D]"
+        className="w-full h-[196px] flex justify-start items-start rounded-l-[6px] rounded-r-[16px] bg-[#1A293D]"
       >
         <div
           className={`w-[6px] h-full rounded-l-[6px]`}
@@ -100,19 +101,26 @@ const TasksCard = ({ getTasks, data }) => {
               Assigned To:{" "}
               <span className="font-medium">{data?.assignTo[0]?.name}</span>
             </span>
+            <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
+              Created At:
+              <span className="font-medium">
+                {moment(data?.createdAt).format("MM-DD-YYYY")}
+              </span>
+            </span>
           </div>
           <div className="absolute bottom-2 left-3 w-[calc(100%-1.5rem)] flex justify-between items-center">
             <div className="w-auto flex gap-2 justify-start items-center">
               <button className="w-auto min-w-12 h-[27px] rounded-full px-2 flex items-center justify-center text-[11px] bg-[#9CA2AB]/[0.12] text-[#fff]/[0.5]">
                 Due {data?.dueDate ? getUnixDate(data?.dueDate) : "No Due Date"}
               </button>
-              {data?.recurringDays && (
+              {data?.reoccuring && (
                 <button className="w-auto min-w-12 h-[27px] rounded-full px-2 flex items-center justify-center text-[11px] bg-[#9CA2AB]/[0.12] text-[#fff]/[0.5]">
-                  Recurring {data?.recurringDays ? data?.recurringDays : null}{" "}
+                  Recurring {data?.reoccuringDays ? data?.reoccuringDays : null}{" "}
                   days
                 </button>
               )}
             </div>
+
             <button
               type="button"
               onClick={(e) => {

@@ -164,6 +164,7 @@ const AddManagerpage = () => {
             phone: item.phone || "",
             password: "Test@123",
           }));
+          console.log("parse->", parsedData);
           setData(parsedData);
           // checkForError(parsedData);
         },

@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ErrorToast, SuccessToast } from "../global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 
+import ManagerBoatsCsvModal from "./ManagerBoatsCsvModal";
+import ManagerBoatsCsvInput from "./ManagerBoatsCsvInput";
+import { GlobalContext } from "../../contexts/GlobalContext";
+
 const AddManagersCsv = ({ data, setData }) => {
+  console.log("🚀 ~ AddManagersCsv ~ data:", data);
+  const { boats } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [passSelectedBoat, SetPassSelectedBoat] = useState([]);
+  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
+  const [inputIndex, setInputIndex] = useState(0);
 
   const handleChange = (index, field, value) => {
     const newData = [...data];
@@ -194,6 +203,24 @@ const AddManagersCsv = ({ data, setData }) => {
                             </p>
                           )} */}
                   </div>
+                  <div>
+                    <ManagerBoatsCsvInput
+                      passSelectedBoat={
+                        data[index].boats ||
+                        setData((prevData) => {
+                          const updatedData = [...prevData];
+                          updatedData[index] = {
+                            ...updatedData[index],
+                            boats: boats?.map((data) => data?._id),
+                          };
+                          return updatedData;
+                        })
+                      }
+                      setIsBoatModalOpen={setIsBoatModalOpen}
+                      setInputIndex={setInputIndex}
+                      index={index}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -216,6 +243,17 @@ const AddManagersCsv = ({ data, setData }) => {
           </button>
         </div>
       </div>
+      {isBoatModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
+          <ManagerBoatsCsvModal
+            data={data}
+            inputIndex={inputIndex}
+            isOpen={isBoatModalOpen}
+            setIsOpen={setIsBoatModalOpen}
+            setData={setData}
+          />
+        </div>
+      )}
     </div>
   );
 };

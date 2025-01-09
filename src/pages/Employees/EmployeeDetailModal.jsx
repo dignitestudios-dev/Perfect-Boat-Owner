@@ -9,6 +9,7 @@ import { ErrorToast } from "../../components/global/Toaster";
 const EmployeeDetailModal = ({
   setIsOpen,
   SetPassSelectedEmployee,
+  passSelectedEmployee,
   setInputError,
   isMultiple = false,
   employeeId = "",
@@ -105,14 +106,21 @@ const EmployeeDetailModal = ({
   //   setAllSelected(!allSelected);
   // };
 
+  useEffect(() => {
+    if (!isMultiple) {
+      setSelectedEmployee(passSelectedEmployee);
+    }
+  }, [passSelectedEmployee]);
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
       <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Select Employee(s)</h3>
               <button
+                type="button"
                 onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                 className="text-lg font-bold"
               >
@@ -132,6 +140,7 @@ const EmployeeDetailModal = ({
                 />
               </div>
               <button
+                type="button"
                 onClick={() => handleEmployeeSelection()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
               >
@@ -276,6 +285,7 @@ const EmployeeDetailModal = ({
           </div>
           <div className="flex justify-end mt-4">
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >

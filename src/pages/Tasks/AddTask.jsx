@@ -1,10 +1,9 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import moment from "moment";
 
 import { IoCalendarOutline } from "react-icons/io5";
 import DateModal from "../../components/tasks/DateModal";
 import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
-import BoatSelectModal from "../Fleet/BoatSelectModal";
 import { useNavigate } from "react-router-dom";
 import TaskAssignSucessModal from "../../components/tasks/modal/TaskAssignSuccessModal";
 import { taskTypeData } from "../../data/TaskTypeData";
@@ -18,6 +17,7 @@ import TaskInputField from "../../components/global/customInputs/TaskInputField"
 import RecurringDaysInputField from "../../components/global/customInputs/RecurringDaysInputField";
 import { formValidation } from "../../constants/formValidation";
 import { GlobalContext } from "../../contexts/GlobalContext";
+import AddTaskBoatModal from "../../components/fleet/AddTaskBoatModal";
 
 const AddTask = () => {
   const today = moment();
@@ -62,8 +62,10 @@ const AddTask = () => {
   const [hasAssigned, setHasAssigned] = useState(false);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
+  const [employeeBoats, setEmployeeBoats] = useState([]);
+  const [employeeBoatsLoader, setEmployeeBoatsLoader] = useState(false);
 
-  const [passSelectedBoat, SetPassSelectedBoat] = useState("");
+  const [passSelectedBoat, SetPassSelectedBoat] = useState([]);
   const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
 
   const taskTypeDropdownRef = useRef();
@@ -128,11 +130,14 @@ const AddTask = () => {
       setInputError(errors);
       return;
     }
-
+    if (!passSelectedBoat?.length) {
+      setInputError({ boat: "Select boat" });
+      return;
+    }
     try {
       setSubmitLoading(true);
       const obj = {
-        boat: passSelectedBoat?.id,
+        boat: passSelectedBoat?.map((item) => item?.id),
         task: displaySelectedTask ? displaySelectedTask : customTask,
         taskType: selectedTaskType?.replace(/([A-Z])/g, " $1")?.trim(),
         dueDate: dueDate?.unix,
@@ -145,8 +150,6 @@ const AddTask = () => {
       const response = await axios.post("/owner/task", obj);
 
       if (response.status === 200) {
-        // SuccessToast("Task Created")
-        // navigate("/tasks")
         setHasAssigned(true);
         setUpdateDropDown((prev) => !prev);
       }
@@ -157,6 +160,30 @@ const AddTask = () => {
       setSubmitLoading(false);
     }
   };
+
+  const getEmployeeBoats = async () => {
+    setEmployeeBoatsLoader(true);
+    setEmployeeBoats([]);
+    try {
+      const { data } = await axios.get(
+        `/owner/employees/${passSelectedEmployee?.id}/boat`
+      );
+      if (data?.success) {
+        setEmployeeBoatsLoader(false);
+        setEmployeeBoats(data?.data);
+      }
+    } catch (error) {
+      setEmployeeBoatsLoader(false);
+      ErrorToast(error?.response?.data?.message);
+      console.log("🚀 ~ getEmployeeBoats ~ error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (passSelectedEmployee?.id) {
+      getEmployeeBoats();
+    }
+  }, [passSelectedEmployee]);
 
   return (
     <div className="w-full h-auto min-h-screen overflow-y-auto bg-[#1A293D] text-white p-4 pb-20 flex flex-col justify-start items-start">
@@ -173,9 +200,11 @@ const AddTask = () => {
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
               <div>
                 <SelectBoatInputField
+                  passSelectedEmployee={passSelectedEmployee}
                   passSelectedBoat={passSelectedBoat}
                   setIsBoatModalOpen={setIsBoatModalOpen}
-                  isEdit={true}
+                  isEdit={passSelectedEmployee ? true : false}
+                  setInputError={setInputError}
                 />
                 {inputError.boat && (
                   <p className="text-red-500">{inputError.boat}</p>
@@ -195,6 +224,7 @@ const AddTask = () => {
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
               <div>
                 <TaskTypeInputField
+                  setInputError={setInputError}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                   selectedTaskType={selectedTaskType}
                   isEdit={true}
@@ -304,16 +334,21 @@ const AddTask = () => {
               setIsOpen={setIsEmployeeModalOpen}
               SetPassSelectedEmployee={SetPassSelectedEmployee}
               setInputError={setInputError}
+              passSelectedEmployee={passSelectedEmployee}
             />
           </div>
         )}
         {isBoatModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
-            <BoatSelectModal
+            <AddTaskBoatModal
               isOpen={isBoatModalOpen}
               setIsOpen={setIsBoatModalOpen}
               SetPassSelectedBoat={SetPassSelectedBoat}
+              passSelectedBoat={passSelectedBoat}
               setInputError={setInputError}
+              isMultiple={true}
+              boats={employeeBoats}
+              employeeBoatsLoader={employeeBoatsLoader}
             />
           </div>
         )}

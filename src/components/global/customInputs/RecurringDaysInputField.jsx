@@ -24,10 +24,11 @@ const RecurringDaysInputField = ({
   }, [customDays]); // Re-run effect when customDays changes
 
   return (
-    <div className="w-auto flex justify-start items-center gap-3">
+    <div className="w-auto flex justify-start items-center gap-3  ">
       <TbCalendarStats className="text-2xl text-white/40" />
       <span className="text-md font-normal text-white">Recurring Days</span>
       <button
+        type="button"
         disabled={!isEdit}
         onClick={toggleRecurringDropdown}
         className="text-xs flex flex-col justify-start items-start font-normal text-[#199BD1] relative"
@@ -38,6 +39,7 @@ const RecurringDaysInputField = ({
           <FaCaretDown />
         </span>
         <div
+          type="button"
           ref={RecurringRef}
           className={`w-[164px] h-40 overflow-y-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
             RecurringDropdown ? "scale-100" : "scale-0"
@@ -45,6 +47,7 @@ const RecurringDaysInputField = ({
         >
           {recurringOptions?.map((option) => (
             <div
+              type="button"
               key={option.value}
               className="w-full flex justify-start items-start gap-2 cursor-pointer"
               onClick={() => handleSelectDay(option.value, option.label)}

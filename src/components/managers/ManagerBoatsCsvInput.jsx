@@ -1,11 +1,10 @@
 import React from "react";
 
-const SelectBoatInputField = ({
-  passSelectedEmployee,
+const ManagerBoatsCsvInput = ({
   passSelectedBoat,
   setIsBoatModalOpen,
-  isEdit,
-  setInputError = () => {},
+  setInputIndex,
+  index,
 }) => {
   // setInputError({});
   return (
@@ -14,14 +13,13 @@ const SelectBoatInputField = ({
         <span className="text-[16px] font-medium leading-[21.6px]">
           Select Boat
         </span>
-        <span className="text-[12px] text-gray-400 -mb-2">
-          {!passSelectedEmployee && "*select an employee first"}{" "}
-        </span>
       </div>
       <button
         type="button"
-        disabled={!isEdit}
-        onClick={() => setIsBoatModalOpen(true)} // Open the Boat Modal
+        onClick={() => {
+          setIsBoatModalOpen(true);
+          setInputIndex(index);
+        }} // Open the Boat Modal
         className="w-full h-[52px] bg-[#1A293D] disabled:text-white/50 outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
       >
         <span
@@ -39,4 +37,4 @@ const SelectBoatInputField = ({
   );
 };
 
-export default SelectBoatInputField;
+export default ManagerBoatsCsvInput;

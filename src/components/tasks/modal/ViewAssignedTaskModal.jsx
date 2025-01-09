@@ -109,7 +109,7 @@ const ViewAssignedTaskModal = ({
             </div>
           </div>
 
-          <div className="relative h-full overflow-auto">
+          <div className="relative h-[80%] overflow-y-auto">
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
               <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
                 <span className="w-full flex justify-start items-center">

@@ -8,12 +8,14 @@ import { ErrorToast } from "../global/Toaster";
 import RequestTaskListLoader from "./loaders/RequestTaskListLoader";
 import LocationType from "../global/headerDropdowns/LocationType";
 import { useNavigate } from "react-router-dom";
+import { getUnixDate } from "../../data/DateFormat";
+import moment from "moment";
 
 const NewTaskTable = () => {
   const navigate = useNavigate();
   // const [locationFilter, setLocationFilter] = useState(false);
   // const locationRef = useRef(null);
-  const [locationType, setLocationType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
   const toggleLocationDropdown = () => {
@@ -42,12 +44,12 @@ const NewTaskTable = () => {
   );
 
   // Fetch tasks from the API
-  const getData = async (locationType = "all") => {
+  const getData = async (locationType = []) => {
     setLoading(true);
     try {
       const locationQuery =
-        locationType !== "all" ? `location=${locationType}` : "";
-      const { data } = await axios.get(`/owner/task/requests?${locationQuery}`);
+        locationType.length !== 0 ? `?location=${locationType}` : "";
+      const { data } = await axios.get(`/owner/task/requests${locationQuery}`);
       setData(data?.data || []);
     } catch (err) {
       console.error("Error fetching Task data:", err);
@@ -86,7 +88,7 @@ const NewTaskTable = () => {
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
         <div
-          className="w-full grid grid-cols-4 text-[11px] py-2 border-b border-[#fff]/[0.14] 
+          className="w-full grid grid-cols-5 text-[11px] py-2 border-b border-[#fff]/[0.14] 
         font-medium leading-[14.85px] text-white/50 justify-start items-start"
         >
           <span className="w-full flex justify-start items-center">
@@ -105,6 +107,9 @@ const NewTaskTable = () => {
           <span className="w-full flex justify-start items-center px-[60px]">
             Requested By
           </span>
+          <span className="w-full flex justify-start items-center px-[60px]">
+            Reported Date
+          </span>
         </div>
 
         {loading ? (
@@ -120,7 +125,7 @@ const NewTaskTable = () => {
                       state: { task },
                     })
                   }
-                  className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                  className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                 >
                   <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                     <img
@@ -154,6 +159,9 @@ const NewTaskTable = () => {
                   </span>
                   <span className="w-full flex justify-start items-center px-[60px]">
                     {task?.employee?.name}
+                  </span>
+                  <span className="w-full flex justify-start items-center px-[60px]">
+                    {moment(task?.createdAt).format("MM-DD-YYYY")}
                   </span>
                 </button>
               );

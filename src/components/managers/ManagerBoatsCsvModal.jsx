@@ -7,17 +7,15 @@ import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import { ErrorToast } from "../../components/global/Toaster";
 
-const BoatSelectModal = ({
+const ManagerBoatsCsvModal = ({
   isOpen,
   setIsOpen,
-  SetPassSelectedBoat,
-  passSelectedBoat,
-  isMultiple = false,
-  setInputError,
+  inputIndex,
+  setData,
+  data,
 }) => {
-  const { navigate, boats, loadingBoats } = useContext(GlobalContext);
+  const { boats } = useContext(GlobalContext);
   const [allSelected, setAllSelected] = useState(false);
-  const [selectedBoat, setSelectedBoat] = useState(null);
   const [selectedBoats, setSelectedBoats] = useState([]);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -54,65 +52,49 @@ const BoatSelectModal = ({
   });
 
   const handleSelectAll = () => {
-    setInputError({});
     if (allSelected) {
       // Deselect all employee
       setSelectedBoats([]);
     } else {
       // Select all employee
-      setSelectedBoats(
-        filteredData?.map((data) => ({
-          id: data?._id,
-          name: data?.name,
-          type: data?.boatType,
-          make: data?.make,
-          location: data?.location,
-        }))
-      );
+      setSelectedBoats(filteredData?.map((data) => data?._id));
     }
     setAllSelected(!allSelected);
   };
 
-  const handleSelectBoat = (boatId, boatName, boatType, make, location) => {
-    setInputError({});
-    if (isMultiple) {
-      const isSelected = selectedBoats.some((boat) => boat?.id === boatId);
-      if (isSelected) {
-        setSelectedBoats(selectedBoats.filter((boat) => boat?.id !== boatId));
-      } else {
-        setSelectedBoats([
-          ...selectedBoats,
-          { id: boatId, name: boatName, type: boatType, make: make, location },
-        ]);
-      }
+  const handleSelectBoat = (boatId) => {
+    const isSelected = selectedBoats.some((boat) => boat === boatId);
+    if (isSelected) {
+      setSelectedBoats(selectedBoats.filter((boat) => boat !== boatId));
     } else {
-      if (selectedBoat?.id === boatId) {
-        setSelectedBoat(null);
-      } else {
-        setSelectedBoat({ id: boatId, name: boatName });
-      }
+      setSelectedBoats([...selectedBoats, boatId]);
     }
   };
 
   const handleBoatSelection = () => {
-    if (isMultiple) {
-      SetPassSelectedBoat(selectedBoats);
-      setIsOpen(false);
-    } else {
-      if (selectedBoat) {
-        SetPassSelectedBoat(selectedBoat);
-        setIsOpen(false);
-      } else {
-        ErrorToast("Select Boat");
-      }
-    }
+    setData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[inputIndex] = {
+        ...updatedData[inputIndex],
+        boats: selectedBoats,
+      };
+      return updatedData;
+    });
+    setIsOpen(false);
   };
 
   useEffect(() => {
-    if (isMultiple) {
-      setSelectedBoats(passSelectedBoat);
-    }
-  }, [passSelectedBoat]);
+    const selectedBoats = boats?.map((data) => data?._id);
+    setSelectedBoats(selectedBoats);
+    setData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[inputIndex] = {
+        ...updatedData[inputIndex],
+        boats: boats?.map((data) => data?._id),
+      };
+      return updatedData;
+    });
+  }, [boats]);
 
   if (!isOpen) return null;
 
@@ -155,19 +137,17 @@ const BoatSelectModal = ({
             </button>
           </div>
           <div className="mt-4 mb-2">
-            {isMultiple && (
-              <label className="flex items-center text-white/50">
-                <input
-                  type="checkbox"
-                  className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+            <label className="flex items-center text-white/50">
+              <input
+                type="checkbox"
+                className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
                                  checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] mr-2
                                 checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
-                  checked={allSelected}
-                  onChange={handleSelectAll}
-                />
-                Select All
-              </label>
-            )}
+                checked={allSelected}
+                onChange={handleSelectAll}
+              />
+              Select All
+            </label>
           </div>
 
           <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">
@@ -199,9 +179,8 @@ const BoatSelectModal = ({
             {filteredData?.length > 0 ? (
               <>
                 {filteredData?.map((boat, index) => {
-                  const isSelected = selectedBoat?.id === boat._id;
                   const isMultiSelected = selectedBoats.some(
-                    (selected) => selected.id === boat._id
+                    (selected) => selected === boat._id
                   );
 
                   return (
@@ -216,7 +195,7 @@ const BoatSelectModal = ({
                           className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
                                  checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] mr-2
                                 checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
-                          checked={isMultiple ? isMultiSelected : isSelected}
+                          checked={isMultiSelected}
                           onChange={() =>
                             handleSelectBoat(
                               boat?._id,
@@ -279,4 +258,4 @@ const BoatSelectModal = ({
   );
 };
 
-export default BoatSelectModal;
+export default ManagerBoatsCsvModal;

@@ -25,11 +25,12 @@ const TaskTypeInputField = ({
   }, [customInput]);
 
   return (
-    <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
+    <div className="w-full h-auto flex flex-col gap-1 justify-end items-start z-10">
       <label className="text-[16px] font-medium leading-[21.6px]">
         {"Task Type"}
       </label>
       <div
+        type="button"
         onClick={isEdit ? toggleTaskTypeDropdown : null}
         className={`group transition-all duration-500 w-full ${
           isTaskTypeDropdownOpen ? "rounded-t-xl rounded-b-none" : "rounded-xl"
@@ -52,6 +53,7 @@ const TaskTypeInputField = ({
         </span>
 
         <div
+          type="button"
           ref={taskTypeDropdownRef}
           className={`${
             isTaskTypeDropdownOpen ? "flex" : "hidden"
@@ -61,6 +63,7 @@ const TaskTypeInputField = ({
           <div className="w-full h-auto overflow-y-auto">
             {taskDropDown?.map((item, index) => (
               <button
+                type="button"
                 key={index}
                 onClick={() => handleTaskTypeSelection(item.taskType)}
                 className="text-gray-300 w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
@@ -69,6 +72,7 @@ const TaskTypeInputField = ({
               </button>
             ))}
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 // handleTaskTypeSelection("custom");

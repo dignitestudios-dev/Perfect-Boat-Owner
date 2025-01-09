@@ -12,11 +12,11 @@ const TaskInputField = ({
   setCustomTask,
   customTask,
 }) => {
-  console.log("🚀 ~ tasks:", tasks);
   return (
     <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
       <label className="text-[16px] font-medium leading-[21.6px]">Task</label>
       <div
+        type="button"
         onClick={isEdit ? toggleTaskDropdown : null}
         className={`group transition-all duration-500 w-full ${
           isTaskDropdownOpen ? "rounded-t-xl rounded-b-none" : "rounded-xl"
@@ -36,6 +36,7 @@ const TaskInputField = ({
         </span>
         {/* Dropdown menu for tasks */}
         <div
+          type="button"
           ref={additionalDropdownRef}
           className={`${
             isTaskDropdownOpen ? "flex" : "hidden"
@@ -45,6 +46,7 @@ const TaskInputField = ({
           {tasks.length > 0 ? (
             tasks.map((task, index) => (
               <button
+                type="button"
                 key={index}
                 onClick={(e) => {
                   e.stopPropagation();

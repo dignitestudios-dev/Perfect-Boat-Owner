@@ -5,14 +5,15 @@ import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import DeletedModal from "../../components/global/DeletedModal";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
+import { getUnixDate } from "../../data/DateFormat";
 
 const NewTaskRequestPage = () => {
   const location = useLocation();
   const { task } = location.state || {};
   console.log("🚀 ~ NewTaskRequestPage ~ task:", task);
-  const { navigate } = useContext(GlobalContext);
+  const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const openDeleteModal = () => {
@@ -103,7 +104,7 @@ const NewTaskRequestPage = () => {
               {task?.task?.taskType}
             </span>
             <span className="w-full flex justify-start items-center">
-              {moment(task?.task?.taskType)?.format("YYYY-MM-DD")}
+              {getUnixDate(task?.task?.dueDate)}
             </span>
             <span className="w-full flex justify-start items-center">
               {task?.task?.reoccuringDays}
