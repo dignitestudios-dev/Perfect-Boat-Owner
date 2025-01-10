@@ -66,7 +66,7 @@ const TasksContainer = () => {
       const searchText = findSearch ? `&search=${findSearch}` : "";
       const searchFilter = filter ? `&status=${filter}` : "";
       const sortByDate = dueDate?.calendar
-        ? `&startDate=${dueDate?.calendar}&endDate=${dueDate?.calendar}&isdue=true`
+        ? `&startDate=${dueDate?.calendar}&endDate=${dueDate?.calendar}`
         : "";
 
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";

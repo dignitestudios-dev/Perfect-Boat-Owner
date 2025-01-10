@@ -18,7 +18,6 @@ const AddTaskBoatModal = ({
   setInputError,
   boats,
 }) => {
-  console.log("🚀 ~ employeeBoatsLoader:", employeeBoatsLoader);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedBoat, setSelectedBoat] = useState(null);
   const [selectedBoats, setSelectedBoats] = useState([]);

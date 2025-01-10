@@ -59,7 +59,7 @@ const AssignReportedTask = () => {
     try {
       setSubmitLoading(true);
       const obj = {
-        boat: data.boatId,
+        boat: [data.boatId],
         task: displaySelectedTask ? displaySelectedTask : selectedTaskType,
         taskType: selectedTaskType,
         dueDate: dueDate?.unix,

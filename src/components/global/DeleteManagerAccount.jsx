@@ -18,8 +18,8 @@ const DeleteManagerAccount = () => {
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
 
@@ -37,11 +37,11 @@ const DeleteManagerAccount = () => {
 
   const filteredData = userData?.employees?.filter((item) => {
     const jobTypeMatch =
-      jobType && jobType !== "all"
+      jobType && jobType.length !== 0
         ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
+      locationType && locationType.length !== 0
         ? item?.location?.toLowerCase() === locationType?.toLowerCase()
         : true;
     return locationTypeMatch && jobTypeMatch;
