@@ -155,6 +155,7 @@ export const GlobalContextProvider = ({ children }) => {
         body: payload.notification.body,
       });
       setNotificationUpdate((prev) => !prev);
+      setNotifications((prev) => [...prev, prev.length + 1]);
       setTimeout(() => {
         setShow(false);
         setNotification({ title: "", body: "" });

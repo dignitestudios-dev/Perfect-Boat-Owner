@@ -17,6 +17,9 @@ import TaskType from "../../components/global/headerDropdowns/TaskType";
 import StatusType from "../../components/global/headerDropdowns/StatusType";
 import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
 import AssignedManagerModal from "../../components/employees/AssignedManagerModal";
+import { CiCalendar } from "react-icons/ci";
+import DateModal from "../../components/tasks/DateModal";
+import moment from "moment";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -51,6 +54,8 @@ const EditEmployee = () => {
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const { id } = useParams();
   const navigateTo = useNavigate();
+  const today = moment("01-01-2024");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAssignedModalOpen, setIsAssignedModalOpen] = useState(false);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
@@ -72,6 +77,11 @@ const EditEmployee = () => {
   const [tasksError, setTasksError] = useState("");
   const [statusFilter, setStatusFilter] = useState([]);
   const [taskType, setTaskType] = useState([]);
+
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  const [dueDate, setDueDate] = useState({});
+  const [inputError, setInputError] = useState({});
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
@@ -215,6 +225,10 @@ const EditEmployee = () => {
   }, [employee, setValue]);
 
   const employeeFilteredData = employeeTasks?.filter((item, index) => {
+    const dueDateMatch =
+      !dueDate.calendar ||
+      getUnixDate(item?.dueDate) ===
+        moment(dueDate.calendar).format("DD-MM-YYYY");
     const matchesStatus =
       statusFilter && statusFilter.length !== 0
         ? statusFilter?.includes(item?.status?.toLowerCase())
@@ -223,7 +237,7 @@ const EditEmployee = () => {
       taskType && taskType.length !== 0
         ? taskType?.includes(item?.taskType?.toLowerCase())
         : true;
-    return matchesStatus && taskTypeMatch;
+    return matchesStatus && taskTypeMatch && dueDateMatch;
   });
 
   return (
@@ -507,9 +521,14 @@ const EditEmployee = () => {
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                 />
-                <span className="w-full flex justify-start items-center">
-                  Due Date
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsCalendarOpen(true)}
+                  className="w-full flex  gap-1  justify-start items-center relative"
+                >
+                  <CiCalendar className="text-lg" />
+                  <span>Due Date</span>
+                </button>
                 <span className="w-full flex justify-start items-center">
                   Recurring Days
                 </span>
@@ -538,7 +557,7 @@ const EditEmployee = () => {
                         {getUnixDate(task?.dueDate)}
                       </span>
                       <span className="w-full flex justify-start items-center ">
-                        {task?.reoccuringDays}
+                        {task?.reoccuringDays || "Non-recurring"}
                       </span>
 
                       <span
@@ -640,6 +659,14 @@ const EditEmployee = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         getEmployeeData={getEmployeeData}
+      />
+
+      <DateModal
+        isOpen={isCalendarOpen}
+        setIsOpen={setIsCalendarOpen}
+        setDueDate={setDueDate}
+        setInputError={setInputError}
+        minDate={today.toDate()}
       />
 
       {isAssignedModalOpen && (

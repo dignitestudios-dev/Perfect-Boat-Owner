@@ -111,7 +111,7 @@ const ViewAssignedTaskModal = ({
 
           <div className="relative h-[80%] overflow-y-auto">
             <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-              <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
+              <div className="w-full h-6 grid grid-cols-[4fr_6fr_4fr_4fr_4fr_2fr] text-[13px] font-medium border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-center">
                 <span className="w-full flex justify-start items-center">
                   Boat Name
                 </span>
@@ -142,7 +142,7 @@ const ViewAssignedTaskModal = ({
               {filteredData?.length > 0 ? (
                 <>
                   {filteredData?.map((task, index) => (
-                    <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                    <div className="w-full h-10 grid grid-cols-[4fr_6fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
                       </span>
@@ -152,8 +152,8 @@ const ViewAssignedTaskModal = ({
                       <span className="w-full flex justify-start items-center">
                         {getUnixDate(task?.dueDate)}
                       </span>
-                      <span className="w-full flex justify-start items-center ">
-                        {task?.reoccuringDays}
+                      <span className="w-full flex justify-start items-center pl-3">
+                        {task?.reoccuringDays || "Non-recurring"}
                       </span>
                       <span className="w-full flex justify-start items-center ">
                         <span

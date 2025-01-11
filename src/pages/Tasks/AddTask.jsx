@@ -21,7 +21,8 @@ import AddTaskBoatModal from "../../components/fleet/AddTaskBoatModal";
 
 const AddTask = () => {
   const today = moment();
-  const { taskDropDown, setUpdateDropDown } = useContext(GlobalContext);
+  const { taskDropDown, setUpdateDropDown, setNotificationUpdate } =
+    useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -152,6 +153,7 @@ const AddTask = () => {
       if (response.status === 200) {
         setHasAssigned(true);
         setUpdateDropDown((prev) => !prev);
+        setNotificationUpdate((prev) => !prev);
       }
     } catch (err) {
       console.log("🚀 ~ submitTask ~ err:", err);

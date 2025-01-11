@@ -67,7 +67,10 @@ const FleetImages = ({
         const updatedBox = [...prev];
         if (!updatedBox[formIndex]) updatedBox[formIndex] = [];
         images.forEach((_, idx) => {
-          if (updatedBox[formIndex].length < 5) {
+          while (
+            updatedBox[formIndex].length < imagesArray[formIndex].length + 1 &&
+            updatedBox[formIndex].length < 5
+          ) {
             updatedBox[formIndex].push(updatedBox[formIndex].length);
           }
         });

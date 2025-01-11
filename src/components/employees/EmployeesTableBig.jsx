@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { FaCaretDown, FaRegEdit } from "react-icons/fa";
@@ -27,9 +27,9 @@ const EmployeesTableBig = ({
   setJobType,
   setCurrentPage,
 }) => {
-  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
+  const navigation = useNavigate();
 
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,25 +94,9 @@ const EmployeesTableBig = ({
   };
 
   const handleDeactivate = async () => {
-    setDeactivateLoading(true);
-    try {
-      const obj = { reason: "Deactivate" };
-      const response = await axios.delete(
-        `/owner/employees/${employeeId}?deactivate=true`,
-        { data: obj }
-      );
-
-      if (response?.status === 200) {
-        setUpdateEmployee((prev) => !prev);
-        setIsDeactivateModalOpen(true);
-        setIsModalOpen(false);
-        getEmployees();
-        setDeactivateLoading(false);
-      }
-    } catch (err) {
-      ErrorToast(err?.response?.data?.message);
-      setDeactivateLoading(false);
-    }
+    navigation(`/delete-account/${employeeId}`, {
+      state: { reasonForDelete: "deactivation" },
+    });
   };
 
   const handleDelete = () => {

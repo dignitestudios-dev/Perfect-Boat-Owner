@@ -32,6 +32,7 @@ const AddFleet = () => {
   const [uploadImages, setUploadImages] = useState([]);
 
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
 
   const [passSelectedManager, SetPassSelectedManager] = useState("");
@@ -184,22 +185,70 @@ const AddFleet = () => {
 
   const handleUploadedImage = async (e, index) => {
     const file = e.target.files[0];
-    if (file) {
-      const image = file;
+    const files = Array.from(e.target.files);
+
+    if (files.length > 1) {
+      const image = files;
+      setImageLoading(true);
+      const images = await Promise.all(
+        files.map(async (file) => {
+          const base64String = await convertImageToBase64(file);
+          return `data:${file.type};base64,${base64String}`;
+        })
+      );
+      setImageLoading(false);
       setUploadImages((prev) => {
         const updatedImages = [...prev];
-        updatedImages[index] = image;
+        if (!updatedImages[index]) updatedImages[index] = [];
+        image.forEach((image, idx) => {
+          if (updatedImages.length < 5) {
+            updatedImages[idx] = image;
+            return updatedImages;
+          }
+        });
         return updatedImages;
       });
-      const base64String = await convertImageToBase64(file);
-      const base64WithPrefix = `data:${file.type};base64,${base64String}`;
+
       setImagesArray((prev) => {
         const updatedImages = [...prev];
-        updatedImages[index] = base64WithPrefix;
+        if (!updatedImages[index]) updatedImages[index] = [];
+        images.forEach((image, idx) => {
+          if (updatedImages.length < 5) {
+            updatedImages[idx] = image;
+            return updatedImages;
+          }
+        });
         return updatedImages;
       });
-      if (imagesBox.length < 5) {
-        setImagesBox((prev) => [...prev, prev.length]);
+
+      setImagesBox((prev) => {
+        const updatedBox = [...prev];
+        if (!updatedBox[index]) updatedBox[index] = [];
+        images.forEach((_, idx) => {
+          if (updatedBox.length < 5) {
+            updatedBox?.push(updatedBox.length);
+          }
+        });
+        return updatedBox;
+      });
+    } else {
+      if (file) {
+        const image = file;
+        setUploadImages((prev) => {
+          const updatedImages = [...prev];
+          updatedImages[index] = image;
+          return updatedImages;
+        });
+        const base64String = await convertImageToBase64(file);
+        const base64WithPrefix = `data:${file.type};base64,${base64String}`;
+        setImagesArray((prev) => {
+          const updatedImages = [...prev];
+          updatedImages[index] = base64WithPrefix;
+          return updatedImages;
+        });
+        if (imagesBox.length < 5) {
+          setImagesBox((prev) => [...prev, prev.length]);
+        }
       }
     }
   };
@@ -474,7 +523,13 @@ const AddFleet = () => {
                                   className="w-full h-full object-cover rounded-xl"
                                 />
                               ) : (
-                                <FiDownload />
+                                <>
+                                  {imageLoading ? (
+                                    <FiLoader className="animate-spin mx-auto" />
+                                  ) : (
+                                    <FiDownload />
+                                  )}
+                                </>
                               )}
 
                               <input
@@ -482,6 +537,7 @@ const AddFleet = () => {
                                 accept="image/jpeg, image/png, image/bmp, image/webp"
                                 className="hidden"
                                 type="file"
+                                multiple
                                 onChange={(e) => handleUploadedImage(e, index)}
                               />
                             </label>
