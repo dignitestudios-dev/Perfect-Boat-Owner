@@ -29,7 +29,7 @@ instance.interceptors.response.use(
       Cookies.remove("name");
       Cookies.remove("email");
 
-      // window.location.href = "/login";
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
