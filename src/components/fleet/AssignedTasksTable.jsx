@@ -6,6 +6,7 @@ import { getUnixDate } from "../../data/DateFormat";
 import DeletedModal from "../global/DeletedModal";
 import { useNavigate } from "react-router-dom";
 import StatusType from "../global/headerDropdowns/StatusType";
+import moment from "moment";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -14,6 +15,15 @@ const statusColors = {
   inprogress: "#36B8F3",
   completed: "#1FBA46",
   upcomingtask: "#FF007F",
+};
+
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  inprogress: "#36B8F31F",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
 };
 
 const STATUS_ENUM = {
@@ -30,6 +40,7 @@ const AssignedTasksTable = ({
   handleDateModalOpen,
   boatsData,
   openDeleteModal,
+  dueDate,
   getBoats,
 }) => {
   const getFormattedStatus = (status) => {
@@ -48,18 +59,23 @@ const AssignedTasksTable = ({
   };
 
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState([]);
 
   const toggleStatusDropdown = () => {
     setStatusDropdownOpen(!statusDropdownOpen);
   };
 
   const filteredData = boatsData?.task?.filter((item) => {
+    console.log("🚀 ~ filteredData ~ item:", item);
+    const dueDateMatch =
+      !dueDate.calendar ||
+      getUnixDate(item?.dueDate) ===
+        moment(dueDate.calendar).format("DD-MM-YYYY");
     const matchesStatus =
-      statusFilter && statusFilter !== "all"
-        ? item?.status === statusFilter
+      statusFilter && statusFilter.length !== 0
+        ? statusFilter?.includes(item?.status?.toLowerCase())
         : true;
-    return matchesStatus;
+    return matchesStatus && dueDateMatch;
   });
   console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
@@ -68,6 +84,9 @@ const AssignedTasksTable = ({
       <div className="w-auto flex justify-between items-center gap-2">
         <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
           Assigned Tasks{" "}
+          <span className="text-[14px] leading-[24.3px] text-white/80">
+            ({boatsData?.task?.length})
+          </span>
         </h3>
         <button
           type="button"
@@ -105,10 +124,11 @@ const AssignedTasksTable = ({
           />
           <span className="w-full flex justify-start items-center">Action</span>
         </div>
-        {boatsData?.task?.length > 0 ? (
+        {filteredData?.length > 0 ? (
           <>
-            {filteredData?.map((item, index) => (
+            {filteredData?.slice(0, 4)?.map((item, index) => (
               <button
+                key={index}
                 type="button"
                 className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] 
               font-medium leading-[14.85px] text-white justify-start items-center"
@@ -137,14 +157,16 @@ const AssignedTasksTable = ({
                   className="w-full flex justify-start items-center "
                   // onClick={() => navigate("/tasks/1", "All Tasks")}
                 >
-                  {item?.reoccuringDays}
+                  {item?.reoccuringDays || "Non-recurring"}
                 </span>
                 <span
                   style={{
                     color:
                       statusColors[item?.status] || statusColors["default"],
+                    backgroundColor:
+                      statusColorsbg[item?.status] || statusColorsbg["default"],
                   }}
-                  className="text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] "
+                  className="w-[110px] text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center h-[27px] "
                   // onClick={() => navigate("/tasks/1", "All Tasks")}
                 >
                   {getFormattedStatus(item?.status)}

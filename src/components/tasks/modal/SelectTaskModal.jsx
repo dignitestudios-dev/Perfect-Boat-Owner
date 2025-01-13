@@ -54,6 +54,15 @@ const SelectTaskModal = ({
     completed: "#1FBA46",
   };
 
+  const statusColorsbg = {
+    newtask: "#FF69B41F",
+    overdue: "#FF3B301F",
+    default: "#FFCC001F",
+    inprogress: "#36B8F31F",
+    completed: "#1FBA461F",
+    upcomingtask: "#FF007F1F",
+  };
+
   const STATUS_ENUM = {
     newtask: "New Task",
     inprogress: "In-Progress",
@@ -287,6 +296,9 @@ const SelectTaskModal = ({
                                   color:
                                     statusColors[task?.status] ||
                                     statusColors["default"],
+                                  backgroundColor:
+                                    statusColorsbg[task?.status] ||
+                                    statusColorsbg["default"],
                                 }}
                                 className="w-auto h-[27px] capitalize rounded-full flex items-center justify-center bg-[#FFCC00]/[0.12] text-[#FFCC00] px-2"
                               >

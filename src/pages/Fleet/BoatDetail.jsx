@@ -24,7 +24,10 @@ import { CiTrash } from "react-icons/ci";
 import moment from "moment";
 
 const BoatDetail = () => {
-  const today = moment();
+  const today = moment("01-01-2024");
+  const [dueDate, setDueDate] = useState({});
+  const [inputError, setInputError] = useState({});
+
   const { navigate, boatDropDown, setUpdateBoat } = useContext(GlobalContext);
   const [isEditing, setIsEditing] = useState(false); // New state for edit mode
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -791,6 +794,7 @@ const BoatDetail = () => {
             boatsData={boatsData}
             openDeleteModal={openDeleteModal}
             getBoats={getBoats}
+            dueDate={dueDate}
           />
 
           {/* <ViewAllTasksModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} /> */}
@@ -865,7 +869,13 @@ const BoatDetail = () => {
         </form>
       )}
 
-      <DateModal isOpen={isDateModalOpen} setIsOpen={setIsDateModalOpen} />
+      <DateModal
+        isOpen={isDateModalOpen}
+        setIsOpen={setIsDateModalOpen}
+        setDueDate={setDueDate}
+        setInputError={setInputError}
+        minDate={today.toDate()}
+      />
       <DeletedModal
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}

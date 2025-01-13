@@ -66,7 +66,7 @@ const TasksContainer = () => {
       const searchText = findSearch ? `&search=${findSearch}` : "";
       const searchFilter = filter ? `&status=${filter}` : "";
       const sortByDate = dueDate?.calendar
-        ? `&startDate=${dueDate?.calendar}&endDate=${dueDate?.calendar}`
+        ? `&startDate=${dueDate?.calendar}&endDate=${dueDate?.calendar}&isdue=true`
         : "";
 
       const sortByFilter = sortFilter === "earliest" ? `&isEarliest=true` : "";
@@ -75,9 +75,6 @@ const TasksContainer = () => {
         `/owner/task?page=${currentPage}&pageSize=18${searchText}${searchFilter}${sortByFilter}${sortByDate}`
       );
 
-      // const { data } = await axios.get(
-      //   filter !== "" ? `/owner/task?status=${filter}` : `/owner/task?page=${pageNumber}&pageSize=${rows}`
-      // );
       setTaskData(data?.data?.data || []);
       setPageDetails(data?.data?.paginationDetails || []);
       setTotalPages(data?.data?.paginationDetails?.totalPages);

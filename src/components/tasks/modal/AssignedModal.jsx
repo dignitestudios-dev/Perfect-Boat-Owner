@@ -142,7 +142,8 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
                         {getUnixDate(task?.dueDate)}
                       </span>
                       <span className="w-full flex justify-start items-center ">
-                        {task?.recurringDays || task?.reoccuringDays}
+                        {task?.reoccuringDays || "Non-recurring"}
+                        {/* {task?.recurringDays || task?.reoccuringDays}  */}
                       </span>
                       <span className="w-full flex justify-start items-center ">
                         <span
