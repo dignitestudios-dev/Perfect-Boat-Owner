@@ -47,6 +47,8 @@ const TaskCompleted = () => {
       if (taskDetail?.reoccuring === true) {
         data.append("recurring", true);
         data.append("reoccuringDays", taskDetail?.reoccuringDays);
+      } else {
+        data.append("recurring", false);
       }
       if (formData.formsImages) {
         formData.formsImages.forEach((fileList, index) => {

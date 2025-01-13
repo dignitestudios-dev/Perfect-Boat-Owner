@@ -37,6 +37,14 @@ const DateModal = ({
     // Convert the UTC time to Unix timestamp (epoch time) in seconds
     const calendarDate = moment(utcDate).format("MM DD YYYY");
     const epochTime = Math.floor(utcDate.getTime() / 1000);
+    console.log(
+      "🚀 ~ handleDueDate ~ utc without divide():",
+      utcDate.getTime()
+    );
+    console.log(
+      "🚀 ~ handleDueDate ~ utcDate() divide:",
+      Math.floor(utcDate.getTime() / 1000)
+    );
 
     // Format the UTC date into YYYY-MM-DD format
     const formattedDate = utcDate.toISOString().slice(0, 10);
