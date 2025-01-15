@@ -165,7 +165,6 @@ const BoatDetail = () => {
 
   const handleModelChange = (event) => {
     const inputYear = event.target.value;
-    console.log("🚀 ~ handleModelChange ~ inputYear:", inputYear);
 
     // Ensure input is a number
     if (/^\d{0,4}$/.test(inputYear)) {

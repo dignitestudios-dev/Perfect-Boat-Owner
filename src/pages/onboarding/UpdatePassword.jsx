@@ -13,7 +13,6 @@ import axios from "axios";
 const UpdatePassword = () => {
   const { navigate } = useContext(GlobalContext);
   const [isUpdated, setIsUpdated] = useState(false);
-  console.log("🚀 ~ UpdatePassword ~ isUpdated:", isUpdated);
 
   const [loading, setLoading] = useState(false);
 

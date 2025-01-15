@@ -66,7 +66,6 @@ const AssignedTasksTable = ({
   };
 
   const filteredData = boatsData?.task?.filter((item) => {
-    console.log("🚀 ~ filteredData ~ item:", item);
     const dueDateMatch =
       !dueDate.calendar ||
       getUnixDate(item?.dueDate) ===
@@ -77,7 +76,6 @@ const AssignedTasksTable = ({
         : true;
     return matchesStatus && dueDateMatch;
   });
-  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">

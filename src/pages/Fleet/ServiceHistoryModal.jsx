@@ -12,7 +12,6 @@ const ServiceHistoryModal = ({ isOpen, onClose, id }) => {
     setLoadingDownload(true);
     try {
       const response = await axios.get(`/owner/boat/${id}/excel`);
-      console.log("response is --> ", response);
       if (response?.status === 200) {
         const result = response?.data;
         if (result?.success && result?.data) {
@@ -41,10 +40,8 @@ const ServiceHistoryModal = ({ isOpen, onClose, id }) => {
     setLoadingEmail(true);
     try {
       const response = await axios.get(`/owner/boat/${id}/excel/email`);
-      console.log("email response is --> ", response);
       if (response?.status === 200) {
         const result = response?.data;
-        console.log("🚀 ~ handleDownload ~ result:", result);
         SuccessToast("Boat History Sent");
       }
     } catch (error) {

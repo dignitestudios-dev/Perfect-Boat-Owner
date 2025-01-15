@@ -94,7 +94,6 @@ const Notifications = () => {
     setDeleteLoading(true);
     try {
       const deleteResponse = await axios.delete("/owner/notification");
-      console.log("🚀 ~ deleteAll ~ deleteResponse:", deleteResponse);
 
       // Ensure response status is 200, and handle success accordingly
       if (deleteResponse?.status === 200) {

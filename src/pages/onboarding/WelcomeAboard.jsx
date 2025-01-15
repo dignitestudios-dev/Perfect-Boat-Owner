@@ -207,7 +207,6 @@ const WelcomeAboard = () => {
         }
       }
     } catch (error) {
-      console.log("error outside loop", error);
       ErrorToast(error?.response?.data?.message);
     } finally {
       setLoading(false);

@@ -43,7 +43,6 @@ const Summary = () => {
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
-      console.log("🚀  handleCompleteBuy  err:", err);
       setLoading(false);
     }
   };

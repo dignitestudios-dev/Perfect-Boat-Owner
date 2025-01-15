@@ -27,7 +27,6 @@ const Publish = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
-  console.log("🚀 ~ Publish ~ dueDate:", dueDate);
 
   const [loading, setLoading] = useState(false);
 

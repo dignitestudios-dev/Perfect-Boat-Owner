@@ -82,7 +82,6 @@ const DeactivatedEmployeesTable = () => {
       } else {
         const { data } = await axios.get(`/owner/user?isDelete=${false}`);
         if (data.success === true) {
-          console.log("🚀 ~ getUsersData ~ data:", data);
           setUsersData(data?.data);
         }
       }

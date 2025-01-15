@@ -79,7 +79,6 @@ const DeleteManagerAccount = () => {
       }
     } catch (err) {
       console.log("🚀 ~ handleDeactivate ~ err:", err);
-      console.log("error call");
       ErrorToast(err?.response?.data?.message);
     } finally {
       setDeactivateLoading(false);

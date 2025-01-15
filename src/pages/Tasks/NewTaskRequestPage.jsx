@@ -12,7 +12,7 @@ import { getUnixDate } from "../../data/DateFormat";
 const NewTaskRequestPage = () => {
   const location = useLocation();
   const { task } = location.state || {};
-  console.log("🚀 ~ NewTaskRequestPage ~ task:", task);
+
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

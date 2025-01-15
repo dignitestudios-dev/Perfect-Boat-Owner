@@ -27,8 +27,6 @@ const PostUpdateBlog = () => {
     coverUrl,
     setCoverUrl,
   } = useContext(BlogContext);
-  console.log("🚀 ~ PostUpdateBlog ~ coverUrl:", coverUrl);
-  console.log("🚀 ~ PostUpdateBlog ~ coverFile:", coverFile);
 
   const [loading, setLoading] = useState(false);
 

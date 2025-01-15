@@ -27,7 +27,6 @@ const Blogs = () => {
         setblogsData((prevBlogs) =>
           prevBlogs.filter((blog) => blog._id !== id)
         );
-        console.log("Blog deleted successfully");
       } else {
         console.error("Failed to delete blog");
       }

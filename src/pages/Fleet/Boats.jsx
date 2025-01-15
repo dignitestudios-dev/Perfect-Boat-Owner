@@ -36,7 +36,6 @@ const Boats = () => {
   };
 
   useEffect(() => {
-    console.log("use effect call");
     getBoats();
   }, [currentPage, findSearch, boatType, locationType]);
 

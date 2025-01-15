@@ -21,7 +21,6 @@ const AssignManager = () => {
   const filteredData = employees?.filter((item) =>
     item?.name?.toLowerCase()?.includes(search?.toLowerCase())
   );
-  console.log("🚀 ~ AssignManager ~ filteredData:", filteredData);
 
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);

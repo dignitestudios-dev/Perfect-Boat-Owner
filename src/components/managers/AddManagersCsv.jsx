@@ -9,7 +9,6 @@ import ManagerBoatsCsvInput from "./ManagerBoatsCsvInput";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddManagersCsv = ({ data, setData }) => {
-  console.log("🚀 ~ AddManagersCsv ~ data:", data);
   const { boats } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
