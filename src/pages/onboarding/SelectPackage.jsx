@@ -7,9 +7,25 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import { AuthContext } from "../../contexts/AuthContext";
 
+const features = [
+  "Unlimited Number of Vessels",
+  "Ability to Import Customers Boat Information",
+  "Manage 3 Levels of Hierarchy: Employees > Managers > Owner",
+  "Assign Tasks to Complete to Employees",
+  "Ability to Request New Tasks from Employee to Manager",
+  "Ability for Manager to Accept and Assign New Requested Tasks",
+  "Ability for Managers and Owners to see overdue tasks",
+  "Ability to Create and Schedule New Custom Tasks",
+  "Reminders via app, email, text",
+  "Educational Features: Ability to Post Custom Communications / Education to Your Team",
+  "Adjustable Task Frequencies",
+  "Ability to record task completion",
+  "Attach photos of task completion",
+  "Downloadable Detailed Report per vessel of all tasks completed with dates, times, and photos",
+];
+
 const SelectPackage = () => {
   const { navigate } = useContext(GlobalContext);
-  const { isFreeTrial } = useContext(AuthContext);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -84,7 +100,7 @@ const SelectPackage = () => {
                 </ul>
               </div>
             ) : (
-              <div className="w-[390px] h-[648px] rounded-[24px] bg-[#1A293D] pt-8 pb-4 px-8 flex flex-col justify-start items-center">
+              <div className="w-[390px] h-auto rounded-[24px] bg-[#1A293D] pt-8 pb-4 px-8 flex flex-col justify-start items-center">
                 <span
                   className="w-auto h-auto py-2 bg-[#001229] text-[14px] text-center tracking-[3px] font-semibold px-4 text-white
                rounded-full flex items-center justify-center"
@@ -102,9 +118,9 @@ const SelectPackage = () => {
                   <span className="text-[14px] font-normal text-white">
                     /Year
                   </span>
-                  {isFreeTrial && (
+                  {subscriptions[0]?.istTrail && (
                     <span className="absolute -top-4 right-6 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
-                      Includes Free Trial
+                      {subscriptions[0]?.trailDays} Days Free Trial
                     </span>
                   )}
                 </div>
@@ -121,25 +137,23 @@ const SelectPackage = () => {
                     )}
                   </div>
                 </button>
-
-                <ul
-                  className="mt-3 w-full px-8 text-[16px] text-white font-normal flex flex-col gap-2
-                 justify-start items-start list-disc border-b border-[#243347] pb-3"
-                >
-                  {subscriptions[0]?.features.map((item, index) => {
-                    if (index < 5) {
+                <div className="h-[320px] overflow-y-scroll my-3">
+                  <ul
+                    className=" w-full px-8 text-[16px] text-white font-normal flex flex-col gap-2
+      justify-start items-start list-disc border-b border-[#243347] pb-3"
+                  >
+                    {features.map((item, index) => {
                       return <li key={index}>{item}</li>;
-                    }
-                  })}
-                </ul>
-
+                    })}
+                  </ul>
+                </div>
                 <div className="bg-[#199BD11F] text-white rounded-xl px-6 py-2 mt-2">
                   <p className="font-semibold pb-1">Important Note</p>
                   <p>
                     A one-time license fee of ${subscriptions[0]?.annualPrice}{" "}
                     applies and renews annually. A monthly cost of $
-                    {subscriptions[0]?.price} per user will apply for each
-                    employee added.
+                    {subscriptions[0]?.price} per user will apply for each user
+                    added.
                   </p>
                 </div>
               </div>

@@ -1,16 +1,20 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios";
 import getFCMToken from "../firebase/getFcmToken";
 import { onMessageListener } from "../firebase/messages";
 import { ErrorToast } from "../components/global/Toaster";
 import Cookies from "js-cookie";
+import { AuthContext } from "./AuthContext";
 
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
   const route = useNavigate();
   const token = Cookies.get("token");
+  const isSubscribed = localStorage.getItem("isSubscribed");
+  console.log("🚀 ~ GlobalContextProvider ~ isSubscribed:", isSubscribed);
+
   const [activeLink, setActiveLink] = useState("Home");
   const navigate = (url, active) => {
     route(url);

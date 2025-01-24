@@ -1,11 +1,8 @@
 import { Navigate } from "react-router-dom";
-import AddCard from "../pages/onboarding/AddCard";
 import ForgotPassword from "../pages/onboarding/ForgotPassword";
 import Login from "../pages/onboarding/Login";
 import OnboardVerifyOtp from "../pages/onboarding/OnboardVerifyOtp";
-import SelectPackage from "../pages/onboarding/SelectPackage";
 import Signup from "../pages/onboarding/Signup";
-import Summary from "../pages/onboarding/Summary";
 import UpdatePassword from "../pages/onboarding/UpdatePassword";
 import VerifyOtp from "../pages/onboarding/VerifyOtp";
 import PageNotFound from "../pages/PageNotFound";

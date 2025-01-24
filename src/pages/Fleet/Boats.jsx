@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import BoatsTable from "../../components/fleet/BoatsTable";
 import axios from "../../axios";
 import Pagination from "../../components/global/pagination/Pagination";
-import { boatType } from "./../../data/TaskTypeData";
 
 const Boats = () => {
   const [boats, setBoats] = useState([]);
