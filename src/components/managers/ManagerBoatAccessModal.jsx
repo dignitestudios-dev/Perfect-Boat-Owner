@@ -11,14 +11,13 @@ const ManagerBoatAccessModal = ({
   setIsOpen,
   managerId,
   assignedBoats,
+  reload,
 }) => {
   const { boats, setUpdateBoat } = useContext(GlobalContext);
   const [allSelected, setAllSelected] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
 
   const [search, setSearch] = useState("");
-
-  const [isSelectBoatsModalOpen, setIsSelectBoatsModalOpen] = useState(false);
 
   const [assignLoading, setAssignLoading] = useState(false);
   const [isBoatManagerAccessOpen, setIsBoatManagerAccessOpen] = useState(false);
@@ -83,9 +82,10 @@ const ManagerBoatAccessModal = ({
       const response = await axios.put(`/owner/manager/${managerId}/boat`, obj);
       if (response.status === 200) {
         setIsBoatManagerAccessOpen(true);
-        setIsSelectBoatsModalOpen(false);
+        setIsOpen(false);
         setUpdateBoat((prev) => !prev);
-        getManagerById();
+        reload();
+        // getManagerById();
       }
     } catch (err) {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
@@ -111,7 +111,7 @@ const ManagerBoatAccessModal = ({
           <button
             onClick={() => {
               setIsOpen(false);
-              setIsSelectBoatsModalOpen(false);
+              setIsOpen(false);
             }}
             className="absolute top-4 right-4 text-white text-lg"
           >

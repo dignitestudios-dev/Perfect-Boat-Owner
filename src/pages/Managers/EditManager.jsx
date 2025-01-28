@@ -153,9 +153,14 @@ const EditManager = () => {
     }
   };
 
+  const [update, setUpdate] = useState(false);
+  const reloadData = () => {
+    setUpdate((prev) => !prev);
+  };
+
   useEffect(() => {
     getDataById();
-  }, [id]);
+  }, [id, update]);
 
   const onSubmit = async (data) => {
     try {
@@ -683,6 +688,7 @@ const EditManager = () => {
         assignedBoats={boatList}
         isOpen={isBoatAccessModalOpen}
         setIsOpen={setIsBoatAccessModalOpen}
+        reload={reloadData}
       />
 
       <BoatsRightsModal
