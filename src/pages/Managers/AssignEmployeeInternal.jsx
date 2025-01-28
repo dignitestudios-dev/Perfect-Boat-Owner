@@ -39,7 +39,7 @@ const AssignEmployeeInternal = () => {
           setData(parsedData);
         },
       });
-      setCsvUploaded(true);
+      // setCsvUploaded(true);
     }
   };
 

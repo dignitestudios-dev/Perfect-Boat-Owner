@@ -8,10 +8,14 @@ import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import AddEmployeeModal from "../../components/global/AddEmployeeModal";
 import { validateManagers } from "../../data/boatValidation";
+import ManagerBoatsCsvInput from "../../components/managers/ManagerBoatsCsvInput";
+import ManagerBoatsCsvModal from "../../components/managers/ManagerBoatsCsvModal";
 const AddManager = () => {
-  const { navigate } = useContext(GlobalContext);
+  const { boats, navigate } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+  const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
+  const [inputIndex, setInputIndex] = useState(0);
   const [data, setData] = useState([
     {
       name: "",
@@ -22,6 +26,7 @@ const AddManager = () => {
       password: "Test@123",
     },
   ]);
+
   const [error, setError] = useState({});
 
   const checkForErrors = (parsedData) => {
@@ -88,7 +93,9 @@ const AddManager = () => {
   const handleChange = (index, field, value) => {
     const newData = [...data];
     newData[index][field] = value;
-    newData[index]["errors"][field] = undefined;
+    if (newData[index].errors) {
+      delete newData[index].errors;
+    }
     setData(newData);
   };
 
@@ -224,6 +231,7 @@ const AddManager = () => {
                                 const capitalizedValue =
                                   value.charAt(0).toUpperCase() +
                                   value.slice(1);
+
                                 handleChange(index, "name", capitalizedValue);
                               }}
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
@@ -389,6 +397,24 @@ const AddManager = () => {
                             </p>
                           )}
                         </div>
+                        <div>
+                          <ManagerBoatsCsvInput
+                            passSelectedBoat={
+                              data[index].boats ||
+                              setData((prevData) => {
+                                const updatedData = [...prevData];
+                                updatedData[index] = {
+                                  ...updatedData[index],
+                                  boats: boats?.map((data) => data?._id),
+                                };
+                                return updatedData;
+                              })
+                            }
+                            setIsBoatModalOpen={setIsBoatModalOpen}
+                            setInputIndex={setInputIndex}
+                            index={index}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -429,6 +455,18 @@ const AddManager = () => {
                     isOpen={isEmployeeOpen}
                     setIsOpen={setIsEmployeeOpen}
                   />
+                )}
+
+                {isBoatModalOpen && (
+                  <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
+                    <ManagerBoatsCsvModal
+                      data={data}
+                      inputIndex={inputIndex}
+                      isOpen={isBoatModalOpen}
+                      setIsOpen={setIsBoatModalOpen}
+                      setData={setData}
+                    />
+                  </div>
                 )}
                 {/* {isImportCSVOpen && (
               <ImportCSVModal

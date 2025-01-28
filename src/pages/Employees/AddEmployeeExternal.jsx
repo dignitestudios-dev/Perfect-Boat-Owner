@@ -23,8 +23,12 @@ const AddEmployeeExternal = () => {
       password: "Test@123",
     },
   ]);
-  const [error, setError] = useState({});
-  const handleRemoveBeforeIndex = (index) => {
+
+  const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const handleRemoveBeforeIndex = (index, message) => {
+    setErrorMessage(message);
     // Use filter to remove all items before the index
     const filteredData = data?.filter((item, idx) => idx >= index);
     setData(filteredData);
@@ -95,7 +99,9 @@ const AddEmployeeExternal = () => {
   const handleChange = (index, field, value) => {
     const newData = [...data];
     newData[index][field] = value;
-    newData[index]["errors"][field] = undefined;
+    if (newData[index].errors) {
+      delete newData[index].errors;
+    }
     setData(newData);
   };
 
@@ -121,10 +127,12 @@ const AddEmployeeExternal = () => {
         }
       }
     } catch (error) {
+      setErrorMessage(error?.response?.data?.message);
       if (error?.response?.data?.index > 0) {
         const index = error?.response?.data?.index;
+        const message = error?.response?.data?.message;
 
-        handleRemoveBeforeIndex(index);
+        handleRemoveBeforeIndex(index, message);
       }
       console.error("Error adding employee:", error);
       ErrorToast(error?.response?.data?.message);
@@ -211,6 +219,11 @@ const AddEmployeeExternal = () => {
                       </div>
                     )}
                     <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
+                      {errorMessage && (
+                        <div className="w-full grid grid-cols-1">
+                          <p className="text-red-500 text-sm">{errorMessage}</p>
+                        </div>
+                      )}
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                           <label className="text-[16px] font-medium leading-[21.6px]">
@@ -397,6 +410,24 @@ const AddEmployeeExternal = () => {
                               {form.errors?.phone}
                             </p>
                           )}
+                        </div>
+                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                          <label className="text-[16px] font-medium leading-[21.6px]">
+                            {"Assign Manager"}
+                          </label>
+                          <div
+                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                          >
+                            <input
+                              type="email"
+                              value={form?.manager}
+                              onChange={(e) =>
+                                handleChange(index, "manager", e.target.value)
+                              }
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                              placeholder={"Enter Email "}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
