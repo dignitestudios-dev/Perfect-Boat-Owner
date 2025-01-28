@@ -252,7 +252,7 @@ const TaskDetail = () => {
                 </h3>
                 <span
                   className="text-[11px] capitalize bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] 
-              font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] "
+              font-medium leading-[14.85px] flex justify-center items-center w-auto px-4 h-[27px] "
                   style={{
                     color:
                       statusColors[taskDetail?.status] ||
