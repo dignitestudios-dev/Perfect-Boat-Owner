@@ -18,8 +18,6 @@ const FleetImages = ({
   console.log("🚀 ~ imagesBox:", imagesBox);
   const [imageLoading, setImageLoading] = useState(false);
   const handleUploadedImage = async (e, formIndex, imageIndex) => {
-    console.log("🚀 ~ handleUploadedImage ~ imageIndex:", imageIndex);
-    console.log("🚀 ~ handleUploadedImage ~ formIndex:", formIndex);
     setForms((prevForms) => {
       const updatedForms = [...prevForms];
       updatedForms[formIndex] = {
@@ -69,6 +67,7 @@ const FleetImages = ({
 
       setImagesBox((prev) => {
         const updatedBox = [...prev];
+        console.log("🚀 ~ setImagesBox ~ updatedBox:", updatedBox);
         if (!updatedBox[formIndex]) updatedBox[formIndex] = [];
         images.forEach((_, idx) => {
           while (
