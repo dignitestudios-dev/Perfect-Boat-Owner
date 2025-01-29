@@ -85,7 +85,6 @@ const AssignManager = () => {
         setIsAssignEmployeeModalOpen(true);
       }
     } catch (err) {
-      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       ErrorToast(err?.response?.data?.message);
     } finally {
       setAssignLoading(false);

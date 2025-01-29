@@ -13,7 +13,6 @@ export const GlobalContextProvider = ({ children }) => {
   const route = useNavigate();
   const token = Cookies.get("token");
   const isSubscribed = localStorage.getItem("isSubscribed");
-  console.log("🚀 ~ GlobalContextProvider ~ isSubscribed:", isSubscribed);
 
   const [activeLink, setActiveLink] = useState("Home");
   const navigate = (url, active) => {

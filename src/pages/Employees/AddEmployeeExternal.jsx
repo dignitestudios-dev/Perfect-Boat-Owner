@@ -12,6 +12,7 @@ import { validateManagers } from "../../data/boatValidation";
 
 const AddEmployeeExternal = () => {
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
+  const [formError, setFormError] = useState(null);
   const [data, setData] = useState([
     {
       name: "",
@@ -24,33 +25,49 @@ const AddEmployeeExternal = () => {
     },
   ]);
 
-  const [error, setError] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const checkForFieldErrors = (array) => {
+    const requiredFields = ["name", "email", "jobtitle", "location", "phone"];
+
+    // Array to store error details
+    const errors = [];
+
+    // Iterate through each object in the array
+    array.forEach((item, index) => {
+      const missingFields = [];
+
+      // Check each required field
+      requiredFields.forEach((field) => {
+        // Check if the field is missing or invalid (empty string, null, undefined, or empty array)
+        if (
+          !item[field] ||
+          item[field] === "" ||
+          item[field] === null ||
+          (Array.isArray(item[field]) && item[field].length === 0)
+        ) {
+          missingFields.push(field); // Add the field name to the missingFields array
+        }
+      });
+
+      // If there are missing fields, store the index and fields
+      if (missingFields.length > 0) {
+        errors.push({ index, missingFields });
+      } else {
+        const newData = [...array];
+        if (newData[index].errors) {
+          delete newData[index].errors;
+        }
+        setData(newData);
+      }
+    });
+
+    return errors;
+  };
 
   const handleRemoveBeforeIndex = (index, message) => {
-    setErrorMessage(message);
+    setFormError(message);
     // Use filter to remove all items before the index
     const filteredData = data?.filter((item, idx) => idx >= index);
     setData(filteredData);
-  };
-  const checkForErrors = (parsedData) => {
-    const newErrors = parsedData.reduce((acc, item, index) => {
-      const errorFields = [];
-      if (!item.name) errorFields.push("name");
-      if (!item.email) errorFields.push("email");
-      if (!item.jobtitle) errorFields.push("jobtitle");
-      if (!item.phoneNumber) errorFields.push("phone");
-      if (!item.location) errorFields.push("location");
-
-      // if (!item.image) errorFields.push("image");
-
-      if (errorFields.length > 0) {
-        acc[index] = errorFields;
-      }
-      return acc;
-    }, {});
-
-    setError(newErrors);
   };
 
   const addNewEmployee = () => {
@@ -86,7 +103,7 @@ const AddEmployeeExternal = () => {
             jobtitle: item.jobtitle || "",
             location: item.location || "",
             manager: item.manager || null,
-            phone: item.phoneNumber || "",
+            phone: item.phone || "",
             password: "Test@123",
           }));
           setData(parsedData);
@@ -103,6 +120,8 @@ const AddEmployeeExternal = () => {
       delete newData[index].errors;
     }
     setData(newData);
+
+    setFormError(null);
   };
 
   const { navigate } = useContext(GlobalContext);
@@ -111,7 +130,8 @@ const AddEmployeeExternal = () => {
   const submitEmployeeData = async (e) => {
     e.preventDefault();
     const { validatedForms, isValid } = validateManagers(data);
-    if (!isValid) {
+    const errors = checkForFieldErrors(data);
+    if (!isValid || errors?.length > 0) {
       setData(validatedForms);
     }
     try {
@@ -127,15 +147,15 @@ const AddEmployeeExternal = () => {
         }
       }
     } catch (error) {
-      setErrorMessage(error?.response?.data?.message);
       if (error?.response?.data?.index > 0) {
         const index = error?.response?.data?.index;
         const message = error?.response?.data?.message;
 
         handleRemoveBeforeIndex(index, message);
+      } else {
+        setFormError(error?.response?.data?.message);
       }
-      console.error("Error adding employee:", error);
-      ErrorToast(error?.response?.data?.message);
+      // ErrorToast(error?.response?.data?.message);
     } finally {
       setSubmitLoading(false);
     }
@@ -166,21 +186,25 @@ const AddEmployeeExternal = () => {
                 download
               >
                 <button
+                  disabled={submitLoading}
                   type="button"
                   className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-xl"
                 >
                   Download Template
                 </button>
               </a>
-              <button
-                type="button"
-                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-                onClick={() => {
-                  document.getElementById("input").click();
-                }}
-              >
-                Import CSV
-              </button>
+              {data?.length == 1 && (
+                <button
+                  disabled={submitLoading}
+                  type="button"
+                  className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                  onClick={() => {
+                    document.getElementById("input").click();
+                  }}
+                >
+                  Import CSV
+                </button>
+              )}
             </div>
             <input
               type="file"
@@ -199,7 +223,11 @@ const AddEmployeeExternal = () => {
                 return (
                   <div
                     key={index}
-                    className="w-full flex flex-col justify-start items-start gap-6"
+                    className={`w-full flex flex-col justify-start items-start gap-6 ${
+                      formError && index === 0
+                        ? "border border-red-600 p-2 rounded-xl"
+                        : "p-0"
+                    }`}
                   >
                     <div className="w-full h-auto flex justify-between items-center">
                       <div>
@@ -219,11 +247,11 @@ const AddEmployeeExternal = () => {
                       </div>
                     )}
                     <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
-                      {errorMessage && (
-                        <div className="w-full grid grid-cols-1">
-                          <p className="text-red-500 text-sm">{errorMessage}</p>
-                        </div>
-                      )}
+                      {formError && index === 0 ? (
+                        <span className="text-red-600 text-sm font-medium">
+                          {formError}
+                        </span>
+                      ) : null}
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                           <label className="text-[16px] font-medium leading-[21.6px]">
@@ -437,6 +465,7 @@ const AddEmployeeExternal = () => {
 
               <div className="w-full flex justify-end mt-10 items-center gap-4">
                 <button
+                  disabled={submitLoading}
                   type="button"
                   onClick={() => {
                     navigate("/dashboard");
@@ -446,6 +475,7 @@ const AddEmployeeExternal = () => {
                   {"Skip"}
                 </button>
                 <button
+                  disabled={submitLoading}
                   type="button"
                   onClick={addNewEmployee}
                   className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"

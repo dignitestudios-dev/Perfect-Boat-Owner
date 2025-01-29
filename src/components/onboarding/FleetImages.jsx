@@ -189,7 +189,7 @@ const FleetImages = ({
         <h3 className="text-[18px] font-bold leading-[24.3px]">
           Upload Pictures{" "}
           <span className="text-[14px] font-normal leading-[24px]">
-            (Supported Files Type: JPG, PNG, GIF)
+            (Supported Files Type: JPG, PNG)
           </span>
         </h3>
         <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">

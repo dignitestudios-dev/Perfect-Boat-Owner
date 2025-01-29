@@ -111,7 +111,6 @@ const OnboardVerifyOtp = () => {
         ErrorToast(response?.data?.message);
       }
     } catch (err) {
-      console.log("🚀 ~ handleResendOtp ~ err:", err);
       ErrorToast(err?.response?.data?.message);
     } finally {
       setResendLoading(false);

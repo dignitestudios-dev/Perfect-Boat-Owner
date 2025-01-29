@@ -125,7 +125,7 @@ const AddEmployee = () => {
             jobtitle: item.jobtitle || "",
             location: item.location || "",
             manager: item.manager || null,
-            phone: item.phoneNumber || "",
+            phone: item.phone || "",
             password: "Test@123",
           }));
           setData(parsedData);

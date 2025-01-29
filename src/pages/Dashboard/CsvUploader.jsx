@@ -53,7 +53,7 @@ const CsvUploader = () => {
             email: item.email || "",
             jobtitle: item.jobtitle || "",
             location: item.location || "abc house jacksonville",
-            phone: item.phoneNumber || "1234567890",
+            phone: item.phone || "1234567890",
             password: "Test@123",
           }));
           setData(parsedData);

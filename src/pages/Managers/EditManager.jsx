@@ -213,7 +213,6 @@ const EditManager = () => {
         setIsEmployeeDetailModalOpen(false);
       }
     } catch (err) {
-      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       ErrorToast(err?.response?.data?.message);
     } finally {
       setLoading(false);

@@ -22,6 +22,8 @@ const AddFleet = () => {
 
   const navigate = useNavigate();
   const [selectedBoat, setSelectedBoat] = useState("");
+  console.log("🚀 ~ AddFleet ~ selectedBoat:", selectedBoat);
+  const [selectedBoatErr, setSelectedBoatErr] = useState(null);
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isCongratsOpen, setIsCongratsOpen] = useState(false);
   const [isImportCSVOpen, setIsImportCSVOpen] = useState(false);
@@ -63,6 +65,7 @@ const AddFleet = () => {
   } = useForm();
 
   const handleSelect = (boat) => {
+    setSelectedBoatErr(null);
     setSelectedBoat(boat);
   };
 
@@ -94,6 +97,10 @@ const AddFleet = () => {
     //   ErrorToast("Select cover image");
     //   return;
     // }
+    if (!selectedBoat) {
+      setSelectedBoatErr("Select boat type");
+      return;
+    }
     if (modelError) {
       ErrorToast("Enter valid model");
       return;
@@ -347,7 +354,11 @@ const AddFleet = () => {
                           Boat Type
                         </label>
                         <div className="group  w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl hover:rounded-b-none hover:rounded-t-xl relative">
-                          <span className="text-gray-400">
+                          <span
+                            className={`${
+                              selectedBoat ? "text-white" : "text-gray-400"
+                            }`}
+                          >
                             {selectedBoat || "--Select--"}
                           </span>
                           <span className="text-gray-400">
@@ -375,6 +386,9 @@ const AddFleet = () => {
                             </div>
                           </div>
                         </div>
+                        {selectedBoatErr && (
+                          <p className="text-red-500">{selectedBoatErr}</p>
+                        )}
                       </div>
 
                       <AddFleetInput

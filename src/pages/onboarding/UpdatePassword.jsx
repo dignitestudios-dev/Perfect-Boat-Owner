@@ -52,7 +52,6 @@ const UpdatePassword = () => {
         SuccessToast(response?.data?.message);
       }
     } catch (err) {
-      console.log("🚀 ~ createAccount ~ err:", err);
       ErrorToast(err?.response?.data?.message);
     } finally {
       setLoading(false);

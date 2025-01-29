@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Papa from "papaparse";
 import { FiLoader } from "react-icons/fi";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
@@ -11,7 +11,7 @@ import { validateManagers } from "../../data/boatValidation";
 import ManagerBoatsCsvInput from "../../components/managers/ManagerBoatsCsvInput";
 import ManagerBoatsCsvModal from "../../components/managers/ManagerBoatsCsvModal";
 const AddManager = () => {
-  const { boats, navigate } = useContext(GlobalContext);
+  const { boats, navigate, setUpdateBoat } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
@@ -27,26 +27,42 @@ const AddManager = () => {
     },
   ]);
 
-  const [error, setError] = useState({});
+  const checkForFieldErrors = (array) => {
+    const requiredFields = ["name", "email", "jobtitle", "location", "phone"];
 
-  const checkForErrors = (parsedData) => {
-    const newErrors = parsedData.reduce((acc, item, index) => {
-      const errorFields = [];
-      if (!item.name) errorFields.push("name");
-      if (!item.email) errorFields.push("email");
-      if (!item.jobtitle) errorFields.push("jobtitle");
-      if (!item.phoneNumber) errorFields.push("phone");
-      if (!item.location) errorFields.push("location");
+    // Array to store error details
+    const errors = [];
 
-      // if (!item.image) errorFields.push("image");
+    // Iterate through each object in the array
+    array.forEach((item, index) => {
+      const missingFields = [];
 
-      if (errorFields.length > 0) {
-        acc[index] = errorFields;
+      // Check each required field
+      requiredFields.forEach((field) => {
+        // Check if the field is missing or invalid (empty string, null, undefined, or empty array)
+        if (
+          !item[field] ||
+          item[field] === "" ||
+          item[field] === null ||
+          (Array.isArray(item[field]) && item[field].length === 0)
+        ) {
+          missingFields.push(field); // Add the field name to the missingFields array
+        }
+      });
+
+      // If there are missing fields, store the index and fields
+      if (missingFields.length > 0) {
+        errors.push({ index, missingFields });
+      } else {
+        const newData = [...array];
+        if (newData[index].errors) {
+          delete newData[index].errors;
+        }
+        setData(newData);
       }
-      return acc;
-    }, {});
+    });
 
-    setError(newErrors);
+    return errors;
   };
 
   const addNewManager = () => {
@@ -80,7 +96,7 @@ const AddManager = () => {
             email: item.email || "",
             jobtitle: item.jobtitle || "",
             location: item.location || "",
-            phone: item.phoneNumber || "",
+            phone: item.phone || "",
             password: "Test@123",
           }));
           setData(parsedData);
@@ -97,6 +113,10 @@ const AddManager = () => {
       delete newData[index].errors;
     }
     setData(newData);
+    setFormError({
+      index: 0,
+      message: null,
+    });
   };
 
   const handleRemoveBeforeIndex = (index) => {
@@ -104,40 +124,56 @@ const AddManager = () => {
     setData(filteredData);
   };
 
+  const [formError, setFormError] = useState({
+    index: 0,
+    message: null,
+  });
+
   const submitManagerData = async (e) => {
     e.preventDefault();
     const { validatedForms, isValid } = validateManagers(data);
-    if (!isValid) {
+    const errors = checkForFieldErrors(data);
+    if (!isValid || errors?.length > 0) {
       setData(validatedForms);
-    }
-    try {
-      if (isValid) {
-        const dataToSubmit = data.map((item) => ({
-          ...item,
-          phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
-        }));
-        setSubmitLoading(true);
-        const response = await axios.post("/owner/manager/csv", dataToSubmit);
-        if (response.status === 200) {
-          setIsEmployeeOpen(true);
+    } else {
+      try {
+        if (isValid) {
+          const dataToSubmit = data.map((item) => ({
+            ...item,
+            phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`,
+          }));
+          setSubmitLoading(true);
+          const response = await axios.post("/owner/manager/csv", dataToSubmit);
+          if (response.status === 200) {
+            setIsEmployeeOpen(true);
+          }
         }
+      } catch (error) {
+        if (error?.response?.data?.index > 0) {
+          const index = error?.response?.data?.index;
+          handleRemoveBeforeIndex(index);
+        } else {
+          setFormError({
+            index: error.response?.data?.index,
+            message: error?.response?.data?.message,
+          });
+        }
+        console.log("Error adding employee:", error);
+        // ErrorToast(error?.response?.data?.message);
+      } finally {
+        setSubmitLoading(false);
       }
-    } catch (error) {
-      if (error?.response?.data?.index > 0) {
-        const index = error?.response?.data?.index;
-        handleRemoveBeforeIndex(index);
-      }
-      console.error("Error adding employee:", error);
-      ErrorToast(error?.response?.data?.message);
-    } finally {
-      setSubmitLoading(false);
     }
   };
+
+  useEffect(() => {
+    setUpdateBoat((prev) => !prev);
+  }, []);
 
   return (
     <>
       <div className="w-full h-screen bg-[#1A293D] text-white p-4 flex flex-col justify-start items-start overflow-y-auto">
-        <div className="w-full flex flex-col justify-start items-start gap-6 p-6 rounded-[18px] bg-[#001229]">
+        <div className="w-full flex flex-col justify-start items-start gap-6 py-6 px-4 rounded-[18px] bg-[#001229]">
           <div className="w-full h-auto flex flex-col lg:flex-row justify-between gap-3 lg:items-center">
             <div>
               <h3 className="text-[18px] font-bold ">Add Manager</h3>
@@ -151,26 +187,30 @@ const AddManager = () => {
                 has you covered at every step of the journey.
               </span> */}
             </div>
-            <div className="w-72 flex justify-between items-center">
+            <div className="w-72 flex justify-end gap-2 items-center">
               <a
                 href="https://api.theperfectboat.com/public/Image/Manager_CSV_Template.csv"
                 download
               >
                 <button
+                  disabled={submitLoading}
                   type="button"
                   className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-xl"
                 >
                   Download Template
                 </button>
               </a>
-              <button
-                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-                onClick={() => {
-                  document.getElementById("input").click();
-                }}
-              >
-                Import CSV
-              </button>
+              {data?.length == 1 && (
+                <button
+                  disabled={submitLoading}
+                  className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                  onClick={() => {
+                    document.getElementById("input").click();
+                  }}
+                >
+                  Import CSV
+                </button>
+              )}
             </div>
             <input
               type="file"
@@ -187,233 +227,245 @@ const AddManager = () => {
             >
               {data?.map((form, index) => {
                 return (
-                  <div
-                    key={index}
-                    className="w-full flex flex-col justify-start items-start gap-6"
-                  >
-                    {/* <div className="w-full h-auto flex justify-between items-center">
+                  <div className="w-full h-auto flex flex-col justify-start items-start gap-1">
+                    {formError.index == index && formError.message && (
+                      <span className="text-red-600 text-sm font-medium">
+                        {formError?.message}
+                      </span>
+                    )}
+
+                    <div
+                      key={index}
+                      className={`w-full flex flex-col justify-start items-start gap-6 p-2 rounded-xl ${
+                        formError.index == index &&
+                        formError.message &&
+                        "border border-red-600"
+                      }`}
+                    >
+                      {/* <div className="w-full h-auto flex justify-between items-center">
                       <div>
                         <h3 className="text-[18px] font-bold leading-[24.3px]">
                           Add {index === 0 ? "Manager" : "Another Manager"}
                         </h3>
                       </div>
                     </div> */}
-                    {index > 0 && (
-                      <div className="w-full flex justify-end">
-                        <p
-                          onClick={() => removeForm(index)}
-                          className="px-1.5 hover:text-red-500 rounded-full text-xl font-bold cursor-pointer"
-                        >
-                          ✕
-                        </p>
-                      </div>
-                    )}
-                    <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
-                      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
-                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-                          <label className="text-[16px] font-medium leading-[21.6px]">
-                            {"Name"}
-                          </label>
-                          <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                      {index > 0 && (
+                        <div className="w-full flex justify-end">
+                          <p
+                            onClick={() => removeForm(index)}
+                            className="px-1.5 hover:text-red-500 rounded-full text-xl font-bold cursor-pointer"
+                          >
+                            ✕
+                          </p>
+                        </div>
+                      )}
+                      <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
+                          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                            <label className="text-[16px] font-medium leading-[21.6px]">
+                              {"Name"}
+                            </label>
+                            <div
+                              className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
                               ${
                                 form?.errors?.name
                                   ? "? focus-within:border-red-500"
                                   : "focus-within:border-[#55C9FA]"
                               }  rounded-xl flex items-center `}
-                          >
-                            <input
-                              name="name"
-                              type="text"
-                              value={form?.name}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                const capitalizedValue =
-                                  value.charAt(0).toUpperCase() +
-                                  value.slice(1);
+                            >
+                              <input
+                                name="name"
+                                type="text"
+                                value={form?.name}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  const capitalizedValue =
+                                    value.charAt(0).toUpperCase() +
+                                    value.slice(1);
 
-                                handleChange(index, "name", capitalizedValue);
-                              }}
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Name"}
-                            />
+                                  handleChange(index, "name", capitalizedValue);
+                                }}
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                                placeholder={"Enter Name"}
+                              />
+                            </div>
+                            {form?.errors?.name && (
+                              <p className="text-red-500 text-sm">
+                                {form?.errors?.name}
+                              </p>
+                            )}
                           </div>
-                          {form?.errors?.name && (
-                            <p className="text-red-500 text-sm">
-                              {form?.errors?.name}
-                            </p>
-                          )}
-                        </div>
 
-                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-                          <label className="text-[16px] font-medium leading-[21.6px]">
-                            {"Email"}
-                          </label>
-                          <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                            <label className="text-[16px] font-medium leading-[21.6px]">
+                              {"Email"}
+                            </label>
+                            <div
+                              className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
                               ${
                                 form?.errors?.email
                                   ? "? focus-within:border-red-500"
                                   : "focus-within:border-[#55C9FA]"
                               } rounded-xl flex items-center `}
-                          >
-                            <input
-                              type="email"
-                              value={form?.email}
-                              onChange={(e) =>
-                                handleChange(index, "email", e.target.value)
-                              }
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400
+                            >
+                              <input
+                                type="email"
+                                value={form?.email}
+                                onChange={(e) =>
+                                  handleChange(index, "email", e.target.value)
+                                }
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400
                                autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Email"}
-                            />
+                                placeholder={"Enter Email"}
+                              />
+                            </div>
+                            {form?.errors?.email && (
+                              <p className="text-red-500 text-sm">
+                                {form?.errors?.email}
+                              </p>
+                            )}
                           </div>
-                          {form?.errors?.email && (
-                            <p className="text-red-500 text-sm">
-                              {form?.errors?.email}
-                            </p>
-                          )}
                         </div>
-                      </div>
-                      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
-                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-                          <label className="text-[16px] font-medium leading-[21.6px]">
-                            {"Job Title"}
-                          </label>
-                          <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
+                          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                            <label className="text-[16px] font-medium leading-[21.6px]">
+                              {"Job Title"}
+                            </label>
+                            <div
+                              className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
                               ${
                                 form?.errors?.jobtitle
                                   ? "? focus-within:border-red-500"
                                   : "focus-within:border-[#55C9FA]"
                               } rounded-xl flex items-center `}
-                          >
-                            <input
-                              name="jobTitle"
-                              type="text"
-                              value={form?.jobtitle}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                const capitalizedValue =
-                                  value.charAt(0).toUpperCase() +
-                                  value.slice(1);
-                                handleChange(
-                                  index,
-                                  "jobtitle",
-                                  capitalizedValue
-                                );
-                              }}
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Job Title"}
-                            />
+                            >
+                              <input
+                                name="jobTitle"
+                                type="text"
+                                value={form?.jobtitle}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  const capitalizedValue =
+                                    value.charAt(0).toUpperCase() +
+                                    value.slice(1);
+                                  handleChange(
+                                    index,
+                                    "jobtitle",
+                                    capitalizedValue
+                                  );
+                                }}
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                                placeholder={"Enter Job Title"}
+                              />
+                            </div>
+                            {form.errors?.jobtitle && (
+                              <p className="text-red-500 text-sm">
+                                {form.errors?.jobtitle}
+                              </p>
+                            )}
                           </div>
-                          {form.errors?.jobtitle && (
-                            <p className="text-red-500 text-sm">
-                              {form.errors?.jobtitle}
-                            </p>
-                          )}
-                        </div>
-                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-                          <label className="text-[16px] font-medium leading-[21.6px]">
-                            {"Location"}
-                          </label>
-                          <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
+                          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                            <label className="text-[16px] font-medium leading-[21.6px]">
+                              {"Location"}
+                            </label>
+                            <div
+                              className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px]
                               ${
                                 form?.errors?.location
                                   ? "? focus-within:border-red-500"
                                   : "focus-within:border-[#55C9FA]"
                               } rounded-xl flex items-center `}
-                          >
-                            <input
-                              name="location"
-                              type="text"
-                              value={form?.location}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                const capitalizedValue =
-                                  value.charAt(0).toUpperCase() +
-                                  value.slice(1);
-                                handleChange(
-                                  index,
-                                  "location",
-                                  capitalizedValue
-                                );
-                              }}
-                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                              placeholder={"Enter Location"}
-                            />
+                            >
+                              <input
+                                name="location"
+                                type="text"
+                                value={form?.location}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  const capitalizedValue =
+                                    value.charAt(0).toUpperCase() +
+                                    value.slice(1);
+                                  handleChange(
+                                    index,
+                                    "location",
+                                    capitalizedValue
+                                  );
+                                }}
+                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                                placeholder={"Enter Location"}
+                              />
+                            </div>
+                            {form.errors?.location && (
+                              <p className="text-red-500 text-sm">
+                                {form.errors?.location}
+                              </p>
+                            )}
                           </div>
-                          {form.errors?.location && (
-                            <p className="text-red-500 text-sm">
-                              {form.errors?.location}
-                            </p>
-                          )}
                         </div>
-                      </div>
-                      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
-                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
-                          <label className="text-[16px] font-medium leading-[21.6px]">
-                            {"Phone Number"}
-                          </label>
-                          <div
-                            className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px]
+                        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
+                          <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                            <label className="text-[16px] font-medium leading-[21.6px]">
+                              {"Phone Number"}
+                            </label>
+                            <div
+                              className={`w-full h-[52px] bg-[#1A293D] outline-none px-0 focus-within:border-[1px]
                               ${
                                 form?.errors?.phone
                                   ? "? focus-within:border-red-500"
                                   : "focus-within:border-[#55C9FA]"
                               }  rounded-xl flex items-center `}
-                          >
-                            <div
-                              className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
                             >
-                              <span
-                                className="mr-2 w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
-                          text-md font-medium text-white h-full"
-                                style={{
-                                  color: "#6B7373",
-                                }}
+                              <div
+                                className={`w-full h-full flex items-center justify-center rounded-[12px] relative`}
                               >
-                                +1
-                              </span>
-                              <input
-                                type="text"
-                                value={form?.phone}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  // Allow only digits and restrict to 10 digits
-                                  if (/^\d{0,10}$/.test(value)) {
-                                    handleChange(index, "phone", value);
-                                  }
-                                }}
-                                className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                                placeholder={"Enter Phone Number"}
-                              />
+                                <span
+                                  className="mr-2 w-14 rounded-l-[12px] flex justify-center items-center bg-[#16202e]
+                          text-md font-medium text-white h-full"
+                                  style={{
+                                    color: "#6B7373",
+                                  }}
+                                >
+                                  +1
+                                </span>
+                                <input
+                                  type="text"
+                                  value={form?.phone}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    // Allow only digits and restrict to 10 digits
+                                    if (/^\d{0,10}$/.test(value)) {
+                                      handleChange(index, "phone", value);
+                                    }
+                                  }}
+                                  className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                                  placeholder={"Enter Phone Number"}
+                                />
+                              </div>
                             </div>
+                            {form.errors?.phone && (
+                              <p className="text-red-500 text-sm">
+                                {form.errors?.phone}
+                              </p>
+                            )}
                           </div>
-                          {form.errors?.phone && (
-                            <p className="text-red-500 text-sm">
-                              {form.errors?.phone}
-                            </p>
-                          )}
-                        </div>
-                        <div>
-                          <ManagerBoatsCsvInput
-                            passSelectedBoat={
-                              data[index].boats ||
-                              setData((prevData) => {
-                                const updatedData = [...prevData];
-                                updatedData[index] = {
-                                  ...updatedData[index],
-                                  boats: boats?.map((data) => data?._id),
-                                };
-                                return updatedData;
-                              })
-                            }
-                            setIsBoatModalOpen={setIsBoatModalOpen}
-                            setInputIndex={setInputIndex}
-                            index={index}
-                          />
+                          <div>
+                            <ManagerBoatsCsvInput
+                              passSelectedBoat={
+                                data[index].boats ||
+                                setData((prevData) => {
+                                  const updatedData = [...prevData];
+                                  updatedData[index] = {
+                                    ...updatedData[index],
+                                    boats: boats?.map((data) => data?._id),
+                                  };
+                                  return updatedData;
+                                })
+                              }
+                              setIsBoatModalOpen={setIsBoatModalOpen}
+                              setInputIndex={setInputIndex}
+                              index={index}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -423,6 +475,7 @@ const AddManager = () => {
 
               <div className="w-full flex justify-end mt-10 items-center gap-4">
                 <button
+                  disabled={submitLoading}
                   type="button"
                   onClick={() => {
                     navigate("/add-employee-onboard");
@@ -432,6 +485,7 @@ const AddManager = () => {
                   {"Skip"}
                 </button>
                 <button
+                  disabled={submitLoading}
                   type="button"
                   onClick={addNewManager}
                   className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"

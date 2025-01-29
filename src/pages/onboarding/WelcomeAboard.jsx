@@ -1,10 +1,10 @@
-import React, { Fragment, useState } from "react";
-import { FiDownload, FiLoader } from "react-icons/fi";
+import React, { useState } from "react";
+import { FiLoader } from "react-icons/fi";
 import { TbCaretDownFilled } from "react-icons/tb";
 import ImportCSVModal from "../../components/global/ImportCSVModal";
 import AddManagerModal from "../../components/global/AddManagerModal";
 import axios from "../../axios";
-import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { ErrorToast } from "../../components/global/Toaster";
 import { boatType } from "../../data/TaskTypeData";
 import FleetExternalCsv from "../../components/fleet/FleetExternalCsv";
 import Papa from "papaparse";
@@ -25,11 +25,12 @@ const WelcomeAboard = () => {
   ]);
 
   const [selectedBoat, setSelectedBoat] = useState([]);
-  const [coverImage, setCoverImage] = useState([]);
+  const [coverImage, setCoverImage] = useState([0]);
   const [imagesBox, setImagesBox] = useState([[0]]);
   const [imagesArray, setImagesArray] = useState([[]]);
 
   const [uploadImages, setUploadImages] = useState([[]]);
+  console.log("🚀 ~ WelcomeAboard ~ uploadImages:", uploadImages[0]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,6 +62,7 @@ const WelcomeAboard = () => {
         location: "",
       },
     ]);
+    setCoverImage((prev) => [...prev, 0]);
     setImagesBox((prev) => [...prev, [0]]);
     setImagesArray((prev) => [...prev, []]);
   };
@@ -150,12 +152,27 @@ const WelcomeAboard = () => {
 
   const submitBoatData = async (e) => {
     e.preventDefault();
-    setLoading(true);
     const { validatedForms, isValid } = validateForms(forms);
     if (!isValid) {
       setForms(validatedForms);
     }
+    if (uploadImages[0].length === 0) {
+      console.log("  in if upload--> ", uploadImages[0].length);
+      setForms((prevForms) => {
+        const updatedForms = [...prevForms];
+        updatedForms[0] = {
+          ...updatedForms[0],
+          errors: {
+            ...updatedForms[0].errors,
+            ["cover"]: "Select/Upload Cover Image",
+          },
+        };
+        return updatedForms;
+      });
+      return;
+    }
     try {
+      setLoading(true);
       if (isValid) {
         for (const formIndex in forms) {
           const data = new FormData();
@@ -297,9 +314,9 @@ const WelcomeAboard = () => {
         complete: (results) => {
           const parsedData = results?.data?.map((item) => ({
             boatType: item.boatType || "",
-            name: item.name || "",
+            name: item["boat_name/hull_number"] || "",
             make: item.make || "",
-            model: item.model || "",
+            model: item.year || "",
             location: item.location || "",
             size: item.size || "",
             cover: item.cover || "",
@@ -331,27 +348,31 @@ const WelcomeAboard = () => {
               has you covered at every step of the journey.
             </span>
           </div>
-          <div className="w-72 flex justify-between items-center">
+          <div className="w-72 flex justify-end gap-2 items-center">
             <a
               href="https://api.theperfectboat.com/public/Image/Boat_CSV_Template.csv"
               download
             >
               <button
+                disabled={loading}
                 type="button"
                 className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-xl"
               >
                 Download Template
               </button>
             </a>
-            <button
-              type="button"
-              className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-              onClick={() => {
-                document.getElementById("input").click();
-              }}
-            >
-              Import CSV
-            </button>
+            {data?.length == 1 && !csvUploaded && (
+              <button
+                disabled={loading}
+                type="button"
+                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                onClick={() => {
+                  document.getElementById("input").click();
+                }}
+              >
+                Import CSV
+              </button>
+            )}
           </div>
           <input
             type="file"
@@ -423,6 +444,7 @@ const WelcomeAboard = () => {
                               <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-1">
                                 {boatType?.map((boat, index) => (
                                   <button
+                                    disabled={loading}
                                     type="button"
                                     key={index}
                                     onClick={() =>
@@ -546,6 +568,7 @@ const WelcomeAboard = () => {
 
             <div className="w-full flex justify-end mt-10 items-center gap-4">
               <button
+                disabled={loading}
                 type="button"
                 onClick={addForm}
                 className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
