@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CiTrash } from "react-icons/ci";
 import { FiDownload, FiLoader } from "react-icons/fi";
+import { ErrorToast } from "./../global/Toaster";
 
 const FleetImages = ({
   error,
@@ -14,8 +15,6 @@ const FleetImages = ({
   imagesBox,
   setForms,
 }) => {
-  console.log("🚀 ~ imagesArray:", imagesArray);
-  console.log("🚀 ~ imagesBox:", imagesBox);
   const [imageLoading, setImageLoading] = useState(false);
   const handleUploadedImage = async (e, formIndex, imageIndex) => {
     setForms((prevForms) => {
@@ -32,7 +31,12 @@ const FleetImages = ({
     });
     const file = e.target.files[0];
     const files = Array.from(e.target.files);
+
     if (files.length > 1) {
+      if (imagesArray[formIndex].length >= 5) {
+        ErrorToast("Cannot upload more then 5 images");
+        return;
+      }
       setImageLoading(true);
       const images = await Promise.all(
         files.map(async (file) => {

@@ -52,10 +52,10 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
     return errors;
   };
 
-  const handleRemoveBeforeIndex = (index) => {
-    const filteredData = data?.filter((item, idx) => idx >= index);
-    setData(filteredData);
-  };
+  // const handleRemoveBeforeIndex = (index) => {
+  //   const filteredData = data?.filter((item, idx) => idx >= index);
+  //   setData(filteredData);
+  // };
 
   const [errorObj, setErrorObj] = useState([]);
 
@@ -75,7 +75,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
       } catch (error) {
         if (error?.response?.data?.index > 0) {
           const index = error?.response?.data?.index;
-          handleRemoveBeforeIndex(index);
+          // handleRemoveBeforeIndex(index);
         }
         console.error("Error adding employee:", error);
         ErrorToast(error?.response?.data?.message);

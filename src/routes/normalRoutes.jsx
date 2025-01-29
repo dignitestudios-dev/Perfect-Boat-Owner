@@ -53,6 +53,7 @@ import CsvUploader from "../pages/Dashboard/CsvUploader";
 import AssignEmployeeInternal from "../pages/Managers/AssignEmployeeInternal";
 import PageNotFound from "../pages/PageNotFound";
 import { Navigate } from "react-router-dom";
+import UpdatePreview from "../pages/TidesTalesAndGuide/UpdatePreview";
 
 export const normalRoutes = [
   {
@@ -313,6 +314,11 @@ export const normalRoutes = [
     title: "Preview Blog",
     url: "/preview",
     page: <GlobalLayout page={<Preview />} />,
+  },
+  {
+    title: "Update Preview Blog",
+    url: "/preview/:id",
+    page: <GlobalLayout page={<UpdatePreview />} />,
   },
   {
     title: "Update Blog",

@@ -12,7 +12,11 @@ import { validateManagers } from "../../data/boatValidation";
 
 const AddEmployeeExternal = () => {
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
-  const [formError, setFormError] = useState(null);
+  // const [formError, setFormError] = useState(null);
+  const [formError, setFormError] = useState({
+    index: 0,
+    message: null,
+  });
   const [data, setData] = useState([
     {
       name: "",
@@ -121,7 +125,10 @@ const AddEmployeeExternal = () => {
     }
     setData(newData);
 
-    setFormError(null);
+    setFormError({
+      index: 0,
+      message: null,
+    });
   };
 
   const { navigate } = useContext(GlobalContext);
@@ -148,14 +155,16 @@ const AddEmployeeExternal = () => {
       }
     } catch (error) {
       ErrorToast(error?.response?.data?.message);
-      if (error?.response?.data?.index > 0) {
-        const index = error?.response?.data?.index;
-        const message = error?.response?.data?.message;
 
-        handleRemoveBeforeIndex(index, message);
-      } else {
-        setFormError(error?.response?.data?.message);
-      }
+      const index = error?.response?.data?.index;
+      const message = error?.response?.data?.message;
+      setFormError({
+        index: index,
+        message: message,
+      });
+
+      // handleRemoveBeforeIndex(index, message);
+
       // ErrorToast(error?.response?.data?.message);
     } finally {
       setSubmitLoading(false);
@@ -225,9 +234,9 @@ const AddEmployeeExternal = () => {
                   <div
                     key={index}
                     className={`w-full flex flex-col justify-start items-start gap-6 ${
-                      formError && index === 0
-                        ? "border border-red-600 p-2 rounded-xl"
-                        : "p-0"
+                      formError.index == index &&
+                      formError.message &&
+                      "border border-red-600 p-2 rounded-xl"
                     }`}
                   >
                     <div className="w-full h-auto flex justify-between items-center">
@@ -248,11 +257,12 @@ const AddEmployeeExternal = () => {
                       </div>
                     )}
                     <div className="w-full h-auto flex flex-col justify-start items-start gap-4 ">
-                      {formError && index === 0 ? (
+                      {formError.index == index && formError.message && (
                         <span className="text-red-600 text-sm font-medium">
-                          {formError}
+                          {formError?.message}
                         </span>
-                      ) : null}
+                      )}
+
                       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
                         <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                           <label className="text-[16px] font-medium leading-[21.6px]">

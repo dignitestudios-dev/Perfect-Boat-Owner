@@ -34,7 +34,7 @@ const AddEmployee = () => {
 
   function generateRandomPassword(length = 4) {
     const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&";
-    let password = "Perfect@";
+    let password = "Perfect@1";
     for (let i = 0, n = charset.length; i < length; ++i) {
       password += charset.charAt(Math.floor(Math.random() * n));
     }
@@ -147,27 +147,31 @@ const AddEmployee = () => {
             <h3 className="text-[18px] font-bold leading-[24.3px]">
               Add Employee
             </h3>
-            <div className="w-72 flex justify-between items-center">
+            <div className="w-72 flex justify-end items-center gap-2">
               <a
                 href="https://api.theperfectboat.com/public/Image/Employee_CSV_Template.csv"
                 download
               >
                 <button
+                  disabled={addLoading}
                   type="button"
                   className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-xl"
                 >
                   Download Template
                 </button>
               </a>
-              <button
-                type="button"
-                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-                onClick={() => {
-                  document.getElementById("input").click();
-                }}
-              >
-                Import CSV
-              </button>
+              {data?.length == 1 && (
+                <button
+                  disabled={addLoading}
+                  type="button"
+                  className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                  onClick={() => {
+                    document.getElementById("input").click();
+                  }}
+                >
+                  Import CSV
+                </button>
+              )}
             </div>
             <input
               type="file"
@@ -289,6 +293,7 @@ const AddEmployee = () => {
                       Assign Manager
                     </label>
                     <button
+                      disabled={addLoading}
                       type="button"
                       onClick={openManagerModal}
                       className="w-full h-[52px] bg-[#1A293D] disabled:text-white/50 outline-none px-3 

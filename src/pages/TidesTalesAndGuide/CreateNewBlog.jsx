@@ -22,12 +22,9 @@ const CreateNewBlog = () => {
     setStory,
     imageText,
     setImageText,
-    coverFile,
     setCoverFile,
     coverUrl,
     setCoverUrl,
-    setDueDate,
-    dueDate,
   } = useContext(BlogContext);
   const editorRef = useRef(null);
 
@@ -82,6 +79,12 @@ const CreateNewBlog = () => {
       editorRef.current.innerHTML = story;
       setHtmlContent(story);
     }
+    setTitle("");
+    setSubTitle("");
+    setStory("");
+    setImageText("");
+    setCoverFile("");
+    setCoverUrl("");
   }, []);
 
   return (

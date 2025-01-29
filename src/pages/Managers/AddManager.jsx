@@ -150,19 +150,13 @@ const AddManager = () => {
         }
       } catch (error) {
         ErrorToast(error?.response?.data?.message);
-        if (error?.response?.data?.index > 0) {
-          const index = error?.response?.data?.index;
-          handleRemoveBeforeIndex(index);
-          setFormError({
-            index: error.response?.data?.index,
-            message: error?.response?.data?.message,
-          });
-        } else {
-          setFormError({
-            index: error.response?.data?.index,
-            message: error?.response?.data?.message,
-          });
-        }
+
+        // handleRemoveBeforeIndex(index);
+        setFormError({
+          index: error.response?.data?.index,
+          message: error?.response?.data?.message,
+        });
+
         console.log("Error adding employee:", error);
         // ErrorToast(error?.response?.data?.message);
       } finally {

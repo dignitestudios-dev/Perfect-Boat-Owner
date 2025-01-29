@@ -103,7 +103,7 @@ const UpdateBlog = () => {
           <div className="flex items-center">
             <button
               className="text-[#199BD1] w-[107px] bg-[#1A293D] px-4 py-2 mr-2 rounded-lg"
-              onClick={() => navigate("/preview")}
+              onClick={() => navigate(`/preview/${state?._id}`)}
             >
               Preview
             </button>
