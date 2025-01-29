@@ -138,7 +138,7 @@ const AddEmployeeExternal = () => {
       if (isValid) {
         const dataToSubmit = data.map((item) => ({
           ...item,
-          phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+          phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`,
         }));
         setSubmitLoading(true);
         const response = await axios.post("/owner/employees/csv", dataToSubmit);
@@ -147,6 +147,7 @@ const AddEmployeeExternal = () => {
         }
       }
     } catch (error) {
+      ErrorToast(error?.response?.data?.message);
       if (error?.response?.data?.index > 0) {
         const index = error?.response?.data?.index;
         const message = error?.response?.data?.message;
@@ -180,7 +181,7 @@ const AddEmployeeExternal = () => {
                 has you covered at every step of the journey.
               </span> */}
             </div>
-            <div className="w-72 flex justify-between items-center">
+            <div className="w-72 flex justify-end gap-2 items-center">
               <a
                 href="https://api.theperfectboat.com/public/Image/Employee_CSV_Template.csv"
                 download

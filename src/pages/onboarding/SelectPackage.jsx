@@ -100,7 +100,7 @@ const SelectPackage = () => {
                 </ul>
               </div>
             ) : (
-              <div className="w-[390px] h-auto rounded-[24px] bg-[#1A293D] pt-8 pb-4 px-8 flex flex-col justify-start items-center">
+              <div className="w-[420px] h-auto rounded-[24px] bg-[#1A293D] pt-8 pb-4 px-8 flex flex-col justify-start items-center">
                 <span
                   className="w-auto h-auto py-2 bg-[#001229] text-[14px] text-center tracking-[3px] font-semibold px-4 text-white
                rounded-full flex items-center justify-center"
