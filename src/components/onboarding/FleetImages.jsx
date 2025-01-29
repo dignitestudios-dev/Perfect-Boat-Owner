@@ -70,10 +70,17 @@ const FleetImages = ({
         console.log("🚀 ~ setImagesBox ~ updatedBox:", updatedBox);
         if (!updatedBox[formIndex]) updatedBox[formIndex] = [];
         images.forEach((_, idx) => {
+          console.log("🚀 ~ images.forEach ~ idx:", idx);
           while (
             updatedBox[formIndex].length < imagesArray[formIndex].length + 1 &&
             updatedBox[formIndex].length < 5
           ) {
+            console.log(
+              "🚀 while running",
+              updatedBox[formIndex].length,
+              imagesArray[formIndex].length
+            );
+            console.log("after while", updatedBox[formIndex].length);
             updatedBox[formIndex].push(updatedBox[formIndex].length);
           }
         });
