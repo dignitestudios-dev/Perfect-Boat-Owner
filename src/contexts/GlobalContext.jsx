@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "../axios";
 import getFCMToken from "../firebase/getFcmToken";
 import { onMessageListener } from "../firebase/messages";
-import { ErrorToast } from "../components/global/Toaster";
 import Cookies from "js-cookie";
 import { AuthContext } from "./AuthContext";
 

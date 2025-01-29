@@ -8,19 +8,20 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => Cookies.get("token"));
   const [name, setName] = useState(Cookies.get("name"));
   const [email, setEmail] = useState(Cookies.get("email"));
+  const [isSubscribe, setIsSubscribe] = useState(Cookies.get("isSubscribed"));
 
   const login = (data) => {
     if (data) {
-      localStorage.setItem("isSubscribed", data?.data?.isSubscribed);
-
       Cookies.set("token", data?.data?.token);
       Cookies.set("name", data?.data?.userRecord?.name);
       Cookies.set("email", data?.data?.userRecord?.email);
       Cookies.set("profilePicture", data?.data?.userRecord?.profilePicture);
+      Cookies.set("isSubscribed", data?.data?.isSubscribed);
 
       setToken(data?.data?.token);
       setName(data?.data?.userRecord?.name);
       setEmail(data?.data?.userRecord?.email);
+      setIsSubscribe(data?.data?.isSubscribed);
     }
   };
 
@@ -39,7 +40,9 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, email, name }}>
+    <AuthContext.Provider
+      value={{ token, login, logout, email, name, isSubscribe }}
+    >
       {children}
     </AuthContext.Provider>
   );

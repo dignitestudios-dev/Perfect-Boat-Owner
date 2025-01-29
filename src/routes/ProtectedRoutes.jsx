@@ -11,8 +11,8 @@ export const ProtectedRoute = ({ token }) => {
   return <Outlet />;
 };
 
-export const PublicRoute = ({ token }) => {
-  if (token) {
+export const PublicRoute = ({ token, isSubscribe }) => {
+  if (token && isSubscribe) {
     return <Navigate to="/dashboard" replace />;
   }
   return <Outlet />;

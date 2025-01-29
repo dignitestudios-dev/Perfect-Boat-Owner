@@ -12,6 +12,7 @@ const JobType = ({
   setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
+
   const dropdownRef = useRef(null);
   const [jobDropDown, setJobDropDown] = useState([]);
 
@@ -48,7 +49,7 @@ const JobType = ({
     } else {
       setJobDropDown(dropDown?.employeeJobtitleDropDown);
     }
-  }, [isManager]);
+  }, [isManager, dropDown]);
 
   return (
     <span className="w-full flex justify-start items-center relative">

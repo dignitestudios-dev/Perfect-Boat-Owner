@@ -132,7 +132,11 @@ const SocialLogin = () => {
                 sessionStorage.setItem("token", response?.data?.data?.token);
                 if (response?.data?.data?.token) {
                   if (response?.data?.data?.isSubscribed === true) {
-                    navigate("/welcome-aboard");
+                    if (response?.data?.data?.isBoat === true) {
+                      navigate("/dashboard");
+                    } else {
+                      navigate("/welcome-aboard");
+                    }
                   } else {
                     navigate("/select-package");
                   }

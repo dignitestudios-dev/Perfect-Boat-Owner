@@ -8,13 +8,12 @@ import { useContext } from "react";
 import { ProtectedRoute, PublicRoute } from "./routes/ProtectedRoutes";
 
 function App() {
-  const navigate = useNavigate();
-  const { token } = useContext(AuthContext);
+  const { token, isSubscribe } = useContext(AuthContext);
 
   return (
     <Routes>
       <Route path="/" exact element={<Splash />} />
-      <Route element={<PublicRoute token={token} />}>
+      <Route element={<PublicRoute token={token} isSubscribe={isSubscribe} />}>
         {AuthenticationRoutes.map((route, index) => {
           return <Route path={route?.url} element={route?.page} key={index} />;
         })}
