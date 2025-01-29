@@ -41,16 +41,29 @@ const FleetImages = ({
         })
       );
       setImageLoading(false);
+      // setImagesArray((prev) => {
+      //   const updatedImages = [...prev];
+      //   if (!updatedImages[formIndex]) updatedImages[formIndex] = [];
+      //   images.forEach((image, idx) => {
+      //     if (updatedImages[formIndex].length < 5) {
+      //       //   updatedImages[formIndex].push(image);
+      //       updatedImages[formIndex][idx] = image;
+      //       return updatedImages;
+      //     }
+      //   });
+      //   return updatedImages;
+      // });
+
       setImagesArray((prev) => {
         const updatedImages = [...prev];
         if (!updatedImages[formIndex]) updatedImages[formIndex] = [];
-        images.forEach((image, idx) => {
-          if (updatedImages[formIndex].length < 5) {
-            //   updatedImages[formIndex].push(image);
-            updatedImages[formIndex][idx] = image;
-            return updatedImages;
-          }
-        });
+
+        // Concatenate the previous images with the new images, limiting the total length to 5
+        updatedImages[formIndex] = [
+          ...updatedImages[formIndex],
+          ...images.slice(0, 5 - updatedImages[formIndex].length), // Add new images while respecting the limit
+        ];
+
         return updatedImages;
       });
 
@@ -68,10 +81,8 @@ const FleetImages = ({
       setImagesBox((prev) => {
         const updatedBox = [...prev];
 
-        // Ensure the sub-array at index `index` exists
         if (!updatedBox[formIndex]) updatedBox[formIndex] = [];
 
-        // Calculate how many new dummy values you need to add
         const currentLength = updatedBox[formIndex].length;
         const maxLength = 5;
         const imagesCount = images.length;
