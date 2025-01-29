@@ -67,28 +67,26 @@ const FleetImages = ({
 
       setImagesBox((prev) => {
         const updatedBox = [...prev];
-        console.log("🚀 ~ setImagesBox ~ updatedBox:", updatedBox);
-        if (!updatedBox[formIndex]) updatedBox[formIndex] = [];
-        const newBox = [...updatedBox[formIndex]];
-        console.log("🚀 ~ setImagesBox ~ newBox:", newBox);
-        images.forEach((_, idx) => {
-          console.log("🚀 ~ images.forEach ~ idx:", idx);
-          while (
-            newBox.length < imagesArray[formIndex].length + 1 &&
-            newBox.length < 5
-          ) {
-            console.log(
-              "in while ",
-              "<",
-              newBox.length,
-              imagesArray[formIndex].length
-            );
-            newBox.push(newBox.length);
-          }
-        });
 
-        console.log("🚀 ~ setImagesBox ~ afterWhile:", newBox);
-        updatedBox[formIndex] = newBox;
+        // Ensure the sub-array at index `index` exists
+        if (!updatedBox[formIndex]) updatedBox[formIndex] = [];
+
+        // Calculate how many new dummy values you need to add
+        const currentLength = updatedBox[formIndex].length;
+        const maxLength = 5;
+        const imagesCount = images.length;
+
+        // Determine how many values to add based on current length and image count
+        const valuesToAdd = Math.min(maxLength - currentLength, imagesCount);
+
+        // If there is space, fill the sub-array at `index` with new values (dummy values based on length)
+        updatedBox[formIndex] = [
+          ...updatedBox[formIndex],
+          ...Array(valuesToAdd)
+            .fill(currentLength)
+            .map((_, idx) => currentLength + idx),
+        ];
+
         return updatedBox;
       });
 
