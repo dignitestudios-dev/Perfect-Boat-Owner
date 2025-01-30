@@ -111,12 +111,12 @@ export const sidebarArr = [
   },
   {
     title: "Privacy Policy",
-    url: "/privacy-policy",
+    url: "/privacy-policies",
     icon: <MdOutlinePrivacyTip />,
   },
   {
     title: "Terms Of Services",
-    url: "/terms-of-services",
+    url: "/terms-of-service",
     icon: <IoIosCheckmarkCircleOutline />,
   },
 ];

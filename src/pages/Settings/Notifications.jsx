@@ -98,6 +98,7 @@ const Notifications = () => {
       // Ensure response status is 200, and handle success accordingly
       if (deleteResponse?.status === 200) {
         setNotificationUpdate((prev) => !prev);
+        getNotifications();
         SuccessToast("Notifications cleared successfully.");
       } else {
         // Handle cases where the status is not 200 (even if the request doesn't throw an error)

@@ -6,6 +6,10 @@ import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 const AssignEmployeeInternal = () => {
+  const [formError, setFormError] = useState({
+    index: 0,
+    message: null,
+  });
   const navigate = useNavigate();
   const [data, setData] = useState([
     {
@@ -22,6 +26,10 @@ const AssignEmployeeInternal = () => {
         employee: "",
       },
     ]);
+  };
+
+  const removeForm = (index) => {
+    setData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
   const handleFileChange = (event) => {
@@ -63,11 +71,12 @@ const AssignEmployeeInternal = () => {
         navigate("/employees");
       }
     } catch (error) {
-      if (error?.response?.data?.index > 0) {
-        const index = error?.response?.data?.index;
+      setFormError({
+        index: error.response?.data?.index,
+        message: error?.response?.data?.message,
+      });
 
-        handleRemoveBeforeIndex(index);
-      }
+      // handleRemoveBeforeIndex(index);
       console.error("Error adding employee:", error);
       ErrorToast(error?.response?.data?.message);
     } finally {
@@ -79,6 +88,10 @@ const AssignEmployeeInternal = () => {
     const newData = [...data];
     newData[index][field] = value;
     setData(newData);
+    setFormError({
+      index: 0,
+      message: null,
+    });
   };
 
   return (
@@ -92,27 +105,30 @@ const AssignEmployeeInternal = () => {
             <h3 className="text-[18px] font-bold leading-[24.3px]">
               Assign Employees
             </h3>
-            <div className="w-72 flex justify-between items-center">
+            <div className="w-72 flex justify-end gap-2 items-center">
               <a
                 href="https://api.theperfectboat.com/public/Image/Assign_Employee_CSV_Template.csv"
                 download
               >
                 <button
+                  disabled={submitLoading}
                   type="button"
                   className="bg-[#1A293D] text-[#36B8F3] py-2 px-4 rounded-xl"
                 >
                   Download Template
                 </button>
               </a>
-              <button
-                type="button"
-                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-                onClick={() => {
-                  document.getElementById("input").click();
-                }}
-              >
-                Import CSV
-              </button>
+              {data?.length == 1 && (
+                <button
+                  type="button"
+                  className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                  onClick={() => {
+                    document.getElementById("input").click();
+                  }}
+                >
+                  Import CSV
+                </button>
+              )}
             </div>
             <input
               type="file"
@@ -126,9 +142,28 @@ const AssignEmployeeInternal = () => {
             {data?.map((form, index) => {
               return (
                 <React.Fragment>
+                  {formError.index == index && formError.message && (
+                    <p className="text-red-600 text-sm font-medium">
+                      {formError?.message}
+                    </p>
+                  )}
+                  {index > 0 && (
+                    <div className="w-full flex justify-end">
+                      <p
+                        onClick={() => removeForm(index)}
+                        className="px-1.5 hover:text-red-500 rounded-full text-xl font-bold cursor-pointer"
+                      >
+                        ✕
+                      </p>
+                    </div>
+                  )}
                   <div
                     key={index}
-                    className="w-full h-auto grid grid-cols-11 gap-4 relative"
+                    className={`w-full h-auto grid grid-cols-11 gap-4 relative ${
+                      formError.index == index &&
+                      formError.message &&
+                      "border border-red-600 p-2 rounded-xl"
+                    }`}
                   >
                     <div className="w-full h-auto flex flex-col col-span-5 gap-1 justify-start items-start">
                       <label className="text-[16px] font-medium leading-[21.6px]">
@@ -187,6 +222,7 @@ const AssignEmployeeInternal = () => {
 
             <div className="w-full flex justify-end items-center">
               <button
+                disabled={submitLoading}
                 type="button"
                 onClick={assignNewEmployee}
                 className="w-28 h-10 rounded-full flex items-center justify-center bg-[#199BD1] text-white text-sm font-medium"

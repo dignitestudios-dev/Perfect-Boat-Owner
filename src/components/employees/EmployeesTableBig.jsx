@@ -182,7 +182,8 @@ const EmployeesTableBig = ({
 
           <button
             onClick={() => navigate("/add-employee", "Employees")}
-            className="h-[35px] w-[114px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
+            className="h-[35px] w-[114px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1]
+             text-white text-[11px] font-bold leading-[14.85px]"
           >
             <span className="text-lg">+</span>
             Add Employee
@@ -191,10 +192,10 @@ const EmployeesTableBig = ({
       </div>
 
       <div className="w-full overflow-x-auto lg:overflow-visible">
-        <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
+        <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start ">
           <div
-            className="w-full grid grid-cols-[5fr_5fr_4fr_4fr_0fr_0fr] border-b border-white/10 h-6 text-[11px] font-medium 
-          leading-[14.85px] text-white/50 justify-start items-start"
+            className="w-full grid grid-cols-[4fr_5fr_4fr_4fr_4fr_auto] border-b border-white/10 h-6 text-[11px] font-medium 
+          leading-[14.85px] text-white/50 justify-start items-start pr-10"
           >
             <span className="w-full flex justify-start items-center">
               Employee Name
@@ -222,7 +223,7 @@ const EmployeesTableBig = ({
               setLocationType={setLocationType}
               setCurrentPage={setCurrentPage}
             />
-            <span className="w-full flex justify-start items-center pl-[170px] pr-[60px]">
+            <span className="w-full flex justify-start items-center ">
               Action
             </span>
           </div>
@@ -241,8 +242,8 @@ const EmployeesTableBig = ({
                     }}
                     className={` ${
                       employee?.isActive === true ? "cursor-pointer" : ""
-                    } w-full h-8 grid grid-cols-[5fr_5fr_4fr_4fr_1.3fr_1fr] border-b border-white/10  text-[11px]
-            font-medium leading-[14.85px] text-white justify-start items-center`}
+                    } w-full h-8 grid grid-cols-[4fr_5fr_4fr_4fr_4fr_auto] border-b border-white/10  text-[11px]
+            font-medium leading-[14.85px] text-white justify-start items-center pr-8`}
                   >
                     <span
                       key={index}
@@ -264,7 +265,7 @@ const EmployeesTableBig = ({
                     <span className="w-full flex justify-start items-center">
                       {employee?.location || "---"}
                     </span>
-                    <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 pl-[170px] pr-[55px]">
+                    <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 ">
                       <span
                         className="flex justify-start items-center cursor-pointer"
                         onClick={(e) => {

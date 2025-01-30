@@ -196,8 +196,8 @@ const ManagerTableBig = ({
         <div className="w-full overflow-x-auto lg:overflow-visible">
           <div className="min-w-[768px] flex flex-col gap-1 justify-start items-start">
             <div
-              className="w-full grid grid-cols-[6fr_6fr_5fr_1fr_0fr] text-[11px] font-medium leading-[14.85px]
-             text-white/50 justify-start items-start"
+              className="w-full grid grid-cols-[5fr_5fr_5fr_5fr_auto] text-[11px] font-medium leading-[14.85px]
+             text-white/50 justify-start items-start pr-10"
             >
               <span className="w-full flex justify-start items-start">
                 Manager Name
@@ -222,7 +222,7 @@ const ManagerTableBig = ({
                 setLocationType={setLocationType}
                 setCurrentPage={setCurrentPage}
               />
-              <span className="w-full flex justify-end items-center pl-[170px] pr-[60px] ">
+              <span className="w-full flex justify-end items-center ">
                 Action
               </span>
             </div>
@@ -230,8 +230,8 @@ const ManagerTableBig = ({
               data?.map((manager, index) => (
                 <div
                   onClick={() => handleEditClick(manager)}
-                  className="w-full h-8 grid grid-cols-[6fr_6fr_5fr_1.3fr_1fr] border-b cursor-pointer
-                 border-white/10  text-[11px] font-medium leading-[14.85px] text-white"
+                  className="w-full h-8 grid grid-cols-[5fr_5fr_5fr_5fr_auto] border-b cursor-pointer
+                 border-white/10  text-[11px] font-medium leading-[14.85px] text-white pr-8"
                 >
                   <span
                     key={index}
@@ -248,7 +248,7 @@ const ManagerTableBig = ({
                   <span className="w-full flex justify-start items-center  ">
                     {manager?.location ?? "---"}
                   </span>
-                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 pl-[170px] pr-[55px]">
+                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 ">
                     <span
                       className="flex justify-start items-center"
                       onClick={() => handleEditClick(manager)}

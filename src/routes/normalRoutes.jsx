@@ -215,12 +215,12 @@ export const normalRoutes = [
 
   {
     title: "Terms Of Services",
-    url: "/terms-of-services",
+    url: "/terms-of-service",
     page: <GlobalLayout page={<TermsOfServices />} />,
   },
   {
     title: "Privacy Policy",
-    url: "/privacy-policy",
+    url: "/privacy-policies",
     page: <GlobalLayout page={<PrivacyPolicy />} />,
   },
   {
