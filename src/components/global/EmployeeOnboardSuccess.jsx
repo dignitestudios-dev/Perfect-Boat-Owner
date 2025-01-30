@@ -13,7 +13,7 @@ const EmployeeOnboardSuccess = ({ isOpen, setIsOpen }) => {
 
   return (
     <div
-      onClick={toggleModal}
+      // onClick={toggleModal}
       className={`fixed top-0 left-0 w-screen h-screen transition-all duration-500 z-50 flex items-center justify-center ${
         isOpen ? "scale-100" : "scale-0"
       }`}
@@ -30,7 +30,7 @@ const EmployeeOnboardSuccess = ({ isOpen, setIsOpen }) => {
           ✕
         </button>
         <div
-          ref={employeeRef}
+          // ref={employeeRef}
           className="bg-[#02203A] w-[418px] h-auto flex flex-col  gap-5 justify-start items-center p-8 shadow-lg rounded-[8px]"
         >
           <img src={CheckMark} alt="success" />
