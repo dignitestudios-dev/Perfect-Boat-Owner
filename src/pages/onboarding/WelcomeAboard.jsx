@@ -30,7 +30,6 @@ const WelcomeAboard = () => {
   const [imagesArray, setImagesArray] = useState([[]]);
 
   const [uploadImages, setUploadImages] = useState([[]]);
-  console.log("🚀 ~ WelcomeAboard ~ uploadImages:", uploadImages[0]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);

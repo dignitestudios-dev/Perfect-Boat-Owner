@@ -32,12 +32,23 @@ const AddManagersCsv = ({ data, setData }) => {
     setData(filteredData);
   };
 
+  function generateRandomPassword(length = 4) {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&";
+    let password = "Perfect@1";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+      password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    // setEmployeePassword(password);
+    return password;
+  }
+
   const submitManagerData = async (e) => {
     e.preventDefault();
     try {
       const dataToSubmit = data.map((item) => ({
         ...item,
         phone: item.phone.startsWith("+1") ? item.phone : `+1${item.phone}`, // Add +1 only if not already present
+        password: generateRandomPassword(),
       }));
       setSubmitLoading(true);
       const response = await axios.post("/owner/manager/csv", dataToSubmit);
