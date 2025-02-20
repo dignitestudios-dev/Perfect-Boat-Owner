@@ -128,7 +128,9 @@ const BoatAccess = () => {
               boatType={boatType}
               setBoatType={setBoatType}
             />
-            <span className="flex justify-start items-center">Name</span>
+            <span className="flex justify-start items-center">
+              Boat Name/Hull Number
+            </span>
             <span className="flex justify-start items-center">
               Year/Make/Size
             </span>

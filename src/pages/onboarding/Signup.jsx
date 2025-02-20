@@ -38,7 +38,7 @@ const Signup = () => {
       if (response.status === 200) {
         sessionStorage.setItem("email", formData?.email);
         setLoading(false);
-        SuccessToast("SignUp Successfully");
+        SuccessToast("Sign Up Successfully");
         navigate("/onboard-verify-otp");
       } else {
         ErrorToast(response?.data?.message);

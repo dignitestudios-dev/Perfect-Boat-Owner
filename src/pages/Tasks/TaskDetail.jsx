@@ -265,7 +265,7 @@ const TaskDetail = () => {
                   {getFormattedStatus(taskDetail?.status)}
                 </span>
               </div>
-              {!isEdit && (
+              {!isEdit && taskDetail?.status !== "completed" && (
                 <button
                   onClick={() => setIsEdit(true)}
                   className="w-[118px] h-[32px] flex justify-center items-center gap-2 bg-[#36B8F3]/[0.12] rounded-[10px] text-[#36B8F3] text-[13px] font-bold"

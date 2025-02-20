@@ -11,8 +11,8 @@ const BoatAccessTable = ({
 }) => {
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [locationType, setLocationType] = useState("all");
-  const [jobType, setJobType] = useState("all");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -24,12 +24,12 @@ const BoatAccessTable = ({
 
   const filteredData = boatsData?.boatAccess?.filter((item) => {
     const jobTypeMatch =
-      jobType && jobType !== "all"
-        ? item?.jobtitle?.toLowerCase() === jobType?.toLowerCase()
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
         : true;
     const locationTypeMatch =
-      locationType && locationType !== "all"
-        ? item?.location?.toLowerCase() === locationType?.toLowerCase()
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
         : true;
     return locationTypeMatch && jobTypeMatch;
   });
@@ -54,17 +54,18 @@ const BoatAccessTable = ({
             <span></span>
           )}
         </div>
-
-        <button
-          disabled={boatsData?.boatAccess?.length === 0}
-          type="button"
-          onClick={() => setIsManagerModalOpen(true)}
-          className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
-        >
-          View All
-          {/* Display text or employee name here */}
-          {/* Assign Employee */}
-        </button>
+        {boatsData?.boatAccess?.length > 0 ? (
+          <button
+            disabled={boatsData?.boatAccess?.length === 0}
+            type="button"
+            onClick={() => setIsManagerModalOpen(true)}
+            className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
+          >
+            View All
+          </button>
+        ) : (
+          <div></div>
+        )}
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
@@ -92,7 +93,7 @@ const BoatAccessTable = ({
             />
           </span>
         </div>
-        {boatsData?.boatAccess?.length > 0 ? (
+        {filteredData?.length > 0 ? (
           <>
             {filteredData?.map((manager, index) => {
               if (index < 4) {

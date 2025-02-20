@@ -2,7 +2,7 @@ export const validateForms = (forms) => {
   let isValid = true;
   const validatedForms = forms.map((form) => {
     let errors = {};
-    if (!form.name) errors.name = "Name is required";
+    if (!form.name) errors.name = "Boat Name is required";
     if (!form.make) errors.make = "Make is required";
     if (!form.size) errors.size = "Size is required";
     if (!form.location) errors.location = "Location is required";

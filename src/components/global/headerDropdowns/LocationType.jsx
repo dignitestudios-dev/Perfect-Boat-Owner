@@ -11,6 +11,7 @@ const LocationType = ({
   setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
+
   const locationDropdownRef = useRef(null);
 
   const handleCheckboxChange = (location) => {

@@ -122,6 +122,15 @@ const OnboardVerifyOtp = () => {
     setIsActive(true);
   };
 
+  const handlePaste = (e) => {
+    const pastedData = e.clipboardData.getData("Text");
+    if (pastedData.length === otp.length) {
+      setOtp(pastedData.split(""));
+      inputs.current[5].focus();
+    }
+    e.preventDefault();
+  };
+
   return (
     <div className="w-screen h-screen flex items-start justify-start">
       <form
@@ -129,7 +138,8 @@ const OnboardVerifyOtp = () => {
           e.preventDefault();
           handleVerifyOtp();
         }}
-        className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col overflow-y-auto justify-start items-center gap-8"
+        className="w-full lg:w-1/2 h-full bg-[#001229] px-4 py-8 lg:p-20 z-10 flex flex-col 
+        overflow-y-auto justify-start items-center gap-8"
       >
         <div className="w-full flex justify-start items-start flex-col">
           <h1 className=" text-[48px] font-bold text-white leading-[64.8px] tracking-[-1.2px]">
@@ -148,7 +158,7 @@ const OnboardVerifyOtp = () => {
               value={digit}
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              onPaste={(e) => e.preventDefault()}
+              onPaste={handlePaste}
               ref={(el) => (inputs.current[index] = el)}
               className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#c2c6cb] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
             />

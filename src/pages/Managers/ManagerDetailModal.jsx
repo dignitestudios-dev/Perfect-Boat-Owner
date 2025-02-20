@@ -20,7 +20,7 @@ const ManagerDetailModal = ({
 }) => {
   const { managers, getManagers, loadingManagers } = useContext(GlobalContext);
 
-  const [allSelected, setAllSelected] = useState(false);
+  const [allSelected, setAllSelected] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationType, setLocationType] = useState([]);
   const [jobType, setJobType] = useState([]);
@@ -44,16 +44,21 @@ const ManagerDetailModal = ({
       const isSelected = selectedManagers.some(
         (manager) => manager?.id === managerId
       );
+      let updatedSelectedManager;
       if (isSelected) {
-        setSelectedManagers(
-          selectedManagers.filter((manager) => manager?.id !== managerId)
+        updatedSelectedManager = selectedManagers.filter(
+          (manager) => manager?.id !== managerId
         );
+        // setSelectedManagers();
       } else {
-        setSelectedManagers([
+        updatedSelectedManager = [
           ...selectedManagers,
           { id: managerId, name: managerName },
-        ]);
+        ];
+        // setSelectedManagers();
       }
+      setSelectedManagers(updatedSelectedManager);
+      setAllSelected(updatedSelectedManager?.length === filteredData?.length);
     } else {
       if (selectedManager?.id === managerId) {
         setSelectedManager(null);
@@ -233,6 +238,7 @@ const ManagerDetailModal = ({
                     const isMultiSelected = selectedManagers?.some(
                       (selected) => selected.id === manager._id
                     );
+                    console.log("isMultiSelected--> ", isMultiSelected);
                     return (
                       <tr
                         key={index}

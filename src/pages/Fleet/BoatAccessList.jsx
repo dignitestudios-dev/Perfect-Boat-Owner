@@ -104,11 +104,18 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
 
   const handleSelectBoat = (boats) => {
     const isSelected = selectedBoats.some((boat) => boat?._id === boats._id);
+    let updatedSelectedBoats;
     if (isSelected) {
-      setSelectedBoats(selectedBoats.filter((boat) => boat?._id !== boats._id));
+      updatedSelectedBoats = selectedBoats.filter(
+        (boat) => boat?._id !== boats._id
+      );
+      // setSelectedBoats();
     } else {
-      setSelectedBoats([...selectedBoats, boats]);
+      updatedSelectedBoats = [...selectedBoats, boats];
+      // setSelectedBoats();
     }
+    setSelectedBoats(updatedSelectedBoats);
+    setAllSelected(updatedSelectedBoats.length === filteredBoats?.length);
   };
 
   const getManagerById = async () => {
@@ -248,7 +255,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
               />
 
               <span className="w-full flex justify-start items-center">
-                Name
+                Boat Name/Hull Number
               </span>
               <span className="w-full flex justify-start items-center">
                 Year/Make/Size

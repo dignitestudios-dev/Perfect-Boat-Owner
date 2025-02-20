@@ -79,14 +79,21 @@ const AddTaskBoatModal = ({
     setInputError({});
     if (isMultiple) {
       const isSelected = selectedBoats.some((boat) => boat?.id === boatId);
+      let updatedSelectedBoats;
       if (isSelected) {
-        setSelectedBoats(selectedBoats.filter((boat) => boat?.id !== boatId));
+        updatedSelectedBoats = selectedBoats.filter(
+          (boat) => boat?.id !== boatId
+        );
+        // setSelectedBoats();
       } else {
-        setSelectedBoats([
+        updatedSelectedBoats = [
           ...selectedBoats,
           { id: boatId, name: boatName, type: boatType, make: make, location },
-        ]);
+        ];
+        // setSelectedBoats();
       }
+      setSelectedBoats(updatedSelectedBoats);
+      setAllSelected(updatedSelectedBoats.length === filteredData?.length);
     } else {
       if (selectedBoat?.id === boatId) {
         setSelectedBoat(null);
@@ -183,7 +190,7 @@ const AddTaskBoatModal = ({
                 setBoatType={setBoatType}
               />
               <span className="w-full flex justify-start items-center">
-                Name
+                Boat Name/Hull Number
               </span>
               <span className="w-full flex justify-start items-center">
                 Year/Make/Size

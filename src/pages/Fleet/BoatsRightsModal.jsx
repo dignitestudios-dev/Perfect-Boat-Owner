@@ -123,7 +123,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
               />
 
               <span className="w-full flex justify-start items-center">
-                Name
+                Boat Name/Hull Number
               </span>
               <span className="w-full flex justify-start items-center">
                 Year/Make/Size
@@ -183,7 +183,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                       {boat?.name}
                     </span>
                     <span className="w-full flex justify-start items-center">
-                      {boat?.make}, {boat?.model}, {boat?.size}
+                      {boat?.model}, {boat?.make}, {boat?.size}
                     </span>
                     <span className="w-full flex justify-start items-center ">
                       {boat?.location}

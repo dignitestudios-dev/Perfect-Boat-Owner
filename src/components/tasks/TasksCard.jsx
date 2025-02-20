@@ -56,7 +56,7 @@ const TasksCard = ({ getTasks, data }) => {
       />
       <button
         onClick={() => navigate(`/tasks/${data?._id}`, "All Tasks")}
-        className="w-full h-[196px] flex justify-start items-start rounded-l-[6px] rounded-r-[16px] bg-[#1A293D]"
+        className="w-full h-[218px] flex justify-start items-start rounded-l-[6px] rounded-r-[16px] bg-[#1A293D]"
       >
         <div
           className={`w-[6px] h-full rounded-l-[6px]`}
@@ -94,6 +94,10 @@ const TasksCard = ({ getTasks, data }) => {
               </span>
             </span>
             <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
+              Location:{" "}
+              <span className="font-medium">{data?.boat?.location}</span>
+            </span>
+            <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
               Created By:{" "}
               <span className="font-medium">{data?.assignBy?.name}</span>
             </span>
@@ -122,6 +126,7 @@ const TasksCard = ({ getTasks, data }) => {
             </div>
 
             <button
+              className="hover:bg-[#fff]/[0.1] rounded-full px-2 py-2"
               type="button"
               onClick={(e) => {
                 e.stopPropagation();

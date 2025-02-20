@@ -80,6 +80,7 @@ const AddEmployee = () => {
       setAddLoading(true);
       const employeeData = {
         ...data,
+        phone: data.phone.startsWith("+1") ? data.phone : `+1${data.phone}`,
         password: employeePassword,
         manager: passSelectedManager?.id,
         // tasks: tasks?.map(item=>item?.id)

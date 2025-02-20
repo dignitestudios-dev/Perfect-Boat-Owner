@@ -8,7 +8,6 @@ import TasksListLoader from "./loaders/TasksListLoader";
 import Pagination from "../global/pagination/Pagination";
 import DateModal from "./DateModal";
 import moment from "moment";
-import { Calendar } from "react-rainbow-components";
 
 const TasksContainer = () => {
   const { navigate } = useContext(GlobalContext);

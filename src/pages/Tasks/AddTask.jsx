@@ -201,6 +201,16 @@ const AddTask = () => {
           <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
             <div className="w-full grid grid-cols-2 gap-5 lg:gap-32">
               <div>
+                <SelectEmployeeInputField
+                  setIsEmployeeModalOpen={setIsEmployeeModalOpen}
+                  passSelectedEmployee={passSelectedEmployee}
+                  isEdit={true}
+                />
+                {inputError.employee && (
+                  <p className="text-red-500">{inputError.employee}</p>
+                )}
+              </div>
+              <div>
                 <SelectBoatInputField
                   passSelectedEmployee={passSelectedEmployee}
                   passSelectedBoat={passSelectedBoat}
@@ -210,16 +220,6 @@ const AddTask = () => {
                 />
                 {inputError.boat && (
                   <p className="text-red-500">{inputError.boat}</p>
-                )}
-              </div>
-              <div>
-                <SelectEmployeeInputField
-                  setIsEmployeeModalOpen={setIsEmployeeModalOpen}
-                  passSelectedEmployee={passSelectedEmployee}
-                  isEdit={true}
-                />
-                {inputError.employee && (
-                  <p className="text-red-500">{inputError.employee}</p>
                 )}
               </div>
             </div>

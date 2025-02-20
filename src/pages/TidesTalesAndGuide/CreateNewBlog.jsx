@@ -29,12 +29,23 @@ const CreateNewBlog = () => {
   const editorRef = useRef(null);
 
   const [htmlContent, setHtmlContent] = useState(story || "");
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSize, setSelectedSize] = useState(16); // Default font size
 
   const handleInput = () => {
     setHtmlContent(editorRef.current.innerHTML);
     setStory(editorRef.current.innerHTML, title, subTitle);
+  };
+
+  const handleFocus = () => {
+    setShowPlaceholder(false);
+  };
+
+  const handleBlur = () => {
+    if (editorRef.current.innerHTML === "") {
+      setShowPlaceholder(true);
+    }
   };
 
   const applyStyle = (command, value = null) => {
@@ -78,6 +89,7 @@ const CreateNewBlog = () => {
     if (editorRef.current && story) {
       editorRef.current.innerHTML = story;
       setHtmlContent(story);
+      setShowPlaceholder(false);
     }
     setTitle("");
     setSubTitle("");
@@ -293,6 +305,8 @@ const CreateNewBlog = () => {
             ref={editorRef}
             contentEditable
             onInput={handleInput}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             className="w-full text-white relative bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2"
             // style={{
             //   border: "1px solid #ccc",
@@ -301,7 +315,7 @@ const CreateNewBlog = () => {
             //   backgroundColor: "#1A293D",
             // }}
           >
-            {htmlContent == "" && (
+            {showPlaceholder && htmlContent === "" && (
               <span className="absolute top-0 left-0 text-gray-500 pointer-events-none">
                 Tell your story!
               </span>

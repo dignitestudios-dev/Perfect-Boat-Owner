@@ -436,8 +436,8 @@ const BoatDetail = () => {
                   {isEditing ? (
                     <>
                       <AddFleetInput
-                        label="Name"
-                        placeholder="Enter Name"
+                        label="Boat Name / Hull Number"
+                        placeholder="Boat Name / Hull Number"
                         type="text"
                         register={register(`name`, {
                           onChange: (e) => {
@@ -447,7 +447,7 @@ const BoatDetail = () => {
                           },
                           setValueAs: (v) =>
                             String(v[0]).toUpperCase() + String(v).slice(1),
-                          required: "Name is required",
+                          required: "Boat Name is required",
                         })}
                         error={errors.name}
                       />
@@ -553,8 +553,8 @@ const BoatDetail = () => {
                         error={errors.size}
                       />
                       <AddFleetInput
-                        label="Location"
-                        placeholder="Enter Location"
+                        label="Location / Customer Name"
+                        placeholder="Enter Location/Customer Name"
                         type="text"
                         register={register(`location`, {
                           onChange: (e) => {
@@ -574,7 +574,7 @@ const BoatDetail = () => {
                       <div className="w-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 lg:w-[1100px] gap-3 lg:gap-12">
                         <AddFleetInput
                           isDisabled={!isEditing}
-                          label={"Name"}
+                          label="Boat Name / Hull Number"
                           state={"Boat A"}
                           disabled={true}
                           className="text-lg md:text-xl lg:text-2xl"
@@ -633,7 +633,7 @@ const BoatDetail = () => {
                         />
                         <AddFleetInput
                           isDisabled={!isEditing}
-                          label={"Location"}
+                          label={"Location / Customer Name"}
                           state={"Orlando Florida"}
                           disabled={true}
                           className="text-lg md:text-xl lg:text-2xl"

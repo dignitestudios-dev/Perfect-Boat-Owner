@@ -162,7 +162,7 @@ const SelectBoatsModal = ({ isOpen, setIsOpen }) => {
                 </div>
               </button>
               <span className="w-full flex justify-start items-center">
-                Name
+                Boat Name/Hull Number
               </span>
               <span className="w-full flex justify-start items-center">
                 Year/Make/Size

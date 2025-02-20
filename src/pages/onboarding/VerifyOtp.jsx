@@ -116,6 +116,15 @@ const VerifyOtp = () => {
     setIsActive(true);
   };
 
+  const handlePaste = (e) => {
+    const pastedData = e.clipboardData.getData("Text");
+    if (pastedData.length === otp.length) {
+      setOtp(pastedData.split(""));
+      inputs.current[5].focus();
+    }
+    e.preventDefault();
+  };
+
   return (
     <div className="w-screen h-screen flex items-start justify-start">
       <form
@@ -149,6 +158,7 @@ const VerifyOtp = () => {
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 ref={(el) => (inputs.current[index] = el)}
+                onPaste={handlePaste}
                 className="w-[48px] h-[68px] rounded-lg bg-transparent outline-none text-center border-[1px] border-[#c2c6cb] text-white text-2xl focus-within:border-[#55C9FA] flex items-center justify-center"
               />
             );

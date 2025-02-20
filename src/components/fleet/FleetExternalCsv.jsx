@@ -225,7 +225,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
                   </div>
                   <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
-                      {"Location"}
+                      {"Location / Customer Name"}
                     </label>
                     <div
                       className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
@@ -237,7 +237,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
                           handleChange(index, "location", e.target.value)
                         }
                         className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
-                        placeholder={"Enter Location"}
+                        placeholder={"Location/Customer Name"}
                       />
                     </div>
                   </div>

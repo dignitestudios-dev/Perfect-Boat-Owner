@@ -113,7 +113,7 @@ const AssignedEmployeeModal = ({
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Select Employee(s)</h3>
+              <h3 className="text-lg font-semibold">Select Employee</h3>
               <button
                 onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                 className="text-lg font-bold"

@@ -86,13 +86,17 @@ const AssignedTasksTable = ({
             ({boatsData?.task?.length})
           </span>
         </h3>
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
-        >
-          View All
-        </button>
+        {boatsData?.task?.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="text-[14px] font-medium bg-[#199bd1]/[0.2] h-8 rounded-full w-[70px] text-[#199bd1]"
+          >
+            View All
+          </button>
+        ) : (
+          <div></div>
+        )}
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">

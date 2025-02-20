@@ -102,7 +102,7 @@ const NewTaskTable = ({ data, loading }) => {
       <div className="w-full flex flex-col gap-1 justify-start items-start">
         <div className="w-full grid grid-cols-4 text-[11px] font-medium leading-[14.85px] text-white/50 justify-start items-start relative">
           <span className="w-full flex justify-start items-center">
-            Boat name
+            Boat name / Hull number
           </span>
           <TaskType
             taskTypeDropdownOpen={taskTypeDropdownOpen}

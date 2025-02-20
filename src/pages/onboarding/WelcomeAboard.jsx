@@ -429,7 +429,7 @@ const WelcomeAboard = () => {
                           }  `}
                           >
                             <span className="text-white">
-                              {selectedBoat?.length > 0
+                              {selectedBoat?.length > formIndex
                                 ? selectedBoat[formIndex]
                                 : "--Select--"}
                             </span>
@@ -468,8 +468,8 @@ const WelcomeAboard = () => {
                           )}
                         </div>
                         <FleetInput
-                          label="Name"
-                          placeholder="Enter Boat Name"
+                          label="Boat Name / Hull Number"
+                          placeholder="Enter Boat Name / Hull Number"
                           type="text"
                           value={forms[formIndex].name}
                           onChange={(e) => handleChange(formIndex, "name", e)}
@@ -522,8 +522,8 @@ const WelcomeAboard = () => {
                           error={forms[formIndex]?.errors?.size}
                         />
                         <FleetInput
-                          label="Location"
-                          placeholder="Enter Location"
+                          label="Location / Customer Name"
+                          placeholder="Enter Location/Customer Name"
                           type="text"
                           value={forms[formIndex].location}
                           onChange={(e) =>

@@ -40,47 +40,49 @@ const TaskInputField = ({
           ref={additionalDropdownRef}
           className={`${
             isTaskDropdownOpen ? "flex" : "hidden"
-          } flex-col justify-start items-start gap-3 transition-all duration-500 py-3 absolute top-[54px]
-                    shadow-xl left-0 w-full max-h-40 overflow-y-auto bg-[#21344C] rounded-b-2xl`}
+          } flex-col justify-start items-start gap-3 transition-all duration-500 py-3 absolute top-[52px]
+                    shadow-xl left-0 w-full h-56 max-h-56 overflow-y-auto bg-[#21344C] rounded-b-2xl`}
         >
-          {tasks.length > 0 ? (
-            tasks.map((task, index) => (
-              <button
-                type="button"
-                key={index}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleTaskSelection(task);
-                }}
-                className="text-gray-300 text-left w-full h-8 px-5 flex justify-start items-center hover:bg-[#000]/10"
-              >
-                {task}
-              </button>
-            ))
-          ) : (
-            <div className="w-full flex flex-col justify-start items-start gap-2 px-6">
-              <input
-                onChange={(e) => setCustomTask(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                type="text"
-                className="w-[95%] h-[42px] mb-2 bg-[#1A293D] disabled:text-white/50 outline-none px-3
+          <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-2">
+            {tasks.length > 0 ? (
+              tasks.map((task, index) => (
+                <button
+                  type="button"
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleTaskSelection(task);
+                  }}
+                  className="text-gray-300 text-left w-full h-8 px-5 py-2 flex justify-start items-center hover:bg-[#000]/10"
+                >
+                  {task}
+                </button>
+              ))
+            ) : (
+              <div className="w-full flex flex-col justify-start items-start gap-2 px-6">
+                <input
+                  onChange={(e) => setCustomTask(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  type="text"
+                  className="w-[95%] h-[42px] mb-2 bg-[#1A293D] disabled:text-white/50 outline-none px-3
                                border-[1px] border-[#55C9FA] rounded-md"
-              />
-              <button
-                type="button"
-                onClick={(e) => {
-                  // e.stopPropagation();
-                  // handleTaskTypeSelection(customTypeText);
-                  // setTaskTypeDropdownOpen(false);
-                  handleTaskSelection(customTask);
-                }}
-                className="w-[95%] h-[42px] rounded-md bg-[#119bd1] text-white flex items-center 
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    // e.stopPropagation();
+                    // handleTaskTypeSelection(customTypeText);
+                    // setTaskTypeDropdownOpen(false);
+                    handleTaskSelection(customTask);
+                  }}
+                  className="w-[95%] h-[42px] rounded-md bg-[#119bd1] text-white flex items-center 
                             justify-center text-sm font-medium"
-              >
-                Apply
-              </button>
-            </div>
-          )}
+                >
+                  Apply
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

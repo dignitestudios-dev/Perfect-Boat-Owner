@@ -15,7 +15,7 @@ const ManagerBoatsCsvModal = ({
   data,
 }) => {
   const { boats } = useContext(GlobalContext);
-  const [allSelected, setAllSelected] = useState(false);
+  const [allSelected, setAllSelected] = useState(true);
   const [selectedBoats, setSelectedBoats] = useState([]);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -53,10 +53,10 @@ const ManagerBoatsCsvModal = ({
 
   const handleSelectAll = () => {
     if (allSelected) {
-      // Deselect all employee
+      // Deselect all boats
       setSelectedBoats([]);
     } else {
-      // Select all employee
+      // Select all boats
       setSelectedBoats(filteredData?.map((data) => data?._id));
     }
     setAllSelected(!allSelected);
@@ -64,11 +64,15 @@ const ManagerBoatsCsvModal = ({
 
   const handleSelectBoat = (boatId) => {
     const isSelected = selectedBoats.some((boat) => boat === boatId);
+    let updatedSelectedBoats;
     if (isSelected) {
-      setSelectedBoats(selectedBoats.filter((boat) => boat !== boatId));
+      updatedSelectedBoats = selectedBoats.filter((boat) => boat !== boatId);
     } else {
-      setSelectedBoats([...selectedBoats, boatId]);
+      updatedSelectedBoats = [...selectedBoats, boatId];
     }
+
+    setSelectedBoats(updatedSelectedBoats);
+    setAllSelected(updatedSelectedBoats.length === filteredData?.length);
   };
 
   const handleBoatSelection = () => {
@@ -163,7 +167,7 @@ const ManagerBoatsCsvModal = ({
                 setBoatType={setBoatType}
               />
               <span className="w-full flex justify-start items-center">
-                Name
+                Boat Name/Hull Number
               </span>
               <span className="w-full flex justify-start items-center">
                 Year/Make/Size

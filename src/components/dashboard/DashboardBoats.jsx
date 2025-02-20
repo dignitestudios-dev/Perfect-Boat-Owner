@@ -91,7 +91,7 @@ const DashboardBoats = ({ data, loading }) => {
                   setBoatType={setBoatType}
                 />
                 <span className="w-full flex justify-start items-center">
-                  Name
+                  Boat name / Hull number
                 </span>
                 <span className="w-full flex justify-start items-center">
                   Year / Make / Size

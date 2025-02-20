@@ -22,7 +22,7 @@ const AddFleet = () => {
 
   const navigate = useNavigate();
   const [selectedBoat, setSelectedBoat] = useState("");
-  console.log("🚀 ~ AddFleet ~ selectedBoat:", selectedBoat);
+
   const [selectedBoatErr, setSelectedBoatErr] = useState(null);
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [isCongratsOpen, setIsCongratsOpen] = useState(false);
@@ -78,7 +78,6 @@ const AddFleet = () => {
 
   const handleModelChange = (event) => {
     const inputYear = event.target.value;
-
     // Ensure input is a number
     if (/^\d{0,4}$/.test(inputYear)) {
       setModel(inputYear);
@@ -308,7 +307,7 @@ const AddFleet = () => {
               Add Fleet
             </h1>
           </div>
-          <div className="w-72 flex justify-between items-center">
+          <div className="w-72 flex justify-end gap-2 items-center">
             <a
               href="https://api.theperfectboat.com/public/Image/Boat_CSV_Template.csv"
               download
@@ -320,15 +319,17 @@ const AddFleet = () => {
                 Download Template
               </button>
             </a>
-            <button
-              type="button"
-              className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
-              onClick={() => {
-                document.getElementById("input").click();
-              }}
-            >
-              Import CSV
-            </button>
+            {data?.length == 1 && !csvUploaded && (
+              <button
+                type="button"
+                className="bg-[#199BD1] w-[107px] h-[35px] rounded-xl text-white flex items-center justify-center text-sm font-medium leading-5"
+                onClick={() => {
+                  document.getElementById("input").click();
+                }}
+              >
+                Import CSV
+              </button>
+            )}
           </div>
           <input
             type="file"
@@ -365,10 +366,10 @@ const AddFleet = () => {
                             <TbCaretDownFilled className="group-hover:rotate-180 " />
                           </span>
                           <div
-                            className="group-hover:flex  flex-col justify-start items-start gap-3 transition-all
-                         duration-700 px-5 py-3 hidden absolute -bottom-32 shadow-xl left-0 w-full h-32 max-h-32 bg-[#21344C] rounded-b-2xl "
+                            className="group-hover:flex z-20 flex-col justify-start items-start gap-3 transition-all
+                         duration-700 px-5 py-3 hidden absolute top-12 shadow-xl left-0 w-full h-48 max-h-48 bg-[#21344C] rounded-b-2xl "
                           >
-                            <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-3">
+                            <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-1">
                               {boatDropDown?.map((boat, index) => (
                                 <button
                                   type="button"
@@ -392,8 +393,8 @@ const AddFleet = () => {
                       </div>
 
                       <AddFleetInput
-                        label="Name"
-                        placeholder="Enter Name"
+                        label="Boat Name / Hull Number"
+                        placeholder="Enter Boat Name / Hull Number"
                         type="text"
                         register={register(`name`, {
                           onChange: (e) => {
@@ -403,7 +404,7 @@ const AddFleet = () => {
                           },
                           setValueAs: (v) =>
                             String(v[0]).toUpperCase() + String(v).slice(1),
-                          required: "Name is required",
+                          required: "Boat Name / Hull Number is required",
                         })}
                         error={errors.name}
                       />
@@ -470,8 +471,8 @@ const AddFleet = () => {
                         error={errors.size}
                       />
                       <AddFleetInput
-                        label="Location"
-                        placeholder="Enter Location"
+                        label="Location / Customer Name"
+                        placeholder="Enter Location/Customer Name"
                         type="text"
                         register={register(`location`, {
                           onChange: (e) => {
