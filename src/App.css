@@ -51,6 +51,14 @@ body {
   background: linear-gradient(to right, #199ad13d, #06afb2);
 }
 
+.editor {
+  color: white; /* Your default text color */
+}
+
+.editor * {
+  color: inherit !important;
+}
+
 .font {
   font-family: sans-serif !important;
 }

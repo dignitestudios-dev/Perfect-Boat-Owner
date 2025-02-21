@@ -307,7 +307,7 @@ const CreateNewBlog = () => {
             onInput={handleInput}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            className="w-full text-white relative bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2"
+            className="editor w-full text-white relative bg-transparent border-none focus:outline-none min-h-[200px] h-auto mt-8 p-2"
             // style={{
             //   border: "1px solid #ccc",
             //   borderRadius: "8px",

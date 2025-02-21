@@ -9,9 +9,39 @@ import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { getUnixDate } from "../../data/DateFormat";
 
+const statusColors = {
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  inprogress: "#36B8F3",
+  completed: "#1FBA46",
+};
+
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  inprogress: "#36B8F31F",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In-Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
+};
+
 const NewTaskRequestPage = () => {
   const location = useLocation();
   const { task } = location.state || {};
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
+  };
 
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -112,8 +142,18 @@ const NewTaskRequestPage = () => {
             <span className="w-full flex justify-start items-center">
               {task?.employee?.name}
             </span>
-            <span className="text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px] ">
-              {task?.task?.status}
+            <span
+              className="w-[100px] capitalize h-[27px] rounded-full
+            bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
+              style={{
+                color:
+                  statusColors[task?.task?.status] || statusColors["default"],
+                backgroundColor:
+                  statusColorsbg[task?.task?.status] ||
+                  statusColorsbg["default"],
+              }}
+            >
+              {getFormattedStatus(task?.task?.status)}
             </span>
             <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
               <span

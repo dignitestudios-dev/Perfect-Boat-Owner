@@ -13,6 +13,32 @@ import { getUnixDate } from "../../data/DateFormat";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 
+const statusColors = {
+  newtask: "#FF007F",
+  overdue: "#FF3B30",
+  default: "#FFCC00",
+  inprogress: "#36B8F3",
+  completed: "#1FBA46",
+};
+
+const statusColorsbg = {
+  newtask: "#FF69B41F",
+  overdue: "#FF3B301F",
+  default: "#FFCC001F",
+  inprogress: "#36B8F31F",
+  completed: "#1FBA461F",
+  upcomingtask: "#FF007F1F",
+};
+
+const STATUS_ENUM = {
+  newtask: "New Task",
+  inprogress: "In-Progress",
+  recurring: "Recurring",
+  overdue: "Overdue",
+  completed: "Completed",
+  upcomingtask: "Upcoming Task",
+};
+
 const TaskCompleted = () => {
   const { navigate } = useContext(GlobalContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,6 +63,10 @@ const TaskCompleted = () => {
     if (setIndex === formsImages?.length && setIndex < 5) {
       setFleetPictures((prev) => [...prev, prev?.length]);
     }
+  };
+
+  const getFormattedStatus = (status) => {
+    return STATUS_ENUM[status] || status;
   };
 
   const submitBoatData = async (formData) => {
@@ -87,8 +117,19 @@ const TaskCompleted = () => {
                 <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
                   Task
                 </h3>
-                <span className="capitalize text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center w-[70px] h-[27px]">
-                  {taskDetail?.status}
+                <span
+                  className="w-[100px] capitalize h-[27px] rounded-full
+            bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
+                  style={{
+                    color:
+                      statusColors[task?.task?.status] ||
+                      statusColors["default"],
+                    backgroundColor:
+                      statusColorsbg[task?.task?.status] ||
+                      statusColorsbg["default"],
+                  }}
+                >
+                  {getFormattedStatus(taskDetail?.status)}
                 </span>
               </div>
             </div>
