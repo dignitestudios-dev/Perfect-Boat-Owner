@@ -159,6 +159,14 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     }
   }, [managerId]);
 
+  useEffect(() => {
+    if (selectedBoats?.length === boats?.length) {
+      setAllSelected(true);
+    } else {
+      setAllSelected(false);
+    }
+  }, [selectedBoats]);
+
   const handleSelectAll = () => {
     if (allSelected) {
       // Deselect all employee
