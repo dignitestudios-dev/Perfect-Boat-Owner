@@ -34,7 +34,6 @@ const UpdatePreview = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log("🚀 ~ UpdatePreview ~ id:", id);
 
   const handleScheduleClick = () => {
     setIsScheduling(true);

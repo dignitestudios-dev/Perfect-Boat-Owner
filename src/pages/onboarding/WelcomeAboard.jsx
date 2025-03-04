@@ -156,7 +156,6 @@ const WelcomeAboard = () => {
       setForms(validatedForms);
     }
     if (uploadImages[0].length === 0) {
-      console.log("  in if upload--> ", uploadImages[0].length);
       setForms((prevForms) => {
         const updatedForms = [...prevForms];
         updatedForms[0] = {

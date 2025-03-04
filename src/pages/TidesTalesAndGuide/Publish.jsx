@@ -27,8 +27,6 @@ const Publish = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
-  console.log("🚀 ~ Publish ~ coverUrl:", coverUrl);
-  console.log("🚀 ~ Publish ~ coverFile:", coverFile);
 
   const [loading, setLoading] = useState(false);
 

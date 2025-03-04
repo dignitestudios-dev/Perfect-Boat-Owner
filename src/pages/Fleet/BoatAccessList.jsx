@@ -9,6 +9,7 @@ import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "../../components/global/Toaster";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import { data } from "autoprefixer";
 
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   const { navigate, boats, setUpdateBoat, setUpdateManager } =
@@ -159,6 +160,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     }
   }, [managerId]);
 
+  // useEffect For selected boat display
+
   useEffect(() => {
     if (selectedBoats?.length === boats?.length) {
       setAllSelected(true);
@@ -167,13 +170,18 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
     }
   }, [selectedBoats]);
 
+  // useEffect(() => {
+  //   setSelectedBoats(boats?.map((data) => ({ ...data, _id: data?._id })));
+  //   setAllSelected(true);
+  // }, [boats]);
+
   const handleSelectAll = () => {
     if (allSelected) {
       // Deselect all employee
       setSelectedBoats([]);
     } else {
       // Select all employee
-      setSelectedBoats(filteredBoats?.map((employee) => employee));
+      setSelectedBoats(filteredBoats?.map((boat) => boat));
     }
     setAllSelected(!allSelected);
   };

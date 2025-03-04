@@ -238,7 +238,7 @@ const ManagerDetailModal = ({
                     const isMultiSelected = selectedManagers?.some(
                       (selected) => selected.id === manager._id
                     );
-                    console.log("isMultiSelected--> ", isMultiSelected);
+
                     return (
                       <tr
                         key={index}
