@@ -194,6 +194,7 @@ const BoatSelectModal = ({
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                title="Location / Customer Name"
               />
             </div>
             {filteredData?.length > 0 ? (

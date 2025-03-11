@@ -61,11 +61,7 @@ export const normalRoutes = [
     url: "/add-csv",
     page: <OnboardLayout page={<CsvUploader />} />,
   },
-  {
-    title: "Add a Manager External",
-    url: "/add-manager-onboard",
-    page: <OnboardLayout page={<AddManager />} />,
-  },
+
   {
     title: "Select Package",
     url: "/select-package",
@@ -85,6 +81,11 @@ export const normalRoutes = [
     title: "Welcome Aboard",
     url: "/welcome-aboard",
     page: <OnboardLayout page={<WelcomeAboard />} />,
+  },
+  {
+    title: "Add a Manager External",
+    url: "/add-manager-onboard",
+    page: <OnboardLayout page={<AddManager />} />,
   },
   {
     title: "Add a Employee External",

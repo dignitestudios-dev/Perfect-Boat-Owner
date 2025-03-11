@@ -189,6 +189,7 @@ const ManagerBoatAccessModal = ({
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                title="Location / Customer Name"
               />
             </div>
 

@@ -108,9 +108,9 @@ const BoatAccessModal = ({
               <table className="min-w-full text-white border-collapse">
                 <thead className="border-b border-[#2A394C]">
                   <tr>
-                    <th className="px-4 py-2">Manager Name</th>
-                    <th className="px-4 py-2">Email</th>
-                    <th className="px-4 py-2 relative">
+                    <th className="px-4 py-2 w-[90px]">Manager Name</th>
+                    <th className="px-4 py-2 w-[100px]">Email</th>
+                    <th className="px-4 py-2 relative w-[130px]">
                       <JobType
                         setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                         jobTitleDropdownOpen={jobTitleDropdownOpen}
@@ -120,13 +120,14 @@ const BoatAccessModal = ({
                         isManager={true}
                       />
                     </th>
-                    <th className="px-4 py-2 relative">
+                    <th className="px-4 py-2 relative w-[170px]">
                       <LocationType
                         setLocationDropdownOpen={setLocationDropdownOpen}
                         locationDropdownOpen={locationDropdownOpen}
                         toggleLocationDropdown={toggleLocationDropdown}
                         locationType={locationType}
                         setLocationType={setLocationType}
+                        title="Location"
                       />
                     </th>
                   </tr>
@@ -141,12 +142,16 @@ const BoatAccessModal = ({
                       <>
                         {filteredData?.map((manager, index) => (
                           <tr key={index} className="border-b border-[#2A394C]">
-                            <td className="px-4 py-2">{manager?.name}</td>
-                            <td className="px-4 py-2">{manager?.email}</td>
-                            <td className="px-4 py-2">
+                            <td className="px-4 py-2 w-[80px]">
+                              {manager?.name}
+                            </td>
+                            <td className="px-4 py-2 w-[80px]">
+                              {manager?.email}
+                            </td>
+                            <td className="px-4 py-2 w-[80px]">
                               {manager?.jobtitle || "---"}
                             </td>
-                            <td className="px-4 py-2">
+                            <td className="px-4 py-2 w-[80px]">
                               {manager?.location || "---"}
                             </td>
                           </tr>

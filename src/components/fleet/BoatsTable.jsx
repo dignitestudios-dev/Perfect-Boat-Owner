@@ -88,7 +88,7 @@ const BoatsTable = ({
           />
         </div>
         <button
-          onClick={() => navigate("/add-fleet", "All Tasks")}
+          onClick={() => navigate("/add-fleet", "Add Boat")}
           className="h-[32px] w-[104px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
         >
           <span className="text-[11px]">+</span>
@@ -97,7 +97,7 @@ const BoatsTable = ({
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
-        <div className="w-full grid grid-cols-[3fr_4fr_4fr_4fr_2fr] text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
+        <div className="w-full grid grid-cols-[3fr_4fr_4fr_3fr_3fr] text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
           <span className="w-full flex justify-start items-center">
             Boat Image
           </span>
@@ -118,6 +118,7 @@ const BoatsTable = ({
             toggleLocationDropdown={toggleLocationDropdown}
             locationType={locationType}
             setLocationType={setLocationType}
+            title="Location / Customer Name"
           />
           {/* <span className="w-full flex justify-start items-center">
             Action
@@ -126,7 +127,7 @@ const BoatsTable = ({
         {loading ? (
           <Fragment>
             {Array.from({ length: 5 }).map((_, index) => (
-              <BoatsLoader index={index} />
+              <BoatsLoader key={index} />
             ))}
           </Fragment>
         ) : (
@@ -138,7 +139,7 @@ const BoatsTable = ({
                   <div
                     key={index}
                     onClick={() => handleBoatDetails(boat)}
-                    className="w-full h-auto grid grid-cols-[3fr_4fr_4fr_4fr_2fr] cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    className="w-full h-auto grid grid-cols-[3fr_4fr_4fr_3fr_3fr] cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
                     <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                       <img

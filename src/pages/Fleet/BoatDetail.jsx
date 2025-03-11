@@ -28,7 +28,8 @@ const BoatDetail = () => {
   const [dueDate, setDueDate] = useState({});
   const [inputError, setInputError] = useState({});
 
-  const { navigate, boatDropDown, setUpdateBoat } = useContext(GlobalContext);
+  const { navigate, boatDropDown, setUpdateBoat, setUpdateDropDown } =
+    useContext(GlobalContext);
   const [isEditing, setIsEditing] = useState(false); // New state for edit mode
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [locationFilter, setLocationFilter] = useState(false);
@@ -79,6 +80,7 @@ const BoatDetail = () => {
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const [loadingBoats, setLoadingBoats] = useState(false);
+  const [newLocation, setNewLocation] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const minYear = 1970;
@@ -110,11 +112,13 @@ const BoatDetail = () => {
       setBoatsData(data?.data);
       setCoverImage(data?.data?.boat?.cover);
       const displayArray = (await data?.data?.boat?.images)
-        ? [data?.data?.boat?.cover, ...data?.data?.boat?.images]
+        ? // eslint-disable-next-line no-unsafe-optional-chaining
+          [data?.data?.boat?.cover, ...data?.data?.boat?.images]
         : [data?.data?.boat?.cover];
       setDisplayArray(displayArray);
       setFormsImages(displayArray);
     } catch (err) {
+      console.log("🚀 ~ getBoats ~ err:", err);
     } finally {
       setLoadingBoats(false);
     }
@@ -133,6 +137,7 @@ const BoatDetail = () => {
       setModel(boatsData?.boat?.model);
       setValue("size", boatsData?.boat?.size);
       setValue("location", boatsData?.boat?.location);
+      setNewLocation(boatsData?.boat?.location);
       // setFormsImages(boatsData?.boat?.images || [{}]);
       setSelectedBoat(boatsData?.boat?.boatType);
     }
@@ -350,6 +355,7 @@ const BoatDetail = () => {
       if (response?.status === 200) {
         SuccessToast("Updated Success");
         setUpdateBoat((prev) => !prev);
+        setUpdateDropDown((prev) => !prev);
         setIsEditing(false);
       }
     } catch (error) {
@@ -631,7 +637,7 @@ const BoatDetail = () => {
                             required: "Make is required",
                           })}
                         />
-                        <AddFleetInput
+                        {/* <AddFleetInput
                           isDisabled={!isEditing}
                           label={"Location / Customer Name"}
                           state={"Orlando Florida"}
@@ -640,14 +646,25 @@ const BoatDetail = () => {
                           register={register(`location`, {
                             required: "Location is required",
                           })}
-                        />
+                        /> */}
+                        <div className="w-full h-auto flex flex-col gap-1 justify-center items-start">
+                          <label className="text-[16px] font-medium">
+                            {"Location / Customer Name"}
+                          </label>
+                          <div
+                            className="w-full max-h-[200px] flex items-center py-3.5 px-2.5 resize-none bg-[#1A293D] outline-none 
+               focus:border-[1px] focus:border-[#55C9FA] rounded-xl text-left  "
+                          >
+                            {newLocation}
+                          </div>
+                        </div>
                       </div>
                     </>
                   )}
                 </div>
                 {isEditing ? (
                   <div className=" flex flex-col gap-4 mt-2 w-[600px] ">
-                    <hr class="mt-6 h-[1px] border-t-0 bg-white/20" />
+                    <hr className="mt-6 h-[1px] border-t-0 bg-white/20" />
                     <h3 className="text-[16px] md:text-[18px] font-bold leading-[24.3px]">
                       Upload Photos Here
                     </h3>

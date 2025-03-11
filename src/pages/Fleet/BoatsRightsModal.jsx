@@ -134,6 +134,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                title="Location / Customer Name"
               />
             </div>
             {filteredData?.length > 0 ? (

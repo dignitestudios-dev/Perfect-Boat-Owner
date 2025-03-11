@@ -6,9 +6,8 @@ import DateModal from "../../components/tasks/DateModal";
 import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
 import { useNavigate } from "react-router-dom";
 import TaskAssignSucessModal from "../../components/tasks/modal/TaskAssignSuccessModal";
-import { taskTypeData } from "../../data/TaskTypeData";
 import axios from "../../axios";
-import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { ErrorToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import SelectBoatInputField from "../../components/global/customInputs/SelectBoatInputField";
 import SelectEmployeeInputField from "../../components/global/customInputs/SelectEmployeeInputField";
@@ -278,6 +277,7 @@ const AddTask = () => {
                   }}
                   value={noteText}
                   type="text"
+                  // eslint-disable-next-line react/no-unknown-property
                   autocapitalize="characters"
                   className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px]
                    focus:border-[#55C9FA] rounded-xl"

@@ -3,7 +3,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { FaRegEdit, FaCaretDown } from "react-icons/fa"; // Import dropdown icon
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ResetPassModal from "../../components/onboarding/ResetPassModal";
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 import ResendModal from "../onboarding/ResendModal";
@@ -53,6 +53,10 @@ const EditEmployee = () => {
   };
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const { id } = useParams();
+  const location = useLocation();
+  console.log("🚀 ~ EditEmployee ~ location:", location);
+  const { state } = location;
+  console.log("🚀 ~ EditEmployee ~ state:", state);
   const navigateTo = useNavigate();
   const today = moment("01-01-2024");
 
@@ -211,7 +215,10 @@ const EditEmployee = () => {
     if (id) {
       getEmployeeData();
     }
-  }, [id]);
+    if (state === "Edit") {
+      setIsEditing(true);
+    }
+  }, [id, state]);
 
   useEffect(() => {
     setValue("name", employee?.name);
@@ -546,7 +553,10 @@ const EditEmployee = () => {
               {employeeFilteredData?.length > 0 ? (
                 <>
                   {employeeFilteredData?.slice(0, 4)?.map((task, index) => (
-                    <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                    <div
+                      key={index}
+                      className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    >
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
                       </span>

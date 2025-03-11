@@ -102,6 +102,7 @@ const EmployeeTable = ({ data, loading }) => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   locationType={locationType}
                   setLocationType={setLocationType}
+                  title="Location"
                 />
               </div>
               {filteredData?.slice(0, 4)?.map((manager, key) => {

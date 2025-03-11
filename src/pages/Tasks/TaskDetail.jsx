@@ -373,8 +373,10 @@ const TaskDetail = () => {
                 </div>
               </div>
 
+              <hr className="w-full bg-[#fff]/[0.14] h-[1px] mt-6 " />
+
               {/* Due Date */}
-              <div className="w-full flex flex-col gap-4">
+              <div className="w-full space-y-4   flex flex-col gap-4">
                 <div>
                   <div className="w-auto flex justify-start items-center gap-3">
                     <IoCalendarOutline className="text-2xl text-white/40" />
@@ -405,6 +407,30 @@ const TaskDetail = () => {
                   customRecurring={customRecurring}
                   isEdit={isEdit}
                 />
+              </div>
+              <hr className="w-full bg-[#fff]/[0.14] h-[1px] " />
+              <div>
+                <div className="w-full flex flex-col gap-4 pb-2">
+                  <label className="text-[16px] font-medium leading-[21.6px]">
+                    Photos
+                  </label>
+                </div>
+                <div className="w-full flex justify-center items-center gap-6">
+                  <div className="w-full h-[147px] rounded-xl">
+                    <img
+                      src={taskDetail?.boat?.cover}
+                      alt={`boatimage`}
+                      className="w-full h-full rounded-xl object-cover"
+                    />
+                  </div>
+                  <div className="w-full h-[147px] rounded-xl">
+                    <img
+                      src={taskDetail?.boat?.cover}
+                      alt={`boatimage`}
+                      className="w-full h-full rounded-xl object-cover"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <DateModal
@@ -487,7 +513,16 @@ const TaskDetail = () => {
                 onClick={() => {
                   navigate(-1);
                 }}
-                className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
+                className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px]  leading-[21.6px] tracking-[-0.24px]"
+              >
+                {"Download As PDF"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigate(-1);
+                }}
+                className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px]  leading-[21.6px] tracking-[-0.24px]"
               >
                 {"Back"}
               </button>

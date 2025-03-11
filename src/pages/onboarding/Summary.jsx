@@ -1,17 +1,15 @@
 import React, { useContext, useState } from "react";
 import { AuthMockup, MasterCardIcon } from "../../assets/export";
-import { GlobalContext } from "../../contexts/GlobalContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AccountCreateSuccess from "../../components/onboarding/AccountCreateSuccess";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "../../axios";
 import { FiLoader } from "react-icons/fi";
 import SummaryLoader from "../../components/loaders/SummaryLoader";
 import { ErrorToast } from "../../components/global/Toaster";
 
 const Summary = () => {
-  const { navigate } = useContext(GlobalContext);
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [summary, setSummary] = useState([]);
   const [loading, setLoading] = useState(false);

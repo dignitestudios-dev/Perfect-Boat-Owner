@@ -18,6 +18,7 @@ const Home = () => {
       const { data } = await axios.get("/owner/dashboard");
       setDashboardData(data?.data);
     } catch (error) {
+      console.log("🚀 ~ getDashboardData ~ error:", error);
     } finally {
       setLoading(false);
     }

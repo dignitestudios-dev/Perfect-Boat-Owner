@@ -189,6 +189,7 @@ const AssignManager = () => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   setLocationType={setLocationType}
                   locationType={locationType}
+                  title="Location "
                 />
               </div>
             </div>

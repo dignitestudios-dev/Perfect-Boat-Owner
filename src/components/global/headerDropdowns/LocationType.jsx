@@ -8,6 +8,7 @@ const LocationType = ({
   toggleLocationDropdown,
   setLocationType,
   locationType,
+  title,
   setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
@@ -47,7 +48,7 @@ const LocationType = ({
 
   return (
     <span className="w-full flex justify-start items-center relative">
-      Location
+      {title}
       <FaCaretDown
         className={`ml-2 cursor-pointer ${
           locationDropdownOpen ? "rotate-180" : "rotate-0"

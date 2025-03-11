@@ -81,7 +81,6 @@ const BoatAccess = () => {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       SetPassSelectedManagers(null);
       ErrorToast(err?.response?.data?.message);
-    } finally {
     }
   };
 
@@ -134,13 +133,14 @@ const BoatAccess = () => {
             <span className="flex justify-start items-center">
               Year/Make/Size
             </span>
-            <span className="flex justify-center items-center ml-16">
+            <span className="flex justify-center items-center ">
               <LocationType
                 setLocationDropdownOpen={setLocationDropdownOpen}
                 locationDropdownOpen={locationDropdownOpen}
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                title="Location / Customer Name"
               />
             </span>
             <span className="flex justify-start items-center"></span>
@@ -151,7 +151,7 @@ const BoatAccess = () => {
             {loadingBoats ? (
               <Fragment>
                 {Array.from({ length: 5 }).map((_, index) => (
-                  <div className="w-full min-w-[600px]">
+                  <div key={index} className="w-full min-w-[600px]">
                     <BoatsLoader index={index} />
                   </div>
                 ))}
@@ -197,12 +197,12 @@ const BoatAccess = () => {
                     <span className="flex justify-start items-center">
                       {boat.model} / {boat.make} / {boat.size}
                     </span>
-                    <span className="flex justify-center items-center">
+                    <span className="flex justify-start items-center">
                       {boat.location}
                     </span>
                     <button
                       onClick={(e) => handleAccessModal(e, boat?._id)}
-                      className="w-[100px] h-[30px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-xl py-1"
+                      className="ml-12 w-[100px] h-[30px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-xl py-1"
                     >
                       View Details
                     </button>

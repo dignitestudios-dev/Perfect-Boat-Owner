@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { ErrorToast, SuccessToast } from "../global/Toaster";
+import React, { useContext, useEffect, useState } from "react";
+import { ErrorToast } from "../global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
-import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
+  const { setUpdateBoat } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleChange = (index, field, value) => {
@@ -70,6 +71,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
         const response = await axios.post("/owner/boat/Csv", data);
         if (response.status === 200) {
           // SuccessToast("Managers Created Successfully");
+          setUpdateBoat((prev) => !prev);
           setIsAddManagerOpen(true);
         }
       } catch (error) {
@@ -289,7 +291,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
           className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
         >
           <div className="flex items-center">
-            <span className="mr-1">Save Boat</span>
+            <span className="mr-1">Save Fleet</span>
             {submitLoading && (
               <FiLoader className="animate-spin text-lg mx-auto" />
             )}

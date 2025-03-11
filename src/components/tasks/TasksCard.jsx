@@ -94,8 +94,12 @@ const TasksCard = ({ getTasks, data }) => {
               </span>
             </span>
             <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
-              Location:{" "}
-              <span className="font-medium">{data?.boat?.location}</span>
+              Location/Customer Name:{" "}
+              <span className="font-medium">
+                {data?.boat?.location?.length > 16
+                  ? data?.boat?.location?.slice(0, 16) + "..."
+                  : data?.boat?.location}
+              </span>
             </span>
             <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
               Created By:{" "}

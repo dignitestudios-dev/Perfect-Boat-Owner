@@ -1,20 +1,12 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
-import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import { AuthMockup } from "../../assets/export";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
-import { ErrorToast } from "../../components/global/Toaster";
 
-const ManagerBoatsCsvModal = ({
-  isOpen,
-  setIsOpen,
-  inputIndex,
-  setData,
-  data,
-}) => {
+const ManagerBoatsCsvModal = ({ isOpen, setIsOpen, inputIndex, setData }) => {
   const { boats } = useContext(GlobalContext);
+  console.log("🚀 ~ ManagerBoatsCsvModal ~ boats:", boats);
   const [allSelected, setAllSelected] = useState(true);
   const [selectedBoats, setSelectedBoats] = useState([]);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
@@ -178,6 +170,7 @@ const ManagerBoatsCsvModal = ({
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                title="Location / Customer Name"
               />
             </div>
             {filteredData?.length > 0 ? (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FiLoader } from "react-icons/fi";
 import { TbCaretDownFilled } from "react-icons/tb";
 import ImportCSVModal from "../../components/global/ImportCSVModal";
@@ -11,8 +11,11 @@ import Papa from "papaparse";
 import { FleetInput } from "../../components/onboarding/FleetInput";
 import FleetImages from "../../components/onboarding/FleetImages";
 import { validateForms } from "../../data/boatValidation";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const WelcomeAboard = () => {
+  const { setUpdateBoat } = useContext(GlobalContext);
+
   const [forms, setForms] = useState([
     {
       boatType: "",
@@ -194,6 +197,7 @@ const WelcomeAboard = () => {
             if (response?.status === 200) {
               if (parseInt(formIndex) + 1 === forms?.length) {
                 setIsAddManagerOpen(true);
+                setUpdateBoat((prev) => !prev);
               }
             }
           } catch (error) {

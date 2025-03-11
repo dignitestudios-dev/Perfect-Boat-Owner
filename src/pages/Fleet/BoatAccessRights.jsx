@@ -87,6 +87,7 @@ const BoatAccessRights = () => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   setLocationType={setLocationType}
                   locationType={locationType}
+                  title="Location / Customer Name"
                 />
 
                 <span className="flex items-center justify-start">Access</span>

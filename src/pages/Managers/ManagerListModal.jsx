@@ -89,6 +89,7 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                title="Location "
               />
             </div>
             {filteredData?.map((manager, index) => {

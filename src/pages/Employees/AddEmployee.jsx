@@ -247,6 +247,7 @@ const AddEmployee = () => {
                   label={"Location"}
                   type="text"
                   placeholder="Enter location"
+                  maxLength={80}
                   register={register("location", {
                     onChange: (e) => {
                       const value = e.target.value;

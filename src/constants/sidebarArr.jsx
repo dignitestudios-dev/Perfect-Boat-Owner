@@ -87,6 +87,10 @@ export const sidebarArr = [
         title: "Boats Access",
         url: "/boats-access",
       },
+      {
+        title: "Add Boat",
+        url: "/add-fleet",
+      },
     ],
   },
   {

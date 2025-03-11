@@ -6,6 +6,7 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import MiniListLoader from "../global/MiniListLoader";
 import TaskType from "../global/headerDropdowns/TaskType";
 import StatusType from "../global/headerDropdowns/StatusType";
+import { getUnixDate } from "../../data/DateFormat";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -35,14 +36,14 @@ const STATUS_ENUM = {
 
 const NewTaskTable = ({ data, loading }) => {
   const navigate = useNavigate();
-  const { formatTimestampToDate } = useContext(GlobalContext);
+
   const getFormattedStatus = (status) => {
     return STATUS_ENUM[status] || status;
   };
 
   const [taskTypeDropdownOpen, setTaskTypeDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState([]);
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!taskTypeDropdownOpen);
@@ -53,7 +54,7 @@ const NewTaskTable = ({ data, loading }) => {
   };
 
   const [search, setSearch] = useState("");
-  const [taskType, setTaskType] = useState("");
+  const [taskType, setTaskType] = useState([]);
 
   // const filteredData = data?.filter((item) =>
   //   item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -61,17 +62,17 @@ const NewTaskTable = ({ data, loading }) => {
 
   const filteredData = data?.filter((item, index) => {
     const matchesSearch = search
-      ? item?.taskType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+      ? item?.task?.taskType?.toLowerCase()?.includes(search?.toLowerCase()) ||
         item?.boat?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
-        item?.status?.toLowerCase()?.includes(search?.toLowerCase())
+        item?.task?.status?.toLowerCase()?.includes(search?.toLowerCase())
       : true;
     const matchesStatus =
       statusFilter && statusFilter.length !== 0
-        ? statusFilter?.includes(item?.status?.toLowerCase())
+        ? statusFilter?.includes(item?.task?.status?.toLowerCase())
         : true;
     const taskTypeMatch =
       taskType && taskType.length !== 0
-        ? taskType?.includes(item?.taskType?.toLowerCase())
+        ? taskType?.includes(item?.task?.taskType?.toLowerCase())
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
@@ -144,7 +145,7 @@ const NewTaskTable = ({ data, loading }) => {
                         {task?.task?.taskType}
                       </span>
                       <span className="w-full flex justify-start items-center">
-                        {formatTimestampToDate(task?.task?.dueDate)}
+                        {getUnixDate(task?.task?.dueDate)}
                       </span>
                       <span className="w-full flex justify-start items-center ">
                         <span

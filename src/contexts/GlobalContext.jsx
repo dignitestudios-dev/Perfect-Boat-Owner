@@ -1,17 +1,15 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../axios";
-import getFCMToken from "../firebase/getFcmToken";
+
 import { onMessageListener } from "../firebase/messages";
 import Cookies from "js-cookie";
-import { AuthContext } from "./AuthContext";
 
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
   const route = useNavigate();
   const token = Cookies.get("token");
-  const isSubscribed = localStorage.getItem("isSubscribed");
 
   const [activeLink, setActiveLink] = useState("Home");
   const navigate = (url, active) => {
@@ -44,6 +42,7 @@ export const GlobalContextProvider = ({ children }) => {
 
         setManagers(data?.data);
       } catch (err) {
+        console.log("🚀 ~ getManagers ~ err:", err);
       } finally {
         setLoadingManagers(false);
       }
@@ -70,6 +69,7 @@ export const GlobalContextProvider = ({ children }) => {
         const { data } = await axios.get(`/owner/employees?${queryString}`);
         setEmployees(data?.data);
       } catch (err) {
+        console.log("🚀 ~ getEmployees ~ err:", err);
       } finally {
         setLoadingEmployees(false);
       }
@@ -97,6 +97,7 @@ export const GlobalContextProvider = ({ children }) => {
 
         setBoats(data?.data);
       } catch (err) {
+        console.log("🚀 ~ getBoats ~ err:", err);
       } finally {
         setLoadingBoats(false);
       }
@@ -179,24 +180,24 @@ export const GlobalContextProvider = ({ children }) => {
         setUpdateManager,
         setUpdateBoat,
         setUpdateDropDown,
+        setLoadingEmployees,
+        setNotification,
+        setNotifications,
+        setShow,
+        setNotificationUpdate,
         dropDown,
         boatDropDown,
         taskDropDown,
         loadingBoats,
         loadingEmployees,
-        setLoadingEmployees,
         loadingManagers,
         managers,
         boats,
         employees,
         show,
-        setShow,
         notification,
-        setNotification,
         notifications,
-        setNotifications,
         notificationUpdate,
-        setNotificationUpdate,
       }}
     >
       {children}

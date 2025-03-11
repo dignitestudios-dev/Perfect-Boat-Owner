@@ -30,6 +30,7 @@ const Managers = () => {
       setPageDetails(data?.data?.paginationDetails);
       setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
+      console.log("🚀 ~ getManagers ~ err:", err);
     } finally {
       setLoadingManagers(false);
     }

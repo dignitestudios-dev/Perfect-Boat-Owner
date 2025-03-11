@@ -1,14 +1,14 @@
 import React, { useContext, useState } from "react";
-import { FiSearch, FiChevronDown } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { Link } from "react-router-dom";
-import { FaCaretDown } from "react-icons/fa";
+
 import MiniListLoader from "../global/MiniListLoader";
 import BoatType from "../global/headerDropdowns/BoatType";
 import LocationType from "../global/headerDropdowns/LocationType";
 
 const DashboardBoats = ({ data, loading }) => {
-  const { navigate, formatTimestampToDate } = useContext(GlobalContext);
+  const { navigate } = useContext(GlobalContext);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [locationType, setLocationType] = useState([]);
@@ -102,6 +102,7 @@ const DashboardBoats = ({ data, loading }) => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   locationType={locationType}
                   setLocationType={setLocationType}
+                  title="Location / Customer Name"
                 />
               </div>
               {filteredData?.slice(0, 4)?.map((boat, key) => {

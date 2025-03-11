@@ -125,6 +125,7 @@ const ManagerDeleteAssignModal = ({
                       toggleLocationDropdown={toggleLocationDropdown}
                       setLocationType={setLocationType}
                       locationType={locationType}
+                      title="Location "
                     />
                   </th>
                 </tr>

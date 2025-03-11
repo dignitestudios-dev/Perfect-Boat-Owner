@@ -30,6 +30,7 @@ const Employees = () => {
       setPageDetails(data?.data?.paginationDetails);
       setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
+      console.log("🚀 ~ getEmployees ~ err:", err);
     } finally {
       setLoadingEmployees(false);
     }

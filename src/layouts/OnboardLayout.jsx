@@ -1,17 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Logo } from "../assets/export";
 import Navbar from "./Navbar";
-import { Link, useNavigate } from "react-router-dom";
-import { RiLogoutCircleLine, RiMenuLine } from "react-icons/ri";
-import { AuthMockup } from "../assets/export";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { GoDotFill } from "react-icons/go";
-import { GlobalContext } from "../contexts/GlobalContext";
+import { Link } from "react-router-dom";
+import { RiMenuLine } from "react-icons/ri";
 
 const OnboardLayout = ({ page }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { navigate } = useContext(GlobalContext);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };

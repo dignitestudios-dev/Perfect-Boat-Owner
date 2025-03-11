@@ -198,6 +198,7 @@ const AssignEmployee = () => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   setLocationType={setLocationType}
                   locationType={locationType}
+                  title="Location "
                 />
               </div>
             </div>

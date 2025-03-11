@@ -103,6 +103,7 @@ const NewTaskTable = () => {
             toggleLocationDropdown={toggleLocationDropdown}
             locationType={locationType}
             setLocationType={setLocationType}
+            title="Location / Customer Name"
           />
           <span className="w-full flex justify-start items-center px-[60px]">
             Requested By

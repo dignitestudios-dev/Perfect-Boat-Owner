@@ -303,6 +303,7 @@ const AddManagerpage = () => {
                   label={"Location"}
                   type="text"
                   placeholder="Enter Location"
+                  maxLength={80}
                   error={errors.location}
                   register={register("location", {
                     onChange: (e) => {

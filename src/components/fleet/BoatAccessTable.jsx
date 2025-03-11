@@ -90,6 +90,7 @@ const BoatAccessTable = ({
               toggleLocationDropdown={toggleLocationDropdown}
               locationType={locationType}
               setLocationType={setLocationType}
+              title="Location / Customer Name"
             />
           </span>
         </div>

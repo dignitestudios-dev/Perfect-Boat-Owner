@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Papa from "papaparse";
 import { FiLoader } from "react-icons/fi";
-import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import AddEmployeeModal from "../../components/global/AddEmployeeModal";
@@ -237,7 +235,10 @@ const AddManager = () => {
             >
               {data?.map((form, index) => {
                 return (
-                  <div className="w-full h-auto flex flex-col justify-start items-start gap-1">
+                  <div
+                    key={index}
+                    className="w-full h-auto flex flex-col justify-start items-start gap-1"
+                  >
                     {formError.index == index && formError.message && (
                       <span className="text-red-600 text-sm font-medium">
                         {formError?.message}
@@ -245,7 +246,6 @@ const AddManager = () => {
                     )}
 
                     <div
-                      key={index}
                       className={`w-full flex flex-col justify-start items-start gap-6 p-2 rounded-xl ${
                         formError.index == index &&
                         formError.message &&
@@ -524,7 +524,6 @@ const AddManager = () => {
                 {isBoatModalOpen && (
                   <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000]">
                     <ManagerBoatsCsvModal
-                      data={data}
                       inputIndex={inputIndex}
                       isOpen={isBoatModalOpen}
                       setIsOpen={setIsBoatModalOpen}

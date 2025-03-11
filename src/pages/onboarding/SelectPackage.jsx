@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import SelectPaymentMethod from "./SelectPaymentMethod";
 import { AuthMockup } from "../../assets/export";
 import axios from "../../axios";
-import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { ErrorToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
-import { AuthContext } from "../../contexts/AuthContext";
 
 const features = [
   "Unlimited Number of Vessels",
@@ -27,10 +25,10 @@ const features = [
 const SelectPackage = () => {
   const { navigate } = useContext(GlobalContext);
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectLoading, setSelectLoading] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
+  console.log("🚀 ~ SelectPackage ~ subscriptions:", subscriptions);
 
   const getPackage = async () => {
     try {
@@ -38,6 +36,7 @@ const SelectPackage = () => {
       const { data } = await axios.get("/owner/subscription/plan?isWeb=true");
       setSubscriptions(data?.data);
     } catch (error) {
+      console.log("🚀 ~ getPackage ~ error:", error);
     } finally {
       setLoading(false);
     }
@@ -58,7 +57,7 @@ const SelectPackage = () => {
         navigate("/add-card");
       }
     } catch (error) {
-      ErrorToast(err?.response?.data?.message);
+      ErrorToast(error?.response?.data?.message);
     } finally {
       setSelectLoading(false);
     }
@@ -118,7 +117,7 @@ const SelectPackage = () => {
                   <span className="text-[14px] font-normal text-white">
                     /Year
                   </span>
-                  {subscriptions[0]?.istTrail && (
+                  {subscriptions[0]?.isTrail && (
                     <span className="absolute -top-4 right-6 text-[12px] font-medium text-slate-700 bg-slate-200 p-1 rounded-3xl">
                       {subscriptions[0]?.trailDays} Days Free Trial
                     </span>

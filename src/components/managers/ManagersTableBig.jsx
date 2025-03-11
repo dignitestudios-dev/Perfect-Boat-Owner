@@ -27,8 +27,7 @@ const ManagerTableBig = ({
   setJobType,
   setCurrentPage,
 }) => {
-  const { navigate, setUpdateManager } = useContext(GlobalContext);
-  const navigation = useNavigate();
+  const navigate = useNavigate();
   const timeoutRef = useRef(null);
 
   const [search, setSearch] = useState("");
@@ -56,8 +55,13 @@ const ManagerTableBig = ({
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleEditClick = (managerData) => {
-    navigate(`/edit-manager/${managerData?._id}`, { state: managerData });
+  const handleEditClick = (e, managerData) => {
+    e.stopPropagation();
+    navigate(`/edit-manager/${managerData?._id}`, { state: "Edit" });
+  };
+
+  const handleNavigateClick = (managerData) => {
+    navigate(`/edit-manager/${managerData?._id}`, { state: "Not Edit" });
   };
   const [userId, setUserId] = useState();
   const [isReactivateModalOpen, setIsReactivateModalOpen] = useState(false);
@@ -94,7 +98,7 @@ const ManagerTableBig = ({
   };
 
   const handleDeactivate = async () => {
-    navigation(`/delete-manager-account/${managerId}`, {
+    navigate(`/delete-manager-account/${managerId}`, {
       state: { reasonForDelete: "deactivation" },
     });
   };
@@ -221,6 +225,7 @@ const ManagerTableBig = ({
                 locationType={locationType}
                 setLocationType={setLocationType}
                 setCurrentPage={setCurrentPage}
+                title="Location "
               />
               <span className="w-full flex justify-end items-center ">
                 Action
@@ -229,7 +234,8 @@ const ManagerTableBig = ({
             {data?.length > 0 ? (
               data?.map((manager, index) => (
                 <div
-                  onClick={() => handleEditClick(manager)}
+                  key={index}
+                  onClick={() => handleNavigateClick(manager)}
                   className="w-full h-8 grid grid-cols-[5fr_5fr_5fr_5fr_auto] border-b cursor-pointer
                  border-white/10  text-[11px] font-medium leading-[14.85px] text-white pr-8"
                 >
@@ -251,7 +257,7 @@ const ManagerTableBig = ({
                   <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 ">
                     <span
                       className="flex justify-start items-center"
-                      onClick={() => handleEditClick(manager)}
+                      onClick={(e) => handleEditClick(e, manager)}
                     >
                       <FaRegEdit />
                     </span>

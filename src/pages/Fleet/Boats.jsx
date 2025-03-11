@@ -29,6 +29,7 @@ const Boats = () => {
       setPageDetails(data?.data?.paginationDetails || []);
       setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
+      console.log("🚀 ~ getBoats ~ err:", err);
     } finally {
       setLoadingBoats(false);
     }

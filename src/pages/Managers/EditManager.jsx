@@ -1,15 +1,8 @@
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  Fragment,
-} from "react";
+import React, { useContext, useState, useEffect, Fragment } from "react";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import AddFleetInput from "../../components/fleet/AddFleetInput";
-import { FaRegEdit, FaCaretDown } from "react-icons/fa"; // Import dropdown icon
-import { RiDeleteBinLine } from "react-icons/ri";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+
+import { useLocation, useParams } from "react-router-dom";
 import ResetPassModal from "../../components/onboarding/ResetPassModal"; // Adjust the import path as needed
 import AssignedModal from "../../components/tasks/modal/AssignedModal";
 import ManagerDetailModal from "../Managers/ManagerDetailModal"; // Adjust the import path as needed
@@ -160,7 +153,10 @@ const EditManager = () => {
 
   useEffect(() => {
     getDataById();
-  }, [id, update]);
+    if (state === "Edit") {
+      setIsEditable(true);
+    }
+  }, [id, update, state]);
 
   const onSubmit = async (data) => {
     try {
@@ -472,6 +468,7 @@ const EditManager = () => {
                   setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
                   toggleLocationDropdown={toggleLocationDropdown}
+                  title="Location "
                 />
               </div>
               {loading ? (
@@ -483,7 +480,10 @@ const EditManager = () => {
                       {employeeFilteredData
                         ?.slice(0, 4)
                         ?.map((employ, index) => (
-                          <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                          <div
+                            key={index}
+                            className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                          >
                             <span className="w-full flex justify-start items-center">
                               {employ?.name || "--"}
                             </span>
@@ -561,6 +561,7 @@ const EditManager = () => {
                     setLocationDropdownOpen={setLocationDropdownIsOpen}
                     locationDropdownOpen={locationDropdownIsOpen}
                     toggleLocationDropdown={toggleLocationIsDropdown}
+                    title="Location / Customer Name"
                   />
                 </div>
               </div>

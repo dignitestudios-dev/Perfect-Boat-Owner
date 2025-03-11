@@ -56,7 +56,11 @@ const EmployeesTableBig = ({
   // );
 
   const handleEditClick = (id) => {
-    navigate(`/edit-employee/${id}`);
+    navigation(`/edit-employee/${id}`, { state: "Edit" });
+  };
+
+  const handleNavigateClick = (id) => {
+    navigation(`/edit-employee/${id}`, { state: "Not Edit" });
   };
 
   const [userId, setUserId] = useState();
@@ -222,6 +226,7 @@ const EmployeesTableBig = ({
               locationType={locationType}
               setLocationType={setLocationType}
               setCurrentPage={setCurrentPage}
+              title="Location"
             />
             <span className="w-full flex justify-start items-center ">
               Action
@@ -235,9 +240,10 @@ const EmployeesTableBig = ({
               {data?.length > 0 ? (
                 data?.map((employee, index) => (
                   <div
+                    key={index}
                     onClick={() => {
                       if (employee?.isActive) {
-                        handleEditClick(employee?._id);
+                        handleNavigateClick(employee?._id);
                       }
                     }}
                     className={` ${
@@ -245,10 +251,7 @@ const EmployeesTableBig = ({
                     } w-full h-8 grid grid-cols-[4fr_5fr_4fr_4fr_4fr_auto] border-b border-white/10  text-[11px]
             font-medium leading-[14.85px] text-white justify-start items-center pr-8`}
                   >
-                    <span
-                      key={index}
-                      className="w-full flex justify-start items-center"
-                    >
+                    <span className="w-full flex justify-start items-center">
                       {employee?.name}
                     </span>
                     <span className="w-full flex justify-start items-center">

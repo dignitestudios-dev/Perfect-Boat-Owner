@@ -100,6 +100,7 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
+                      title="Location "
                     />
                   </th>
                 </tr>
