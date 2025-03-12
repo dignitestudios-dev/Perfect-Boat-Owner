@@ -56,7 +56,7 @@ const TasksCard = ({ getTasks, data }) => {
       />
       <button
         onClick={() => navigate(`/tasks/${data?._id}`, "All Tasks")}
-        className="w-full h-[218px] flex justify-start items-start rounded-l-[6px] rounded-r-[16px] bg-[#1A293D]"
+        className="w-full h-[238px] flex justify-start items-start rounded-l-[6px] rounded-r-[16px] bg-[#1A293D]"
       >
         <div
           className={`w-[6px] h-full rounded-l-[6px]`}
@@ -93,11 +93,11 @@ const TasksCard = ({ getTasks, data }) => {
                   : data?.boat?.name}
               </span>
             </span>
-            <span className="text-[15px] font-normal leading-[21.6px] text-white/50">
+            <span className="text-[15px] font-normal text-start leading-[21.6px] text-white/50 ">
               Location/Customer Name:{" "}
               <span className="font-medium">
-                {data?.boat?.location?.length > 16
-                  ? data?.boat?.location?.slice(0, 16) + "..."
+                {data?.boat?.location?.length > 55
+                  ? data?.boat?.location?.slice(0, 55) + "..."
                   : data?.boat?.location}
               </span>
             </span>

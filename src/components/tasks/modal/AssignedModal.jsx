@@ -131,7 +131,10 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
               {tasksList?.length > 0 ? (
                 <>
                   {tasksList?.map((task, index) => (
-                    <div className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                    <div
+                      key={index}
+                      className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    >
                       <span className="w-full flex justify-start items-center">
                         {task?.name || task?.boat?.name}
                       </span>
@@ -163,7 +166,7 @@ const AssignedModal = ({ setIsOpen, tasksList, getEmployeeData, loading }) => {
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
                         <span
                           className="flex justify-start items-center"
-                          onClick={() => handleEditTaskClick(task?._id)}
+                          // onClick={() => handleEditTaskClick(task?._id)}
                         >
                           <FaRegEdit />
                         </span>

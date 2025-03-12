@@ -142,7 +142,10 @@ const ViewAssignedTaskModal = ({
               {filteredData?.length > 0 ? (
                 <>
                   {filteredData?.map((task, index) => (
-                    <div className="w-full h-10 grid grid-cols-[4fr_6fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                    <div
+                      key={index}
+                      className="w-full h-10 grid grid-cols-[4fr_6fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    >
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
                       </span>

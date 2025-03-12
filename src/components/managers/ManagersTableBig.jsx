@@ -227,7 +227,7 @@ const ManagerTableBig = ({
                 setCurrentPage={setCurrentPage}
                 title="Location "
               />
-              <span className="w-full flex justify-end items-center ">
+              <span className="w-full flex justify-end items-center ml-1">
                 Action
               </span>
             </div>
@@ -236,12 +236,12 @@ const ManagerTableBig = ({
                 <div
                   key={index}
                   onClick={() => handleNavigateClick(manager)}
-                  className="w-full h-8 grid grid-cols-[5fr_5fr_5fr_5fr_auto] border-b cursor-pointer
+                  className="w-full h-auto grid grid-cols-[5fr_5fr_5fr_5fr_auto] border-b cursor-pointer
                  border-white/10  text-[11px] font-medium leading-[14.85px] text-white pr-8"
                 >
                   <span
                     key={index}
-                    className="w-full flex justify-start items-center"
+                    className="h-[40px] w-full flex justify-start items-center"
                   >
                     {manager?.name}
                   </span>
@@ -254,7 +254,7 @@ const ManagerTableBig = ({
                   <span className="w-full flex justify-start items-center  ">
                     {manager?.location ?? "---"}
                   </span>
-                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 ">
+                  <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 ml-2">
                     <span
                       className="flex justify-start items-center"
                       onClick={(e) => handleEditClick(e, manager)}

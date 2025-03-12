@@ -248,10 +248,10 @@ const EmployeesTableBig = ({
                     }}
                     className={` ${
                       employee?.isActive === true ? "cursor-pointer" : ""
-                    } w-full h-8 grid grid-cols-[4fr_5fr_4fr_4fr_4fr_auto] border-b border-white/10  text-[11px]
-            font-medium leading-[14.85px] text-white justify-start items-center pr-8`}
+                    } w-full h-auto grid grid-cols-[4fr_5fr_4fr_4fr_4fr_auto] border-b border-white/10  text-[11px]
+            font-medium leading-[14.85px] text-white justify-start items-center pr-8 py-1`}
                   >
-                    <span className="w-full flex justify-start items-center">
+                    <span className="h-10 w-full flex justify-start items-center">
                       {employee?.name}
                     </span>
                     <span className="w-full flex justify-start items-center">
@@ -268,7 +268,7 @@ const EmployeesTableBig = ({
                     <span className="w-full flex justify-start items-center">
                       {employee?.location || "---"}
                     </span>
-                    <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 ">
+                    <div className="w-full flex  text-[15px] text-white/40 justify-start items-center gap-2 ml-1">
                       <span
                         className="flex justify-start items-center cursor-pointer"
                         onClick={(e) => {

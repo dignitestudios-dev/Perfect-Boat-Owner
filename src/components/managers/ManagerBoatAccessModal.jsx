@@ -106,7 +106,7 @@ const ManagerBoatAccessModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#000000a0] z-50">
-      <div className="w-[100%] h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+      <div className="w-[100%] h-[90%] lg:w-[983px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="relative w-full h-full bg-[#001229] rounded-2xl p-4 lg:p-6">
           <button
             onClick={() => {
@@ -161,7 +161,7 @@ const ManagerBoatAccessModal = ({
             </label>
           </div>
 
-          <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">
+          <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4 pr-2">
             <div
               className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14]
             font-medium leading-[14.85px] text-white/50 justify-start items-start"
@@ -203,7 +203,7 @@ const ManagerBoatAccessModal = ({
                     key={index}
                     className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
-                    <div className="flex items-center">
+                    <div className=" flex items-center">
                       <input
                         type="checkbox"
                         className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
@@ -247,7 +247,7 @@ const ManagerBoatAccessModal = ({
                     <span className="w-full flex justify-start items-center">
                       {boat?.model} / {boat?.make} / {boat?.size}
                     </span>
-                    <span className="w-full flex justify-start items-center">
+                    <span className="w-full flex justify-start items-center ">
                       {boat?.location}
                     </span>
                   </div>

@@ -90,7 +90,7 @@ const BoatAccessTable = ({
               toggleLocationDropdown={toggleLocationDropdown}
               locationType={locationType}
               setLocationType={setLocationType}
-              title="Location / Customer Name"
+              title="Location"
             />
           </span>
         </div>
@@ -101,9 +101,9 @@ const BoatAccessTable = ({
                 return (
                   <div
                     key={index}
-                    className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
-                    <span className="w-full flex justify-start items-center">
+                    <span className="h-[40px] w-full flex justify-start items-center">
                       {manager?.name}
                     </span>
                     <span className="w-full flex justify-start items-center">

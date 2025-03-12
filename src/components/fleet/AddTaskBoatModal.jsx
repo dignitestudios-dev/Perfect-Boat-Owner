@@ -127,7 +127,7 @@ const AddTaskBoatModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#000000a0] z-50">
-      <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+      <div className="w-[100%]  h-[90%] lg:w-[983px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="relative w-full  h-full bg-[#001229] rounded-2xl  p-4 lg:p-6">
           <button
             onClick={() => setIsOpen(false)}
@@ -177,7 +177,7 @@ const AddTaskBoatModal = ({
             )}
           </div>
 
-          <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4">
+          <div className="w-full h-[80%] overflow-y-auto flex flex-col gap-1 justify-start items-start mt-4 pr-4">
             <div className="w-full grid grid-cols-5 text-[13px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
               <span className="w-full flex justify-start items-center">
                 Boat Image

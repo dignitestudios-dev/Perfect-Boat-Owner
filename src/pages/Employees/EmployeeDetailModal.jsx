@@ -263,7 +263,7 @@ const EmployeeDetailModal = ({
                             <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {employee?.jobtitle}
                             </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px] w-[240px]">
                               {employee?.location}
                             </td>
                           </tr>

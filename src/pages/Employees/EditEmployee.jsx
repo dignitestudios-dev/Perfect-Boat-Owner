@@ -54,9 +54,8 @@ const EditEmployee = () => {
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const { id } = useParams();
   const location = useLocation();
-  console.log("🚀 ~ EditEmployee ~ location:", location);
+
   const { state } = location;
-  console.log("🚀 ~ EditEmployee ~ state:", state);
   const navigateTo = useNavigate();
   const today = moment("01-01-2024");
 
@@ -472,8 +471,8 @@ const EditEmployee = () => {
                 </span>
               </div>
               {employee?.manager !== null ? (
-                <div className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
-                  <span className="w-full flex justify-start items-center">
+                <div className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center">
+                  <span className="w-full h-10 flex justify-start items-center">
                     {passSelectedManager?.name || employee?.manager?.name}
                   </span>
                   <span className="w-full flex justify-start items-center">

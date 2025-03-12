@@ -168,7 +168,7 @@ const AssignManager = () => {
               <div className="flex items-center px-2 col-span-3">
                 <span className="text-white/50">Email</span>
               </div>
-              <div className="flex items-center px-2 col-span-3">
+              <div className="flex items-center px-2 col-span-2">
                 <span className="text-white/50">Manager</span>
               </div>
               <div className="flex items-center px-2 col-span-2">
@@ -182,7 +182,7 @@ const AssignManager = () => {
                 />
               </div>
 
-              <div className="flex items-center px-2 col-span-1">
+              <div className="flex items-center px-2 col-span-2">
                 <LocationType
                   setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
@@ -207,9 +207,9 @@ const AssignManager = () => {
                       return (
                         <div
                           key={index}
-                          className="w-full h-10 grid grid-cols-12 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
+                          className="w-full h-auto py-1 grid grid-cols-12 border-b border-[#fff]/[0.14] text-[11px] font-medium leading-[14.85px] text-white"
                         >
-                          <div className="flex items-center col-span-1 px-2">
+                          <div className="flex items-center col-span-1 px-2 h-10">
                             <input
                               checked={isMultiSelected}
                               onChange={() =>
@@ -230,7 +230,7 @@ const AssignManager = () => {
                           <span className="flex items-center px-2 col-span-3">
                             {employee?.email}
                           </span>
-                          <span className="flex items-center px-2 col-span-3">
+                          <span className="flex items-center px-2 col-span-2">
                             {employee?.manager?.name
                               ? employee?.manager?.name
                               : "Not assigned"}
@@ -238,7 +238,7 @@ const AssignManager = () => {
                           <span className="flex items-center px-2 col-span-2">
                             {employee?.jobtitle}
                           </span>
-                          <span className="flex items-center px-2 col-span-1">
+                          <span className="flex items-center px-2 col-span-2">
                             {employee?.location}
                           </span>
                         </div>

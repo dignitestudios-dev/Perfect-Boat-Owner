@@ -236,6 +236,10 @@ const TaskDetail = () => {
     }
   };
 
+  const openImage = (url) => {
+    window.open(url, "_blank");
+  };
+
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
       {isLoading ? (
@@ -384,6 +388,7 @@ const TaskDetail = () => {
                       Due Date
                     </span>
                     <button
+                      disabled={!isEdit}
                       onClick={() => setIsCalendarOpen(true)}
                       className="text-xs font-normal text-[#199BD1]"
                     >
@@ -408,30 +413,53 @@ const TaskDetail = () => {
                   isEdit={isEdit}
                 />
               </div>
-              <hr className="w-full bg-[#fff]/[0.14] h-[1px] " />
-              <div>
-                <div className="w-full flex flex-col gap-4 pb-2">
-                  <label className="text-[16px] font-medium leading-[21.6px]">
-                    Photos
-                  </label>
-                </div>
-                <div className="w-full flex justify-center items-center gap-6">
-                  <div className="w-full h-[147px] rounded-xl">
-                    <img
-                      src={taskDetail?.boat?.cover}
-                      alt={`boatimage`}
-                      className="w-full h-full rounded-xl object-cover"
-                    />
+              {taskDetail?.status === "completed" && (
+                <>
+                  <hr className="w-full bg-[#fff]/[0.14] h-[1px] " />
+                  <div>
+                    <div className="w-full flex flex-col gap-4 pb-2">
+                      <label className="text-[16px] font-medium leading-[21.6px]">
+                        Photos
+                      </label>
+                    </div>
+                    <div className="w-full flex justify-center items-center gap-6">
+                      {taskDetail?.taskReport?.images?.length > 0 && (
+                        <>
+                          {taskDetail?.taskReport?.images?.map(
+                            (item, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-full h-[147px] rounded-xl"
+                                >
+                                  <img
+                                    src={item}
+                                    alt={`boatimage`}
+                                    className="w-full h-full rounded-xl object-cover cursor-pointer"
+                                    onClick={() => openImage(item)}
+                                  />
+                                </div>
+                              );
+                            }
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="w-full h-[147px] rounded-xl">
-                    <img
-                      src={taskDetail?.boat?.cover}
-                      alt={`boatimage`}
-                      className="w-full h-full rounded-xl object-cover"
-                    />
+                  <div className="w-full grid grid-cols-1 gap-12 mt-4">
+                    <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                      <label className="text-[16px] font-medium leading-[21.6px]">
+                        Note
+                      </label>
+                      <textarea
+                        disabled
+                        value={taskDetail?.taskReport?.note}
+                        className="w-full h-[300px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
             <DateModal
               isOpen={isCalendarOpen}
@@ -508,15 +536,17 @@ const TaskDetail = () => {
             </div>
           ) : (
             <div className="w-full flex justify-end py-4 items-center gap-4">
-              <button
-                type="button"
-                onClick={() => {
-                  navigate(-1);
-                }}
-                className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px]  leading-[21.6px] tracking-[-0.24px]"
-              >
-                {"Download As PDF"}
-              </button>
+              {taskDetail?.status === "completed" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                  className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px]  leading-[21.6px] tracking-[-0.24px]"
+                >
+                  {"Download As PDF"}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {

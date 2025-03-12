@@ -69,10 +69,11 @@ const BoatAccessRights = () => {
         <div className="w-full flex flex-col gap-1">
           <div className="w-full overflow-x-auto">
             <div className="w-full min-w-[800px] bg-[#001229]">
-              <div className="grid h-10  border-b border-[#fff]/[0.14] grid-cols-5 text-[11px] font-medium leading-[14.85px] text-white/50  sticky top-0 bg-[#001229] z-10">
-                <span className="flex items-center justify-start">
+              <div className="grid h-10  border-b border-[#fff]/[0.14] grid-cols-6 text-[11px] font-medium leading-[14.85px] text-white/50  sticky top-0 bg-[#001229] z-10">
+                <span className="flex items-center justify-start col-span-1">
                   Manager Name
                 </span>
+
                 <JobType
                   setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
@@ -81,16 +82,21 @@ const BoatAccessRights = () => {
                   setJobType={setJobType}
                   isManager={true}
                 />
-                <LocationType
-                  setLocationDropdownOpen={setLocationDropdownOpen}
-                  locationDropdownOpen={locationDropdownOpen}
-                  toggleLocationDropdown={toggleLocationDropdown}
-                  setLocationType={setLocationType}
-                  locationType={locationType}
-                  title="Location / Customer Name"
-                />
+                <span className="col-span-2 mt-3">
+                  <LocationType
+                    setLocationDropdownOpen={setLocationDropdownOpen}
+                    locationDropdownOpen={locationDropdownOpen}
+                    toggleLocationDropdown={toggleLocationDropdown}
+                    setLocationType={setLocationType}
+                    locationType={locationType}
+                    title="Location"
+                  />
+                </span>
 
-                <span className="flex items-center justify-start">Access</span>
+                <span className="col-span-1 flex items-center justify-start">
+                  Access
+                </span>
+                <span className="col-span-1"></span>
               </div>
 
               <div className="w-full h-[calc(100vh-300px)] overflow-x-auto">
@@ -102,32 +108,31 @@ const BoatAccessRights = () => {
                       {filteredData?.map((item, index) => (
                         <div
                           key={index}
-                          className="w-full h-10 grid grid-cols-5 border-b border-[#fff]/[0.14] 
+                          className="w-full h-auto grid grid-cols-6 border-b border-[#fff]/[0.14] 
                       py-1 text-[11px] font-medium text-white items-center"
                         >
-                          <span
-                            // onClick={() => navigate("/employees/1", "Employees")}
-                            className="flex items-center justify-start cursor-pointer"
-                          >
+                          <span className="h-10 col-span-1 flex items-center justify-start cursor-pointer">
                             {item?.name}
                           </span>
-                          <span className="flex items-center justify-start">
+                          <span className="col-span-1 flex items-center justify-start">
                             {item?.jobtitle}
                           </span>
-                          <span className="flex items-center justify-start">
+                          <span className=" flex items-center justify-start col-span-2">
                             {item?.location || "---"}
                           </span>
-                          <span className="flex items-center justify-start">
+                          <span className="col-span-1 flex items-center justify-start">
                             {item?.managerAccess}
                           </span>
-                          <button
-                            onClick={() =>
-                              openBoatAccessModal(item?._id, item?.name)
-                            }
-                            className="w-[74px] h-[27px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-full py-1"
-                          >
-                            View Details
-                          </button>
+                          <span className="col-span-1">
+                            <button
+                              onClick={() =>
+                                openBoatAccessModal(item?._id, item?.name)
+                              }
+                              className="w-[74px]  h-[27px] flex justify-center items-center bg-[#1A293D] text-[#199BD1] rounded-full py-1"
+                            >
+                              View Details
+                            </button>
+                          </span>
                         </div>
                       ))}
                     </div>

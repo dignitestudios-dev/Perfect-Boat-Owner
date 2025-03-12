@@ -3,6 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
+import { ErrorToast } from "../global/Toaster";
 
 const AssignedManagerModal = ({
   setIsOpen,
@@ -194,7 +195,7 @@ const AssignedManagerModal = ({
                             key={index}
                             className="border-b-[1px] border-white/10"
                           >
-                            <td className="px-0 py-2">
+                            <td className="px-0 py-2 h-auto">
                               <input
                                 type="checkbox"
                                 className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
@@ -215,7 +216,7 @@ const AssignedManagerModal = ({
                             <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {manager?.jobtitle}
                             </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                            <td className="w-[240px] px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {manager?.location}
                             </td>
                           </tr>

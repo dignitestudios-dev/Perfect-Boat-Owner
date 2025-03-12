@@ -482,9 +482,9 @@ const EditManager = () => {
                         ?.map((employ, index) => (
                           <div
                             key={index}
-                            className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                            className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                           >
-                            <span className="w-full flex justify-start items-center">
+                            <span className="min-h-[30px] w-full flex justify-start items-center">
                               {employ?.name || "--"}
                             </span>
                             <span className="w-full flex justify-start items-center">
@@ -574,9 +574,9 @@ const EditManager = () => {
                       {boatFilteredData?.slice(0, 4)?.map((boat, index) => (
                         <div
                           key={index}
-                          className="w-full h-10 grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                          className="w-full h-auto grid grid-cols-4 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                         >
-                          <span className="w-full flex justify-start items-center">
+                          <span className="h-10 w-full flex justify-start items-center">
                             {boat?.boatType}
                           </span>
                           <span className="w-full flex justify-start items-center">

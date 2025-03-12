@@ -226,7 +226,7 @@ const ManagerDetailModal = ({
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                         <div className="w-24 h-4 bg-gray-600 rounded animate-pulse"></div>
                       </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                      <td className=" px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                         <div className="w-32 h-4 bg-gray-600 rounded animate-pulse"></div>
                       </td>
                     </tr>
@@ -245,7 +245,7 @@ const ManagerDetailModal = ({
                         key={index}
                         className="border-b-[1px] border-white/10"
                       >
-                        <td className="px-0 py-2">
+                        <td className="px-0 py-2 h-12">
                           <input
                             type="checkbox"
                             className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
@@ -266,7 +266,7 @@ const ManagerDetailModal = ({
                         <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                           {manager?.jobtitle}
                         </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                        <td className="w-[250px] px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                           {manager?.location}
                         </td>
                       </tr>
