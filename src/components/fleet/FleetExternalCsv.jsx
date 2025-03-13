@@ -259,6 +259,18 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
                       src={boat?.cover}
                       className="w-full h-full object-cover rounded-xl"
                     />
+                    {/* {boat?.cover?.includes("drive.google.com") ? (
+                      <iframe
+                        src={boat?.cover}
+                        className="w-full h-full object-cover rounded-xl"
+                        allow="autoplay"
+                      ></iframe>
+                    ) : (
+                      <img
+                        src={boat?.cover}
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    )} */}
                   </div>
                   {error?.missingFields?.includes("cover") ? (
                     <p className="text-red-700 text-sm font-medium">

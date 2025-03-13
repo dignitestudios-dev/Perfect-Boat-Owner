@@ -57,7 +57,7 @@ const BlogDetails = () => {
                   year: "numeric",
                 })}
               </span>
-              <span className="text-[12px] font-normal text-white/50 mr-[140px]">
+              <span className="font-satoshi text-[12px] font-normal text-white/50 mr-[140px]">
                 {state?.imageTitle}
               </span>
               <button onClick={handleDotsClick} className="text-white">
@@ -93,15 +93,15 @@ const BlogDetails = () => {
                 </div>
               )}
             </div>
-            <h2 className="text-[28px] font-bold text-white leading-[37.7px]">
+            <h2 className="font-satoshi text-[28px] font-bold text-white leading-[37.7px]">
               {state?.title}
             </h2>
-            <span className="text-[16px] font-normal leading-[21.6px] text-white/80">
+            <span className="font-satoshi text-[16px] font-normal leading-[21.6px] text-white/80">
               {state?.subTitle}
             </span>
           </div>
 
-          <div className="w-full h-auto flex justify-start items-start py-6">
+          <div className="font-satoshi w-full h-auto flex justify-start items-start py-6">
             <div
               className={`w-full ${
                 state?.story.length < 2500 ? "h-[150px]" : "h-auto"

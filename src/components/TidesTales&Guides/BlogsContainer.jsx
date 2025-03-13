@@ -31,7 +31,7 @@ export const BlogsContainer = ({ data, loading, onDeleteBlog }) => {
   };
 
   return (
-    <div className="h-auto w-full flex flex-col justify-start items-center">
+    <div className="h-auto w-full flex flex-col justify-start items-center font-satoshi">
       <div className="w-full h-[237px] rounded-t-[18px] flex flex-col gap-1 items-center justify-center bg-gradient text-white">
         <h2 className="text-[36px] font-bold leading-[48.6px]">
           Tides, Tales & Guides

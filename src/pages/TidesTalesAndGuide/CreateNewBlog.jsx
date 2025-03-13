@@ -10,6 +10,7 @@ import {
 
 import { BiLink, BiUndo, BiRedo, BiChevronDown } from "react-icons/bi";
 import { BlogContext } from "../../contexts/BlogContext";
+import { ErrorToast } from "../../components/global/Toaster";
 
 const CreateNewBlog = () => {
   const { navigate } = useContext(GlobalContext);
@@ -85,6 +86,22 @@ const CreateNewBlog = () => {
     }
   };
 
+  const handlePreviewClick = () => {
+    if (title && subTitle && imageText) {
+      navigate("/preview");
+    } else {
+      ErrorToast("Please fill all fields before proceeding.");
+    }
+  };
+
+  const handlePublishClick = () => {
+    if (title && subTitle && imageText) {
+      navigate("/publish");
+    } else {
+      ErrorToast("Please fill all fields before proceeding.");
+    }
+  };
+
   useEffect(() => {
     if (editorRef.current && story) {
       editorRef.current.innerHTML = story;
@@ -109,13 +126,13 @@ const CreateNewBlog = () => {
             <button
               type="button"
               className="text-[#199BD1] w-[107px] bg-[#1A293D] px-4 py-2 mr-2 rounded-lg"
-              onClick={() => navigate("/preview")}
+              onClick={handlePreviewClick}
             >
               Preview
             </button>
             <button
               className="bg-[#199BD1] w-[107px] text-white px-4 py-2 rounded-lg"
-              onClick={() => navigate("/publish")}
+              onClick={handlePublishClick}
             >
               Publish Now
             </button>
@@ -273,7 +290,7 @@ const CreateNewBlog = () => {
             id="blog-cover"
           />
         </div>
-        <div className="w-full flex items-center justify-center">
+        <div className="font-satoshi w-full flex items-center justify-center">
           <input
             type="text"
             value={imageText}
@@ -284,7 +301,7 @@ const CreateNewBlog = () => {
         </div>
 
         {/* Title, Subtitle, and Content Section */}
-        <div className="mt-4 w-full">
+        <div className="font-satoshi mt-4 w-full">
           <input
             type="text"
             value={title}

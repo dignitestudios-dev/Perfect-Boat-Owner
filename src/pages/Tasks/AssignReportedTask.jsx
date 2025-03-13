@@ -144,7 +144,7 @@ const AssignReportedTask = () => {
       //   id: task?.employee?._id,
       // });
       setDueDate({
-        normal: moment(task?.task?.dueDate * 1000).format("YYYY-MM-DD"),
+        normal: moment(task?.task?.dueDate * 1000).format("MM-DD-YY"),
         unix: task?.task?.dueDate,
       });
       setSelectedDay(

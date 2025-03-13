@@ -594,7 +594,7 @@ const AddFleet = () => {
                 className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
               >
                 <div className="flex items-center">
-                  <span className="mr-1">Save Boat</span>
+                  <span className="mr-1">Save Fleet</span>
                   {submitLoading && (
                     <FiLoader className="animate-spin text-lg mx-auto" />
                   )}

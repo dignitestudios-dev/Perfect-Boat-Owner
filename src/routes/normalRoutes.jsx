@@ -48,7 +48,7 @@ import AddEmployeePlus from "../pages/Employees/AddEmployeePlus";
 import SelectPackage from "../pages/onboarding/SelectPackage";
 import AddCard from "../pages/onboarding/AddCard";
 import Summary from "../pages/onboarding/Summary";
-import UpdatePassword from "../pages/onboarding/UpdatePassword";
+
 import CsvUploader from "../pages/Dashboard/CsvUploader";
 import AssignEmployeeInternal from "../pages/Managers/AssignEmployeeInternal";
 import PageNotFound from "../pages/PageNotFound";

@@ -80,6 +80,7 @@ const TaskDetail = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [updateLoad, setUpdateLoad] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [exportLoader, setExportLoader] = useState(false);
 
   const {
     register,
@@ -171,7 +172,7 @@ const TaskDetail = () => {
           data?.reoccuringDays ? `${data?.reoccuringDays} days` : "None"
         );
         setDueDate({
-          normal: moment(data?.dueDate * 1000).format("YYYY-MM-DD"),
+          normal: moment(data?.dueDate * 1000).format("MM-DD-YY"),
           unix: data?.dueDate,
         });
       }
@@ -238,6 +239,39 @@ const TaskDetail = () => {
 
   const openImage = (url) => {
     window.open(url, "_blank");
+  };
+
+  const handlePdfDownload = async () => {
+    setExportLoader(true);
+    try {
+      const response = await axios.get(`/task/${id}/pdf`);
+
+      if (response.status === 200) {
+        const result = await response?.data;
+
+        // Check if the data contains the download link
+        if (result?.success && result?.data) {
+          const downloadUrl = result?.data;
+
+          // Create an anchor element and trigger a download
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.download = "Manager.csv"; // Optional: Specify the download file name
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          console.error("Failed to fetch download link:", result?.message);
+        }
+      } else {
+        ErrorToast("Failed to download CSV");
+      }
+    } catch (err) {
+      ErrorToast(err?.response?.data?.message);
+      console.error("Error downloading file:", err);
+    } finally {
+      setExportLoader(false);
+    }
   };
 
   return (
@@ -357,7 +391,7 @@ const TaskDetail = () => {
               <div className="w-full grid grid-cols-1 gap-12 mt-4">
                 <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                   <label className="text-[16px] font-medium leading-[21.6px]">
-                    Add Note
+                    Note
                   </label>
                   <textarea
                     disabled={!isEdit}
@@ -538,13 +572,12 @@ const TaskDetail = () => {
             <div className="w-full flex justify-end py-4 items-center gap-4">
               {taskDetail?.status === "completed" && (
                 <button
+                  disabled={exportLoader}
                   type="button"
-                  onClick={() => {
-                    navigate(-1);
-                  }}
+                  onClick={handlePdfDownload}
                   className="w-full lg:w-[208px] h-[52px] bg-[#02203A] text-[#199BD1] rounded-[12px] flex items-center justify-center text-[16px]  leading-[21.6px] tracking-[-0.24px]"
                 >
-                  {"Download As PDF"}
+                  {exportLoader ? "Downloading..." : "Download As a PDF"}
                 </button>
               )}
               <button

@@ -319,7 +319,7 @@ const WelcomeAboard = () => {
             name: item["boat_name/hull_number"] || "",
             make: item.make || "",
             model: item.year || "",
-            location: item.location || "",
+            location: item["location/customer_name"] || "",
             size: item.size || "",
             cover: item.cover || "",
             // pictures: item.pictures || "",

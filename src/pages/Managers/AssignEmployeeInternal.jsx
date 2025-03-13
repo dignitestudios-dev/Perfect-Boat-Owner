@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Papa from "papaparse";
 import { LuArrowRightLeft } from "react-icons/lu";
 import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
+import { GlobalContext } from "../../contexts/GlobalContext";
 const AssignEmployeeInternal = () => {
+  const { employees, managers } = useContext(GlobalContext);
+  console.log("🚀 ~ AssignEmployeeInternal ~ employees:", employees);
+  const [showEmpDropdown, setShowEmpDropdown] = useState(false);
+  const [showManDropdown, setShowManDropdown] = useState(false);
+
   const [formError, setFormError] = useState({
     index: 0,
     message: null,
@@ -85,6 +91,9 @@ const AssignEmployeeInternal = () => {
   };
 
   const handleChange = (index, field, value) => {
+    setShowEmpDropdown(false);
+    setShowManDropdown(false);
+
     const newData = [...data];
     newData[index][field] = value;
     setData(newData);
@@ -141,7 +150,7 @@ const AssignEmployeeInternal = () => {
           <div className="w-full flex flex-col justify-start items-start gap-2">
             {data?.map((form, index) => {
               return (
-                <React.Fragment>
+                <React.Fragment key={index}>
                   {formError.index == index && formError.message && (
                     <p className="text-red-600 text-sm font-medium">
                       {formError?.message}
@@ -165,7 +174,7 @@ const AssignEmployeeInternal = () => {
                       "border border-red-600 p-2 rounded-xl"
                     }`}
                   >
-                    <div className="w-full h-auto flex flex-col col-span-5 gap-1 justify-start items-start">
+                    <div className="w-full h-auto flex flex-col col-span-5 gap-1 justify-start items-start relative">
                       <label className="text-[16px] font-medium leading-[21.6px]">
                         {"Employee"}
                       </label>
@@ -178,20 +187,51 @@ const AssignEmployeeInternal = () => {
                           onChange={(e) =>
                             handleChange(index, "employee", e.target.value)
                           }
+                          onFocus={() => setShowEmpDropdown(index)}
                           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white autofill:bg-transparent autofill:text-white"
                           placeholder={"Employee Email"}
                         />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowEmpDropdown((prev) =>
+                              prev === index ? null : index
+                            )
+                          }
+                          className="ml-2 text-white"
+                        >
+                          {showEmpDropdown === index ? "▲" : "▼"}
+                        </button>
                       </div>
-                      {/* {errors.length && (
-                            <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.email}
-                            </p>
-                          )} */}
+                      {showEmpDropdown === index && (
+                        <ul
+                          className="absolute z-10 w-full bg-gray-700 text-white border border-gray-500 rounded-md 
+                        mt-1 max-h-40 overflow-auto top-[75px]"
+                        >
+                          {employees?.length > 0 ? (
+                            employees?.map((emp) => (
+                              <li
+                                key={emp._id}
+                                onClick={() =>
+                                  handleChange(index, "employee", emp.email)
+                                }
+                                className="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                              >
+                                {emp.email}
+                              </li>
+                            ))
+                          ) : (
+                            <li className="px-3 py-2 text-gray-400">
+                              No matching emails
+                            </li>
+                          )}
+                        </ul>
+                      )}
                     </div>
                     <div className="col-span-1 w-full  flex justify-center text-2xl text-[#565656] items-center pt-4 ">
                       <LuArrowRightLeft />
                     </div>
-                    <div className="w-full h-auto flex flex-col col-span-5 gap-1 justify-start items-start">
+                    <div className="w-full h-auto flex flex-col col-span-5 gap-1 justify-start items-start relative">
                       <label className="text-[16px] font-medium leading-[21.6px]">
                         {"Manager"}
                       </label>
@@ -207,12 +247,42 @@ const AssignEmployeeInternal = () => {
                           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white autofill:bg-transparent autofill:text-white"
                           placeholder={"Manager's Email"}
                         />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowManDropdown((prev) =>
+                              prev === index ? null : index
+                            )
+                          }
+                          className="ml-2 text-white"
+                        >
+                          {showManDropdown === index ? "▲" : "▼"}
+                        </button>
                       </div>
-                      {/* {errors.length && (
-                            <p className="text-red-500 text-sm">
-                              {errors?.forms[index]?.email}
-                            </p>
-                          )} */}
+                      {showManDropdown === index && (
+                        <ul
+                          className="absolute z-10 w-full bg-gray-700 text-white border border-gray-500 rounded-md 
+                        mt-1 max-h-40 overflow-auto top-[75px]"
+                        >
+                          {managers?.length > 0 ? (
+                            managers?.map((manager) => (
+                              <li
+                                key={manager._id}
+                                onClick={() =>
+                                  handleChange(index, "manager", manager.email)
+                                }
+                                className="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                              >
+                                {manager.email}
+                              </li>
+                            ))
+                          ) : (
+                            <li className="px-3 py-2 text-gray-400">
+                              No matching emails
+                            </li>
+                          )}
+                        </ul>
+                      )}
                     </div>
                   </div>
                   <span className="w-full h-[0.5px] mt-4 bg-white/10"></span>

@@ -65,7 +65,7 @@ const Preview = () => {
     <style>
       /* You can add custom styles here */
       body {
-        font-family: Arial, sans-serif;
+        font-family: Satoshi, sans-serif;
         margin: 0;
         padding: 20px;
         background-color: #f4f4f4;
@@ -170,7 +170,7 @@ const Preview = () => {
                 <span className="font-bold">{Cookies.get("name")}</span>
               </p>
               <div className="text-left mb-4 font-bold text-[12px]">
-                <p>
+                <p className="font-satoshi">
                   Schedule A Time To Publish{" "}
                   <span
                     className="text-[#199BD1] cursor-pointer ml-2"
@@ -180,7 +180,7 @@ const Preview = () => {
                   </span>
                 </p>
                 <p className="text-[12px] font-normal mt-2">
-                  {moment.unix(dueDate?.unix).format("DD/MM/YY hh:mmA")}
+                  {moment.unix(dueDate?.unix).format("MM-DD-YY hh:mmA")}
                 </p>
               </div>
               <button

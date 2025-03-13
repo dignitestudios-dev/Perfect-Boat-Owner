@@ -29,7 +29,7 @@ const ManagerBoatsCsvInput = ({
         >
           {/* Display text or selected boat name here */}
           {passSelectedBoat?.length
-            ? `${passSelectedBoat?.length} boats selected`
+            ? `${passSelectedBoat?.length} Boat(s) selected`
             : "Select Boat"}
         </span>
       </button>

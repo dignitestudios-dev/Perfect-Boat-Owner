@@ -181,7 +181,7 @@ const UpdatePreview = () => {
                   </span>
                 </p>
                 <p className="text-[12px] font-normal mt-2">
-                  {moment.unix(dueDate?.unix).format("DD/MM/YY hh:mmA")}
+                  {moment.unix(dueDate?.unix).format("MM-DD-YY hh:mmA")}
                 </p>
               </div>
               <button
