@@ -321,7 +321,7 @@ const WelcomeAboard = () => {
             model: item.year || "",
             location: item["location/customer_name"] || "",
             size: item.size || "",
-            cover: item.cover || "",
+            // cover: item.cover || "",
             // pictures: item.pictures || "",
           }));
           setData(parsedData);

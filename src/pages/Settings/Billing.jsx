@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import CancelPlanModal from "../Settings/CancelPlanModal";
 import axios from "../../axios";
+import moment from "moment/moment";
 
 const Billing = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
+  const [activeTab, setActiveTab] = useState("licenseFee");
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -149,28 +151,83 @@ const Billing = () => {
             <p className="text-xsm leading-[20px] mb-4 text-gray-500">
               Track and access your detailed invoices effortlessly.
             </p>
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-[#24344D]">
-                  <th className="pb-2 text-gray-500">Invoice</th>
-                  <th className="pb-2 text-gray-500">Amount</th>
-                  <th className="pb-2 text-gray-500">Plan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.SubcriptionInvoice?.map((transaction, idx) => (
-                  <tr key={idx} className="border-b border-[#24344D]">
-                    <td className="py-2">
-                      Invoice - {formatDate(transaction?.updatedAt)}
-                    </td>
-                    <td className="py-2">USD ${transaction?.price}</td>
-                    <td className="py-2">
-                      {transaction?.subscriptionPlan?.name}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="w-full">
+              {/* Toggle Buttons */}
+              <div className="flex gap-3 mb-4">
+                <button
+                  onClick={() => setActiveTab("licenseFee")}
+                  className={`px-4 py-2 rounded-full font-semibold transition-colors ${
+                    activeTab === "licenseFee"
+                      ? "bg-[#199bd1]/[0.2] text-[#199BD1]"
+                      : "bg-[#199BD1] text-white"
+                  }`}
+                >
+                  License Fee
+                </button>
+                <button
+                  onClick={() => setActiveTab("userCharges")}
+                  className={`px-4 py-2 rounded-full font-semibold transition-colors ${
+                    activeTab === "userCharges"
+                      ? "bg-[#199bd1]/[0.2] text-[#199BD1]"
+                      : "bg-[#199BD1] text-white"
+                  }`}
+                >
+                  User Charges
+                </button>
+              </div>
+
+              {/* License Fee Table */}
+              {activeTab === "licenseFee" && (
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-[#24344D]">
+                      <th className="pb-2 text-gray-500">Invoice</th>
+                      <th className="pb-2 text-gray-500">Amount</th>
+                      <th className="pb-2 text-gray-500">Plan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data?.SubcriptionInvoice?.map((transaction, idx) => (
+                      <tr key={idx} className="border-b border-[#24344D]">
+                        <td className="py-2">
+                          Invoice - {formatDate(transaction?.updatedAt)}
+                        </td>
+                        <td className="py-2">USD ${transaction?.price}</td>
+                        <td className="py-2">
+                          {transaction?.subscriptionPlan?.name}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {/* User Charges Table */}
+              {activeTab === "userCharges" && (
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-[#24344D]">
+                      <th className="pb-2 text-gray-500">Invoice</th>
+                      <th className="pb-2 text-gray-500">Amount</th>
+                      <th className="pb-2 text-gray-500">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data?.EmployeeInvoice?.map((transaction, idx) => (
+                      <tr key={idx} className="border-b border-[#24344D]">
+                        <td className="py-2">
+                          {moment(transaction?.createdAt)?.format("MM-DD-YYYY")}
+                        </td>
+                        <td className="py-2">
+                          USD ${parseFloat(transaction?.price).toFixed(1)}
+                        </td>
+                        <td className="py-2">{transaction?.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </div>
       </div>

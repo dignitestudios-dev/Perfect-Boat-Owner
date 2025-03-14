@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ErrorToast } from "../global/Toaster";
-import { FiLoader } from "react-icons/fi";
+import { FiDownload, FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
   const { setUpdateBoat } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState({});
 
   const handleChange = (index, field, value) => {
     const newData = [...data];
@@ -90,6 +91,36 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
   useEffect(() => {
     console.log(errorObj);
   }, [errorObj]);
+
+  const handleUploadedImage = async (e, index) => {
+    setImageLoading((prev) => ({ ...prev, [index]: true }));
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("index", index);
+
+    try {
+      const response = await axios.post("/owner/boat/upload/image", formData);
+      if (response?.status === 200) {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const { fileAddress } = response?.data?.data;
+        setData((prevData) => {
+          const newData = [...prevData];
+          newData[index]["cover"] = fileAddress;
+          return newData;
+        });
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleUploadedImage ~ error:", error);
+      ErrorToast(error.response.data.message);
+    } finally {
+      setImageLoading((prev) => ({ ...prev, [index]: false }));
+    }
+  };
 
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
@@ -254,12 +285,41 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
                   <label className="text-[16px] font-medium leading-[21.6px]">
                     {"Cover Image"}
                   </label>
-                  <div className="grid grid-cols-6">
+                  <div className="relative">
+                    <label
+                      className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
+                                text-3xl flex items-center justify-center cursor-pointer"
+                    >
+                      {boat?.cover ? (
+                        <img
+                          src={boat?.cover}
+                          className="w-full h-full object-cover rounded-xl"
+                        />
+                      ) : (
+                        <>
+                          {imageLoading[index] ? (
+                            <FiLoader className="animate-spin mx-auto" />
+                          ) : (
+                            <FiDownload />
+                          )}
+                        </>
+                      )}
+
+                      <input
+                        name={`formsImages`}
+                        accept="image/jpeg, image/png, image/bmp, image/webp"
+                        className="hidden"
+                        type="file"
+                        onChange={(e) => handleUploadedImage(e, index)}
+                      />
+                    </label>
+                  </div>
+                  {/* <div className="grid grid-cols-6">
                     <img
                       src={boat?.cover}
                       className="w-full h-full object-cover rounded-xl"
                     />
-                    {/* {boat?.cover?.includes("drive.google.com") ? (
+                    {boat?.cover?.includes("drive.google.com") ? (
                       <iframe
                         src={boat?.cover}
                         className="w-full h-full object-cover rounded-xl"
@@ -270,8 +330,8 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
                         src={boat?.cover}
                         className="w-full h-full object-cover rounded-xl"
                       />
-                    )} */}
-                  </div>
+                    )}
+                  </div> */}
                   {error?.missingFields?.includes("cover") ? (
                     <p className="text-red-700 text-sm font-medium">
                       Valid cover required

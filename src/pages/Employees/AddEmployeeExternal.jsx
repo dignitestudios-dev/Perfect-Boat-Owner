@@ -1,22 +1,24 @@
 import React, { useContext, useState } from "react";
 import Papa from "papaparse";
 import { FiLoader } from "react-icons/fi";
-import AddFleetInput from "../../components/fleet/AddFleetInput";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import { useForm } from "react-hook-form";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
-import AddEmployeeModal from "../../components/global/AddEmployeeModal";
+
 import EmployeeOnboardSuccess from "../../components/global/EmployeeOnboardSuccess";
 import { validateManagers } from "../../data/boatValidation";
 
 const AddEmployeeExternal = () => {
+  const { managers } = useContext(GlobalContext);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   // const [formError, setFormError] = useState(null);
+  const [showManDropdown, setShowManDropdown] = useState(false);
+
   const [formError, setFormError] = useState({
     index: 0,
     message: null,
   });
+
   const [data, setData] = useState([
     {
       name: "",
@@ -118,6 +120,7 @@ const AddEmployeeExternal = () => {
   };
 
   const handleChange = (index, field, value) => {
+    setShowManDropdown(false);
     const newData = [...data];
     newData[index][field] = value;
     if (newData[index].errors) {
@@ -461,7 +464,7 @@ const AddEmployeeExternal = () => {
                             </p>
                           )}
                         </div>
-                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                        <div className="w-full h-auto flex flex-col gap-1 justify-start items-start relative">
                           <label className="text-[16px] font-medium leading-[21.6px]">
                             {"Assign Manager"}
                           </label>
@@ -477,7 +480,46 @@ const AddEmployeeExternal = () => {
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Email "}
                             />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setShowManDropdown((prev) =>
+                                  prev === index ? null : index
+                                )
+                              }
+                              className="ml-2 text-white"
+                            >
+                              {showManDropdown === index ? "▲" : "▼"}
+                            </button>
                           </div>
+                          {showManDropdown === index && (
+                            <ul
+                              className="absolute z-10 w-full bg-gray-700 text-white border border-gray-500 rounded-md 
+                        mt-1 max-h-40 overflow-auto top-[75px]"
+                            >
+                              {managers?.length > 0 ? (
+                                managers?.map((manager) => (
+                                  <li
+                                    key={manager._id}
+                                    onClick={() =>
+                                      handleChange(
+                                        index,
+                                        "manager",
+                                        manager.email
+                                      )
+                                    }
+                                    className="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                  >
+                                    {manager.email}
+                                  </li>
+                                ))
+                              ) : (
+                                <li className="px-3 py-2 text-gray-400">
+                                  No matching emails
+                                </li>
+                              )}
+                            </ul>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -8,7 +8,7 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { GlobalContext } from "../../contexts/GlobalContext";
 const AssignEmployeeInternal = () => {
   const { employees, managers } = useContext(GlobalContext);
-  console.log("🚀 ~ AssignEmployeeInternal ~ employees:", employees);
+
   const [showEmpDropdown, setShowEmpDropdown] = useState(false);
   const [showManDropdown, setShowManDropdown] = useState(false);
 

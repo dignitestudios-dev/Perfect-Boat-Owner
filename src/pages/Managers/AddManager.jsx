@@ -9,7 +9,8 @@ import { validateManagers } from "../../data/boatValidation";
 import ManagerBoatsCsvInput from "../../components/managers/ManagerBoatsCsvInput";
 import ManagerBoatsCsvModal from "../../components/managers/ManagerBoatsCsvModal";
 const AddManager = () => {
-  const { boats, navigate, setUpdateBoat } = useContext(GlobalContext);
+  const { boats, navigate, setUpdateBoat, setUpdateManager } =
+    useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isEmployeeOpen, setIsEmployeeOpen] = useState(false);
   const [isBoatModalOpen, setIsBoatModalOpen] = useState(false);
@@ -155,6 +156,7 @@ const AddManager = () => {
           const response = await axios.post("/owner/manager/csv", dataToSubmit);
           if (response.status === 200) {
             setIsEmployeeOpen(true);
+            setUpdateManager((prev) => !prev);
           }
         }
       } catch (error) {
@@ -542,69 +544,6 @@ const AddManager = () => {
           </div>
         </div>
       </div>
-      {/* <table className="bg-black">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Job Title</th>
-            <th>Image</th>
-          </tr>
-        </thead>
-        <tbody className="bg-black">
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>
-                <input
-                  type="text"
-                  value={item.name}
-                  onChange={(e) => handleChange(index, "name", e.target.value)}
-                  className="bg-black"
-                />
-              </td>
-              <td>
-                <input
-                  type="email"
-                  value={item.email}
-                  onChange={(e) => handleChange(index, "email", e.target.value)}
-                  className="bg-black"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  value={item.jobTitle}
-                  onChange={(e) =>
-                    handleChange(index, "jobTitle", e.target.value)
-                  }
-                  className="bg-black"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  value={item.image}
-                  onChange={(e) => handleChange(index, "image", e.target.value)}
-                  className="bg-black"
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
-
-      {/* {Object.keys(errors).length > 0 && (
-        <div>
-          <h3>Errors:</h3>
-          <ul>
-            {Object.entries(errors).map(([index, fields]) => (
-              <li key={index}>
-                Row {parseInt(index) + 1}: Missing {fields.join(", ")}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
     </>
   );
 };

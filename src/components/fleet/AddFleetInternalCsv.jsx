@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ErrorToast, SuccessToast } from "../global/Toaster";
-import { FiLoader } from "react-icons/fi";
+import { FiDownload, FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddFleetInternalCsv = ({ data, setData }) => {
+  // const { boatDropDown } = useContext(GlobalContext);
+
   const navigate = useNavigate();
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState({});
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleChange = (index, field, value) => {
+    // setShowDropdown(false);
     const newData = [...data];
     newData[index][field] = value;
     setData(newData);
@@ -40,6 +46,36 @@ const AddFleetInternalCsv = ({ data, setData }) => {
     }
   };
 
+  const handleUploadedImage = async (e, index) => {
+    setImageLoading((prev) => ({ ...prev, [index]: true }));
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Create FormData object
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("index", index);
+
+    try {
+      const response = await axios.post("/owner/boat/upload/image", formData);
+      if (response?.status === 200) {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const { fileAddress } = response?.data?.data;
+        setData((prevData) => {
+          const newData = [...prevData];
+          newData[index]["cover"] = fileAddress;
+          return newData;
+        });
+      }
+    } catch (error) {
+      console.log("🚀 ~ handleUploadedImage ~ error:", error);
+      ErrorToast(error.response.data.message);
+    } finally {
+      setImageLoading((prev) => ({ ...prev, [index]: false }));
+    }
+  };
+
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
       <div className="w-full flex flex-col justify-start items-start gap-4">
@@ -52,7 +88,7 @@ const AddFleetInternalCsv = ({ data, setData }) => {
               <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
                 <div className="w-full h-auto flex flex-col justify-start items-start gap-8">
                   <div className="w-full grid grid-cols-1 md:grid-cols-3 justify-start items-start gap-3 lg:gap-12">
-                    <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                    <div className="w-full h-auto flex flex-col gap-1 justify-start items-start relative">
                       <label className="text-[16px] font-medium leading-[21.6px]">
                         {"Boat Type"}
                       </label>
@@ -68,6 +104,41 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                           className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                           placeholder={"Enter Boat Type"}
                         />
+                        {/* <button
+                          type="button"
+                          onClick={() =>
+                            setShowDropdown((prev) =>
+                              prev === index ? null : index
+                            )
+                          }
+                          className="ml-2 text-white"
+                        >
+                          {showDropdown === index ? "▲" : "▼"}
+                        </button>
+                        {showDropdown === index && (
+                          <ul
+                            className="absolute z-10 w-full bg-gray-700 text-white border border-gray-500 rounded-md 
+                        mt-1 max-h-40 overflow-auto top-[75px] right-0"
+                          >
+                            {boatDropDown?.length > 0 ? (
+                              boatDropDown?.map((boat, idx) => (
+                                <li
+                                  key={idx}
+                                  onClick={() =>
+                                    handleChange(index, "boatType", boat)
+                                  }
+                                  className="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                >
+                                  {boat}
+                                </li>
+                              ))
+                            ) : (
+                              <li className="px-3 py-2 text-gray-400">
+                                No matching emails
+                              </li>
+                            )}
+                          </ul>
+                        )} */}
                       </div>
                     </div>
                     <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -170,11 +241,34 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                   <label className="text-[16px] font-medium leading-[21.6px]">
                     {"Cover Image"}
                   </label>
-                  <div className="grid grid-cols-6">
-                    <img
-                      src={boat?.cover}
-                      className="w-full h-full object-cover rounded-xl"
-                    />
+                  <div className="relative">
+                    <label
+                      className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D]
+                                                  text-3xl flex items-center justify-center cursor-pointer"
+                    >
+                      {boat?.cover ? (
+                        <img
+                          src={boat?.cover}
+                          className="w-full h-full object-cover rounded-xl"
+                        />
+                      ) : (
+                        <>
+                          {imageLoading[index] ? (
+                            <FiLoader className="animate-spin mx-auto" />
+                          ) : (
+                            <FiDownload />
+                          )}
+                        </>
+                      )}
+
+                      <input
+                        name={`formsImages`}
+                        accept="image/jpeg, image/png, image/bmp, image/webp"
+                        className="hidden"
+                        type="file"
+                        onChange={(e) => handleUploadedImage(e, index)}
+                      />
+                    </label>
                   </div>
                 </div>
               </div>
@@ -190,7 +284,7 @@ const AddFleetInternalCsv = ({ data, setData }) => {
           className="w-full lg:w-[208px] h-[52px] bg-[#199BD1] text-white rounded-[12px] flex items-center justify-center text-[16px] font-bold leading-[21.6px] tracking-[-0.24px]"
         >
           <div className="flex items-center">
-            <span className="mr-1">Save Boat</span>
+            <span className="mr-1">Save Fleet</span>
             {submitLoading && (
               <FiLoader className="animate-spin text-lg mx-auto" />
             )}

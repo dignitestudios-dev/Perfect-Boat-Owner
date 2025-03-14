@@ -44,7 +44,7 @@ const SettingsLayout = ({ page }) => {
             <span className="text-sm">Notifications</span>
           </button>
           <button
-            onClick={() => navigate("/Settings/Billing", "Billing")}
+            onClick={() => navigate("/settings/billing", "Billing")}
             className={`w-auto text-lg font-medium ${
               activeLink == "Billing" ? "text-[#028EE6]" : "text-white/50"
             }  hover:text-[#028EE6] focus-within:text-[#028EE6] flex justify-start items-center gap-2 `}
