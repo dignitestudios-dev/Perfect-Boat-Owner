@@ -244,7 +244,7 @@ const TaskDetail = () => {
   const handlePdfDownload = async () => {
     setExportLoader(true);
     try {
-      const response = await axios.get(`/task/${id}/pdf`);
+      const response = await axios.get(`/owner/task/${id}/pdf`);
 
       if (response.status === 200) {
         const result = await response?.data;

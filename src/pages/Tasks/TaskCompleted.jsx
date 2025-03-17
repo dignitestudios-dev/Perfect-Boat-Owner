@@ -122,10 +122,10 @@ const TaskCompleted = () => {
             bg-[#FFCC00]/[0.12] text-[11px] font-medium leading-[14.85px] flex items-center justify-center"
                   style={{
                     color:
-                      statusColors[task?.task?.status] ||
+                      statusColors[taskDetail?.status] ||
                       statusColors["default"],
                     backgroundColor:
-                      statusColorsbg[task?.task?.status] ||
+                      statusColorsbg[taskDetail?.status] ||
                       statusColorsbg["default"],
                   }}
                 >
