@@ -342,7 +342,7 @@ const AssignReportedTask = () => {
               isOpen={isCalendarOpen}
               setIsOpen={setIsCalendarOpen}
               setDueDate={setDueDate}
-              minDate={today.toDate()}
+              minDate={moment().startOf("day").toDate()}
             />
           </div>
         </div>

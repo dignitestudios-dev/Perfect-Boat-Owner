@@ -214,7 +214,7 @@ const Preview = () => {
         setIsOpen={setIsDateModalOpen}
         setDueDate={setDueDate}
         setInputError={setInputError}
-        minDate={today.toDate()}
+        minDate={moment().startOf("day").toDate()}
       />
     </div>
   );

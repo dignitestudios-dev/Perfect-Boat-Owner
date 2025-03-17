@@ -890,7 +890,7 @@ const BoatDetail = () => {
         setIsOpen={setIsDateModalOpen}
         setDueDate={setDueDate}
         setInputError={setInputError}
-        minDate={today.toDate()}
+        minDate={moment().startOf("day").toDate()}
       />
       <DeletedModal
         isOpen={isDeleteModalOpen}

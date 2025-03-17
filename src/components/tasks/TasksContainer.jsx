@@ -356,7 +356,7 @@ const TasksContainer = () => {
           setDueDate={setDueDate}
           setInputError={setInputError}
           isRange={"range"}
-          minDate={today.toDate()}
+          minDate={moment().startOf("day").toDate()}
         />
       </div>
       <div className="w-full flex justify-center pb-4">
