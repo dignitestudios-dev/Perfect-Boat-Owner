@@ -98,7 +98,7 @@ const DateModal = ({
         </div>
         <div className="w-full md:w-[60%] px-2 pt-10 pb-4 h-full flex flex-col gap-4 justify-start items-start">
           <div className="w-full flex flex-col gap-1 justify-start items-start px-8">
-            <h1 className="text-2xl text-white font-bold">Select Date</h1>
+            <h1 className="text-2xl text-white font-bold">Selected Date IS</h1>
             <p className="text-md text-white/50 font-normal">
               Choose the perfect date for the task deadline
             </p>
