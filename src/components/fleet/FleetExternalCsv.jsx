@@ -23,6 +23,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
       "location",
       "boatType",
       "model",
+      "cover",
     ];
 
     // Array to store error details
@@ -63,6 +64,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
 
   const submitFleetData = async (e) => {
     e.preventDefault();
+
     if (checkForFieldErrors(data)?.length > 0) {
       setErrorObj(checkForFieldErrors(data));
     } else {
@@ -334,7 +336,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
                   </div> */}
                   {error?.missingFields?.includes("cover") ? (
                     <p className="text-red-700 text-sm font-medium">
-                      Valid cover required
+                      Cover image is required
                     </p>
                   ) : null}
                 </div>

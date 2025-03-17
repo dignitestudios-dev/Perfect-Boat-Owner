@@ -318,7 +318,7 @@ const WelcomeAboard = () => {
             boatType: item.boatType || "",
             name: item["boat_name/hull_number"] || "",
             make: item.make || "",
-            model: item.year || "",
+            model: item.year || "2025",
             location: item["location/customer_name"] || "",
             size: item.size || "",
             // cover: item.cover || "",

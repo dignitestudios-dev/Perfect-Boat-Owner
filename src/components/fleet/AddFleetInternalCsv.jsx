@@ -12,6 +12,7 @@ const AddFleetInternalCsv = ({ data, setData }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState({});
   const [showDropdown, setShowDropdown] = useState(false);
+  const [errorObj, setErrorObj] = useState([]);
 
   const handleChange = (index, field, value) => {
     // setShowDropdown(false);
@@ -25,24 +26,69 @@ const AddFleetInternalCsv = ({ data, setData }) => {
     setData(filteredData);
   };
 
+  const checkForFieldErrors = (array) => {
+    const requiredFields = [
+      "name",
+      "make",
+      "size",
+      "location",
+      "boatType",
+      "model",
+      "cover",
+    ];
+
+    // Array to store error details
+    const errors = [];
+
+    // Iterate through each object in the array
+    array.forEach((item, index) => {
+      const missingFields = [];
+
+      // Check each required field
+      requiredFields.forEach((field) => {
+        // Check if the field is missing or invalid (empty string, null, undefined, or empty array)
+        if (
+          !item[field] ||
+          item[field] === "" ||
+          item[field] === null ||
+          (Array.isArray(item[field]) && item[field].length === 0)
+        ) {
+          missingFields.push(field); // Add the field name to the missingFields array
+        }
+      });
+
+      // If there are missing fields, store the index and fields
+      if (missingFields.length > 0) {
+        errors.push({ index, missingFields });
+      }
+    });
+
+    return errors;
+  };
+
   const submitFleetData = async (e) => {
     e.preventDefault();
-    try {
-      setSubmitLoading(true);
-      const response = await axios.post("/owner/boat/Csv", data);
-      if (response.status === 200) {
-        SuccessToast("Boats Created Successfully");
-        navigate("/boats");
+    if (checkForFieldErrors(data)?.length > 0) {
+      setErrorObj(checkForFieldErrors(data));
+    } else {
+      setErrorObj([]);
+      try {
+        setSubmitLoading(true);
+        const response = await axios.post("/owner/boat/Csv", data);
+        if (response.status === 200) {
+          SuccessToast("Boats Created Successfully");
+          navigate("/boats");
+        }
+      } catch (error) {
+        if (error?.response?.data?.index > 0) {
+          const index = error?.response?.data?.index;
+          handleRemoveBeforeIndex(index);
+        }
+        console.error("Error adding employee:", error);
+        ErrorToast(error?.response?.data?.message);
+      } finally {
+        setSubmitLoading(false);
       }
-    } catch (error) {
-      if (error?.response?.data?.index > 0) {
-        const index = error?.response?.data?.index;
-        handleRemoveBeforeIndex(index);
-      }
-      console.error("Error adding employee:", error);
-      ErrorToast(error?.response?.data?.message);
-    } finally {
-      setSubmitLoading(false);
     }
   };
 
@@ -80,6 +126,8 @@ const AddFleetInternalCsv = ({ data, setData }) => {
     <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
       <div className="w-full flex flex-col justify-start items-start gap-4">
         {data?.map((boat, index) => {
+          const error = errorObj?.find((err) => err?.index === index);
+
           return (
             <div
               key={index}
@@ -140,6 +188,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                           </ul>
                         )} */}
                       </div>
+                      {error?.missingFields?.includes("boatType") ? (
+                        <p className="text-red-700 text-sm font-medium">
+                          Invalid boat type
+                        </p>
+                      ) : null}
                     </div>
                     <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                       <label className="text-[16px] font-medium leading-[21.6px]">
@@ -158,6 +211,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                           placeholder={"Enter Boat Name"}
                         />
                       </div>
+                      {error?.missingFields?.includes("name") ? (
+                        <p className="text-red-700 text-sm font-medium">
+                          Invalid boat name /hull number
+                        </p>
+                      ) : null}
                     </div>
                     <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                       <label className="text-[16px] font-medium leading-[21.6px]">
@@ -176,6 +234,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                           placeholder={"Enter Boat Make"}
                         />
                       </div>
+                      {error?.missingFields?.includes("make") ? (
+                        <p className="text-red-700 text-sm font-medium">
+                          Invalid boat make
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -198,6 +261,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                         placeholder={"Enter Year"}
                       />
                     </div>
+                    {error?.missingFields?.includes("model") ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        Valid year required
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
@@ -216,6 +284,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                         placeholder={"Enter Boat Size"}
                       />
                     </div>
+                    {error?.missingFields?.includes("size") ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        Invalid boat size
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
@@ -234,6 +307,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                         placeholder={"Enter Location"}
                       />
                     </div>
+                    {error?.missingFields?.includes("location") ? (
+                      <p className="text-red-700 text-sm font-medium">
+                        Invalid location
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -270,6 +348,11 @@ const AddFleetInternalCsv = ({ data, setData }) => {
                       />
                     </label>
                   </div>
+                  {error?.missingFields?.includes("cover") ? (
+                    <p className="text-red-700 text-sm font-medium">
+                      Cover image is required
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>
