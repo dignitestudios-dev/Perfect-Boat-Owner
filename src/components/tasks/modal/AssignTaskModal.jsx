@@ -2,16 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectTaskModal from "../../../components/tasks/modal/SelectTaskModal";
 
-const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks, setTasksError }) => {
+const AssignTaskModal = ({
+  isOpen,
+  onClose,
+  onExistingTaskSelect,
+  setTasks,
+  setTasksError,
+}) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [isSelectTaskModalOpen, setIsSelectTaskModalOpen] = useState(false);
-  
+
   const navigate = useNavigate();
 
   if (!isOpen) return null;
 
   const handleOptionChange = (e) => {
-    setTasksError("")
+    setTasksError("");
     const value = e.target.value;
     setSelectedOption(value);
     if (value === "new") {
@@ -21,9 +27,9 @@ const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks, setT
     }
   };
 
-  const passSelectedTask =(values)=>{
-    setTasks(values)
-  }
+  const passSelectedTask = (values) => {
+    setTasks(values);
+  };
 
   return (
     <>
@@ -48,9 +54,12 @@ const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks, setT
               ></path>
             </svg>
           </button>
-          <h2 className="text-white text-xl font-semibold mb-2 text-left">Assign Task</h2>
+          <h2 className="text-white text-xl font-semibold mb-2 text-left">
+            Assign Task
+          </h2>
           <p className="text-white mb-4 text-left">
-            Do you want to assign an existing task or create a new task? Please select an option below:
+            Do you want to assign an existing task or create a new task? Please
+            select an option below:
           </p>
           <div className="flex flex-col items-start mb-4">
             <label className="text-white mb-2">
@@ -81,7 +90,7 @@ const AssignTaskModal = ({ isOpen, onClose, onExistingTaskSelect, setTasks, setT
       {isSelectTaskModalOpen && (
         <SelectTaskModal
           setIsOpen={setIsSelectTaskModalOpen}
-          passSelectedTask={(values)=>passSelectedTask(values)}
+          passSelectedTask={(values) => passSelectedTask(values)}
         />
       )}
     </>

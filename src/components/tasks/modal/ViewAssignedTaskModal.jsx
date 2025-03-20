@@ -81,6 +81,7 @@ const ViewAssignedTaskModal = ({
         : true;
     return matchesSearch && matchesStatus && taskTypeMatch;
   });
+  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
@@ -147,7 +148,7 @@ const ViewAssignedTaskModal = ({
                       className="w-full h-10 grid grid-cols-[4fr_6fr_4fr_4fr_4fr_2fr] border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                     >
                       <span className="w-full flex justify-start items-center">
-                        {task?.boatName}
+                        {task?.boatName || task?.boat?.name}
                       </span>
                       <span className="w-full flex justify-start items-center">
                         {task?.taskType}

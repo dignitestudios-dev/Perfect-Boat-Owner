@@ -39,7 +39,6 @@ const AssignedTasksTable = ({
   setIsModalOpen,
   handleDateModalOpen,
   boatsData,
-  openDeleteModal,
   dueDate,
   getBoats,
 }) => {

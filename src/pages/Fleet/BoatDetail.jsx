@@ -22,6 +22,7 @@ import AssignedModal from "../../components/tasks/modal/AssignedModal";
 import BoatAccessModal from "./BoatAccessModal";
 import { CiTrash } from "react-icons/ci";
 import moment from "moment";
+import ViewAssignedTaskModal from "../../components/tasks/modal/ViewAssignedTaskModal";
 
 const BoatDetail = () => {
   const today = moment("01-01-2024");
@@ -88,6 +89,7 @@ const BoatDetail = () => {
 
   const [model, setModel] = useState("");
   const [modelError, setModelError] = useState(false);
+  const [taskID, setTaskID] = useState("");
 
   const {
     register,
@@ -303,7 +305,8 @@ const BoatDetail = () => {
 
   const handleDeleteConfirm = () => {
     // Perform delete action here
-    closeDeleteModal();
+    setIsDeleteModalOpen(false);
+    getBoats();
   };
 
   useEffect(() => {
@@ -387,6 +390,11 @@ const BoatDetail = () => {
     } finally {
       setLoadingBoats(false);
     }
+  };
+
+  const handleRemoveTask = (taskID) => {
+    setIsDeleteModalOpen(true);
+    setTaskID(taskID);
   };
 
   return (
@@ -808,7 +816,6 @@ const BoatDetail = () => {
             setIsModalOpen={setIsModalOpen}
             handleDateModalOpen={handleDateModalOpen}
             boatsData={boatsData}
-            openDeleteModal={openDeleteModal}
             getBoats={getBoats}
             dueDate={dueDate}
           />
@@ -822,10 +829,16 @@ const BoatDetail = () => {
           )} */}
 
           {isModalOpen && (
-            <AssignedModal
-              tasksList={boatsData?.task}
+            // <AssignedModal
+            //   tasksList={boatsData?.task}
+            //   setIsOpen={setIsModalOpen}
+            //   getEmployeeData={() => getBoats()}
+            //   loading={loadingBoats}
+            // />
+            <ViewAssignedTaskModal
               setIsOpen={setIsModalOpen}
-              getEmployeeData={() => getBoats()}
+              handleRemoveTask={(taskID) => handleRemoveTask(taskID)}
+              employeeTasks={boatsData?.task}
               loading={loadingBoats}
             />
             // <ViewAssignedTaskModal setIsOpen={setIsModalOpen}
@@ -892,11 +905,17 @@ const BoatDetail = () => {
         setInputError={setInputError}
         minDate={moment().startOf("day").toDate()}
       />
-      <DeletedModal
+      {/* <DeletedModal
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleDeleteConfirm}
         minDate={today.toDate()}
+      /> */}
+      <DeletedModal
+        isOpen={isDeleteModalOpen}
+        _id={taskID}
+        onClose={closeDeleteModal}
+        refreshTasks={handleDeleteConfirm}
       />
 
       {isBoatModalOpen && (

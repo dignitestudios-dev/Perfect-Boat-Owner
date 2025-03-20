@@ -5,7 +5,6 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
 
 const DeletedModal = ({ isOpen, onClose, _id, refreshTasks }) => {
-  if (!isOpen) return null;
   const [deleteLoad, setDeleteLoad] = useState(false);
 
   // Function to handle the deletion API call
@@ -14,6 +13,7 @@ const DeletedModal = ({ isOpen, onClose, _id, refreshTasks }) => {
     try {
       const response = await axios.delete(`/owner/task/${_id}`);
       SuccessToast("Deleted successfully");
+      console.log("🚀 ~ handleDelete ~ response:", response);
       refreshTasks(); //
       onClose(); //
     } catch (error) {
@@ -23,6 +23,7 @@ const DeletedModal = ({ isOpen, onClose, _id, refreshTasks }) => {
     }
   };
 
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative bg-[#02203A] rounded-lg shadow-md w-full max-w-md">
