@@ -336,6 +336,7 @@ const EditManager = () => {
                         label={"Location"}
                         type="text"
                         placeholder="Enter Location"
+                        maxLength={80}
                         register={register("location", {
                           onChange: (e) => {
                             const value = e.target.value;
