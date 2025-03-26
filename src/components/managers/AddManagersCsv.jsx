@@ -172,6 +172,7 @@ const AddManagersCsv = ({ data, setData }) => {
                       <input
                         type="text"
                         value={form?.location}
+                        maxLength={80}
                         onChange={(e) =>
                           handleChange(index, "location", e.target.value)
                         }

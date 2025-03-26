@@ -246,25 +246,9 @@ const TaskDetail = () => {
     try {
       const response = await axios.get(`/owner/task/${id}/pdf`);
 
-      if (response.status === 200) {
-        const result = await response?.data;
-
-        // Check if the data contains the download link
-        if (result?.success && result?.data) {
-          const downloadUrl = result?.data;
-
-          // Create an anchor element and trigger a download
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.download = "Manager.csv"; // Optional: Specify the download file name
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          console.error("Failed to fetch download link:", result?.message);
-        }
-      } else {
-        ErrorToast("Failed to download CSV");
+      if (response.status === 200 && response.data.success) {
+        const fileUrl = response.data.data.fileAddress;
+        window.open(fileUrl, "_blank");
       }
     } catch (err) {
       ErrorToast(err?.response?.data?.message);
