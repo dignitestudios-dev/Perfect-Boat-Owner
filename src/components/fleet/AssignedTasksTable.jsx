@@ -101,7 +101,7 @@ const AssignedTasksTable = ({
       <div className="w-full flex flex-col gap-1 justify-start items-start">
         <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium  border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-start">
           <span className="w-full flex justify-start items-center">
-            Boat Name
+            Boat Name/Hull Number
           </span>
           <span className="w-full flex justify-start items-center">
             Task Type

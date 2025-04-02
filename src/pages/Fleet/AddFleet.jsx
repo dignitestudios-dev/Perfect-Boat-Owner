@@ -156,7 +156,7 @@ const AddFleet = () => {
         complete: (results) => {
           const parsedData = results?.data?.map((item) => ({
             boatType: item.boatType || "",
-            name: item.name || "",
+            name: item["boat_name/hull_number"] || "",
             make: item.make || "",
             model: item.year || "2025",
             location: item["location/customer_name"] || "",
