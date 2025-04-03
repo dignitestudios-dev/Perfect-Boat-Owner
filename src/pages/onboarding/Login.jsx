@@ -110,7 +110,7 @@ const Login = () => {
                     message: "Password must be at least 8 characters long.",
                   },
                 })}
-                maxLength={12}
+                maxLength={18}
                 text={"Password"}
                 placeholder={"Enter your password here"}
                 type={"password"}

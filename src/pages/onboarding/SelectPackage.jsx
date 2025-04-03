@@ -28,7 +28,6 @@ const SelectPackage = () => {
   const [loading, setLoading] = useState(false);
   const [selectLoading, setSelectLoading] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
-  console.log("🚀 ~ SelectPackage ~ subscriptions:", subscriptions);
 
   const getPackage = async () => {
     try {
