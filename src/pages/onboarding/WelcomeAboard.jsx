@@ -14,7 +14,8 @@ import { validateForms } from "../../data/boatValidation";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const WelcomeAboard = () => {
-  const { setUpdateBoat } = useContext(GlobalContext);
+  const { setUpdateBoat, boatDropDown, setUpdateDropDown } =
+    useContext(GlobalContext);
 
   const [forms, setForms] = useState([
     {
@@ -197,6 +198,7 @@ const WelcomeAboard = () => {
             if (response?.status === 200) {
               if (parseInt(formIndex) + 1 === forms?.length) {
                 setIsAddManagerOpen(true);
+                setUpdateDropDown((prev) => !prev);
                 setUpdateBoat((prev) => !prev);
               }
             }
@@ -444,7 +446,7 @@ const WelcomeAboard = () => {
                          duration-700 px-5 py-3 hidden absolute top-12 shadow-xl left-0 w-full h-48 max-h-48 bg-[#21344C] rounded-b-2xl "
                             >
                               <div className="w-full h-full overflow-y-auto flex flex-col justify-start items-start gap-1">
-                                {boatType?.map((boat, index) => (
+                                {boatDropDown?.map((boat, index) => (
                                   <button
                                     disabled={loading}
                                     type="button"

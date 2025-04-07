@@ -17,6 +17,7 @@ const UpdateBlog = () => {
   const { navigate } = useContext(GlobalContext);
   const editorRef = useRef(null);
   const { state } = useLocation();
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSize, setSelectedSize] = useState(16); // Default font size
   const [htmlContent, setHtmlContent] = useState(state?.story || "");
@@ -79,12 +80,12 @@ const UpdateBlog = () => {
   };
 
   useEffect(() => {
-    setTitle(state?.title);
-    setSubTitle(state?.subTitle);
-    setStory(state?.story);
-    setCoverFile(state?.cover);
-    setCoverUrl(state?.cover);
-    setImageText(state?.imageTitle);
+    setTitle(state?.title ?? title);
+    setSubTitle(state?.subTitle ?? subTitle);
+    setStory(state?.story ? state?.story : story);
+    setCoverFile(state?.cover || coverUrl);
+    setCoverUrl(state?.cover || coverUrl);
+    setImageText(state?.imageTitle || imageText);
   }, []);
 
   useEffect(() => {

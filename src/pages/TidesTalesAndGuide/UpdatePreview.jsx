@@ -41,7 +41,8 @@ const UpdatePreview = () => {
   };
 
   const handleClose = () => {
-    navigate(`/updateblog/${id}`); // Navigate to the /blog/createnewblog route when X is clicked
+    navigate(-1);
+    // navigate(`/updateblog/${id}`); // Navigate to the /blog/createnewblog route when X is clicked
   };
 
   const [inputError, setInputError] = useState({});

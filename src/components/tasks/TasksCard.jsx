@@ -96,8 +96,8 @@ const TasksCard = ({ getTasks, data }) => {
             <span className="text-[15px] font-normal text-start leading-[21.6px] text-white/50 ">
               Location/Customer Name:{" "}
               <span className="font-medium">
-                {data?.boat?.location?.length > 55
-                  ? data?.boat?.location?.slice(0, 55) + "..."
+                {data?.boat?.location?.length > 35
+                  ? data?.boat?.location?.slice(0, 35) + "..."
                   : data?.boat?.location}
               </span>
             </span>

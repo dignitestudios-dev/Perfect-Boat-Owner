@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import DeleteBlog from "./DeleteBlog";
 import { useLocation, useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const BlogDetails = () => {
   const navigate = useNavigate();
@@ -51,11 +52,7 @@ const BlogDetails = () => {
             <div className="w-full flex items-center justify-between relative">
               <span className="text-[10px] font-medium text-[#199BD1]">
                 {state?.isAdmin ? "Admin" : "Owner"} |{" "}
-                {new Date(state?.createdAt).toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+                {moment(state?.createdAt).format("MM-DD-YYYY")}
               </span>
               <span className="font-satoshi text-[12px] font-normal text-white/50 mr-[140px]">
                 {state?.imageTitle}

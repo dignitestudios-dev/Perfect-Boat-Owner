@@ -391,6 +391,7 @@ const AddManager = () => {
                               <input
                                 name="location"
                                 type="text"
+                                maxLength={80}
                                 value={form?.location}
                                 onChange={(e) => {
                                   const value = e.target.value;
