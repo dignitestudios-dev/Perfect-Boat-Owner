@@ -40,12 +40,21 @@ const AssignReportedTask = () => {
   const [customInput, setCustomInput] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [selectedTaskType, setSelectedTaskType] = useState("");
+  console.log("🚀 ~ AssignReportedTask ~ selectedTaskType:", selectedTaskType);
   const [displaySelectedTask, setDisplaySelectedTask] = useState("");
+  console.log(
+    "🚀 ~ AssignReportedTask ~ displaySelectedTask:",
+    displaySelectedTask
+  );
+
   const [passSelectedEmployee, setPassSelectedEmployee] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
   const [inputError, setInputError] = useState({});
   const [customTypeText, setCustomTypeText] = useState("");
   const [customTask, setCustomTask] = useState("");
+  console.log("🚀 ~ AssignReportedTask ~ customTask:", customTask);
+  const [fieldErrors, setFieldErrors] = useState({});
+  console.log("🚀 ~ AssignReportedTask ~ fieldErrors:", fieldErrors);
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
@@ -69,17 +78,28 @@ const AssignReportedTask = () => {
         assignTo: [passSelectedEmployee?.id],
       };
 
-      const isValid = Object.entries(obj).every(([key, value]) => {
-        // Consider empty string, null, undefined, or empty array as invalid
-        if (Array.isArray(value)) return value.length > 0;
-        return value !== undefined && value !== null && value !== "";
-      });
+      const errors = {};
 
-      if (!isValid) {
-        ErrorToast("Please fill all required fields.");
+      if (!data.boatId) errors.boatId = "Boat is required.";
+      if (!(displaySelectedTask || customTask))
+        errors.task = "Task is required.";
+      if (!selectedTaskType) errors.taskType = "Task type is required.";
+      if (!dueDate?.unix) errors.dueDate = "Due date is required.";
+      if (!data.note) errors.note = "Description is required.";
+      if (!passSelectedEmployee?.id)
+        errors.assignTo = "Please assign to someone.";
+      if (recurringDays !== "none" && isNaN(+recurringDays)) {
+        errors.reoccuringDays = "Recurring days must be a number.";
+      }
+
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors);
         setSubmitLoading(false);
         return;
       }
+
+      // No errors — clear previous ones
+      setFieldErrors({});
 
       const response = await axios.post("/owner/task", obj);
 
@@ -108,6 +128,7 @@ const AssignReportedTask = () => {
   };
 
   const handleSelectDay = (day, text) => {
+    setFieldErrors({});
     if (day === "custom") {
       setRecurringDays(day);
       setSelectedDay(text);
@@ -128,6 +149,8 @@ const AssignReportedTask = () => {
     );
     setTaskDropdownOpen(false);
     setDisplaySelectedTask(null);
+    setCustomTask("");
+    setFieldErrors({});
     // if (taskType === "custom") {
     //   setTaskTypeDropdownOpen(true);
     //   setCustomInput(true);
@@ -139,6 +162,7 @@ const AssignReportedTask = () => {
 
   const handleTaskSelection = (task) => {
     setInputError({});
+    setFieldErrors({});
     setTaskDropdownOpen(false); // Close task dropdown after selecting a task
     setDisplaySelectedTask(task);
   };
@@ -182,6 +206,7 @@ const AssignReportedTask = () => {
             <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
               <div className="w-full grid grid-cols-2 gap-12">
                 <AddFleetInput
+                  isDisabled={true}
                   label={"Name"}
                   register={register("name", {
                     onChange: (e) => {
@@ -197,6 +222,7 @@ const AssignReportedTask = () => {
                 />
                 <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
                   <AddFleetInput
+                    isDisabled={true}
                     label={"Boat Type"}
                     register={register("type", {
                       required: "Please enter boat type",
@@ -220,7 +246,11 @@ const AssignReportedTask = () => {
                   setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
                   setCustomInput={setCustomInput}
                 />
-
+                {fieldErrors?.taskType && (
+                  <p className="text-red-500 text-sm">
+                    {fieldErrors?.taskType}
+                  </p>
+                )}
                 <TaskInputField
                   handleTaskSelection={handleTaskSelection}
                   toggleTaskDropdown={toggleTaskDropdown}
@@ -229,10 +259,13 @@ const AssignReportedTask = () => {
                   additionalDropdownRef={additionalDropdownRef}
                   tasks={tasks}
                   isEdit={true}
-                  setInputError={setInputError}
+                  setInputError={setFieldErrors}
                   customTask={customTask}
                   setCustomTask={setCustomTask}
                 />
+                {fieldErrors?.task && (
+                  <p className="text-red-500 text-sm">{fieldErrors?.task}</p>
+                )}
               </div>
               <div className="w-full grid grid-cols-1 gap-12">
                 <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
@@ -246,6 +279,7 @@ const AssignReportedTask = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         setIsEmployeeModalOpen(true);
+                        setFieldErrors({});
                       }}
                       className="text-[#199BD1] cursor-pointer ml-2 text-sm font-medium hover:underline"
                     >
@@ -262,6 +296,11 @@ const AssignReportedTask = () => {
                       </span>
                     </div>
                   </div>
+                  {fieldErrors.assignTo && (
+                    <p className="text-red-500 text-sm">
+                      {fieldErrors.assignTo}
+                    </p>
+                  )}
                   {/* Horizontal line above the Note label */}
                   <hr className="w-full border-t border-gray-600 my-4" />
                   <label className="text-[16px] font-medium leading-[21.6px]">
@@ -282,6 +321,9 @@ const AssignReportedTask = () => {
                     // value={task?.note || ""}
                     className="w-full h-[315px] resize-none bg-[#1A293D] outline-none p-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
                   />
+                  {fieldErrors.note && (
+                    <p className="text-red-500 text-sm">{fieldErrors.note}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -293,7 +335,10 @@ const AssignReportedTask = () => {
                 <span className="text-md font-normal text-white">Due Date</span>
                 <button
                   type="button"
-                  onClick={() => setIsCalendarOpen(true)}
+                  onClick={() => {
+                    setIsCalendarOpen(true);
+                    setFieldErrors({});
+                  }}
                   className="text-xs font-normal text-[#199BD1]"
                 >
                   {dueDate?.normal || "Select Due Date"}
@@ -355,6 +400,7 @@ const AssignReportedTask = () => {
               isOpen={isCalendarOpen}
               setIsOpen={setIsCalendarOpen}
               setDueDate={setDueDate}
+              setInputError={setFieldErrors}
               minDate={moment().startOf("day").toDate()}
             />
           </div>

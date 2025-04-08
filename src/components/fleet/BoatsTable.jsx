@@ -135,6 +135,7 @@ const BoatsTable = ({
             toggleLocationDropdown={toggleLocationDropdown}
             locationType={locationType}
             setLocationType={setLocationType}
+            locationTitles={data?.map((item) => item.location)}
             title="Location / Customer Name"
           />
           <span></span>

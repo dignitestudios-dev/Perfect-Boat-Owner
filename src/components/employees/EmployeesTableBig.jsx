@@ -226,6 +226,7 @@ const EmployeesTableBig = ({
               locationType={locationType}
               setLocationType={setLocationType}
               setCurrentPage={setCurrentPage}
+              locationTitles={data?.map((item) => item.location)}
               title="Location"
             />
             <span className="w-full flex justify-start items-center ">

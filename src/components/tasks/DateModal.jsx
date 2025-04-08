@@ -42,7 +42,7 @@ const DateModal = ({
     const formattedDate = utcDate.toISOString().slice(0, 10);
 
     setDueDate({
-      normal: formattedDate,
+      normal: moment(formattedDate).format("MM-DD-YYYY"),
       unix: epochTime,
       calendar: moment(calendarDate).format("YYYY-MM-DD"),
     });

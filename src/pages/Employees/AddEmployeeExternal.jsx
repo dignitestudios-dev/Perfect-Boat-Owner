@@ -469,9 +469,19 @@ const AddEmployeeExternal = () => {
                             {"Assign Manager"}
                           </label>
                           <div
+                            type="button"
+                            onClick={() =>
+                              setShowManDropdown((prev) =>
+                                prev === index ? null : index
+                              )
+                            }
                             className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                           >
-                            <input
+                            <div className="w-full h-full pt-4 bg-transparent outline-none text-white">
+                              {form?.manager || "Select Manger"}
+                            </div>
+                            {/* <input
+                              disabled
                               type="email"
                               value={form?.manager}
                               onChange={(e) =>
@@ -479,14 +489,14 @@ const AddEmployeeExternal = () => {
                               }
                               className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                               placeholder={"Enter Email "}
-                            />
+                            /> */}
                             <button
                               type="button"
-                              onClick={() =>
-                                setShowManDropdown((prev) =>
-                                  prev === index ? null : index
-                                )
-                              }
+                              // onClick={() =>
+                              //   setShowManDropdown((prev) =>
+                              //     prev === index ? null : index
+                              //   )
+                              // }
                               className="ml-2 text-white"
                             >
                               {showManDropdown === index ? "▲" : "▼"}

@@ -160,7 +160,9 @@ const AddFleet = () => {
             model: item.year || "2025",
             location: item["location/customer_name"] || "",
             size: item.size || "",
-            // cover: item.cover || "",
+
+            cover:
+              "https://perfect-boat.s3.us-east-1.amazonaws.com/Image/261fb56a-d074-4d60-aee3-b3aadf75eec2.png",
             // pictures: item.pictures || "",
           }));
           setData(parsedData);
