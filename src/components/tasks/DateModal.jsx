@@ -79,6 +79,7 @@ const DateModal = ({
       >
         {/* Close button */}
         <button
+          type="button"
           className="absolute top-4 right-4 text-[#199BD1] text-2xl font-bold"
           onClick={() => setIsOpen(false)}
         >

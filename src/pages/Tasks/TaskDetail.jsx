@@ -5,7 +5,6 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import { FiLoader } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
-import { taskTypeData } from "../../data/TaskTypeData";
 import DateModal from "../../components/tasks/DateModal";
 import BoatSelectModal from "../Fleet/BoatSelectModal";
 import EmployeeDetailModal from "../Employees/EmployeeDetailModal";

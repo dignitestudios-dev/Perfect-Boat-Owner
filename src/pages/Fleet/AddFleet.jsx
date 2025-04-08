@@ -10,7 +10,6 @@ import { FiDownload, FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
 import { useNavigate } from "react-router-dom";
-import { boatType } from "../../data/TaskTypeData";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import Papa from "papaparse";
 import AddFleetInternalCsv from "../../components/fleet/AddFleetInternalCsv";

@@ -5,7 +5,7 @@ import ImportCSVModal from "../../components/global/ImportCSVModal";
 import AddManagerModal from "../../components/global/AddManagerModal";
 import axios from "../../axios";
 import { ErrorToast } from "../../components/global/Toaster";
-import { boatType } from "../../data/TaskTypeData";
+
 import FleetExternalCsv from "../../components/fleet/FleetExternalCsv";
 import Papa from "papaparse";
 import { FleetInput } from "../../components/onboarding/FleetInput";

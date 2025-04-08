@@ -6,6 +6,8 @@ import BoatsLoader from "./BoatsLoader";
 
 import BoatType from "../global/headerDropdowns/BoatType";
 import LocationType from "../global/headerDropdowns/LocationType";
+import { RiDeleteBinLine } from "react-icons/ri";
+import DeleteBoatModal from "./DeleteBoatModal";
 
 // const debounce = (func, delay) => {
 //   let timeout;
@@ -29,6 +31,7 @@ const BoatsTable = ({
 }) => {
   const { navigate } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
+  const [boatId, setBoatId] = useState("");
 
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -65,6 +68,14 @@ const BoatsTable = ({
     }, 1000);
   };
 
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleBoatDelete = async (id) => {
+    console.log("🚀 ~ handleBoatDelete ~ id:", id);
+    setBoatId(id);
+    setDeleteModalOpen(true);
+  };
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       {/* <DeletedModal isOpen={isDeleteModalOpen} _id={deleteId}
@@ -98,7 +109,10 @@ const BoatsTable = ({
       </div>
 
       <div className="w-full flex flex-col gap-1 justify-start items-start">
-        <div className="w-full grid grid-cols-[3fr_4fr_4fr_3fr_3fr] text-[11px] py-2 border-b border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start">
+        <div
+          className="w-full grid grid-cols-[3fr_2fr_3fr_2fr_3fr_1fr_1fr] text-[11px] py-2 border-b
+         border-[#fff]/[0.14] font-medium leading-[14.85px] text-white/50 justify-start items-start"
+        >
           <span className="w-full flex justify-start items-center">
             Boat Image
           </span>
@@ -123,7 +137,9 @@ const BoatsTable = ({
             setLocationType={setLocationType}
             title="Location / Customer Name"
           />
-          {/* <span className="w-full flex justify-start items-center">
+          <span></span>
+
+          {/* <span className="w-full flex justify-start items-center pl-12">
             Action
           </span> */}
         </div>
@@ -141,8 +157,11 @@ const BoatsTable = ({
                 {data?.map((boat, index) => (
                   <div
                     key={index}
-                    onClick={() => handleBoatDetails(boat)}
-                    className="w-full h-auto grid grid-cols-[3fr_4fr_4fr_3fr_3fr] cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBoatDetails(boat);
+                    }}
+                    className="w-full h-auto grid grid-cols-[3fr_2fr_3fr_2fr_3fr_1fr_1fr] cursor-pointer border-b border-[#fff]/[0.14] py-3 text-[11px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
                     <span className="w-[106px] h-[76px] flex justify-start items-center relative">
                       <img
@@ -180,6 +199,16 @@ const BoatsTable = ({
                     <span className="w-full flex justify-start items-center">
                       {boat.location}
                     </span>
+                    <span></span>
+                    {/* <span
+                      className="w-full flex justify-start items-center cursor-pointer pl-12"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBoatDelete(boat?._id);
+                      }}
+                    >
+                      <RiDeleteBinLine />
+                    </span> */}
                     {/* <span>
             <button
             type="button"
@@ -201,6 +230,12 @@ const BoatsTable = ({
           </Fragment>
         )}
       </div>
+      {/* <DeleteBoatModal
+        isOpen={isDeleteModalOpen}
+        _id={boatId}
+        onClose={() => setDeleteModalOpen(false)}
+        refreshTasks={""}
+      /> */}
     </div>
   );
 };

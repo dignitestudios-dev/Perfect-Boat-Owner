@@ -17,6 +17,7 @@ const TasksContainer = () => {
   const today = moment("01-01-2024");
 
   const [pageDetails, setPageDetails] = useState({});
+  console.log("🚀 ~ TasksContainer ~ pageDetails:", pageDetails);
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -98,7 +99,7 @@ const TasksContainer = () => {
         <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
           Tasks{" "}
           <span className="text-[12px] font-normal text-white/50 ">
-            ({taskData?.length})
+            ({pageDetails?.totalItems})
           </span>
         </h3>
 
@@ -356,7 +357,7 @@ const TasksContainer = () => {
           setDueDate={setDueDate}
           setInputError={setInputError}
           isRange={"range"}
-          minDate={moment().startOf("day").toDate()}
+          minDate={new Date("2023-10-25")}
         />
       </div>
       <div className="w-full flex justify-center pb-4">

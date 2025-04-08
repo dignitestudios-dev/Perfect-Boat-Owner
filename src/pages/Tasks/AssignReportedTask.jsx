@@ -60,14 +60,27 @@ const AssignReportedTask = () => {
       setSubmitLoading(true);
       const obj = {
         boat: [data.boatId],
-        task: displaySelectedTask ? displaySelectedTask : selectedTaskType,
-        taskType: selectedTaskType,
+        task: displaySelectedTask ? displaySelectedTask : customTask,
+        taskType: selectedTaskType?.replace(/([A-Z])/g, " $1")?.trim(),
         dueDate: dueDate?.unix,
         description: data.note,
-        reoccuring: true,
-        reoccuringDays: recurringDays,
+        reoccuring: recurringDays === "none" ? false : true,
+        reoccuringDays: recurringDays === "none" ? 0 : +recurringDays,
         assignTo: [passSelectedEmployee?.id],
       };
+
+      const isValid = Object.entries(obj).every(([key, value]) => {
+        // Consider empty string, null, undefined, or empty array as invalid
+        if (Array.isArray(value)) return value.length > 0;
+        return value !== undefined && value !== null && value !== "";
+      });
+
+      if (!isValid) {
+        ErrorToast("Please fill all required fields.");
+        setSubmitLoading(false);
+        return;
+      }
+
       const response = await axios.post("/owner/task", obj);
 
       if (response.status === 200) {

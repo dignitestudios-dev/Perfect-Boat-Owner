@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { TbCaretDownFilled } from "react-icons/tb";
-// import { taskTypeData } from '../../../data/TaskTypeData';
 
 const TaskTypeInputField = ({
   toggleTaskTypeDropdown,
