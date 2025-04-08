@@ -56,7 +56,7 @@ const DeleteAccountList = () => {
   const [deleteLoad, setDeleteLoad] = useState(false);
   const [deactivateLoading, setDeactivateLoading] = useState(false);
 
-  const [passSelectedEmployee, SetPassSelectedEmployee] = useState("");
+  const [passSelectedEmployee, setPassSelectedEmployee] = useState("");
   const [inputError, setInputError] = useState("");
 
   const navigate = useNavigate();

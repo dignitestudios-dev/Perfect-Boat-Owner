@@ -242,6 +242,13 @@ const NewTaskRequestPage = () => {
             <div className="w-full flex flex-col justify-start items-start gap-4">
               <h3 className="text-[18px] font-bold leading-[24.3px]">Photos</h3>
               <div className="w-full h-auto flex flex-wrap justify-start items-start gap-4">
+                <div className="w-full md:w-[175px] h-[147px] rounded-xl bg-[#1A293D] text-3xl flex items-center justify-center">
+                  <img
+                    src={task?.boat?.cover}
+                    alt="boatimage"
+                    className="w-full h-full rounded-xl"
+                  />
+                </div>
                 {task?.boat?.images?.map((image, index) => (
                   <div
                     key={index}
