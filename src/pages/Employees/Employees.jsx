@@ -9,9 +9,8 @@ const Employees = () => {
 
   const [employees, setEmployees] = useState([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
-  const [pageDetails, setPageDetails] = useState({});
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [findSearch, setFindSearch] = useState("");
   const [locationType, setLocationType] = useState([]);
   const [jobType, setJobType] = useState([]);
@@ -23,12 +22,13 @@ const Employees = () => {
       const jobQuery = jobType.length !== 0 ? `&jobTitle=${jobType}` : "";
       const locationQuery =
         locationType.length !== 0 ? `&location=${locationType}` : "";
-      const { data } = await axios.get(
-        `/owner/employees?page=${currentPage}&pageSize=15${searchText}${jobQuery}${locationQuery}`
-      );
-      setEmployees(data?.data?.data);
-      setPageDetails(data?.data?.paginationDetails);
-      setTotalPages(data?.data?.paginationDetails?.totalPages);
+      // const { data } = await axios.get(
+      //   `/owner/employees?page=${currentPage}&pageSize=15${searchText}${jobQuery}${locationQuery}`
+      // );
+      const { data } = await axios.get(`/owner/employees`);
+      setEmployees(data?.data);
+      // setPageDetails(data?.data?.paginationDetails);
+      // setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
       console.log("🚀 ~ getEmployees ~ err:", err);
     } finally {
@@ -37,7 +37,7 @@ const Employees = () => {
   };
   useEffect(() => {
     getEmployees();
-  }, [currentPage, findSearch, jobType, locationType]);
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -52,15 +52,6 @@ const Employees = () => {
         setJobType={setJobType}
         setCurrentPage={setCurrentPage}
       />
-
-      <div className="w-full flex justify-center pb-4">
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalPages={totalPages}
-          setTotalPages={setTotalPages}
-        />
-      </div>
     </div>
   );
 };

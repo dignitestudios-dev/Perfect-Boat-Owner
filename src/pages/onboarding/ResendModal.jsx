@@ -4,7 +4,6 @@ import { SuccessToast } from "../../components/global/Toaster";
 import axios from "../../axios";
 
 const ResendModal = ({ isOpen, onClose, id }) => {
-  if (!isOpen) return null;
   const [loading, setLoading] = useState(false);
 
   const resendCredentials = async () => {
@@ -17,10 +16,11 @@ const ResendModal = ({ isOpen, onClose, id }) => {
         SuccessToast("Credentials Send");
       }
     } catch (err) {
-      setErrorMessage(err?.response?.data?.message);
+      // setErrorMessage(err?.response?.data?.message);
       setLoading(false);
     }
   };
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-50">
       <div className="relative bg-[#02203A] rounded-lg shadow-md w-full max-w-md">

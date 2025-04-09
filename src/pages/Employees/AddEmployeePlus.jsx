@@ -30,11 +30,10 @@ const AddEmployeePlus = () => {
   };
 
   const openTaskPage = () => {
-    navigate('/add-task');  // Navigate to /add-task instead of opening a modal
+    navigate("/add-task"); // Navigate to /add-task instead of opening a modal
   };
 
   const handleExistingTaskSelect = () => {
-    closeTaskModal();
     openManagerModal();
   };
 
@@ -74,7 +73,7 @@ const AddEmployeePlus = () => {
               <AddFleetInput
                 label={"Assign Task"}
                 state={"Click here to assign"}
-                onClick={openTaskPage}  // Updated to use openTaskPage
+                onClick={openTaskPage} // Updated to use openTaskPage
               />
             </div>
           </div>
@@ -89,7 +88,11 @@ const AddEmployeePlus = () => {
         </div>
       </div>
       {isManagerModalOpen && (
-        <ManagerDetailModal setIsOpen={setIsManagerModalOpen} selectedManager={selectedManager} setSelectedManager={setSelectedManager}/>
+        <ManagerDetailModal
+          setIsOpen={setIsManagerModalOpen}
+          selectedManager={selectedManager}
+          setSelectedManager={setSelectedManager}
+        />
       )}
     </div>
   );

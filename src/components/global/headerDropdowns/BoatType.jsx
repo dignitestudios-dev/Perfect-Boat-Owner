@@ -8,9 +8,13 @@ const BoatType = ({
   toggleBoatTypeDropdown,
   boatType,
   setBoatType,
+  allBoats,
+  setCurrentPage = () => {},
 }) => {
   const { dropDown } = useContext(GlobalContext);
   const boatTypeDropdownRef = useRef(null);
+
+  const uniqueBoatTitles = [...new Set(allBoats)];
 
   // const handleCheckboxChange = (boat) => {
   //   setBoatType(boat);
@@ -28,6 +32,7 @@ const BoatType = ({
         }
       });
     }
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -68,7 +73,7 @@ const BoatType = ({
             />
             All
           </label>
-          {dropDown?.boatTypeDropDown?.map((boat, index) => (
+          {uniqueBoatTitles?.map((boat, index) => (
             <label
               key={index}
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"

@@ -15,6 +15,7 @@ import LocationType from "../global/headerDropdowns/LocationType";
 import { CiExport } from "react-icons/ci";
 import { TfiReload } from "react-icons/tfi";
 import ReactivateModal from "./ReactiveModal";
+import Pagination from "../global/pagination/Pagination";
 
 const EmployeesTableBig = ({
   data,
@@ -25,11 +26,14 @@ const EmployeesTableBig = ({
   setLocationType,
   jobType,
   setJobType,
-  setCurrentPage,
 }) => {
+  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
   const navigation = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 18;
 
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,6 +156,31 @@ const EmployeesTableBig = ({
     }
   };
 
+  const filteredData = data?.filter((item) => {
+    const matchesSearch = search
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.email?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.jobtitle?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
+
+  const totalPages = Math.ceil(filteredData?.length / pageSize);
+  // Slice the data for the current page
+  const paginatedData = filteredData?.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -212,12 +241,14 @@ const EmployeesTableBig = ({
             <span className="w-full flex justify-start items-center">
               Manager
             </span>
+
             <JobType
               setJobTitleDropdownOpen={setJobTitleDropdownOpen}
               jobTitleDropdownOpen={jobTitleDropdownOpen}
               toggleJobTitleDropdown={toggleJobTitleDropdown}
               jobType={jobType}
               setJobType={setJobType}
+              jobTitles={data?.map((item) => item.jobtitle)}
               setCurrentPage={setCurrentPage}
               isManager={false}
             />
@@ -240,8 +271,8 @@ const EmployeesTableBig = ({
             <ManagerListLoader />
           ) : (
             <>
-              {data?.length > 0 ? (
-                data?.map((employee, index) => (
+              {paginatedData?.length > 0 ? (
+                paginatedData?.map((employee, index) => (
                   <div
                     key={index}
                     onClick={() => {
@@ -337,6 +368,14 @@ const EmployeesTableBig = ({
           employeeId={employeeId}
           isOpen={isAccountDeleteModalOpen}
           onClose={() => setIsAccountDeleteModalOpen(false)}
+        />
+      </div>
+      <div className="w-full flex justify-center pb-4">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          setTotalPages={() => {}}
         />
       </div>
     </div>

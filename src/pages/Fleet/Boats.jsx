@@ -6,9 +6,7 @@ import Pagination from "../../components/global/pagination/Pagination";
 const Boats = () => {
   const [boats, setBoats] = useState([]);
   const [loadingBoats, setLoadingBoats] = useState(false);
-  const [pageDetails, setPageDetails] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [findSearch, setFindSearch] = useState("");
   const [locationType, setLocationType] = useState([]);
   const [boatType, setBoatType] = useState([]);
@@ -20,14 +18,17 @@ const Boats = () => {
       const boatQuery = boatType.length !== 0 ? `&boatType=${boatType}` : "";
       const locationQuery =
         locationType.length !== 0 ? `&locationType=${locationType}` : "";
-      const { data } = await axios.get(
-        `/owner/boat?page=${currentPage}&pageSize=15${boatQuery}${locationQuery}${searchText}`
-      );
+      // const { data } = await axios.get(
+      //   `/owner/boat?page=${currentPage}&pageSize=15${boatQuery}${locationQuery}${searchText}`
+      // );
       // const { data } = await axios.get(`/owner/boat?page=${pageNumber}&pageSize=${rows}`);
+      const { data } = await axios.get(`/owner/boat`);
 
-      setBoats(data?.data?.data);
-      setPageDetails(data?.data?.paginationDetails || []);
-      setTotalPages(data?.data?.paginationDetails?.totalPages);
+      setBoats(data?.data);
+
+      // setBoats(data?.data?.data);
+      // setPageDetails(data?.data?.paginationDetails || []);
+      // setTotalPages(data?.data?.paginationDetails?.totalPages);
     } catch (err) {
       console.log("🚀 ~ getBoats ~ err:", err);
     } finally {
@@ -37,17 +38,11 @@ const Boats = () => {
 
   useEffect(() => {
     getBoats();
-  }, [currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    getBoats();
-  }, [findSearch, boatType, locationType]);
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
       <BoatsTable
-        pageDetails={pageDetails}
         data={boats}
         loading={loadingBoats}
         boatType={boatType}
@@ -56,15 +51,6 @@ const Boats = () => {
         setLocationType={setLocationType}
         setBoatType={setBoatType}
       />
-
-      <div className="w-full flex justify-center pb-4">
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalPages={totalPages}
-          setTotalPages={setTotalPages}
-        />
-      </div>
     </div>
   );
 };
