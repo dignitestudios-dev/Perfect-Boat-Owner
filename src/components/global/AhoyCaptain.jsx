@@ -34,6 +34,7 @@ const AhoyCaptain = ({ isOpen, setIsOpen }) => {
             </span>
           </div>
           <button
+            type="button"
             onClick={() => {
               navigate("/dashboard");
             }}

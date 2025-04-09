@@ -40,21 +40,16 @@ const AssignReportedTask = () => {
   const [customInput, setCustomInput] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [selectedTaskType, setSelectedTaskType] = useState("");
-  console.log("🚀 ~ AssignReportedTask ~ selectedTaskType:", selectedTaskType);
   const [displaySelectedTask, setDisplaySelectedTask] = useState("");
-  console.log(
-    "🚀 ~ AssignReportedTask ~ displaySelectedTask:",
-    displaySelectedTask
-  );
 
   const [passSelectedEmployee, setPassSelectedEmployee] = useState("");
+
   const [submitLoading, setSubmitLoading] = useState(false);
   const [inputError, setInputError] = useState({});
   const [customTypeText, setCustomTypeText] = useState("");
   const [customTask, setCustomTask] = useState("");
-  console.log("🚀 ~ AssignReportedTask ~ customTask:", customTask);
+
   const [fieldErrors, setFieldErrors] = useState({});
-  console.log("🚀 ~ AssignReportedTask ~ fieldErrors:", fieldErrors);
 
   const toggleTaskTypeDropdown = () => {
     setTaskTypeDropdownOpen(!isTaskTypeDropdownOpen);
@@ -176,20 +171,21 @@ const AssignReportedTask = () => {
       setValue("note", task?.note);
       setSelectedTaskType(task?.task?.taskType);
       setDisplaySelectedTask(task?.task?.task);
-      // setPassSelectedEmployee({
-      //   name: task?.employee?.name,
-      //   id: task?.employee?._id,
-      // });
-      setDueDate({
-        normal: moment(task?.task?.dueDate * 1000).format("MM-DD-YY"),
-        unix: task?.task?.dueDate,
+      setPassSelectedEmployee({
+        name: task?.employee?.name,
+        id: task?.employee?._id,
       });
-      setSelectedDay(
-        task?.task?.reoccuringDays
-          ? `${task?.task?.reoccuringDays} days`
-          : "None"
-      );
-      setRecurringDays(task?.task?.reoccuringDays);
+
+      // setDueDate({
+      //   normal: moment(task?.task?.dueDate * 1000).format("MM-DD-YY"),
+      //   unix: task?.task?.dueDate,
+      // });
+      // setSelectedDay(
+      //   task?.task?.reoccuringDays
+      //     ? `${task?.task?.reoccuringDays} days`
+      //     : "None"
+      // );
+      // setRecurringDays(task?.task?.reoccuringDays);
     }
   }, [task, setValue]);
 
@@ -344,7 +340,11 @@ const AssignReportedTask = () => {
                   {dueDate?.normal || "Select Due Date"}
                 </button>
               </div>
-
+              {fieldErrors?.dueDate && (
+                <p className="text-red-500 text-sm -mt-5">
+                  {fieldErrors?.dueDate}
+                </p>
+              )}
               <RecurringDaysInputField
                 toggleRecurringDropdown={toggleRecurringDropdown}
                 selectedDay={selectedDay}
@@ -356,7 +356,11 @@ const AssignReportedTask = () => {
                 customRecurring={customRecurring}
                 isEdit={true}
               />
-
+              {fieldErrors?.reoccuringDays && (
+                <p className="text-red-500 text-sm">
+                  {fieldErrors?.reoccuringDays}
+                </p>
+              )}
               {/* <div className="w-auto flex justify-start items-center gap-3">
                 <TbCalendarStats className="text-2xl text-white/40" />
                 <span className="text-md font-normal text-white">

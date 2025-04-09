@@ -130,6 +130,7 @@ const AddTaskBoatModal = ({
       <div className="w-[100%]  h-[90%] lg:w-[983px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="relative w-full  h-full bg-[#001229] rounded-2xl  p-4 lg:p-6">
           <button
+            type="button"
             onClick={() => setIsOpen(false)}
             className="absolute top-4 right-4 text-white text-lg"
           >
@@ -155,6 +156,7 @@ const AddTaskBoatModal = ({
               />
             </div>
             <button
+              type="button"
               onClick={() => handleBoatSelection()}
               className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
             >

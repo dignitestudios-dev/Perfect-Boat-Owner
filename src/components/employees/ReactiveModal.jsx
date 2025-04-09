@@ -9,6 +9,7 @@ const ReactivateModal = ({ isOpen, onClose, reactivate, activateLoading }) => {
       <div className="relative bg-[#02203A] rounded-lg shadow-md w-[418px] h-[202px] flex flex-col p-4">
         {/* Close button */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute top-3 right-3 text-xl font-bold text-[#199BD1] hover:text-gray-800"
           aria-label="Close modal"

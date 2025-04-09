@@ -9,9 +9,13 @@ const JobType = ({
   jobType,
   setJobType,
   isManager,
+  JobTitles,
   setCurrentPage = () => {},
 }) => {
+  console.log("🚀 ~ JobTitles:", JobTitles);
   const { dropDown } = useContext(GlobalContext);
+
+  const uniqueJobTitles = [...new Set(JobTitles)];
 
   const dropdownRef = useRef(null);
   const [jobDropDown, setJobDropDown] = useState([]);
@@ -74,7 +78,7 @@ const JobType = ({
             />
             All
           </label>
-          {jobDropDown?.map((job, index) => (
+          {uniqueJobTitles?.map((job, index) => (
             <label
               key={index}
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"

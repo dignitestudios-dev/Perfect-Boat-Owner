@@ -17,7 +17,7 @@ const TasksContainer = () => {
   const today = moment("01-01-2024");
 
   const [pageDetails, setPageDetails] = useState({});
-  console.log("🚀 ~ TasksContainer ~ pageDetails:", pageDetails);
+
   const [taskData, setTaskData] = useState([]);
   const [loading, setLoading] = useState(false);
 

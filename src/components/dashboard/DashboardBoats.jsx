@@ -70,6 +70,7 @@ const DashboardBoats = ({ data, loading }) => {
         </div>
 
         <button
+          type="button"
           className="ml-4 w-[104px] h-[35px] flex items-center justify-center bg-[#199BD1] text-white rounded-[10px] hover:bg-[#147aab] transition"
           onClick={() => navigate("/add-fleet", "All Tasks")}
         >

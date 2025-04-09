@@ -30,6 +30,7 @@ const DeleteBoatModal = ({ isOpen, onClose, _id, refreshTasks }) => {
       <div className="relative bg-[#02203A] rounded-lg shadow-md w-full max-w-md">
         {/* Close button */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute top-3 right-3 text-[#199BD1] hover:text-gray-900"
           aria-label="Close modal"
@@ -60,12 +61,14 @@ const DeleteBoatModal = ({ isOpen, onClose, _id, refreshTasks }) => {
           </p>
           <div className="flex justify-center space-x-4">
             <button
+              type="button"
               onClick={onClose}
               className="px-4 py-2 bg-[#1A293D] hover:bg-gray-900 text-white rounded-md"
             >
               Cancel
             </button>
             <button
+              type="button"
               disabled={deleteLoad}
               onClick={handleDelete}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"

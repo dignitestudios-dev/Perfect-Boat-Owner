@@ -124,6 +124,7 @@ const UpdatePreview = () => {
       <div className="w-full flex justify-between items-center">
         <h2 className="text-white text-[18px] font-semibold">See Preview</h2>
         <button
+          type="button"
           className="text-[24px] bg-[#02203A] rounded-xl text-[#199BD1]"
           onClick={handleClose} // Trigger handleClose on click
         >

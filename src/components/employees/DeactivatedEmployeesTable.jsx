@@ -5,8 +5,13 @@ import ReactivateModal from "./ReactiveModal";
 import axios from "../../axios";
 import { ErrorToast } from "../global/Toaster";
 import ManagerListLoader from "../managers/ManagerListLoader";
+import JobType from "../global/headerDropdowns/JobType";
+import LocationType from "../global/headerDropdowns/LocationType";
+import { useNavigate } from "react-router-dom";
 
 const DeactivatedEmployeesTable = () => {
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("deleted");
   const [openDropDownFilter, setOpenDropDownFilter] = useState(false);
   const [openJobTitleDropDown, setOpenJobTitleDropDown] = useState(false);
@@ -28,12 +33,18 @@ const DeactivatedEmployeesTable = () => {
     setOpenDropDownFilter(!openDropDownFilter);
   };
 
-  const toggleJobTitleDropDown = () => {
-    setOpenJobTitleDropDown(!openJobTitleDropDown);
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
+
+  const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const toggleJobTitleDropdown = () => {
+    setJobTitleDropdownOpen(!jobTitleDropdownOpen);
   };
 
-  const toggleLocationDropDown = () => {
-    setOpenLocationDropDown(!openLocationDropDown);
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen(!locationDropdownOpen);
   };
 
   const handleActionClick = (id) => {
@@ -63,6 +74,7 @@ const DeactivatedEmployeesTable = () => {
   };
 
   const [usersData, setUsersData] = useState([]);
+  console.log("🚀 ~ DeactivatedEmployeesTable ~ usersData:", usersData);
 
   const [delUsersData, setDelUsersData] = useState([]);
 
@@ -117,6 +129,26 @@ const DeactivatedEmployeesTable = () => {
     setFilteredDeactivateData(deactivateFiltered);
   }, [sortFilter, delUsersData, usersData]);
 
+  const deactivateFilteredData = filteredDeactivateData?.filter((item) => {
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return locationTypeMatch && jobTypeMatch;
+  });
+
+  const handleNavigateClick = (userData) => {
+    if (userData?.userType === "Manager") {
+      navigate(`/edit-manager/${userData?._id}`, { state: "Not Edit" });
+    } else {
+      navigate(`/edit-employee/${userData?._id}`, { state: "Not Edit" });
+    }
+  };
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -126,6 +158,7 @@ const DeactivatedEmployeesTable = () => {
       <div className="w-full h-auto flex items-center">
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={() => setActiveTab("deleted")}
             className={`p-1 rounded-none border-b-[3px] font-semibold ${
               activeTab === "deleted"
@@ -136,6 +169,7 @@ const DeactivatedEmployeesTable = () => {
             Deleted Users
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab("deactivated")}
             className={`p-1 rounded-none border-b-[3px] font-semibold ${
               activeTab === "deactivated"
@@ -148,6 +182,7 @@ const DeactivatedEmployeesTable = () => {
         </div>
 
         <button
+          type="button"
           onClick={toggleDropDownFilter}
           className="w-auto outline-none relative min-w-12 h-8 rounded-full px-2 flex gap-2 items-center justify-center text-[11px] font-medium leading-[28px] bg-[#1A293D] text-[#fff] ml-auto"
         >
@@ -210,84 +245,23 @@ const DeactivatedEmployeesTable = () => {
                   <span className="w-full flex col-span-2 justify-start items-center pl-2">
                     Email
                   </span>
-                  <span className="w-full flex justify-start items-center pl-2 relative">
-                    Job Title
-                    <button
-                      onClick={toggleJobTitleDropDown}
-                      className="ml-1 outline-none flex items-center"
-                    >
-                      <TbCaretDownFilled className="text-[11px] text-white/50" />
-                    </button>
-                    <div
-                      className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        openJobTitleDropDown ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-4`}
-                    >
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          Manager
-                        </span>
-                      </div>
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          Guard
-                        </span>
-                      </div>
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          Supervisor
-                        </span>
-                      </div>
-                    </div>
-                  </span>
-                  <span className="w-full flex justify-start items-center pl-2">
-                    User Type
-                  </span>
-                  <span className="w-full flex justify-start items-center pl-2 relative">
-                    Location
-                    <button
-                      onClick={toggleLocationDropDown}
-                      className="ml-1 outline-none flex items-center"
-                    >
-                      <TbCaretDownFilled className="text-[11px] text-white/50" />
-                    </button>
-                    <div
-                      className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        openLocationDropDown ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-4`}
-                    >
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          East California Dock
-                        </span>
-                      </div>
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          West California Dock
-                        </span>
-                      </div>
-                    </div>
-                  </span>
+                  <JobType
+                    setJobTitleDropdownOpen={setJobTitleDropdownOpen}
+                    jobTitleDropdownOpen={jobTitleDropdownOpen}
+                    toggleJobTitleDropdown={toggleJobTitleDropdown}
+                    jobType={jobType}
+                    setJobType={setJobType}
+                    JobTitles={usersData?.map((item) => item.jobtitle)}
+                  />
+                  <LocationType
+                    setLocationDropdownOpen={setLocationDropdownOpen}
+                    locationDropdownOpen={locationDropdownOpen}
+                    toggleLocationDropdown={toggleLocationDropdown}
+                    locationType={locationType}
+                    setLocationType={setLocationType}
+                    locationTitles={usersData?.map((item) => item.location)}
+                    title="Location"
+                  />
                 </div>
 
                 {filteredData?.map((user, index) => (
@@ -324,93 +298,34 @@ const DeactivatedEmployeesTable = () => {
                   <span className="w-full flex col-span-2 justify-start items-center pl-2">
                     Email
                   </span>
-                  <span className="w-full flex justify-start items-center pl-2 relative">
-                    Job Title
-                    <button
-                      onClick={toggleJobTitleDropDown}
-                      className="ml-1 outline-none flex items-center"
-                    >
-                      <TbCaretDownFilled className="text-[11px] text-white/50" />
-                    </button>
-                    <div
-                      className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        openJobTitleDropDown ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-4`}
-                    >
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          Manager
-                        </span>
-                      </div>
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          Guard
-                        </span>
-                      </div>
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          Supervisor
-                        </span>
-                      </div>
-                    </div>
-                  </span>
-                  <span className="w-full flex justify-start items-center pl-2">
-                    User Type
-                  </span>
-                  <span className="w-full flex justify-start items-center pl-2 relative">
-                    Location
-                    <button
-                      onClick={toggleLocationDropDown}
-                      className="ml-1 outline-none flex items-center"
-                    >
-                      <TbCaretDownFilled className="text-[11px] text-white/50" />
-                    </button>
-                    <div
-                      className={`w-[164px] h-auto rounded-md bg-[#1A293D] transition-all duration-300 z-[1000] ${
-                        openLocationDropDown ? "scale-100" : "scale-0"
-                      } flex flex-col gap-3 shadow-lg p-3 justify-start items-start absolute top-4`}
-                    >
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          East California Dock
-                        </span>
-                      </div>
-                      <div className="w-full flex justify-start items-start gap-2">
-                        <input
-                          type="checkbox"
-                          className="w-3 h-3 accent-[#199BD1]"
-                        />
-                        <span className="text-white text-[11px] font-medium leading-[14.85px]">
-                          West California Dock
-                        </span>
-                      </div>
-                    </div>
-                  </span>
+
+                  <JobType
+                    setJobTitleDropdownOpen={setJobTitleDropdownOpen}
+                    jobTitleDropdownOpen={jobTitleDropdownOpen}
+                    toggleJobTitleDropdown={toggleJobTitleDropdown}
+                    jobType={jobType}
+                    setJobType={setJobType}
+                    JobTitles={usersData?.map((item) => item.jobtitle)}
+                  />
+                  <LocationType
+                    setLocationDropdownOpen={setLocationDropdownOpen}
+                    locationDropdownOpen={locationDropdownOpen}
+                    toggleLocationDropdown={toggleLocationDropdown}
+                    locationType={locationType}
+                    setLocationType={setLocationType}
+                    locationTitles={usersData?.map((item) => item.location)}
+                    title="Location"
+                  />
                   <span className="w-full flex justify-start items-center pl-2">
                     Action
                   </span>
                 </div>
 
-                {filteredDeactivateData?.map((user, index) => (
+                {deactivateFilteredData?.map((user, index) => (
                   <div
+                    onClick={() => handleNavigateClick(user)}
                     key={index}
-                    className="w-full grid grid-cols-7 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    className="cursor-pointer w-full grid grid-cols-7 min-h-12 h-auto border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
                   >
                     <span className="w-full flex justify-start items-center pl-2">
                       {user?.name}

@@ -173,6 +173,7 @@ const EmployeesTableBig = ({
 
         <div className="flex content-center justify-end  h-full w-full ">
           <button
+            type="button"
             disabled={exportLoader}
             onClick={exportManagers}
             className="h-[35px] w-[125px] mr-1 px-1 flex items-center gap-1 rounded-[10px] justify-center
@@ -185,6 +186,7 @@ const EmployeesTableBig = ({
           </button>
 
           <button
+            type="button"
             onClick={() => navigate("/add-employee", "Employees")}
             className="h-[35px] w-[114px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1]
              text-white text-[11px] font-bold leading-[14.85px]"

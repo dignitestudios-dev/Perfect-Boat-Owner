@@ -34,6 +34,7 @@ const AddManagerModal = ({ isOpen, setIsOpen }) => {
           </div>
           <div className="w-full h-auto flex flex-col gap-1 mt-6">
             <button
+              type="button"
               onClick={() => {
                 navigate("/add-manager-onboard");
               }}
@@ -42,6 +43,7 @@ const AddManagerModal = ({ isOpen, setIsOpen }) => {
               {"Add Manager"}
             </button>
             <button
+              type="button"
               onClick={() => {
                 navigate("/add-employee-onboard");
               }}

@@ -100,6 +100,7 @@ const BoatsTable = ({
           />
         </div>
         <button
+          type="button"
           onClick={() => navigate("/add-fleet", "Add Boat")}
           className="h-[32px] w-[104px] flex items-center gap-1 rounded-[10px] justify-center bg-[#199BD1] text-white text-[11px] font-bold leading-[14.85px]"
         >

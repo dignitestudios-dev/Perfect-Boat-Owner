@@ -22,6 +22,7 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
         {/* Close button */}
         {createManager ? (
           <button
+            type="button"
             onClick={() => {
               setIsOpen(false);
               navigate("/managers");
@@ -32,6 +33,7 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
           </button>
         ) : (
           <button
+            type="button"
             onClick={() => {
               navigate("/add-employee-onboard");
             }}
@@ -60,6 +62,7 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
             ) : (
               <div className="w-full h-auto flex flex-col gap-1 mt-6">
                 <button
+                  type="button"
                   onClick={() => {
                     navigate("/add-employee-onboard");
                   }}
@@ -68,6 +71,7 @@ const AddEmployeeModal = ({ isOpen, setIsOpen, createManager = false }) => {
                   {"Add Employee"}
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     navigate("/dashboard");
                     localStorage.setItem("active", "Home");
