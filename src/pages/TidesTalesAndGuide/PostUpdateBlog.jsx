@@ -68,7 +68,9 @@ const PostUpdateBlog = () => {
           : formdata.append("cover", coverFile);
       }
       formdata.append("subTitle", subTitle);
-      formdata.append("imageTitle", imageText);
+      if (imageText) {
+        formdata.append("imageTitle", imageText);
+      }
       formdata.append("story", createHtmlTemplate(story, title, subTitle));
       formdata.append("viewer", viewers);
       const response = await axios.put(`/owner/blog/${id}`, formdata);

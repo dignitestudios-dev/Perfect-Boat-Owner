@@ -209,7 +209,23 @@ const UpdatePreview = () => {
       </div>
       {/* Story Input */}
       <div className="text-[10px] text-gray-200">
-        <div dangerouslySetInnerHTML={{ __html: story }} />
+        <style>
+          {`
+        .rich-html a {
+          color: #2563eb; 
+          text-decoration: underline;
+        }
+        .rich-html a:hover {
+          color: #1d4ed8; 
+        }
+      `}
+        </style>
+        <div
+          className={`rich-html w-full ${
+            story.length < 2500 ? "h-[150px]" : "h-auto"
+          } relative`}
+          dangerouslySetInnerHTML={{ __html: story }}
+        />
       </div>
       {/* Date Modal */}
       <DateModal

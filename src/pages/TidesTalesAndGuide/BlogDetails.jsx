@@ -10,6 +10,8 @@ const BlogDetails = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { state } = useLocation();
 
+  console.log("first-- 0", state?.story);
+
   const [deleteId, setDeleteId] = useState(null);
 
   const handleDotsClick = (event) => {
@@ -99,8 +101,19 @@ const BlogDetails = () => {
           </div>
 
           <div className="font-satoshi w-full h-auto flex justify-start items-start py-6">
+            <style>
+              {`
+        .rich-html a {
+          color: #2563eb; 
+          text-decoration: underline;
+        }
+        .rich-html a:hover {
+          color: #1d4ed8; 
+        }
+      `}
+            </style>
             <div
-              className={`w-full ${
+              className={`rich-html w-full ${
                 state?.story.length < 2500 ? "h-[150px]" : "h-auto"
               } relative`}
               dangerouslySetInnerHTML={{ __html: state?.story }}

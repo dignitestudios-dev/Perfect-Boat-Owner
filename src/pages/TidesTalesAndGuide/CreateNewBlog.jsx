@@ -95,7 +95,7 @@ const CreateNewBlog = () => {
   };
 
   const handlePublishClick = () => {
-    if (title && subTitle && imageText) {
+    if (title && subTitle) {
       navigate("/publish");
     } else {
       ErrorToast("Please fill all fields before proceeding.");
@@ -285,6 +285,7 @@ const CreateNewBlog = () => {
           )}
           <input
             type="file"
+            accept="image/*"
             onChange={handleImageChange}
             className="hidden"
             id="blog-cover"
