@@ -74,7 +74,6 @@ const DeactivatedEmployeesTable = () => {
   };
 
   const [usersData, setUsersData] = useState([]);
-  console.log("🚀 ~ DeactivatedEmployeesTable ~ usersData:", usersData);
 
   const [delUsersData, setDelUsersData] = useState([]);
 
@@ -264,28 +263,37 @@ const DeactivatedEmployeesTable = () => {
                   />
                 </div>
 
-                {filteredData?.map((user, index) => (
+                {filteredData.length > 0 ? (
+                  filteredData?.map((user, index) => (
+                    <div
+                      key={index}
+                      className="w-full grid grid-cols-6 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    >
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.name}
+                      </span>
+                      <span className="w-full flex col-span-2 justify-start items-center pl-2">
+                        {user?.email}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.jobtitle}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.userType}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.location}
+                      </span>
+                    </div>
+                  ))
+                ) : (
                   <div
-                    key={index}
-                    className="w-full grid grid-cols-6 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    className="w-full grid grid-cols-6 col-span-6 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px]
+                   text-white justify-start items-center"
                   >
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.name}
-                    </span>
-                    <span className="w-full flex col-span-2 justify-start items-center pl-2">
-                      {user?.email}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.jobtitle}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.userType}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.location}
-                    </span>
+                    No User Found{" "}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           ) : (
@@ -321,32 +329,43 @@ const DeactivatedEmployeesTable = () => {
                   </span>
                 </div>
 
-                {deactivateFilteredData?.map((user, index) => (
+                {deactivateFilteredData?.length > 0 ? (
+                  deactivateFilteredData?.map((user, index) => (
+                    <div
+                      onClick={() => handleNavigateClick(user)}
+                      key={index}
+                      className="cursor-pointer w-full grid grid-cols-7 min-h-12 h-auto border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    >
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.name}
+                      </span>
+                      <span className="w-full flex col-span-2 justify-start items-center pl-2">
+                        {user?.email}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.jobtitle}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.userType}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-2">
+                        {user?.location}
+                      </span>
+                      <span className="w-full flex justify-start items-center pl-5 text-white cursor-pointer">
+                        <TfiReload
+                          onClick={() => handleActionClick(user?._id)}
+                        />
+                      </span>
+                    </div>
+                  ))
+                ) : (
                   <div
-                    onClick={() => handleNavigateClick(user)}
-                    key={index}
-                    className="cursor-pointer w-full grid grid-cols-7 min-h-12 h-auto border-b border-white/10 text-[14px] font-medium leading-[14.85px] text-white justify-start items-center"
+                    className="w-full grid grid-cols-6 col-span-6 h-12 border-b border-white/10 text-[14px] font-medium leading-[14.85px]
+                 text-white justify-start items-center"
                   >
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.name}
-                    </span>
-                    <span className="w-full flex col-span-2 justify-start items-center pl-2">
-                      {user?.email}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.jobtitle}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.userType}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-2">
-                      {user?.location}
-                    </span>
-                    <span className="w-full flex justify-start items-center pl-5 text-white cursor-pointer">
-                      <TfiReload onClick={() => handleActionClick(user?._id)} />
-                    </span>
+                    No User Found{" "}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           )}

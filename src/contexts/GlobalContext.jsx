@@ -66,7 +66,7 @@ export const GlobalContextProvider = ({ children }) => {
         const queryString = [boatQuery, locationQuery]
           .filter(Boolean)
           .join("&");
-        const { data } = await axios.get(`/owner/employees?${queryString}`);
+        const { data } = await axios.get(`/owner/employees`);
         setEmployees(data?.data);
       } catch (err) {
         console.log("🚀 ~ getEmployees ~ err:", err);

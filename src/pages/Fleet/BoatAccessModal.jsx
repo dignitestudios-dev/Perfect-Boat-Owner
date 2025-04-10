@@ -6,6 +6,7 @@ import BoatsLoader from "../../components/fleet/BoatsLoader";
 import MiniListLoader from "../../components/global/MiniListLoader";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import { FiSearch } from "react-icons/fi";
 
 const BoatAccessModal = ({
   setIsOpen,
@@ -67,7 +68,7 @@ const BoatAccessModal = ({
 
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black/75 z-[999]">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50">
         <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D] z-[1000]">
           <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
             <div className="flex flex-col mb-4">
@@ -82,52 +83,62 @@ const BoatAccessModal = ({
                   ✕
                 </button>
               </div>
-              <div className="flex items-center mb-4 justify-between">
-                <div className="relative w-72 h-10">
+              <div className="w-[95%] h-auto flex justify-between items-center mt-4">
+                <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
+                  <span className="w-[32px] h-full flex items-center justify-center">
+                    <FiSearch className="text-white/50 text-lg" />
+                  </span>
                   <input
-                    type="text"
-                    placeholder="Search here..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full h-full bg-[#2A394C] text-white px-10 rounded-md outline-none"
+                    type="text"
+                    placeholder="Search here"
+                    className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
                   />
-                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
                 </div>
                 <button
                   onClick={() => {
                     setIsManagerDetailModalOpen(true); // Open the ManagerDetailModal
                     setIsOpen(false); // Close the BoatAccessModal
                   }}
-                  className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
+                  className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
                 >
                   Change
                 </button>
               </div>
             </div>
-            <div className="relative h-full overflow-auto">
-              <table className="min-w-full text-white border-collapse">
-                <thead className="border-b border-[#2A394C]">
+            <div className="relative h-[80%] overflow-y-auto">
+              <table className="min-w-full mb-4 text-white">
+                <thead className="text-[11px] border-b-[1px] border-white/10 font-medium leading-[14.85px] text-white/50">
                   <tr>
-                    <th className="px-4 py-2 w-[90px]">Manager Name</th>
-                    <th className="px-4 py-2 w-[100px]">Email</th>
-                    <th className="px-4 py-2 relative w-[130px]">
+                    <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                      Manager Name
+                    </th>
+                    <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                      Email
+                    </th>
+                    <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                       <JobType
                         setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                         jobTitleDropdownOpen={jobTitleDropdownOpen}
                         toggleJobTitleDropdown={toggleJobTitleDropdown}
                         jobType={jobType}
                         setJobType={setJobType}
+                        jobTitles={boats?.map((item) => item.jobtitle)}
+                        setCurrentPage={() => {}}
                         isManager={true}
                       />
                     </th>
-                    <th className="px-4 py-2 relative w-[170px]">
+                    <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                       <LocationType
                         setLocationDropdownOpen={setLocationDropdownOpen}
                         locationDropdownOpen={locationDropdownOpen}
                         toggleLocationDropdown={toggleLocationDropdown}
                         locationType={locationType}
                         setLocationType={setLocationType}
-                        title="Location"
+                        setCurrentPage={() => {}}
+                        locationTitles={boats?.map((item) => item.location)}
+                        title="Location "
                       />
                     </th>
                   </tr>
@@ -141,17 +152,20 @@ const BoatAccessModal = ({
                     {filteredData?.length > 0 ? (
                       <>
                         {filteredData?.map((manager, index) => (
-                          <tr key={index} className="border-b border-[#2A394C]">
-                            <td className="px-4 py-2 w-[80px]">
+                          <tr
+                            key={index}
+                            className="border-b-[1px] border-white/10"
+                          >
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {manager?.name}
                             </td>
-                            <td className="px-4 py-2 w-[80px]">
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {manager?.email}
                             </td>
-                            <td className="px-4 py-2 w-[80px]">
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {manager?.jobtitle || "---"}
                             </td>
-                            <td className="px-4 py-2 w-[80px]">
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                               {manager?.location || "---"}
                             </td>
                           </tr>
@@ -159,8 +173,11 @@ const BoatAccessModal = ({
                       </>
                     ) : (
                       <tr>
-                        <td className="px-4 py-2 text-[14px] font-medium leading-[14.85px]">
-                          <div className="pt-4 ">No record found</div>
+                        <td
+                          colSpan="4"
+                          className="text-center py-4 text-sm font-medium text-white"
+                        >
+                          No record found
                         </td>
                       </tr>
                     )}

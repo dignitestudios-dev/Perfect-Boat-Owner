@@ -16,10 +16,6 @@ const BoatAccessRights = () => {
   const [managerId, setManagerId] = useState("");
   const [managerName, setManagerName] = useState("");
 
-  const filteredData = managers?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
-
   const [locationType, setLocationType] = useState([]);
   const [jobType, setJobType] = useState([]);
 
@@ -40,9 +36,26 @@ const BoatAccessRights = () => {
     setIsBoatAccessModalOpen(true);
   };
 
+  const filteredData = managers?.filter((item) => {
+    const name =
+      item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+      item?.email?.toLowerCase()?.includes(search?.toLowerCase()) ||
+      item?.jobtitle?.toLowerCase()?.includes(search?.toLowerCase()) ||
+      item?.location?.toLowerCase()?.includes(search?.toLowerCase());
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return name && locationTypeMatch && jobTypeMatch;
+  });
+
   useEffect(() => {
     getManagers(jobType, locationType);
-  }, [locationType, jobType]);
+  }, []);
 
   return (
     <div className="h-full w-full p-2 lg:p-6 flex flex-col gap-6">
@@ -80,6 +93,8 @@ const BoatAccessRights = () => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  jobTitles={managers?.map((item) => item.jobtitle)}
+                  setCurrentPage={() => {}}
                   isManager={true}
                 />
                 <span className="col-span-2 mt-3">
@@ -87,9 +102,11 @@ const BoatAccessRights = () => {
                     setLocationDropdownOpen={setLocationDropdownOpen}
                     locationDropdownOpen={locationDropdownOpen}
                     toggleLocationDropdown={toggleLocationDropdown}
-                    setLocationType={setLocationType}
                     locationType={locationType}
-                    title="Location"
+                    setLocationType={setLocationType}
+                    setCurrentPage={() => {}}
+                    locationTitles={managers?.map((item) => item.location)}
+                    title="Location "
                   />
                 </span>
 

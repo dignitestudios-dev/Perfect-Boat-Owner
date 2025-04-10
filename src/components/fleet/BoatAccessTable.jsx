@@ -79,6 +79,8 @@ const BoatAccessTable = ({
               toggleJobTitleDropdown={toggleJobTitleDropdown}
               jobType={jobType}
               setJobType={setJobType}
+              jobTitles={boatsData?.boatAccess?.map((item) => item.jobtitle)}
+              setCurrentPage={() => {}}
               isManager={true}
             />
           </span>
@@ -90,6 +92,10 @@ const BoatAccessTable = ({
               toggleLocationDropdown={toggleLocationDropdown}
               locationType={locationType}
               setLocationType={setLocationType}
+              setCurrentPage={() => {}}
+              locationTitles={boatsData?.boatAccess?.map(
+                (item) => item.location
+              )}
               title="Location"
             />
           </span>

@@ -5,6 +5,7 @@ import axios from "../../axios";
 import { GlobalContext } from "../../contexts/GlobalContext";
 
 const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
+  console.log("🚀 ~ FleetExternalCsv ~ data:", data);
   const { setUpdateBoat } = useContext(GlobalContext);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState({});
@@ -23,7 +24,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
       "location",
       "boatType",
       "model",
-      "cover",
+      // "cover",
     ];
 
     // Array to store error details

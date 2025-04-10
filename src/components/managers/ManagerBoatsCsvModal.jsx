@@ -6,7 +6,7 @@ import LocationType from "../../components/global/headerDropdowns/LocationType";
 
 const ManagerBoatsCsvModal = ({ isOpen, setIsOpen, inputIndex, setData }) => {
   const { boats } = useContext(GlobalContext);
-  console.log("🚀 ~ ManagerBoatsCsvModal ~ boats:", boats);
+
   const [allSelected, setAllSelected] = useState(true);
   const [selectedBoats, setSelectedBoats] = useState([]);
   const [boatTypeDropdownOpen, setBoatTypeDropdownOpen] = useState(false);
@@ -157,6 +157,7 @@ const ManagerBoatsCsvModal = ({ isOpen, setIsOpen, inputIndex, setData }) => {
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 boatType={boatType}
                 setBoatType={setBoatType}
+                allBoats={boats?.map((item) => item.boatType)}
               />
               <span className="w-full flex justify-start items-center">
                 Boat Name/Hull Number
@@ -170,6 +171,8 @@ const ManagerBoatsCsvModal = ({ isOpen, setIsOpen, inputIndex, setData }) => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                setCurrentPage={() => {}}
+                locationTitles={boats?.employees?.map((item) => item.location)}
                 title="Location / Customer Name"
               />
             </div>

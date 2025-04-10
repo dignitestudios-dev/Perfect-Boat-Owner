@@ -96,6 +96,8 @@ const ManagersTable = ({ data, loading }) => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  jobTitles={data?.map((item) => item.jobtitle)}
+                  setCurrentPage={() => {}}
                   isManager={true}
                 />
                 <LocationType
@@ -104,6 +106,8 @@ const ManagersTable = ({ data, loading }) => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   locationType={locationType}
                   setLocationType={setLocationType}
+                  setCurrentPage={() => {}}
+                  locationTitles={data?.map((item) => item.location)}
                   title="Location"
                 />
               </div>

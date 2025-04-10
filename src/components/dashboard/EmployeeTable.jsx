@@ -95,6 +95,8 @@ const EmployeeTable = ({ data, loading }) => {
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
                   jobType={jobType}
                   setJobType={setJobType}
+                  jobTitles={data?.map((item) => item.jobtitle)}
+                  setCurrentPage={() => {}}
                   isManager={false}
                 />
                 <LocationType

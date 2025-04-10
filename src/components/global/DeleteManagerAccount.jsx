@@ -255,7 +255,11 @@ const DeleteManagerAccount = () => {
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
-                      title="Location "
+                      setCurrentPage={() => {}}
+                      locationTitles={userData?.employees?.map(
+                        (item) => item.location
+                      )}
+                      title="Location"
                     />
                   </div>
                 </div>

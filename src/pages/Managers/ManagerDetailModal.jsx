@@ -35,10 +35,6 @@ const ManagerDetailModal = ({
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const filteredData = managers?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
-
   const handleSelectManager = (managerId, managerName) => {
     if (isMultiple) {
       const isSelected = selectedManagers.some(
@@ -81,6 +77,23 @@ const ManagerDetailModal = ({
     }
   };
 
+  const filteredData = managers?.filter((item) => {
+    const name =
+      item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.jobtitle?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return name && locationTypeMatch && jobTypeMatch;
+  });
+
   useEffect(() => {
     if (filteredData?.length) {
       if (isMultiple) {
@@ -106,7 +119,7 @@ const ManagerDetailModal = ({
 
   useEffect(() => {
     getManagers(jobType, locationType);
-  }, [locationType, jobType]);
+  }, []);
 
   const handleSelectAll = () => {
     if (allSelected) {
@@ -126,7 +139,7 @@ const ManagerDetailModal = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+      <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D] z-[1000]">
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
             <div className="flex justify-between items-center mb-1">
@@ -177,7 +190,7 @@ const ManagerDetailModal = ({
               )}
             </div>
           </div>
-          <div className="relative h-full overflow-auto">
+          <div className="relative  h-[80%] overflow-y-auto">
             <table className="min-w-full mb-4 text-white">
               <thead className="text-[11px] border-b-[1px] border-white/10 font-medium leading-[14.85px] text-white/50">
                 <tr>
@@ -195,6 +208,8 @@ const ManagerDetailModal = ({
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
+                      jobTitles={managers?.map((item) => item.jobtitle)}
+                      setCurrentPage={() => {}}
                       isManager={true}
                     />
                   </th>
@@ -205,7 +220,9 @@ const ManagerDetailModal = ({
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
-                      title="Location "
+                      setCurrentPage={() => {}}
+                      locationTitles={managers?.map((item) => item.location)}
+                      title="Location"
                     />
                   </th>
                 </tr>
@@ -234,44 +251,59 @@ const ManagerDetailModal = ({
                 </tbody>
               ) : (
                 <tbody>
-                  {filteredData?.map((manager, index) => {
-                    const isSelected = selectedManager?.id === manager._id;
-                    const isMultiSelected = selectedManagers?.some(
-                      (selected) => selected.id === manager._id
-                    );
+                  {filteredData.length > 0 ? (
+                    <>
+                      {filteredData?.map((manager, index) => {
+                        const isSelected = selectedManager?.id === manager._id;
+                        const isMultiSelected = selectedManagers?.some(
+                          (selected) => selected.id === manager._id
+                        );
 
-                    return (
-                      <tr
-                        key={index}
-                        className="border-b-[1px] border-white/10"
+                        return (
+                          <tr
+                            key={index}
+                            className="border-b-[1px] border-white/10"
+                          >
+                            <td className="px-0 py-2 h-12">
+                              <input
+                                type="checkbox"
+                                className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                                   checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                  checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
+                                checked={
+                                  isMultiple ? isMultiSelected : isSelected
+                                }
+                                onChange={() =>
+                                  handleSelectManager(manager._id, manager.name)
+                                }
+                              />
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.name}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.email}
+                            </td>
+                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.jobtitle}
+                            </td>
+                            <td className="w-[250px] px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.location}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-sm font-medium text-white"
                       >
-                        <td className="px-0 py-2 h-12">
-                          <input
-                            type="checkbox"
-                            className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
-                                 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
-                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
-                            checked={isMultiple ? isMultiSelected : isSelected}
-                            onChange={() =>
-                              handleSelectManager(manager._id, manager.name)
-                            }
-                          />
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.name}
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.email}
-                        </td>
-                        <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.jobtitle}
-                        </td>
-                        <td className="w-[250px] px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                          {manager?.location}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                        No record found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               )}
             </table>

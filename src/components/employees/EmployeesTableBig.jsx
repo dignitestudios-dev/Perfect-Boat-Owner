@@ -27,7 +27,6 @@ const EmployeesTableBig = ({
   jobType,
   setJobType,
 }) => {
-  console.log("🚀 ~ data:", data);
   const { navigate, setUpdateEmployee } = useContext(GlobalContext);
   const timeoutRef = useRef(null);
   const navigation = useNavigate();

@@ -456,20 +456,24 @@ const EditManager = () => {
                   Email
                 </span>
                 <JobType
-                  jobType={jobType}
-                  setJobType={setJobType}
                   setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                   jobTitleDropdownOpen={jobTitleDropdownOpen}
                   toggleJobTitleDropdown={toggleJobTitleDropdown}
+                  jobType={jobType}
+                  setJobType={setJobType}
+                  jobTitles={employeesList?.map((item) => item.jobtitle)}
+                  setCurrentPage={() => {}}
                   isManager={false}
                 />
                 <LocationType
-                  setLocationType={setLocationType}
-                  locationType={locationType}
                   setLocationDropdownOpen={setLocationDropdownOpen}
                   locationDropdownOpen={locationDropdownOpen}
                   toggleLocationDropdown={toggleLocationDropdown}
-                  title="Location "
+                  locationType={locationType}
+                  setLocationType={setLocationType}
+                  setCurrentPage={() => {}}
+                  locationTitles={employeesList?.map((item) => item.location)}
+                  title="Location"
                 />
               </div>
               {loading ? (
@@ -557,11 +561,13 @@ const EditManager = () => {
 
                 <div className="w-full flex justify-start items-center">
                   <LocationType
-                    setLocationType={setLocationBoatType}
-                    locationType={locationBoatType}
-                    setLocationDropdownOpen={setLocationDropdownIsOpen}
-                    locationDropdownOpen={locationDropdownIsOpen}
-                    toggleLocationDropdown={toggleLocationIsDropdown}
+                    setLocationDropdownOpen={setLocationDropdownOpen}
+                    locationDropdownOpen={locationDropdownOpen}
+                    toggleLocationDropdown={toggleLocationDropdown}
+                    locationType={locationType}
+                    setLocationType={setLocationType}
+                    setCurrentPage={() => {}}
+                    locationTitles={boatList?.map((item) => item.location)}
                     title="Location / Customer Name"
                   />
                 </div>

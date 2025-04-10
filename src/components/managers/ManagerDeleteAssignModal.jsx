@@ -113,8 +113,10 @@ const ManagerDeleteAssignModal = ({
                       setJobTitleDropdownOpen={setJobTitleDropdownOpen}
                       jobTitleDropdownOpen={jobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
-                      setJobType={setJobType}
                       jobType={jobType}
+                      setJobType={setJobType}
+                      jobTitles={managers?.map((item) => item.jobtitle)}
+                      setCurrentPage={() => {}}
                       isManager={true}
                     />
                   </th>
@@ -123,9 +125,11 @@ const ManagerDeleteAssignModal = ({
                       setLocationDropdownOpen={setLocationDropdownOpen}
                       locationDropdownOpen={locationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
-                      setLocationType={setLocationType}
                       locationType={locationType}
-                      title="Location "
+                      setLocationType={setLocationType}
+                      setCurrentPage={() => {}}
+                      locationTitles={managers?.map((item) => item.location)}
+                      title="Location"
                     />
                   </th>
                 </tr>

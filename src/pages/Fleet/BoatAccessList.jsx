@@ -9,11 +9,11 @@ import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "../../components/global/Toaster";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
-import { data } from "autoprefixer";
 
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   const { navigate, boats, setUpdateBoat, setUpdateManager } =
     useContext(GlobalContext);
+
   const [allSelected, setAllSelected] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
 
@@ -81,6 +81,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   });
 
   const handleOpenSelectBoatsModal = () => {
+    setLocationType([]);
+    setBoatType([]);
     setIsSelectBoatsModalOpen(true);
   };
 
@@ -190,7 +192,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#000000a0] z-50">
-      <div className="w-[100%] h-[90%] lg:w-[983px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+      <div className="w-[100%] h-[90%] lg:w-[999px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="relative w-full h-full bg-[#001229] rounded-2xl p-4 lg:p-6">
           <button
             onClick={() => {
@@ -268,6 +270,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 setBoatType={setBoatType}
                 boatType={boatType}
+                allBoats={boats?.map((item) => item.boatType)}
               />
 
               <span className="w-full flex justify-start items-center">
@@ -282,7 +285,8 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
-                title="Location / Customer Name"
+                locationTitles={boats?.map((item) => item.location)}
+                title="Location/Customer Name"
               />
             </div>
 

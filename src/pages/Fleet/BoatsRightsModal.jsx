@@ -63,8 +63,8 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#000000a0] z-50">
-      <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
-        <div className="relative w-full max-w-4xl h-full bg-[#001229] rounded-lg overflow-auto p-4 lg:p-6">
+      <div className="w-[90%] max-w-5xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+        <div className="relative w-full max-w-5xl h-full bg-[#001229] rounded-lg overflow-auto p-4 lg:p-6">
           <button
             onClick={() => setIsOpen(false)}
             className="absolute top-4 right-4 text-white text-lg"
@@ -120,6 +120,7 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 boatType={boatType}
                 setBoatType={setBoatType}
+                allBoats={boatList?.map((item) => item.boatType)}
               />
 
               <span className="w-full flex justify-start items-center">
@@ -134,6 +135,8 @@ const BoatRightsModal = ({ isOpen, setIsOpen, boatList }) => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                setCurrentPage={() => {}}
+                locationTitles={boatList?.map((item) => item.location)}
                 title="Location / Customer Name"
               />
             </div>

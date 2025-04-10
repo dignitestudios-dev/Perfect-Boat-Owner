@@ -190,6 +190,7 @@ const AddTaskBoatModal = ({
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 boatType={boatType}
                 setBoatType={setBoatType}
+                allBoats={boats?.map((item) => item.boatType)}
               />
               <span className="w-full flex justify-start items-center">
                 Boat Name/Hull Number
@@ -203,6 +204,8 @@ const AddTaskBoatModal = ({
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                setCurrentPage={() => {}}
+                locationTitles={boats?.map((item) => item.location)}
                 title="Location / Customer Name"
               />
             </div>

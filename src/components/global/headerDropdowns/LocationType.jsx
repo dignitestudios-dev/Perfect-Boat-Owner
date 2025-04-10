@@ -16,7 +16,7 @@ const LocationType = ({
 
   const locationDropdownRef = useRef(null);
 
-  const uniqueLocTitles = [...new Set(locationTitles)];
+  const uniqueLocTitles = [...new Set(locationTitles)].sort();
 
   const handleCheckboxChange = (location) => {
     if (location === "all") {

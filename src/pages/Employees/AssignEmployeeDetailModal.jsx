@@ -90,6 +90,8 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
+                      jobTitles={employeesList?.map((item) => item.jobtitle)}
+                      setCurrentPage={() => {}}
                       isManager={false}
                     />
                   </th>
@@ -100,7 +102,11 @@ const AssignEmployeeDetailModal = ({ setIsOpen, employeesList }) => {
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
-                      title="Location "
+                      setCurrentPage={() => {}}
+                      locationTitles={employeesList?.map(
+                        (item) => item.location
+                      )}
+                      title="Location"
                     />
                   </th>
                 </tr>

@@ -175,6 +175,7 @@ const ManagerBoatAccessModal = ({
                 toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                 setBoatType={setBoatType}
                 boatType={boatType}
+                allBoats={boats?.map((item) => item.boatType)}
               />
 
               <span className="w-full flex justify-start items-center">
@@ -189,6 +190,8 @@ const ManagerBoatAccessModal = ({
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                setCurrentPage={() => {}}
+                locationTitles={boats?.employees?.map((item) => item.location)}
                 title="Location / Customer Name"
               />
             </div>

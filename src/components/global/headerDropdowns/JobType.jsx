@@ -12,10 +12,9 @@ const JobType = ({
   jobTitles,
   setCurrentPage = () => {},
 }) => {
-  console.log("🚀 ~ JobTitles:", jobTitles);
   const { dropDown } = useContext(GlobalContext);
 
-  const uniqueJobTitles = [...new Set(jobTitles)];
+  const uniqueJobTitles = [...new Set(jobTitles)].sort();
 
   const dropdownRef = useRef(null);
   const [jobDropDown, setJobDropDown] = useState([]);

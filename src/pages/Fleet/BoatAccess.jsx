@@ -18,6 +18,7 @@ import axios from "../../axios";
 import BoatManagerModal from "../Managers/BoatManagerModal";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import Pagination from "../../components/global/pagination/Pagination";
 
 const BoatAccess = () => {
   const { navigate, boats, getBoats, loadingBoats } = useContext(GlobalContext);
@@ -37,6 +38,9 @@ const BoatAccess = () => {
   const [locationType, setLocationType] = useState([]);
   const [boatType, setBoatType] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 18;
+
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
   };
@@ -44,10 +48,6 @@ const BoatAccess = () => {
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen(!locationDropdownOpen);
   };
-
-  const filteredData = boats?.filter((item) =>
-    item?.name?.toLowerCase()?.includes(search?.toLowerCase())
-  );
 
   const handleAccessModal = async (e, id) => {
     setBoatId(id);
@@ -86,12 +86,38 @@ const BoatAccess = () => {
 
   useEffect(() => {
     getBoats(boatType, locationType);
-  }, [boatType, locationType]);
+  }, []);
   // useEffect(()=>{
   //   if(passSelectedManagers){
   // handleAssignManager()
   //   }
   // },[passSelectedManagers])
+
+  const filteredData = boats?.filter((item) => {
+    const matchesSearch = search
+      ? item?.boatType?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.make?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.model?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const boatTypeMatch =
+      boatType && boatType.length !== 0
+        ? boatType?.includes(item?.boatType?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return matchesSearch && locationTypeMatch && boatTypeMatch;
+  });
+
+  const totalPages = Math.ceil(filteredData?.length / pageSize);
+  // Slice the data for the current page
+  const paginatedData = filteredData?.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -109,7 +135,10 @@ const BoatAccess = () => {
               <FiSearch className="text-white/50 text-lg" />
             </span>
             <input
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               type="text"
               placeholder="Search here"
               className="w-[calc(100%-35px)] outline-none text-sm bg-transparent h-full text-white/50 pl-2"
@@ -126,6 +155,8 @@ const BoatAccess = () => {
               toggleBoatTypeDropdown={toggleBoatTypeDropdown}
               boatType={boatType}
               setBoatType={setBoatType}
+              allBoats={boats?.map((item) => item.boatType)}
+              setCurrentPage={setCurrentPage}
             />
             <span className="flex justify-start items-center">
               Boat Name/Hull Number
@@ -140,6 +171,8 @@ const BoatAccess = () => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
+                setCurrentPage={setCurrentPage}
+                locationTitles={boats?.map((item) => item.location)}
                 title="Location / Customer Name"
               />
             </span>
@@ -158,7 +191,7 @@ const BoatAccess = () => {
               </Fragment>
             ) : (
               <div className="w-full min-w-[600px]">
-                {filteredData?.map((boat, index) => (
+                {paginatedData?.map((boat, index) => (
                   <div
                     key={index}
                     // onClick={() => navigate("/boats/1", "Boat")}
@@ -212,6 +245,14 @@ const BoatAccess = () => {
             )}
           </div>
         </div>
+      </div>
+      <div className="w-full flex justify-center pb-4">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          setTotalPages={() => {}}
+        />
       </div>
       {isModalOpen && (
         <BoatAccessModal

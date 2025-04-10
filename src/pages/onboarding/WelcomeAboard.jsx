@@ -323,7 +323,8 @@ const WelcomeAboard = () => {
             model: item.year || "2025",
             location: item["location/customer_name"] || "",
             size: item.size || "",
-            // cover: item.cover || "",
+            cover:
+              "https://plus.unsplash.com/premium_photo-1714839369008-592b3a50e230?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8d29vZGVuJTIwYm9hdHxlbnwwfHwwfHx8MA%3D%3D",
             // pictures: item.pictures || "",
           }));
           setData(parsedData);

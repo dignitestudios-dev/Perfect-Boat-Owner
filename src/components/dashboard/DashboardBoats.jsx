@@ -90,6 +90,7 @@ const DashboardBoats = ({ data, loading }) => {
                   toggleBoatTypeDropdown={toggleBoatTypeDropdown}
                   boatType={boatType}
                   setBoatType={setBoatType}
+                  allBoats={data?.map((item) => item.boatType)}
                 />
                 <span className="w-full flex justify-start items-center">
                   Boat name / Hull number

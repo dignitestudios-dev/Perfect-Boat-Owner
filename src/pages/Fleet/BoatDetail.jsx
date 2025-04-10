@@ -469,7 +469,7 @@ const BoatDetail = () => {
                         <label className="text-[16px] font-medium leading-[21.6px]">
                           Boat Type
                         </label>
-                        <div className="group  w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl hover:rounded-b-none hover:rounded-t-xl relative">
+                        <div className="group z-10 w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl hover:rounded-b-none hover:rounded-t-xl relative">
                           <span className="text-gray-400">
                             {selectedBoat || "--Select--"}
                           </span>

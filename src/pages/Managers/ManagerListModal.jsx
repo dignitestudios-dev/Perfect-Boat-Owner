@@ -40,7 +40,7 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+      <div className="w-[90%] max-w-4xl h-[90%] max-h-[90%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
             <div className="flex justify-between items-center mb-4">
@@ -67,7 +67,7 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
               </div>
             </div>
           </div>
-          <div className="relative h-full overflow-auto">
+          <div className="relative h-[80%] overflow-y-auto">
             <div className="w-full grid grid-cols-4 text-[13px] font-medium leading-[14.85px] text-white/50 justify-start items-start">
               <span className="w-full flex justify-start items-center">
                 Name
@@ -81,6 +81,8 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
                 toggleJobTitleDropdown={toggleJobTitleDropdown}
                 jobType={jobType}
                 setJobType={setJobType}
+                jobTitles={boatAccess?.map((item) => item.jobtitle)}
+                setCurrentPage={() => {}}
                 isManager={true}
               />
               <LocationType
@@ -89,7 +91,9 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
                 toggleLocationDropdown={toggleLocationDropdown}
                 locationType={locationType}
                 setLocationType={setLocationType}
-                title="Location "
+                setCurrentPage={() => {}}
+                locationTitles={boatAccess?.map((item) => item.location)}
+                title="Location"
               />
             </div>
             {filteredData?.map((manager, index) => {
@@ -114,14 +118,14 @@ const ManagerListModal = ({ setIsOpen, boatAccess }) => {
               );
             })}
           </div>
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <button
               onClick={() => setIsOpen(false)} // Close the modal when "Done" is clicked
               className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
             >
               Done
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

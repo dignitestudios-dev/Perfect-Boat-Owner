@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { ErrorToast, SuccessToast } from "../global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
@@ -69,12 +69,23 @@ const AddManagersCsv = ({ data, setData }) => {
     }
   };
 
+  // const formRefs = useRef([]);
+
+  // useEffect(() => {
+  //   if (formError.index !== null && formRefs.current[formError.index]) {
+  //     formRefs.current[formError.index].scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "start",
+  //     });
+  //   }
+  // }, [formError]);
   return (
     <div className="w-full h-auto flex flex-col gap-6 justify-start items-start">
       <div className="flex flex-col gap-6 w-full h-auto">
         {data?.map((form, index) => {
           return (
             <div
+              // ref={(el) => (formRefs.current[index] = el)}
               key={index}
               className={`w-full flex flex-col justify-start items-start gap-6 ${
                 formError.index == index &&

@@ -142,7 +142,7 @@ const AssignedEmployeeModal = ({
             </div>
             <div className="mt-4 mb-2">
               {isMultiple && (
-                <label className="flex items-center text-white/50">
+                <label className="flex items-center text-white/50 w-[15%]">
                   <input
                     type="checkbox"
                     className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
@@ -170,21 +170,25 @@ const AssignedEmployeeModal = ({
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <JobType
-                      jobTitleDropdownOpen={jobTitleDropdownOpen}
                       setJobTitleDropdownOpen={setJobTitleDropdownOpen}
+                      jobTitleDropdownOpen={jobTitleDropdownOpen}
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
+                      jobTitles={employees?.map((item) => item.jobtitle)}
+                      setCurrentPage={() => {}}
                       isManager={false}
                     />
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
                     <LocationType
-                      locationDropdownOpen={locationDropdownOpen}
                       setLocationDropdownOpen={setLocationDropdownOpen}
+                      locationDropdownOpen={locationDropdownOpen}
                       toggleLocationDropdown={toggleLocationDropdown}
                       locationType={locationType}
                       setLocationType={setLocationType}
+                      setCurrentPage={() => {}}
+                      locationTitles={employees?.map((item) => item.location)}
                       title="Location"
                     />
                   </th>

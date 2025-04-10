@@ -15,6 +15,7 @@ import { CiExport } from "react-icons/ci";
 import { TfiReload } from "react-icons/tfi";
 import ReactivateModal from "../employees/ReactiveModal";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../global/pagination/Pagination";
 
 const ManagerTableBig = ({
   data,
@@ -25,10 +26,13 @@ const ManagerTableBig = ({
   setLocationType,
   jobType,
   setJobType,
-  setCurrentPage,
 }) => {
+  console.log("🚀 ~ data:", data);
   const navigate = useNavigate();
   const timeoutRef = useRef(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 18;
 
   const [search, setSearch] = useState("");
 
@@ -154,6 +158,32 @@ const ManagerTableBig = ({
     }
   };
 
+  const filteredData = data?.filter((item) => {
+    const matchesSearch = search
+      ? item?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.email?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.jobtitle?.toLowerCase()?.includes(search?.toLowerCase()) ||
+        item?.location?.toLowerCase()?.includes(search?.toLowerCase())
+      : true;
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
+  });
+
+  const totalPages = Math.ceil(filteredData?.length / pageSize);
+  // Slice the data for the current page
+  const paginatedData = filteredData?.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+  console.log("🚀 ~ paginatedData:", paginatedData);
+
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
       <h3 className="text-[18px] font-bold leading-[24.3px] text-white">
@@ -215,8 +245,9 @@ const ManagerTableBig = ({
                 toggleJobTitleDropdown={toggleJobTitleDropdown}
                 jobType={jobType}
                 setJobType={setJobType}
+                jobTitles={data?.map((item) => item.jobtitle)}
                 setCurrentPage={setCurrentPage}
-                isManager={true}
+                isManager={false}
               />
               <LocationType
                 setLocationDropdownOpen={setLocationDropdownOpen}
@@ -225,14 +256,15 @@ const ManagerTableBig = ({
                 locationType={locationType}
                 setLocationType={setLocationType}
                 setCurrentPage={setCurrentPage}
-                title="Location "
+                locationTitles={data?.map((item) => item.location)}
+                title="Location"
               />
               <span className="w-full flex justify-end items-center ml-1">
                 Action
               </span>
             </div>
-            {data?.length > 0 ? (
-              data?.map((manager, index) => (
+            {paginatedData.length > 0 ? (
+              paginatedData?.map((manager, index) => (
                 <div
                   key={index}
                   onClick={() => handleNavigateClick(manager)}
@@ -251,7 +283,7 @@ const ManagerTableBig = ({
                   <span className="w-full flex justify-start items-center">
                     {manager?.jobtitle ?? "---"}
                   </span>
-                  <span className="w-full flex justify-start items-center  ">
+                  <span className="w-full flex justify-start items-center pr-1 ">
                     {manager?.location ?? "---"}
                   </span>
                   <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2 ml-2">
@@ -291,6 +323,15 @@ const ManagerTableBig = ({
           </div>
         </div>
       )}
+
+      <div className="w-full flex justify-center pb-4">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          setTotalPages={() => {}}
+        />
+      </div>
 
       {/* DeleteAccount Modal */}
       <DeleteAccount

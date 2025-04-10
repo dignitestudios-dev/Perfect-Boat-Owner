@@ -9,9 +9,7 @@ const Managers = () => {
   // const {managers, loadingManagers } = useContext(GlobalContext)
   const [managers, setManagers] = useState([]);
   const [loadingManagers, setLoadingManagers] = useState(false);
-  const [pageDetails, setPageDetails] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+
   const [findSearch, setFindSearch] = useState("");
   const [locationType, setLocationType] = useState([]);
   const [jobType, setJobType] = useState([]);
@@ -23,12 +21,14 @@ const Managers = () => {
       const jobQuery = jobType.length !== 0 ? `&jobTitle=${jobType}` : "";
       const locationQuery =
         locationType.length !== 0 ? `&location=${locationType}` : "";
-      const { data } = await axios.get(
-        `/owner/manager?page=${currentPage}&pageSize=15${searchText}${jobQuery}${locationQuery}`
-      );
-      setManagers(data?.data?.data);
-      setPageDetails(data?.data?.paginationDetails);
-      setTotalPages(data?.data?.paginationDetails?.totalPages);
+      // const { data } = await axios.get(
+      //   `/owner/manager?page=${currentPage}&pageSize=15${searchText}${jobQuery}${locationQuery}`
+      // );
+      // setManagers(data?.data?.data);
+      // setPageDetails(data?.data?.paginationDetails);
+      // setTotalPages(data?.data?.paginationDetails?.totalPages);
+      const { data } = await axios.get(`/owner/manager`);
+      setManagers(data?.data);
     } catch (err) {
       console.log("🚀 ~ getManagers ~ err:", err);
     } finally {
@@ -37,7 +37,7 @@ const Managers = () => {
   };
   useEffect(() => {
     getManagers();
-  }, [currentPage, findSearch, jobType, locationType]);
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
@@ -50,16 +50,7 @@ const Managers = () => {
         setLocationType={setLocationType}
         jobType={jobType}
         setJobType={setJobType}
-        setCurrentPage={setCurrentPage}
       />
-      <div className="w-full flex justify-center pb-4">
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalPages={totalPages}
-          setTotalPages={setTotalPages}
-        />
-      </div>
     </div>
   );
 };
