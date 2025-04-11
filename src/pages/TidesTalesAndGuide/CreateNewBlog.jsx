@@ -30,6 +30,7 @@ const CreateNewBlog = () => {
   const editorRef = useRef(null);
 
   const [htmlContent, setHtmlContent] = useState(story || "");
+
   const [showPlaceholder, setShowPlaceholder] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedSize, setSelectedSize] = useState(16); // Default font size
@@ -87,7 +88,7 @@ const CreateNewBlog = () => {
   };
 
   const handlePreviewClick = () => {
-    if (title && subTitle && imageText) {
+    if (title && subTitle) {
       navigate("/preview");
     } else {
       ErrorToast("Please fill all fields before proceeding.");

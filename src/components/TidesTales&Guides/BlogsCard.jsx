@@ -81,15 +81,20 @@ const BlogsCard = ({ blog }) => {
         </span>
 
         <div className="relative w-full flex flex-col justify-start items-start gap-2">
-          <div>
+          <div className="space-y-2">
             <h1 className="text-[16px] font-bold leading-[21.6px] text-white">
               {blog?.title}
             </h1>
             <p className="text-[12px] font-normal leading-[16.2px] text-white/50">
+              {blog?.subTitle?.length > 150
+                ? blog?.subTitle?.slice(0, 150) + "..."
+                : blog?.subTitle}
+            </p>
+            {/* <p className="text-[12px] font-normal leading-[16.2px] text-white/50">
               {parseHTML(blog?.story)?.length > 150
                 ? parseHTML(blog?.story)?.slice(0, 150) + "..."
                 : parseHTML(blog?.story)}
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

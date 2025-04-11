@@ -105,6 +105,7 @@ const EmployeeTable = ({ data, loading }) => {
                   toggleLocationDropdown={toggleLocationDropdown}
                   locationType={locationType}
                   setLocationType={setLocationType}
+                  locationTitles={data?.map((item) => item.location)}
                   title="Location"
                 />
               </div>

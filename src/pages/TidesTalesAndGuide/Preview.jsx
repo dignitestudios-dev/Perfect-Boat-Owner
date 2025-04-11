@@ -30,6 +30,8 @@ const Preview = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
+  console.log("🚀 ~ Preview ~ title:", title);
+  console.log("🚀 ~ Preview ~ story:", story);
   const today = moment();
 
   const navigate = useNavigate();
@@ -205,7 +207,7 @@ const Preview = () => {
         <p className="text-white text-[16px]">{subTitle}</p>
       </div>
       {/* Story Input */}
-      <div className="text-[10px] text-gray-200">
+      <div className="text-[10px] text-white">
         <style>
           {`
         .rich-html a {

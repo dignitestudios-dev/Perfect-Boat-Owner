@@ -78,7 +78,7 @@ const TaskTypeInputField = ({
                 // setTaskTypeDropdownOpen(true);
                 setCustomInput(true);
               }}
-              className="w-full text-gray-300 h-8 px-5 hover:bg-[#000]/10 flex flex-col gap-1 justify-center 
+              className="w-full text-gray-300 h-12 px-5 py-2 hover:bg-[#000]/10 flex flex-col gap-1 justify-center 
                         relative items-start"
             >
               <span>Custom</span>

@@ -158,7 +158,7 @@ const NewTaskTable = () => {
                     <span className="w-full flex justify-start items-center">
                       {task?.boat?.name}
                     </span>
-                    <span className="w-full flex justify-start items-center">
+                    <span className="w-full flex justify-start items-center text-start">
                       {task?.boat?.location}
                     </span>
                     <span className="w-full flex justify-start items-center px-[60px]">
