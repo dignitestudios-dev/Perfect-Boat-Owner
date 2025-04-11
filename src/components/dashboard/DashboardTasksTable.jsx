@@ -115,6 +115,7 @@ const DashboardTasksTable = ({ data, loading }) => {
             taskTypeDropdownOpen={taskTypeDropdownOpen}
             toggleTaskTypeDropdown={toggleTaskTypeDropdown}
             setTaskType={setTaskType}
+            taskTitles={data?.map((item) => item.taskType)}
             taskType={taskType}
           />
           <span className="w-full flex justify-start items-center">
@@ -126,6 +127,7 @@ const DashboardTasksTable = ({ data, loading }) => {
             statusFilter={statusFilter}
             toggleStatusDropdown={toggleStatusDropdown}
             setStatusFilter={setStatusFilter}
+            statusTitles={data?.map((item) => item.status)}
             setSearch={setSearch}
           />
         </div>

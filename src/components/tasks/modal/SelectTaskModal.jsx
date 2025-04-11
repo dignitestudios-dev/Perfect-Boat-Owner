@@ -229,6 +229,7 @@ const SelectTaskModal = ({
                     toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                     setTaskType={setTaskType}
                     taskType={taskType}
+                    taskTitles={taskData?.map((item) => item.taskType)}
                   />
                 </div>
                 <span className="flex items-center justify-start">
@@ -245,6 +246,7 @@ const SelectTaskModal = ({
                     toggleStatusDropdown={toggleStatusDropdown}
                     setStatusFilter={setStatusFilter}
                     setSearch={setSearch}
+                    statusTitles={taskData?.map((item) => item.status)}
                   />
                 </div>
               </div>

@@ -249,6 +249,7 @@ const DeleteAccountList = () => {
                 toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                 setTaskType={setTaskType}
                 taskType={taskType}
+                taskTitles={userData?.tasks?.map((item) => item.taskType)}
               />
               <span className="w-full flex justify-start items-center">
                 Due Date
@@ -263,6 +264,7 @@ const DeleteAccountList = () => {
                 statusFilter={statusFilter}
                 toggleStatusDropdown={toggleStatusDropdown}
                 setStatusFilter={setStatusFilter}
+                statusTitles={userData?.tasks?.map((item) => item.status)}
               />
             </div>
             {loading ? (

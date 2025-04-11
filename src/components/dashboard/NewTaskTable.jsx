@@ -111,6 +111,7 @@ const NewTaskTable = ({ data, loading }) => {
             toggleTaskTypeDropdown={toggleTaskTypeDropdown}
             setTaskType={setTaskType}
             taskType={taskType}
+            taskTitles={data?.map((item) => item.taskType)}
           />
           <span className="w-full flex justify-start items-center">
             Due Date
@@ -121,6 +122,7 @@ const NewTaskTable = ({ data, loading }) => {
             toggleStatusDropdown={toggleStatusDropdown}
             setStatusFilter={setStatusFilter}
             statusFilter={statusFilter}
+            statusTitles={data?.map((item) => item.status)}
           />
         </div>
         {loading ? (

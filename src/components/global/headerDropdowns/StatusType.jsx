@@ -7,6 +7,7 @@ const StatusType = ({
   toggleStatusDropdown,
   setStatusFilter,
   statusFilter,
+  statusTitles,
 }) => {
   const statuses = [
     "upcomingtask",
@@ -18,6 +19,8 @@ const StatusType = ({
   ];
 
   const statusDropdownRef = useRef(null);
+
+  const uniqueStatusTitles = [...new Set(statusTitles)].sort();
 
   const handleCheckboxChange = (status) => {
     // setStatusFilter(status);
@@ -74,7 +77,7 @@ const StatusType = ({
             />
             All
           </label>
-          {statuses.map((status, index) => (
+          {uniqueStatusTitles?.map((status, index) => (
             <label
               key={index}
               className="flex items-center p-2 cursor-pointer hover:bg-[#000]/10"

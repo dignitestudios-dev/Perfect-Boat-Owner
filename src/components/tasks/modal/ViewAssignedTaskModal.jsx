@@ -121,6 +121,7 @@ const ViewAssignedTaskModal = ({
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
                   taskType={taskType}
                   setTaskType={setTaskType}
+                  taskTitles={employeeTasks?.map((item) => item.taskType)}
                 />
                 <span className="w-full flex justify-start items-center">
                   Due Date
@@ -134,6 +135,7 @@ const ViewAssignedTaskModal = ({
                   toggleStatusDropdown={toggleStatusDropdown}
                   setStatusFilter={setStatusFilter}
                   statusFilter={statusFilter}
+                  statusTitles={employeeTasks?.map((item) => item.status)}
                 />
                 <span className="w-full flex justify-start items-center">
                   Action

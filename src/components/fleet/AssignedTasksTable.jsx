@@ -122,6 +122,7 @@ const AssignedTasksTable = ({
             statusFilter={statusFilter}
             toggleStatusDropdown={toggleStatusDropdown}
             setStatusFilter={setStatusFilter}
+            statusTitles={boatsData?.task?.map((item) => item.status)}
           />
           <span className="w-full flex justify-start items-center">Action</span>
         </div>

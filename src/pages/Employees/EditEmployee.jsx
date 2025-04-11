@@ -527,6 +527,7 @@ const EditEmployee = () => {
                   setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
                   taskTypeDropdownOpen={taskTypeDropdownOpen}
                   toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                  taskTitles={employeeTasks?.map((item) => item.taskType)}
                 />
                 <button
                   type="button"
@@ -545,6 +546,7 @@ const EditEmployee = () => {
                   toggleStatusDropdown={toggleStatusDropdown}
                   setStatusFilter={setStatusFilter}
                   statusFilter={statusFilter}
+                  statusTitles={employeeTasks?.map((item) => item.status)}
                 />
                 <span className="w-full flex justify-start items-center">
                   Action
