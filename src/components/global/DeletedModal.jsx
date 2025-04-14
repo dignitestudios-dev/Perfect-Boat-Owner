@@ -13,7 +13,6 @@ const DeletedModal = ({ isOpen, onClose, _id, refreshTasks }) => {
     try {
       const response = await axios.delete(`/owner/task/${_id}`);
       SuccessToast("Deleted successfully");
-      console.log("🚀 ~ handleDelete ~ response:", response);
       refreshTasks(); //
       onClose(); //
     } catch (error) {

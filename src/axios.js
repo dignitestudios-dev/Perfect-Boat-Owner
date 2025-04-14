@@ -25,11 +25,10 @@ instance.interceptors.response.use(
   function (error) {
     // *For unAuthorized
     if (error.response.status === 401 || error.response.status === 403) {
-      console.log("🚀 ~ error:", error.response.status);
-      // Cookies.remove("token");
-      // Cookies.remove("name");
-      // Cookies.remove("email");
-      // window.location.href = "/login";
+      Cookies.remove("token");
+      Cookies.remove("name");
+      Cookies.remove("email");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

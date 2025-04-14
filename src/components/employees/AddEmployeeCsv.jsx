@@ -70,8 +70,13 @@ const AddEmployeeCsv = ({ data, setData }) => {
   };
   return (
     <div className="w-full flex flex-col justify-start items-start gap-6">
+      {data?.length >= 100 && (
+        <p className="text-red-700 text-sm">
+          No more than 100 records are allowed
+        </p>
+      )}
       <div className="flex flex-col gap-6 w-full h-auto">
-        {data?.map((form, index) => {
+        {data?.slice(0, 100)?.map((form, index) => {
           return (
             <div
               key={index}

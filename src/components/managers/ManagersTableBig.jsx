@@ -27,7 +27,6 @@ const ManagerTableBig = ({
   jobType,
   setJobType,
 }) => {
-  console.log("🚀 ~ data:", data);
   const navigate = useNavigate();
   const timeoutRef = useRef(null);
 
@@ -182,7 +181,6 @@ const ManagerTableBig = ({
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-  console.log("🚀 ~ paginatedData:", paginatedData);
 
   return (
     <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">

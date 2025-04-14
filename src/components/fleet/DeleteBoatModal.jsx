@@ -5,7 +5,6 @@ import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { FiLoader } from "react-icons/fi";
 
 const DeleteBoatModal = ({ isOpen, onClose, _id, refreshTasks }) => {
-  console.log("🚀 ~ DeleteBoatModal ~ _id:", _id);
   const [deleteLoad, setDeleteLoad] = useState(false);
 
   // Function to handle the deletion API call
@@ -14,7 +13,7 @@ const DeleteBoatModal = ({ isOpen, onClose, _id, refreshTasks }) => {
     try {
       const response = await axios.delete(`/owner/task/${_id}`);
       SuccessToast("Deleted successfully");
-      console.log("🚀 ~ handleDelete ~ response:", response);
+
       refreshTasks(); //
       onClose(); //
     } catch (error) {

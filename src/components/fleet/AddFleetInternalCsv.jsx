@@ -124,8 +124,13 @@ const AddFleetInternalCsv = ({ data, setData }) => {
 
   return (
     <div className="w-full h-auto flex flex-col justify-start items-start gap-8 lg:gap-16">
+      {data?.length >= 100 && (
+        <p className="text-red-700 text-sm">
+          No more than 100 records are allowed
+        </p>
+      )}
       <div className="w-full flex flex-col justify-start items-start gap-4">
-        {data?.map((boat, index) => {
+        {data?.slice(0, 100)?.map((boat, index) => {
           const error = errorObj?.find((err) => err?.index === index);
 
           return (

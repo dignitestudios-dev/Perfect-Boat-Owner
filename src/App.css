@@ -58,6 +58,11 @@ body {
 .editor * {
   color: inherit !important;
 }
+.editor a {
+  color: #3b82f6; /* Tailwind blue-500 */
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .font {
   font-family: sans-serif !important;

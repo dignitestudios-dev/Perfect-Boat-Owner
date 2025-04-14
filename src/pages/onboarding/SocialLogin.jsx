@@ -52,7 +52,7 @@ const SocialLogin = () => {
                   error?.response?.data?.message == "No such user found"
                 ) {
                   setIdToken(token);
-                  setShowModal(true);
+                  // setShowModal(true);
                 }
                 setAppleLoading(false);
               }
@@ -98,7 +98,7 @@ const SocialLogin = () => {
                   error?.response?.data?.message == "No such user found"
                 ) {
                   setIdToken(token);
-                  setShowModal(true);
+                  // setShowModal(true);
                 }
                 setFacebookLoading(false);
               }
@@ -149,7 +149,7 @@ const SocialLogin = () => {
                   error?.response?.data?.message == "No such user found"
                 ) {
                   setIdToken(token);
-                  setShowModal(true);
+                  // setShowModal(true);
                 }
                 setGoogleLoading(false);
               }

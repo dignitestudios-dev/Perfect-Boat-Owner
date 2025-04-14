@@ -81,8 +81,13 @@ const AddManagersCsv = ({ data, setData }) => {
   // }, [formError]);
   return (
     <div className="w-full h-auto flex flex-col gap-6 justify-start items-start">
+      {data?.length >= 100 && (
+        <p className="text-red-700 text-sm">
+          No more than 100 records are allowed
+        </p>
+      )}
       <div className="flex flex-col gap-6 w-full h-auto">
-        {data?.map((form, index) => {
+        {data?.slice(0, 100)?.map((form, index) => {
           return (
             <div
               // ref={(el) => (formRefs.current[index] = el)}

@@ -74,7 +74,6 @@ const BoatsTable = ({
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleBoatDelete = async (id) => {
-    console.log("🚀 ~ handleBoatDelete ~ id:", id);
     setBoatId(id);
     setDeleteModalOpen(true);
   };

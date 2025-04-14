@@ -149,9 +149,10 @@ const DeleteAccountList = () => {
         task: userData?.tasks?.map((task) => task?._id),
       };
       const putResponse = await axios.put(
-        `/manager/employees/${passSelectedEmployee.id}/task/assign`,
+        `/owner/employees/${passSelectedEmployee.id}/task/assign`,
         taskData
       );
+
       if (putResponse?.status === 200) {
         const obj = { reason: "Deactivate" };
         const response = await axios.delete(

@@ -30,8 +30,7 @@ const Preview = () => {
     setDueDate,
     dueDate,
   } = useContext(BlogContext);
-  console.log("🚀 ~ Preview ~ title:", title);
-  console.log("🚀 ~ Preview ~ story:", story);
+
   const today = moment();
 
   const navigate = useNavigate();

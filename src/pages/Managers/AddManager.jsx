@@ -235,7 +235,12 @@ const AddManager = () => {
               onSubmit={submitManagerData}
               className="flex flex-col gap-6 w-full h-auto"
             >
-              {data?.map((form, index) => {
+              {data?.length >= 100 && (
+                <p className="text-red-700 text-sm">
+                  No more than 100 records are allowed
+                </p>
+              )}
+              {data?.slice(0, 100)?.map((form, index) => {
                 return (
                   <div
                     key={index}
