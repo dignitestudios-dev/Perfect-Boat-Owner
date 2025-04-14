@@ -127,6 +127,7 @@ const AddEmployeeExternal = () => {
       delete newData[index].errors;
     }
     setData(newData);
+    setShowManDropdown(false);
 
     setFormError({
       index: 0,

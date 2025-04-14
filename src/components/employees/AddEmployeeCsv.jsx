@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ErrorToast, SuccessToast } from "../global/Toaster";
 import { FiLoader } from "react-icons/fi";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../contexts/GlobalContext";
 
 const AddEmployeeCsv = ({ data, setData }) => {
   const navigate = useNavigate();
+  const { managers } = useContext(GlobalContext);
+
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [showManDropdown, setShowManDropdown] = useState(false);
+
   const [formError, setFormError] = useState({
     index: 0,
     message: null,
@@ -16,6 +21,7 @@ const AddEmployeeCsv = ({ data, setData }) => {
     const newData = [...data];
     newData[index][field] = value;
     setData(newData);
+    setShowManDropdown(false);
   };
 
   const handleRemoveBeforeIndex = (index) => {
@@ -217,11 +223,74 @@ const AddEmployeeCsv = ({ data, setData }) => {
                             </p>
                           )} */}
                   </div>
-                  <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">
+                  <div className="w-full h-auto flex flex-col gap-1 justify-start items-start relative">
                     <label className="text-[16px] font-medium leading-[21.6px]">
                       {"Assign Manager"}
                     </label>
                     <div
+                      type="button"
+                      onClick={() =>
+                        setShowManDropdown((prev) =>
+                          prev === index ? null : index
+                        )
+                      }
+                      className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
+                    >
+                      <div className="w-full h-full pt-4 bg-transparent outline-none text-white">
+                        {form?.manager || "Select Manger"}
+                      </div>
+                      {/* <input
+                              disabled
+                              type="email"
+                              value={form?.manager}
+                              onChange={(e) =>
+                                handleChange(index, "manager", e.target.value)
+                              }
+                              className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
+                              placeholder={"Enter Email "}
+                            /> */}
+                      <button
+                        type="button"
+                        // onClick={() =>
+                        //   setShowManDropdown((prev) =>
+                        //     prev === index ? null : index
+                        //   )
+                        // }
+                        className="ml-2 text-white"
+                      >
+                        {showManDropdown === index ? "▲" : "▼"}
+                      </button>
+                    </div>
+                    {showManDropdown === index && (
+                      <ul
+                        className="absolute z-10 w-full bg-gray-700 text-white border border-gray-500 rounded-md 
+                        mt-1 max-h-40 overflow-auto top-[75px]"
+                      >
+                        {managers?.length > 0 ? (
+                          managers?.map((manager) => (
+                            <li
+                              key={manager._id}
+                              onClick={() =>
+                                handleChange(index, "manager", manager.email)
+                              }
+                              className="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                            >
+                              {manager.email}
+                            </li>
+                          ))
+                        ) : (
+                          <li className="px-3 py-2 text-gray-400">
+                            No matching emails
+                          </li>
+                        )}
+                      </ul>
+                    )}
+                  </div>
+                  {/* <div className="w-full h-auto flex flex-col gap-1 justify-start items-start"> */}
+                  {/* <label className="text-[16px] font-medium leading-[21.6px]">
+                      {"Assign Manager"}
+                    </label> */}
+                  {/* <div
                       className={`w-full h-[52px] bg-[#1A293D] outline-none px-3 focus-within:border-[1px] focus-within:border-[#55C9FA] rounded-xl flex items-center `}
                     >
                       <input
@@ -233,13 +302,13 @@ const AddEmployeeCsv = ({ data, setData }) => {
                         className="w-full h-full bg-transparent outline-none text-white placeholder:text-gray-400 autofill:bg-transparent autofill:text-white"
                         placeholder={"Enter Manager"}
                       />
-                    </div>
-                    {/* {errors.length && (
+                    </div> */}
+                  {/* {errors.length && (
                             <p className="text-red-500 text-sm">
                               {errors?.forms[index]?.phoneNo}
                             </p>
                           )} */}
-                  </div>
+                  {/* </div> */}
                 </div>
                 <span className="w-full mt-4 h-[0.5px] bg-white/10"></span>
               </div>
