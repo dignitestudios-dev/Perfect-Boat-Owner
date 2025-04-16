@@ -556,8 +556,9 @@ const EditEmployee = () => {
                 <>
                   {employeeFilteredData?.slice(0, 4)?.map((task, index) => (
                     <div
+                      onClick={() => navigateTo(`/tasks/${task?._id}`)}
                       key={index}
-                      className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
+                      className="cursor-pointer w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                     >
                       <span className="w-full flex justify-start items-center">
                         {task?.boatName}
@@ -589,7 +590,10 @@ const EditEmployee = () => {
                       <div className="w-full flex text-[15px] text-white/40 justify-start items-center gap-2">
                         <span
                           className="flex justify-start items-center cursor-pointer"
-                          onClick={() => handleEditTaskClick(task?._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditTaskClick(task?._id);
+                          }}
                         >
                           <FaRegEdit />
                         </span>
