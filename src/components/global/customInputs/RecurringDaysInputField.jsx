@@ -74,7 +74,8 @@ const RecurringDaysInputField = ({
                   // || (Number(value) <= 365 && Number(value) >= 0)
                   if (
                     /^\d*$/.test(value) &&
-                    (value === "" || !/^0\d+/.test(value))
+                    (value === "" || !/^0\d+/.test(value)) &&
+                    value.length <= 4
                   ) {
                     setCustomRecurring(value);
                   }
@@ -86,7 +87,7 @@ const RecurringDaysInputField = ({
               <button
                 type="button"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  // e.stopPropagation();
                   handleSelectDay(customRecurring, customRecurring + " days");
                 }}
                 className="w-[95%] h-[42px] rounded-md bg-[#119bd1] text-white flex items-center 
