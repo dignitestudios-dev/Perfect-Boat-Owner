@@ -156,7 +156,7 @@ const DeleteAccountList = () => {
       if (putResponse?.status === 200) {
         const obj = { reason: "Deactivate" };
         const response = await axios.delete(
-          `/owner/employees/${passSelectedEmployee.id}?deactivate=true`,
+          `/owner/employees/${id}?deactivate=true`,
           { data: obj }
         );
 

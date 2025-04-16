@@ -353,7 +353,10 @@ const DeactivatedEmployeesTable = () => {
                       </span>
                       <span className="w-full flex justify-start items-center pl-5 text-white cursor-pointer">
                         <TfiReload
-                          onClick={() => handleActionClick(user?._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleActionClick(user?._id);
+                          }}
                         />
                       </span>
                     </div>

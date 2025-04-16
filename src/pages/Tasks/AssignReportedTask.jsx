@@ -171,8 +171,8 @@ const AssignReportedTask = () => {
       setValue("name", task?.boat?.name);
       setValue("type", task?.boat?.boatType);
       setValue("note", task?.note);
-      setSelectedTaskType(task?.task?.taskType);
-      setDisplaySelectedTask(task?.task?.task);
+      // setSelectedTaskType(task?.task?.taskType);
+      // setDisplaySelectedTask(task?.task?.task);
       setPassSelectedEmployee({
         name: task?.employee?.name,
         id: task?.employee?._id,
@@ -230,40 +230,44 @@ const AssignReportedTask = () => {
                 </div>
               </div>
               <div className="w-full grid grid-cols-2 gap-12">
-                <TaskTypeInputField
-                  toggleTaskTypeDropdown={toggleTaskTypeDropdown}
-                  selectedTaskType={selectedTaskType}
-                  isEdit={true}
-                  isTaskTypeDropdownOpen={isTaskTypeDropdownOpen}
-                  taskTypeDropdownRef={taskTypeDropdownRef}
-                  customTypeText={customTypeText}
-                  handleTaskTypeSelection={handleTaskTypeSelection}
-                  customInput={customInput}
-                  setCustomTypeText={setCustomTypeText}
-                  taskDropDown={taskDropDown}
-                  setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
-                  setCustomInput={setCustomInput}
-                />
-                {fieldErrors?.taskType && (
-                  <p className="text-red-500 text-sm">
-                    {fieldErrors?.taskType}
-                  </p>
-                )}
-                <TaskInputField
-                  handleTaskSelection={handleTaskSelection}
-                  toggleTaskDropdown={toggleTaskDropdown}
-                  isTaskDropdownOpen={isTaskDropdownOpen}
-                  displaySelectedTask={displaySelectedTask}
-                  additionalDropdownRef={additionalDropdownRef}
-                  tasks={tasks}
-                  isEdit={true}
-                  setInputError={setFieldErrors}
-                  customTask={customTask}
-                  setCustomTask={setCustomTask}
-                />
-                {fieldErrors?.task && (
-                  <p className="text-red-500 text-sm">{fieldErrors?.task}</p>
-                )}
+                <div className="z-50">
+                  <TaskTypeInputField
+                    toggleTaskTypeDropdown={toggleTaskTypeDropdown}
+                    selectedTaskType={selectedTaskType}
+                    isEdit={true}
+                    isTaskTypeDropdownOpen={isTaskTypeDropdownOpen}
+                    taskTypeDropdownRef={taskTypeDropdownRef}
+                    customTypeText={customTypeText}
+                    handleTaskTypeSelection={handleTaskTypeSelection}
+                    customInput={customInput}
+                    setCustomTypeText={setCustomTypeText}
+                    taskDropDown={taskDropDown}
+                    setTaskTypeDropdownOpen={setTaskTypeDropdownOpen}
+                    setCustomInput={setCustomInput}
+                  />
+                  {fieldErrors?.taskType && (
+                    <p className="text-red-500 text-sm">
+                      {fieldErrors?.taskType}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <TaskInputField
+                    handleTaskSelection={handleTaskSelection}
+                    toggleTaskDropdown={toggleTaskDropdown}
+                    isTaskDropdownOpen={isTaskDropdownOpen}
+                    displaySelectedTask={displaySelectedTask}
+                    additionalDropdownRef={additionalDropdownRef}
+                    tasks={tasks}
+                    isEdit={true}
+                    setInputError={setFieldErrors}
+                    customTask={customTask}
+                    setCustomTask={setCustomTask}
+                  />
+                  {fieldErrors?.task && (
+                    <p className="text-red-500 text-sm">{fieldErrors?.task}</p>
+                  )}
+                </div>
               </div>
               <div className="w-full grid grid-cols-1 gap-12">
                 <div className="w-full h-auto flex flex-col gap-1 justify-start items-start">

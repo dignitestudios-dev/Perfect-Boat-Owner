@@ -71,11 +71,10 @@ const RecurringDaysInputField = ({
                 value={customRecurring}
                 onChange={(e) => {
                   let value = e.target.value;
-
+                  // || (Number(value) <= 365 && Number(value) >= 0)
                   if (
                     /^\d*$/.test(value) &&
-                    (value === "" ||
-                      (Number(value) <= 365 && Number(value) >= 0))
+                    (value === "" || !/^0\d+/.test(value))
                   ) {
                     setCustomRecurring(value);
                   }

@@ -98,6 +98,7 @@ const EmployeesTableBig = ({
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsReactivateModalOpen(false);
   };
 
   const handleDeactivate = async () => {
