@@ -207,7 +207,7 @@ const NewTaskRequestPage = () => {
                   </div>
                 </div>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-12">
-                  <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
+                  {/* <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
                       Task Type
                     </label>
@@ -224,7 +224,7 @@ const NewTaskRequestPage = () => {
                     <div className="group transition-all duration-500 w-full h-[52px] bg-[#1A293D] outline-none flex justify-between items-center  px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl  relative">
                       <span className="text-gray-400">{task?.task?.task}</span>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="w-full h-auto flex flex-col gap-1 justify-end items-start">
                     <label className="text-[16px] font-medium leading-[21.6px]">
                       Location/Customer Name
