@@ -80,3 +80,12 @@ body {
   background-color: rgb(26 41 61) !important;
   color: white !important;
 }
+
+.no-underline-important {
+  text-decoration: none !important;
+}
+
+.color-white {
+  color: #ffffff !important;
+}
+
