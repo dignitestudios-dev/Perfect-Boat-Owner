@@ -15,7 +15,7 @@ const SidebarLink = ({ link, onCloseDrawer }) => {
         <NavLink
           to={link.url}
           className={({ isActive }) =>
-            `no-underline-important w-full h-[46px] outline-none rounded-[12px] font-medium flex items-center justify-between transition-all duration-500 px-3 gap-2 ${
+            `no-underline-important w-full h-[46px] rounded-[12px] font-medium flex items-center justify-between transition-all duration-500 px-3 gap-2 ${
               isActive
                 ? "bg-[#199BD1] color-white "
                 : "bg-transparent text-white/50 hover:bg-[#199BD1] hover:text-white"
@@ -31,7 +31,7 @@ const SidebarLink = ({ link, onCloseDrawer }) => {
       ) : (
         <button
           onClick={toggleSubmenu}
-          className={` w-full h-[46px] outline-none rounded-[12px] font-medium flex items-center justify-between transition-all duration-500 px-3 gap-2 ${
+          className={` w-full h-[46px] rounded-[12px] font-medium flex items-center justify-between transition-all duration-500 px-3 gap-2 ${
             isOpen
               ? "bg-[#199BD1] text-white"
               : "bg-transparent text-white/50 hover:bg-[#199BD1] hover:text-white"
