@@ -39,8 +39,10 @@ export const GlobalContextProvider = ({ children }) => {
           .filter(Boolean)
           .join("&");
         const { data } = await axios.get(`/owner/manager?${queryString}`);
-
-        setManagers(data?.data);
+        let activeManagers = data?.data?.filter(
+          (item) => item?.isActive === true
+        );
+        setManagers(activeManagers);
       } catch (err) {
         console.log("🚀 ~ getManagers ~ err:", err);
       } finally {
@@ -60,14 +62,18 @@ export const GlobalContextProvider = ({ children }) => {
     if (token) {
       setLoadingEmployees(true);
       try {
-        const boatQuery = jobType.length !== 0 ? `jobTitle=${jobType}` : "";
-        const locationQuery =
-          locationType.length !== 0 ? `location=${locationType}` : "";
-        const queryString = [boatQuery, locationQuery]
-          .filter(Boolean)
-          .join("&");
+        // const boatQuery = jobType.length !== 0 ? `jobTitle=${jobType}` : "";
+        // const locationQuery =
+        //   locationType.length !== 0 ? `location=${locationType}` : "";
+        // const queryString = [boatQuery, locationQuery]
+        //   .filter(Boolean)
+        //   .join("&");
         const { data } = await axios.get(`/owner/employees`);
-        setEmployees(data?.data);
+        let activeEmployee = data?.data?.filter(
+          (item) => item?.isActive === true
+        );
+
+        setEmployees(activeEmployee);
       } catch (err) {
         console.log("🚀 ~ getEmployees ~ err:", err);
       } finally {
