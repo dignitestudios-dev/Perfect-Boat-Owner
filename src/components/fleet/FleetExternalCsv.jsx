@@ -23,7 +23,7 @@ const FleetExternalCsv = ({ data, setData, setIsAddManagerOpen }) => {
       "location",
       "boatType",
       "model",
-      // "cover",
+      "cover",
     ];
 
     // Array to store error details

@@ -34,7 +34,7 @@ const AddFleetInternalCsv = ({ data, setData }) => {
       "location",
       "boatType",
       "model",
-      // "cover",
+      "cover",
     ];
 
     // Array to store error details
