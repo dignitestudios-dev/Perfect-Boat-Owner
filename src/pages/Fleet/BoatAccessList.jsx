@@ -1,6 +1,5 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
-import { FaCaretDown, FaTimes } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import RequestTaskListLoader from "../../components/tasks/loaders/RequestTaskListLoader";
 import axios from "../../axios";
@@ -9,10 +8,12 @@ import { FiLoader } from "react-icons/fi";
 import { ErrorToast } from "../../components/global/Toaster";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
+import { useNavigate } from "react-router-dom";
 
 const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
-  const { navigate, boats, setUpdateBoat, setUpdateManager } =
-    useContext(GlobalContext);
+  const { boats, setUpdateBoat, setUpdateManager } = useContext(GlobalContext);
+
+  const navigate = useNavigate();
 
   const [allSelected, setAllSelected] = useState(false);
   const [selectedBoats, setSelectedBoats] = useState([]);
@@ -29,6 +30,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [locationType, setLocationType] = useState([]);
   const [boatType, setBoatType] = useState([]);
+  const [unSelectedIds, setUnSelectedIds] = useState([]);
 
   const toggleBoatTypeDropdown = () => {
     setBoatTypeDropdownOpen(!boatTypeDropdownOpen);
@@ -147,6 +149,14 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
         setUpdateBoat((prev) => !prev);
         setUpdateManager((prev) => !prev);
         getManagerById();
+        // console.log("🚀 ~ handleAssignBoats ~ response?.data:", response?.data);
+        // const unSelectedBoats = response?.data?.data?.boat?.map((item) => item);
+        // console.log("🚀 ~ handleAssignBoats ~ unSelectedIds:", unSelectedBoats);
+        // if (unSelectedBoats.length > 0) {
+        //   navigate("/managers/assign-boats-access-rights", {
+        //     state: { boats: unSelectedBoats },
+        //   });
+        // }
       }
     } catch (err) {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);

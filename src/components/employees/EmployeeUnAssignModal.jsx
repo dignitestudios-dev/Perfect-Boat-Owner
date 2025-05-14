@@ -4,28 +4,28 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import { ErrorToast } from "../../components/global/Toaster";
+import axios from "../../axios";
 
-const EmployeeDetailModal = ({
+const EmployeeUnAssignModal = ({
   setIsOpen,
   SetPassSelectedEmployee,
   passSelectedEmployee,
-  setInputError,
-  isMultiple = false,
-  employeeId = "",
+  boatId,
 }) => {
-  const { employees, loadingEmployees } = useContext(GlobalContext);
-  const [allSelected, setAllSelected] = useState(false);
-
+  console.log("🚀 ~ boatId:", boatId);
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [jobType, setJobType] = useState([]);
   const [locationType, setLocationType] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  console.log("🚀 ~ employees:", employees);
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
 
   const [selectedEmployee, setSelectedEmployee] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredData = employees?.filter((item) => {
-    const employees = employeeId ? employeeId !== item._id : true;
+    // const employees = employeeId ? employeeId !== item._id : true;
 
     const matchesSearch = searchTerm
       ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
@@ -41,8 +41,9 @@ const EmployeeDetailModal = ({
       locationType && locationType.length !== 0
         ? locationType?.includes(item?.location?.toLowerCase())
         : true;
-    return matchesSearch && locationTypeMatch && jobTypeMatch && employees;
+    return matchesSearch && locationTypeMatch && jobTypeMatch;
   });
+  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -53,30 +54,10 @@ const EmployeeDetailModal = ({
   };
 
   const handleSelectEmployee = (employeeId, employeeName) => {
-    setInputError({});
-    if (isMultiple) {
-      const isSelected = selectedEmployee?.some(
-        (employee) => employee?.id === employeeId
-      );
-      if (isSelected) {
-        setSelectedEmployee(
-          selectedEmployee?.filter((employee) => employee?.id !== employeeId)
-        );
-      } else {
-        setSelectedEmployee([
-          ...selectedEmployee,
-          { id: employeeId, name: employeeName },
-        ]);
-      }
-      if (selectedEmployee?.length + (isSelected ? -1 : 1) === 0) {
-        setAllSelected(false);
-      }
+    if (selectedEmployee?.id === employeeId) {
+      setSelectedEmployee(null);
     } else {
-      if (selectedEmployee?.id === employeeId) {
-        setSelectedEmployee(null);
-      } else {
-        setSelectedEmployee({ id: employeeId, name: employeeName });
-      }
+      setSelectedEmployee({ id: employeeId, name: employeeName });
     }
   };
 
@@ -89,26 +70,23 @@ const EmployeeDetailModal = ({
     }
   };
 
-  // const handleSelectAll = () => {
-  //   if (allSelected) {
-  //     // Deselect all employee
-  //     setSelectedEmployee([]);
-  //   } else {
-  //     // Select all employee
-  //     setSelectedEmployee(
-  //       filteredData.map((employee) => ({
-  //         id: employee._id,
-  //         name: employee.name,
-  //       }))
-  //     );
-  //   }
-  //   setAllSelected(!allSelected);
-  // };
+  const getBoatsEmployee = async () => {
+    setLoadingEmployees(true);
+    try {
+      const { data } = await axios.get(`/owner/boat/${boatId}/employees`);
+      setEmployees(data?.data);
+    } catch (err) {
+      console.log("getBoatsById ~ err:", err);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
+  useEffect(() => {
+    getBoatsEmployee();
+  }, []);
 
   useEffect(() => {
-    if (!isMultiple) {
-      setSelectedEmployee(passSelectedEmployee);
-    }
+    setSelectedEmployee(passSelectedEmployee);
   }, [passSelectedEmployee]);
 
   return (
@@ -120,7 +98,7 @@ const EmployeeDetailModal = ({
               <h3 className="text-lg font-semibold">Select Employee</h3>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
+                onClick={() => setIsOpen(false)} // Close the modal w hen "✕" is clicked
                 className="text-lg font-bold"
               >
                 ✕
@@ -146,22 +124,6 @@ const EmployeeDetailModal = ({
                 Done
               </button>
             </div>
-            {/* <div className="mt-4 mb-2">
-              {isMultiple && (
-                <label className="flex items-center text-white/50">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
-                    mr-1.5 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
-                                checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
-                                 checked:after:text-md checked:after:p-1"
-                    checked={allSelected}
-                    onChange={handleSelectAll}
-                  />
-                  Select All
-                </label>
-              )}
-            </div> */}
           </div>
           <div className="relative h-full overflow-auto">
             <table className="min-w-full mb-4 text-white">
@@ -229,12 +191,7 @@ const EmployeeDetailModal = ({
                       {filteredData?.map((employee, index) => {
                         const isSelected =
                           selectedEmployee?.id === employee?._id;
-                        const isMultiSelected =
-                          isMultiple && Array.isArray(selectedEmployee)
-                            ? selectedEmployee.some(
-                                (selected) => selected?.id === employee?._id
-                              )
-                            : false;
+
                         return (
                           <tr
                             key={index}
@@ -246,9 +203,7 @@ const EmployeeDetailModal = ({
                                 className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
                                checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
                               checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
-                                checked={
-                                  isMultiple ? isMultiSelected : isSelected
-                                }
+                                checked={isSelected}
                                 onChange={() =>
                                   handleSelectEmployee(
                                     employee._id,
@@ -302,4 +257,4 @@ const EmployeeDetailModal = ({
   );
 };
 
-export default EmployeeDetailModal;
+export default EmployeeUnAssignModal;

@@ -108,20 +108,35 @@ const DeleteAccountList = () => {
 
   const handleDelete = async () => {
     setInputError({});
-    // if(!passSelectedEmployee?.id){
-    //   setInputError("Select Employee")
-    // }
+
     setDeleteLoad(true);
     try {
       const taskData = {
         task: userData?.tasks?.map((task) => task?._id),
       };
+      if (userData?.tasks?.length > 0) {
+        if (!passSelectedEmployee?.id) {
+          setInputError({ employee: "Select Employee" });
+          return;
+        }
+        const putResponse = await axios.put(
+          `/owner/employees/${passSelectedEmployee.id}/task/assign`,
+          taskData
+        );
+        if (putResponse?.status === 200) {
+          const obj = {
+            reason: reasonForDelete,
+          };
+          const deleteResponse = await axios.delete(`/owner/manager/${id}`, {
+            data: obj,
+          });
 
-      const putResponse = await axios.put(
-        `/owner/employees/${passSelectedEmployee.id}/task/assign`,
-        taskData
-      );
-      if (putResponse?.status === 200) {
+          if (deleteResponse?.status === 200) {
+            setIsAccountDeletedModalOpen(true);
+            setUpdateEmployee((prev) => !prev);
+          }
+        }
+      } else {
         const obj = {
           reason: reasonForDelete,
         };

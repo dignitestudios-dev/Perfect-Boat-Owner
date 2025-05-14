@@ -54,6 +54,8 @@ import AssignEmployeeInternal from "../pages/Managers/AssignEmployeeInternal";
 import PageNotFound from "../pages/PageNotFound";
 import { Navigate } from "react-router-dom";
 import UpdatePreview from "../pages/TidesTalesAndGuide/UpdatePreview";
+import AssignBoatAccessRights from "../pages/Fleet/AssignBoatAccessRights";
+import ManagerAssignAccessRights from "../pages/Managers/ManagerAssignAccessRights";
 
 export const normalRoutes = [
   {
@@ -209,9 +211,19 @@ export const normalRoutes = [
     page: <GlobalLayout page={<BoatAccess />} />,
   },
   {
+    title: "Assign Boat Access Rights",
+    url: "/boat/assign-access-rights",
+    page: <GlobalLayout page={<AssignBoatAccessRights />} />,
+  },
+  {
     title: "Boat Access Rights",
     url: "/managers/boats-access-rights",
     page: <GlobalLayout page={<BoatAccessRights />} />,
+  },
+  {
+    title: "Manager Assign Access Rights",
+    url: "/managers/assign-boats-access-rights",
+    page: <GlobalLayout page={<ManagerAssignAccessRights />} />,
   },
 
   {
