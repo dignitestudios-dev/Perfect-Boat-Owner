@@ -1,49 +1,25 @@
-import React, { useState, useEffect, useContext } from "react";
-import { FiSearch } from "react-icons/fi";
+import React, { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import JobType from "../../components/global/headerDropdowns/JobType";
-import LocationType from "../../components/global/headerDropdowns/LocationType";
-import { ErrorToast } from "../../components/global/Toaster";
-import axios from "../../axios";
+import { FiSearch } from "react-icons/fi";
+import JobType from "../global/headerDropdowns/JobType";
+import LocationType from "../global/headerDropdowns/LocationType";
 
-const EmployeeUnAssignModal = ({
+const ManagerAccessRightModal = ({
   setIsOpen,
-  SetPassSelectedEmployee,
-  passSelectedEmployee,
+  handleManagerModal,
+  selectedManagers,
+  setSelectedManagers,
+  checkedManagers,
   boatId,
-  isEmployee,
 }) => {
+  const { managers, getManagers, loadingManagers } = useContext(GlobalContext);
+
+  const [allSelected, setAllSelected] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [locationType, setLocationType] = useState([]);
+  const [jobType, setJobType] = useState([]);
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [jobType, setJobType] = useState([]);
-  const [locationType, setLocationType] = useState([]);
-  const [employees, setEmployees] = useState([]);
-
-  const [loadingEmployees, setLoadingEmployees] = useState(false);
-
-  const [selectedEmployee, setSelectedEmployee] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredData = employees?.filter((item) => {
-    // const employees = employeeId ? employeeId !== item._id : true;
-
-    const matchesSearch = searchTerm
-      ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        item?.jobtitle?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
-        item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-      : true;
-    const jobTypeMatch =
-      jobType && jobType.length !== 0
-        ? jobType?.includes(item?.jobtitle?.toLowerCase())
-        : true;
-    const locationTypeMatch =
-      locationType && locationType.length !== 0
-        ? locationType?.includes(item?.location?.toLowerCase())
-        : true;
-    return matchesSearch && locationTypeMatch && jobTypeMatch;
-  });
-  console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -53,63 +29,110 @@ const EmployeeUnAssignModal = ({
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const handleSelectEmployee = (employeeId, employeeName) => {
-    if (selectedEmployee?.id === employeeId) {
-      setSelectedEmployee(null);
+  const handleSelectManager = (managerId, managerName) => {
+    const isSelected = selectedManagers.some(
+      (manager) => manager?.id === managerId
+    );
+
+    let updatedSelectedManager;
+    if (isSelected) {
+      updatedSelectedManager = selectedManagers.filter(
+        (manager) => manager?.id !== managerId
+      );
+      updatedSelectedManager = updatedSelectedManager.map((manager) => ({
+        ...manager,
+        boatId,
+      }));
+
+      setSelectedManagers(updatedSelectedManager);
     } else {
-      setSelectedEmployee({ id: employeeId, name: employeeName });
+      updatedSelectedManager = [
+        ...selectedManagers,
+        { id: managerId, name: managerName, boatId },
+      ];
+      updatedSelectedManager = updatedSelectedManager.map((manager) => ({
+        ...manager,
+        boatId,
+      }));
+      setSelectedManagers(updatedSelectedManager);
     }
+    setAllSelected(updatedSelectedManager?.length === filteredData?.length);
   };
 
-  const handleEmployeeSelection = () => {
-    if (selectedEmployee) {
-      SetPassSelectedEmployee(selectedEmployee);
-      setIsOpen(false);
+  const handleManagerSelection = () => {
+    setIsOpen(false);
+    handleManagerModal(selectedManagers);
+  };
+
+  const filteredData = managers?.filter((item) => {
+    const name =
+      item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.jobtitle?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+    const jobTypeMatch =
+      jobType && jobType.length !== 0
+        ? jobType?.includes(item?.jobtitle?.toLowerCase())
+        : true;
+    const locationTypeMatch =
+      locationType && locationType.length !== 0
+        ? locationType?.includes(item?.location?.toLowerCase())
+        : true;
+    return name && locationTypeMatch && jobTypeMatch;
+  });
+
+  useEffect(() => {
+    if (filteredData?.length) {
+      setSelectedManagers(
+        checkedManagers?.map((manager) => ({
+          id: manager._id,
+          name: manager.name,
+        }))
+      );
+    }
+  }, [managers]);
+
+  useEffect(() => {
+    getManagers(jobType, locationType);
+  }, []);
+
+  const handleSelectAll = () => {
+    if (allSelected) {
+      // Deselect all employee
+      setSelectedManagers([]);
     } else {
-      ErrorToast("Select Employee");
+      // Select all employee
+      setSelectedManagers(
+        filteredData?.map((manager) => ({
+          id: manager._id,
+          name: manager.name,
+        }))
+      );
     }
+    setAllSelected(!allSelected);
   };
-
-  const getBoatsEmployee = async () => {
-    setLoadingEmployees(true);
-    try {
-      const { data } = await axios.get(`/owner/boat/${boatId}/employees`);
-      setEmployees(data?.data);
-    } catch (err) {
-      console.log("getBoatsById ~ err:", err);
-    } finally {
-      setLoadingEmployees(false);
-    }
-  };
-  useEffect(() => {
-    getBoatsEmployee();
-  }, [isEmployee]);
-
-  useEffect(() => {
-    setSelectedEmployee(passSelectedEmployee);
-  }, [passSelectedEmployee]);
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-10">
-      <div className="w-[100%]  h-[90%] lg:w-[953px] lg:h-[680px] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D]">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="w-[90%] max-w-4xl h-[80%] max-h-[80%] rounded-3xl flex items-center justify-center p-4 bg-[#1A293D] z-[1000]">
         <div className="bg-[#001229] text-white rounded-2xl shadow-lg w-full h-full p-4 overflow-hidden">
           <div className="flex flex-col mb-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Select Employee</h3>
+            <div className="flex justify-between items-center mb-1">
+              <h3 className="text-lg font-semibold">Select Manager</h3>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)} // Close the modal w hen "✕" is clicked
+                onClick={() => setIsOpen(false)} // Close the modal when "✕" is clicked
                 className="text-lg font-bold"
               >
                 ✕
               </button>
             </div>
-            <div className="w-full h-auto flex justify-between items-center mt-4">
+            <div className="w-[95%] h-auto flex justify-between items-center mt-4">
               <div className="flex w-1/2 lg:w-[295px] h-[32px] justify-start items-start rounded-[8px] bg-[#1A293D] relative">
                 <span className="w-[32px] h-full flex items-center justify-center">
                   <FiSearch className="text-white/50 text-lg" />
                 </span>
                 <input
+                  value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search here"
@@ -118,20 +141,34 @@ const EmployeeUnAssignModal = ({
               </div>
               <button
                 type="button"
-                onClick={() => handleEmployeeSelection()}
+                onClick={() => handleManagerSelection()}
                 className="bg-[#119bd1] text-white px-6 flex items-center justify-center text-[12px] font-bold leading-[16.2px] w-[118px] h-[32px] rounded-md"
               >
                 Done
               </button>
             </div>
+            <div className="mt-4 mb-2">
+              <label className="flex items-center text-white/50">
+                <input
+                  type="checkbox"
+                  className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
+                        mr-1.5 checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                    checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229]
+                                     checked:after:text-md checked:after:p-1"
+                  checked={allSelected}
+                  onChange={handleSelectAll}
+                />
+                Select All
+              </label>
+            </div>
           </div>
-          <div className="relative h-full overflow-auto">
+          <div className="relative  h-[80%] overflow-y-auto">
             <table className="min-w-full mb-4 text-white">
               <thead className="text-[11px] border-b-[1px] border-white/10 font-medium leading-[14.85px] text-white/50">
                 <tr>
                   <th className="px-0 py-2"></th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                    Employee Name
+                    Manager Name
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                     Email
@@ -143,9 +180,9 @@ const EmployeeUnAssignModal = ({
                       toggleJobTitleDropdown={toggleJobTitleDropdown}
                       jobType={jobType}
                       setJobType={setJobType}
-                      jobTitles={employees?.map((item) => item.jobtitle)}
+                      jobTitles={managers?.map((item) => item.jobtitle)}
                       setCurrentPage={() => {}}
-                      isManager={false}
+                      isManager={true}
                     />
                   </th>
                   <th className="px-4 py-2 text-[11px] font-medium leading-[14.85px] relative">
@@ -156,13 +193,13 @@ const EmployeeUnAssignModal = ({
                       locationType={locationType}
                       setLocationType={setLocationType}
                       setCurrentPage={() => {}}
-                      locationTitles={employees?.map((item) => item.location)}
+                      locationTitles={managers?.map((item) => item.location)}
                       title="Location"
                     />
                   </th>
                 </tr>
               </thead>
-              {loadingEmployees ? (
+              {loadingManagers ? (
                 <tbody>
                   {[...Array(10)].map((_, index) => (
                     <tr key={index} className="border-b-[1px] border-white/10">
@@ -178,7 +215,7 @@ const EmployeeUnAssignModal = ({
                       <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                         <div className="w-24 h-4 bg-gray-600 rounded animate-pulse"></div>
                       </td>
-                      <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                      <td className=" px-4 py-2 text-[11px] font-medium leading-[14.85px]">
                         <div className="w-32 h-4 bg-gray-600 rounded animate-pulse"></div>
                       </td>
                     </tr>
@@ -186,43 +223,41 @@ const EmployeeUnAssignModal = ({
                 </tbody>
               ) : (
                 <tbody>
-                  {filteredData?.length > 0 ? (
+                  {filteredData.length > 0 ? (
                     <>
-                      {filteredData?.map((employee, index) => {
-                        const isSelected =
-                          selectedEmployee?.id === employee?._id;
+                      {filteredData?.map((manager, index) => {
+                        const isMultiSelected = selectedManagers?.some(
+                          (selected) => selected.id === manager._id
+                        );
 
                         return (
                           <tr
                             key={index}
                             className="border-b-[1px] border-white/10"
                           >
-                            <td className="px-0 py-2">
+                            <td className="pl-1 py-2 h-12">
                               <input
                                 type="checkbox"
                                 className="w-5 h-5 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white
-                               checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500] 
-                              checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
-                                checked={isSelected}
+                                       checked:border-[#FFFFFF80] checked:ring-1 checked:after:font-[500]
+                                      checked:ring-[#FFFFFF80] checked:after:content-['✓'] checked:after:text-[#001229] checked:after:text-md checked:after:p-1"
+                                checked={isMultiSelected}
                                 onChange={() =>
-                                  handleSelectEmployee(
-                                    employee._id,
-                                    employee.name
-                                  )
+                                  handleSelectManager(manager._id, manager.name)
                                 }
                               />
                             </td>
                             <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.name}
+                              {manager?.name}
                             </td>
                             <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.email}
+                              {manager?.email}
                             </td>
                             <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px]">
-                              {employee?.jobtitle}
+                              {manager?.jobtitle}
                             </td>
-                            <td className="px-4 py-2 text-[11px] font-medium leading-[14.85px] w-[240px]">
-                              {employee?.location}
+                            <td className="w-[250px] px-4 py-2 text-[11px] font-medium leading-[14.85px]">
+                              {manager?.location}
                             </td>
                           </tr>
                         );
@@ -257,4 +292,4 @@ const EmployeeUnAssignModal = ({
   );
 };
 
-export default EmployeeUnAssignModal;
+export default ManagerAccessRightModal;

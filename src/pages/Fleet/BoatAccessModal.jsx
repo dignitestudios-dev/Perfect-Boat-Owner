@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect, Fragment } from "react";
-import { FaCaretDown, FaSearch } from "react-icons/fa";
-import ManagerDetailModal from "../Managers/ManagerDetailModal";
+
 import axios from "../../axios";
-import BoatsLoader from "../../components/fleet/BoatsLoader";
 import MiniListLoader from "../../components/global/MiniListLoader";
 import JobType from "../../components/global/headerDropdowns/JobType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
@@ -10,9 +8,9 @@ import { FiSearch } from "react-icons/fi";
 
 const BoatAccessModal = ({
   setIsOpen,
-  isManagerDetailModalOpen,
   setIsManagerDetailModalOpen,
   boatId,
+  setCheckedManagers,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTitleDropdownOpen, setJobTitleDropdownOpen] = useState(false);
@@ -20,7 +18,7 @@ const BoatAccessModal = ({
   const [locationType, setLocationType] = useState([]);
   const [jobType, setJobType] = useState([]);
   const [loadingBoats, setLoadingBoats] = useState(false);
-  const [boats, setBoats] = useState([]);
+  const [accessManagers, setAccessManagers] = useState([]);
 
   const toggleJobTitleDropdown = () => {
     setJobTitleDropdownOpen(!jobTitleDropdownOpen);
@@ -30,7 +28,7 @@ const BoatAccessModal = ({
     setLocationDropdownOpen(!locationDropdownOpen);
   };
 
-  const filteredData = boats?.filter((item) => {
+  const filteredData = accessManagers?.filter((item) => {
     const matchesSearch = searchTerm
       ? item?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
         item?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
@@ -52,7 +50,8 @@ const BoatAccessModal = ({
     setLoadingBoats(true);
     try {
       const { data } = await axios.get(`/owner/boat/${boatId}`);
-      setBoats(data?.data?.boatAccess);
+      setAccessManagers(data?.data?.boatAccess);
+      setCheckedManagers(data?.data?.boatAccess);
     } catch (err) {
       console.log("🚀 ~ getBoats ~ err:", err);
     } finally {
@@ -124,7 +123,7 @@ const BoatAccessModal = ({
                         toggleJobTitleDropdown={toggleJobTitleDropdown}
                         jobType={jobType}
                         setJobType={setJobType}
-                        jobTitles={boats?.map((item) => item.jobtitle)}
+                        jobTitles={accessManagers?.map((item) => item.jobtitle)}
                         setCurrentPage={() => {}}
                         isManager={true}
                       />
@@ -137,7 +136,9 @@ const BoatAccessModal = ({
                         locationType={locationType}
                         setLocationType={setLocationType}
                         setCurrentPage={() => {}}
-                        locationTitles={boats?.map((item) => item.location)}
+                        locationTitles={accessManagers?.map(
+                          (item) => item.location
+                        )}
                         title="Location "
                       />
                     </th>

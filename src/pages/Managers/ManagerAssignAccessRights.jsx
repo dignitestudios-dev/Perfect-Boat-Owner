@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { getUnixDate } from "../../data/DateFormat";
 import ManagerDetailModal from "./ManagerDetailModal";
-import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
 import BoatAccessModal from "../Fleet/BoatAccessModal";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { useLocation } from "react-router-dom";
 import EmployeeUnAssignModal from "../../components/employees/EmployeeUnAssignModal";
+import ManagerAccessRightModal from "../../components/managers/ManagerAccessRightModal";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -45,25 +45,24 @@ const ManagerAssignAccessRights = () => {
   const boats = location?.state?.boats;
 
   const [loadingTasks, setLoadingTasks] = useState({});
+  const [isEmployee, setIsEmployee] = useState(false);
+  const [managerLoading, setManagerLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
     useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
 
-  const [passSelectedManagers, setPassSelectedManagers] = useState([]);
-  const [passSelectedManager, setPassSelectedManager] = useState("");
-
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
 
   const [boatTasks, setBoatTasks] = useState({});
 
   const [taskId, setTaskId] = useState("");
-  console.log("🚀 ~ ManagerAssignAccessRights ~ taskId:", taskId);
   const [boatId, setBoatId] = useState("");
-  console.log("🚀 ~ ManagerAssignAccessRights ~ boatId:", boatId);
+  const [checkedManagers, setCheckedManagers] = useState([]);
 
   const handleAssignManager = async (managers) => {
+    setManagerLoading(true);
     try {
       const obj = {
         managers: managers?.map((item) => item?.id),
@@ -71,13 +70,16 @@ const ManagerAssignAccessRights = () => {
       const response = await axios.put(`/owner/boat/${boatId}/access`, obj);
       if (response.status === 200) {
         // setIsManagerDetailModalOpen(false)
-        setPassSelectedManagers([]);
         SuccessToast("Boat access assigned");
+        setIsEmployee((prev) => !prev);
+        setManagerLoading(true);
       }
     } catch (err) {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       // setPassSelectedManagers([]);
       ErrorToast(err?.response?.data?.message);
+    } finally {
+      setManagerLoading(false);
     }
   };
 
@@ -88,7 +90,6 @@ const ManagerAssignAccessRights = () => {
       };
       const response = await axios.put(`/owner/task/${taskId}/assign`, obj);
       if (response.status === 200) {
-        console.log("response--> ", response?.data);
         SuccessToast("Boat access assigned");
       }
     } catch (err) {
@@ -104,7 +105,6 @@ const ManagerAssignAccessRights = () => {
         boats.map(async (boat) => {
           try {
             setLoadingTasks((prev) => ({ ...prev, [boat._id]: true }));
-
             const response = await axios.get(
               `/owner/boat/${boat._id}/task/unassign`
             );
@@ -152,16 +152,18 @@ const ManagerAssignAccessRights = () => {
               <label>Manager</label>
               <button
                 type="button"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setBoatId(boat?._id);
+                }}
                 className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
               >
-                {passSelectedManagers?.length > 0
-                  ? passSelectedManagers
-                    ? passSelectedManagers?.map((item) => item.name + ",")
-                    : "Click Here To Select Manager"
-                  : passSelectedManager
-                  ? passSelectedManager.name
-                  : "Click Here To Select Manager"}
+                {managerLoading
+                  ? "Loading..."
+                  : selectedManagers
+                      ?.filter((manager) => manager.boatId === boat._id)
+                      ?.map((manager) => manager.name)
+                      .join(", ") || "Click Here To Select Manager"}
               </button>
             </div>
           </div>
@@ -263,18 +265,18 @@ const ManagerAssignAccessRights = () => {
           setIsOpen={setIsModalOpen}
           isManagerDetailModalOpen={isManagerDetailModalOpen}
           setIsManagerDetailModalOpen={setIsManagerDetailModalOpen}
+          setSelectedManagers={setSelectedManagers}
+          setCheckedManagers={setCheckedManagers}
         />
       )}{" "}
       {isManagerDetailModalOpen && (
-        <ManagerDetailModal
+        <ManagerAccessRightModal
           setIsOpen={setIsManagerDetailModalOpen}
-          // handleManagerModal={(managers) => handleAssignManager(managers)}
-          handleManagerModal={() => {}}
-          SetPassSelectedManagers={setPassSelectedManagers}
-          isMultiple={true}
-          boatAccess={""}
+          handleManagerModal={(managers) => handleAssignManager(managers)}
           selectedManagers={selectedManagers}
           setSelectedManagers={setSelectedManagers}
+          checkedManagers={checkedManagers}
+          boatId={boatId}
         />
         // <SelectAllManager setIsOpen={setIsManagerDetailModalOpen} />
       )}
@@ -284,6 +286,7 @@ const ManagerAssignAccessRights = () => {
           isOpen={isEmployeeModalOpen}
           SetPassSelectedEmployee={handleAssignTask}
           boatId={boatId}
+          isEmployee={isEmployee}
         />
       )}
     </div>

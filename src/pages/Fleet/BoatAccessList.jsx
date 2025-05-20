@@ -149,14 +149,12 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
         setUpdateBoat((prev) => !prev);
         setUpdateManager((prev) => !prev);
         getManagerById();
-        // console.log("🚀 ~ handleAssignBoats ~ response?.data:", response?.data);
-        // const unSelectedBoats = response?.data?.data?.boat?.map((item) => item);
-        // console.log("🚀 ~ handleAssignBoats ~ unSelectedIds:", unSelectedBoats);
-        // if (unSelectedBoats.length > 0) {
-        //   navigate("/managers/assign-boats-access-rights", {
-        //     state: { boats: unSelectedBoats },
-        //   });
-        // }
+        const unSelectedBoats = response?.data?.data?.boat?.map((item) => item);
+        if (unSelectedBoats.length > 0) {
+          navigate("/managers/assign-boats-access-rights", {
+            state: { boats: unSelectedBoats },
+          });
+        }
       }
     } catch (err) {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
@@ -315,7 +313,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
                           key={index}
                           className="w-full h-auto grid grid-cols-5 border-b border-[#fff]/[0.14] py-3 text-[13px] font-medium leading-[14.85px] text-white justify-start items-center"
                         >
-                          <div className="flex items-center">
+                          <div className="flex items-center pl-1">
                             <input
                               type="checkbox"
                               className="w-4 h-4 border-2 border-[#FFFFFF80] rounded-sm bg-transparent appearance-none checked:bg-white

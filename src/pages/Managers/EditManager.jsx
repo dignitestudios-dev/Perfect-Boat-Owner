@@ -294,7 +294,7 @@ const EditManager = () => {
                         isDisabled={!isEditable}
                         onInput={(e) => {
                           e.target.value = e.target.value.replace(
-                            /[^A-Za-z]/g,
+                            /[^A-Za-z\s]/g,
                             ""
                           );
                         }}

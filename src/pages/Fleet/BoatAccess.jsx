@@ -6,11 +6,8 @@ import React, {
   Fragment,
 } from "react";
 import { FiSearch } from "react-icons/fi";
-import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import { AuthMockup } from "../../assets/export";
 import BoatAccessModal from "./BoatAccessModal"; // Import the modal component
-import SelectAllManager from "../Managers/SelectAllManager";
 import BoatsLoader from "../../components/fleet/BoatsLoader";
 import ManagerDetailModal from "../Managers/ManagerDetailModal";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
@@ -19,9 +16,12 @@ import BoatManagerModal from "../Managers/BoatManagerModal";
 import BoatType from "../../components/global/headerDropdowns/BoatType";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import Pagination from "../../components/global/pagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 const BoatAccess = () => {
-  const { navigate, boats, getBoats, loadingBoats } = useContext(GlobalContext);
+  const { boats, getBoats, loadingBoats, setUpdateBoat } =
+    useContext(GlobalContext);
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boatId, setBoatId] = useState("");
@@ -29,6 +29,7 @@ const BoatAccess = () => {
   // const [passSelectedManager,SetPassSelectedManager] = useState(null)
   const [passSelectedManagers, SetPassSelectedManagers] = useState([]);
   const [isManagerSuccess, setIsManagerSuccess] = useState(false);
+  const [accessLoading, setAccessLoading] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
     useState(false);
@@ -66,6 +67,7 @@ const BoatAccess = () => {
   };
 
   const handleAssignManager = async (managers) => {
+    setAccessLoading(true);
     try {
       const obj = {
         managers: managers?.map((item) => item?.id),
@@ -76,11 +78,18 @@ const BoatAccess = () => {
         SetPassSelectedManagers(null);
         setIsManagerSuccess(true);
         SuccessToast("Boat access assigned");
+        if (response?.data?.data?.boat) {
+          navigate("/boat/assign-access-rights", {
+            state: { boats: response?.data?.data?.boat },
+          });
+        }
       }
     } catch (err) {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       SetPassSelectedManagers(null);
       ErrorToast(err?.response?.data?.message);
+    } finally {
+      setAccessLoading(false);
     }
   };
 
@@ -181,7 +190,7 @@ const BoatAccess = () => {
 
           {/* Scrollable container for table rows */}
           <div className="w-full overflow-x-auto">
-            {loadingBoats ? (
+            {loadingBoats || accessLoading ? (
               <Fragment>
                 {Array.from({ length: 5 }).map((_, index) => (
                   <div key={index} className="w-full min-w-[600px]">
@@ -260,6 +269,7 @@ const BoatAccess = () => {
           setIsOpen={setIsModalOpen}
           isManagerDetailModalOpen={isManagerDetailModalOpen}
           setIsManagerDetailModalOpen={setIsManagerDetailModalOpen}
+          setCheckedManagers={() => {}}
         />
       )}{" "}
       {isManagerDetailModalOpen && (

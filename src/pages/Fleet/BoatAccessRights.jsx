@@ -1,8 +1,5 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
-import { FaCaretDown } from "react-icons/fa";
 import { GlobalContext } from "../../contexts/GlobalContext";
-import BoatAccessModal from "./BoatAccessModal";
 import { IoIosSearch } from "react-icons/io";
 import BoatAccessList from "./BoatAccessList";
 import JobType from "../../components/global/headerDropdowns/JobType";

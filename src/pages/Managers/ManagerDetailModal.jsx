@@ -3,7 +3,6 @@ import { FiSearch } from "react-icons/fi";
 import { GlobalContext } from "../../contexts/GlobalContext";
 import LocationType from "../../components/global/headerDropdowns/LocationType";
 import JobType from "../../components/global/headerDropdowns/JobType";
-import ManagerDetailLoader from "../../components/managers/ManagerDetailLoader";
 
 const ManagerDetailModal = ({
   setIsOpen,

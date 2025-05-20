@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { FaRegEdit } from "react-icons/fa";
-import { MdOutlineDateRange } from "react-icons/md";
-import { RiDeleteBinLine } from "react-icons/ri";
+import axios from "../../axios";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { getUnixDate } from "../../data/DateFormat";
-import ManagerDetailModal from "../Managers/ManagerDetailModal";
-import EmployeeDetailModal from "../Employees/EmployeeDetailModal";
+import BoatAccessModal from "./BoatAccessModal";
+import ManagerAccessRightModal from "../../components/managers/ManagerAccessRightModal";
+import EmployeeUnAssignModal from "../../components/employees/EmployeeUnAssignModal";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -33,298 +34,263 @@ const STATUS_ENUM = {
   upcomingtask: "Upcoming Task",
 };
 
-const dummyData = [
-  {
-    boat: { name: "Sea Breeze 101" },
-    taskType: "Engine Check",
-    dueDate: "2025-06-01T12:00:00Z",
-    reoccuringDays: "30",
-    status: "newtask",
-  },
-  {
-    boat: { name: "Wave Rider 202" },
-    taskType: "Hull Cleaning",
-    dueDate: "2025-06-05T12:00:00Z",
-    reoccuringDays: "60",
-    status: "inprogress",
-  },
-  {
-    boat: { name: "Ocean Queen 303" },
-    taskType: "Safety Inspection",
-    dueDate: "2025-05-10T12:00:00Z",
-    reoccuringDays: null,
-    status: "overdue",
-  },
-  {
-    boat: { name: "Mariner X" },
-    taskType: "Battery Replacement",
-    dueDate: "2025-06-20T12:00:00Z",
-    reoccuringDays: "90",
-    status: "completed",
-  },
-];
-
-const AssignBoatAccessRights = () => {
+const ManagerAssignAccessRights = () => {
   const getFormattedStatus = (status) => {
     return STATUS_ENUM[status] || status;
   };
 
-  const [isManagerOpen, setIsManagerOpen] = useState(false);
+  // const boatId = "67f79d3e25a9fc0bb742d7c3";
+  const location = useLocation();
+  const boats = location?.state?.boats;
+
+  const [loadingTasks, setLoadingTasks] = useState({});
+  const [isEmployee, setIsEmployee] = useState(false);
+  const [managerLoading, setManagerLoading] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
+    useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
 
-  const [passSelectedManagers, SetPassSelectedManagers] = useState([]);
-  const [passSelectedManager, SetPassSelectedManager] = useState("");
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
-  const [passSelectedEmployee, SetPassSelectedEmployee] = useState([]);
+
+  const [boatTasks, setBoatTasks] = useState({});
+
+  const [taskId, setTaskId] = useState("");
+  const [boatId, setBoatId] = useState("");
+  const [checkedManagers, setCheckedManagers] = useState([]);
+
+  const handleAssignManager = async (managers) => {
+    try {
+      setManagerLoading(true);
+      const obj = {
+        managers: managers?.map((item) => item?.id),
+      };
+      const response = await axios.put(`/owner/boat/${boatId}/access`, obj);
+      if (response.status === 200) {
+        // setIsManagerDetailModalOpen(false)
+        SuccessToast("Boat access assigned");
+        setIsEmployee((prev) => !prev);
+      }
+    } catch (err) {
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+      // setPassSelectedManagers([]);
+      ErrorToast(err?.response?.data?.message);
+    } finally {
+      setManagerLoading(false);
+    }
+  };
+
+  const handleAssignTask = async (passEmployee) => {
+    try {
+      const obj = {
+        employees: passEmployee?.id,
+      };
+      const response = await axios.put(`/owner/task/${taskId}/assign`, obj);
+      if (response.status === 200) {
+        SuccessToast("Boat access assigned");
+      }
+    } catch (err) {
+      console.log("🚀 ~ handleAssignEmployees ~ err:", err);
+      ErrorToast(err?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    const fetchTasksForBoats = async () => {
+      const taskData = {};
+      await Promise.all(
+        boats.map(async (boat) => {
+          try {
+            setLoadingTasks((prev) => ({ ...prev, [boat._id]: true }));
+            const response = await axios.get(
+              `/owner/boat/${boat._id}/task/unassign`
+            );
+            if (response.status === 200) {
+              taskData[boat._id] = response?.data?.data || [];
+            }
+          } catch (err) {
+            console.error(`Failed to fetch tasks for boat ${boat._id}`, err);
+            taskData[boat._id] = [];
+          } finally {
+            setLoadingTasks((prev) => ({ ...prev, [boat._id]: false }));
+          }
+        })
+      );
+
+      setBoatTasks(taskData);
+    };
+
+    if (boats?.length > 0) {
+      fetchTasksForBoats();
+    }
+  }, [boats]);
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
-      <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-        <h3 className="text-[18px] font-bold leading-[24.3px]">Boat 1</h3>
-        <div className=" grid md:grid-cols-2 grid-cols-1 justify-between gap-28 ">
-          <div className="space-y-2">
-            <label>Boat Name</label>
-            <button
-              type="button"
-              className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 rounded-xl"
-            >
-              Boat A
-            </button>
-          </div>
-          <div className="space-y-2">
-            <label>Manager</label>
-            <button
-              type="button"
-              onClick={() => setIsManagerOpen(true)}
-              className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
-            >
-              {passSelectedManagers.length > 0
-                ? passSelectedManagers
-                  ? passSelectedManagers?.map((item) => item.name + ",")
-                  : "Click Here To Select Manager"
-                : passSelectedManager
-                ? passSelectedManager.name
-                : "Click Here To Select Manager"}
-            </button>
-          </div>
-        </div>
-        <h3 className="text-[18px] font-bold leading-[24.3px] py-4">
-          Task Details
-        </h3>
-
-        <div className="w-full flex flex-col gap-1 justify-start items-start">
-          <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium  border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-start">
-            <span className="w-full flex justify-start items-center">
-              Task Type
-            </span>
-            <div className="w-full flex justify-start items-center cursor-pointer">
-              Due Date
+      {boats?.map((boat, index) => (
+        <div
+          key={index}
+          className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]"
+        >
+          <h3 className="text-[18px] font-bold leading-[24.3px]">
+            Boat {index + 1}
+          </h3>
+          <div className=" grid md:grid-cols-2 grid-cols-1 justify-between gap-28 ">
+            <div className="space-y-2">
+              <label>Boat Name</label>
+              <button
+                type="button"
+                className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 rounded-xl"
+              >
+                {boat.name}
+              </button>
             </div>
-            <span className="w-full flex justify-start items-center">
-              Recurring Days
-            </span>
-            <span className="w-full flex justify-start items-center">
-              Assigned To
-            </span>
-            <span className="w-full flex justify-start items-center">
-              Status
-            </span>
-
-            <span className="w-full flex justify-start items-center">
-              Action
-            </span>
+            <div className="space-y-2">
+              <label>Manager</label>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setBoatId(boat?._id);
+                }}
+                className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
+              >
+                {managerLoading
+                  ? "Loading..."
+                  : selectedManagers?.length > 0
+                  ? selectedManagers?.map((item) => item.name + ",")
+                  : "Click Here To Select Manager"}
+              </button>
+            </div>
           </div>
-          {dummyData?.length > 0 ? (
-            <>
-              {dummyData?.slice(0, 4)?.map((item, index) => (
-                <div
-                  key={index}
-                  type="button"
-                  className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] 
+          <h3 className="text-[18px] font-bold leading-[24.3px] py-4">
+            Task Details
+          </h3>
+
+          <div className="w-full flex flex-col gap-1 justify-start items-start">
+            <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium  border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-start">
+              <span className="w-full flex justify-start items-center">
+                Task Type
+              </span>
+              <div className="w-full flex justify-start items-center cursor-pointer">
+                Due Date
+              </div>
+              <span className="w-full flex justify-start items-center">
+                Recurring Days
+              </span>
+              <span className="w-full flex justify-start items-center">
+                Assigned To
+              </span>
+              <span className="w-full flex justify-start items-center">
+                Status
+              </span>
+
+              <span className="w-full flex justify-start items-center">
+                Action
+              </span>
+            </div>
+            {loadingTasks[boat._id] ? (
+              <p>Loading tasks...</p>
+            ) : boatTasks[boat._id]?.length > 0 ? (
+              <>
+                {boatTasks[boat._id].map((item, index) => (
+                  <div
+                    key={index}
+                    type="button"
+                    className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] 
               font-medium leading-[14.85px] text-white justify-start items-center"
-                >
-                  <span className="w-full flex justify-start items-center ">
-                    {item?.taskType?.length > 15
-                      ? item?.taskType?.slice(0, 24) + "..."
-                      : item?.taskType}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {getUnixDate(item?.dueDate)}
-                  </span>
-                  <span className="w-full flex justify-start items-center ">
-                    {item?.reoccuringDays || "Non-recurring"}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {item?.boat?.name}
-                  </span>
-                  <span
-                    style={{
-                      color:
-                        statusColors[item?.status] || statusColors["default"],
-                      backgroundColor:
-                        statusColorsbg[item?.status] ||
-                        statusColorsbg["default"],
-                    }}
-                    className="w-[110px] text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center h-[27px] "
-                    // onClick={() => navigate("/tasks/1", "All Tasks")}
                   >
-                    {getFormattedStatus(item?.status)}
-                  </span>
-                  <span className="w-full flex justify-start items-center text-[#36B8F3] underline ">
-                    <p
-                      onClick={() => setIsEmployeeModalOpen(true)}
-                      className="cursor-pointer"
+                    <span className="w-full flex justify-start items-center ">
+                      {item?.taskType?.length > 15
+                        ? item?.taskType?.slice(0, 24) + "..."
+                        : item?.taskType}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {getUnixDate(item?.dueDate)}
+                    </span>
+                    <span className="w-full flex justify-start items-center ">
+                      {item?.reoccuringDays || "Non-recurring"}
+                    </span>
+                    <span className="w-full flex justify-start items-center">
+                      {item?.assignTo[0]?.name}
+                    </span>
+                    <span
+                      style={{
+                        color:
+                          statusColors[item?.status] || statusColors["default"],
+                        backgroundColor:
+                          statusColorsbg[item?.status] ||
+                          statusColorsbg["default"],
+                      }}
+                      className="w-[110px] text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center h-[27px] "
+                      // onClick={() => navigate("/tasks/1", "All Tasks")}
                     >
-                      Change
-                    </p>
-                  </span>
+                      {getFormattedStatus(item?.status)}
+                    </span>
+                    <button
+                      disabled={managerLoading}
+                      className="w-full flex justify-start items-center text-[#36B8F3] underline "
+                    >
+                      <p
+                        onClick={() => {
+                          setIsEmployeeModalOpen(true);
+                          setTaskId(item?._id);
+                          setBoatId(boat?._id);
+                        }}
+                        className={`${
+                          managerLoading ? "cursor-text" : "cursor-pointer"
+                        }`}
+                      >
+                        Change
+                      </p>
+                    </button>
 
-                  {/* <DeletedModal
+                    {/* <DeletedModal
                   isOpen={isDeleteModalOpen}
                   _id={item?._id}
                   onClose={() => setDeleteModalOpen(false)}
                   refreshTasks={handleDeleteConfirm}
                 /> */}
-                </div>
-              ))}
-            </>
-          ) : (
-            <p>No record found</p>
-          )}
-        </div>
-      </div>
-      <div className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]">
-        <h3 className="text-[18px] font-bold leading-[24.3px]">Boat 2</h3>
-        <div className=" grid md:grid-cols-2 grid-cols-1 justify-between gap-28 ">
-          <div className="space-y-2">
-            <label>Boat Name</label>
-            <button
-              type="button"
-              className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 rounded-xl"
-            >
-              Boat A
-            </button>
-          </div>
-          <div className="space-y-2">
-            <label>Manager</label>
-            <button
-              type="button"
-              onClick={() => setIsManagerOpen(true)}
-              className="w-full h-[52px] bg-[#1A293D] text-left text-[12px] text-white outline-none px-3 focus:border-[1px] focus:border-[#55C9FA] rounded-xl"
-            >
-              {passSelectedManagers.length > 0
-                ? passSelectedManagers
-                  ? passSelectedManagers?.map((item) => item.name + ",")
-                  : "Click Here To Select Manager"
-                : passSelectedManager
-                ? passSelectedManager.name
-                : "Click Here To Select Manager"}
-            </button>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <p>No tasks found</p>
+            )}
           </div>
         </div>
-        <h3 className="text-[18px] font-bold leading-[24.3px] py-4">
-          Task Details
-        </h3>
-
-        <div className="w-full flex flex-col gap-1 justify-start items-start">
-          <div className="w-full h-6 grid grid-cols-6 text-[13px] font-medium  border-b border-[#fff]/[0.14] leading-[14.85px] text-white/50 justify-start items-start">
-            <span className="w-full flex justify-start items-center">
-              Task Type
-            </span>
-            <div className="w-full flex justify-start items-center cursor-pointer">
-              Due Date
-            </div>
-            <span className="w-full flex justify-start items-center">
-              Recurring Days
-            </span>
-            <span className="w-full flex justify-start items-center">
-              Assigned To
-            </span>
-            <span className="w-full flex justify-start items-center">
-              Status
-            </span>
-
-            <span className="w-full flex justify-start items-center">
-              Action
-            </span>
-          </div>
-          {dummyData?.length > 0 ? (
-            <>
-              {dummyData?.slice(0, 4)?.map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className="w-full h-10 grid grid-cols-6 border-b border-[#fff]/[0.14] py-1 text-[13px] 
-              font-medium leading-[14.85px] text-white justify-start items-center"
-                >
-                  <span className="w-full flex justify-start items-center ">
-                    {item?.taskType?.length > 15
-                      ? item?.taskType?.slice(0, 24) + "..."
-                      : item?.taskType}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {getUnixDate(item?.dueDate)}
-                  </span>
-                  <span className="w-full flex justify-start items-center ">
-                    {item?.reoccuringDays || "Non-recurring"}
-                  </span>
-                  <span className="w-full flex justify-start items-center">
-                    {item?.boat?.name}
-                  </span>
-                  <span
-                    style={{
-                      color:
-                        statusColors[item?.status] || statusColors["default"],
-                      backgroundColor:
-                        statusColorsbg[item?.status] ||
-                        statusColorsbg["default"],
-                    }}
-                    className="w-[110px] text-[11px] bg-[#36B8F3]/[0.12] rounded-full text-[#36B8F3] font-medium leading-[14.85px] flex justify-center items-center h-[27px] "
-                    // onClick={() => navigate("/tasks/1", "All Tasks")}
-                  >
-                    {getFormattedStatus(item?.status)}
-                  </span>
-                  <span className="w-full flex justify-start items-center text-[#36B8F3] underline">
-                    Change
-                  </span>
-
-                  {/* <DeletedModal
-                  isOpen={isDeleteModalOpen}
-                  _id={item?._id}
-                  onClose={() => setDeleteModalOpen(false)}
-                  refreshTasks={handleDeleteConfirm}
-                /> */}
-                </button>
-              ))}
-            </>
-          ) : (
-            <p>No record found</p>
-          )}
-        </div>
-      </div>
-      {isManagerOpen && (
-        <ManagerDetailModal
-          isMultiple={true}
-          setIsOpen={setIsManagerOpen}
-          SetPassSelectedManager={SetPassSelectedManager}
-          SetPassSelectedManagers={SetPassSelectedManagers}
+      ))}
+      {isModalOpen && (
+        <BoatAccessModal
+          boatId={boatId}
+          setIsOpen={setIsModalOpen}
+          isManagerDetailModalOpen={isManagerDetailModalOpen}
+          setIsManagerDetailModalOpen={setIsManagerDetailModalOpen}
+          setCheckedManagers={setCheckedManagers}
+        />
+      )}{" "}
+      {isManagerDetailModalOpen && (
+        <ManagerAccessRightModal
+          setIsOpen={setIsManagerDetailModalOpen}
+          handleManagerModal={(managers) => handleAssignManager(managers)}
           selectedManagers={selectedManagers}
           setSelectedManagers={setSelectedManagers}
-          handleManagerModal={() => console.log("manager modal")}
-          isBoat={true}
+          checkedManagers={checkedManagers}
         />
+        // <SelectAllManager setIsOpen={setIsManagerDetailModalOpen} />
       )}
       {isEmployeeModalOpen && (
-        <EmployeeDetailModal
+        <EmployeeUnAssignModal
           setIsOpen={setIsEmployeeModalOpen}
           isOpen={isEmployeeModalOpen}
-          SetPassSelectedEmployee={SetPassSelectedEmployee}
-          setInputError={() => {}}
-          isMultiple={true}
+          SetPassSelectedEmployee={handleAssignTask}
+          boatId={boatId}
+          isEmployee={isEmployee}
         />
       )}
     </div>
   );
 };
 
-export default AssignBoatAccessRights;
+export default ManagerAssignAccessRights;
