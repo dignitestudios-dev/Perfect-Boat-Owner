@@ -47,6 +47,7 @@ const ManagerAssignAccessRights = () => {
   const [loadingTasks, setLoadingTasks] = useState({});
   const [isEmployee, setIsEmployee] = useState(false);
   const [managerLoading, setManagerLoading] = useState(false);
+  const [employeeLoading, setEmployeeLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
@@ -85,44 +86,50 @@ const ManagerAssignAccessRights = () => {
 
   const handleAssignTask = async (passEmployee) => {
     try {
+      setEmployeeLoading(true);
       const obj = {
         employees: passEmployee?.id,
       };
       const response = await axios.put(`/owner/task/${taskId}/assign`, obj);
       if (response.status === 200) {
-        SuccessToast("Boat access assigned");
+        SuccessToast("Task assigned");
+        if (boats?.length > 0) {
+          fetchTasksForBoats();
+        }
       }
     } catch (err) {
       console.log("🚀 ~ handleAssignEmployees ~ err:", err);
       ErrorToast(err?.response?.data?.message);
+    } finally {
+      setEmployeeLoading(false);
     }
   };
 
-  useEffect(() => {
-    const fetchTasksForBoats = async () => {
-      const taskData = {};
-      await Promise.all(
-        boats.map(async (boat) => {
-          try {
-            setLoadingTasks((prev) => ({ ...prev, [boat._id]: true }));
-            const response = await axios.get(
-              `/owner/boat/${boat._id}/task/unassign`
-            );
-            if (response.status === 200) {
-              taskData[boat._id] = response?.data?.data || [];
-            }
-          } catch (err) {
-            console.error(`Failed to fetch tasks for boat ${boat._id}`, err);
-            taskData[boat._id] = [];
-          } finally {
-            setLoadingTasks((prev) => ({ ...prev, [boat._id]: false }));
+  const fetchTasksForBoats = async () => {
+    const taskData = {};
+    await Promise.all(
+      boats.map(async (boat) => {
+        try {
+          setLoadingTasks((prev) => ({ ...prev, [boat._id]: true }));
+          const response = await axios.get(
+            `/owner/boat/${boat._id}/task/unassign`
+          );
+          if (response.status === 200) {
+            taskData[boat._id] = response?.data?.data || [];
           }
-        })
-      );
+        } catch (err) {
+          console.error(`Failed to fetch tasks for boat ${boat._id}`, err);
+          taskData[boat._id] = [];
+        } finally {
+          setLoadingTasks((prev) => ({ ...prev, [boat._id]: false }));
+        }
+      })
+    );
 
-      setBoatTasks(taskData);
-    };
+    setBoatTasks(taskData);
+  };
 
+  useEffect(() => {
     if (boats?.length > 0) {
       fetchTasksForBoats();
     }
@@ -135,9 +142,9 @@ const ManagerAssignAccessRights = () => {
           key={index}
           className="w-full h-auto flex flex-col gap-4 p-4 lg:p-6 rounded-[18px] bg-[#001229]"
         >
-          <h3 className="text-[18px] font-bold leading-[24.3px]">
+          {/* <h3 className="text-[18px] font-bold leading-[24.3px]">
             Boat {index + 1}
-          </h3>
+          </h3> */}
           <div className=" grid md:grid-cols-2 grid-cols-1 justify-between gap-28 ">
             <div className="space-y-2">
               <label>Boat Name</label>
@@ -190,10 +197,10 @@ const ManagerAssignAccessRights = () => {
               </span>
 
               <span className="w-full flex justify-start items-center">
-                Action
+                Select Employee
               </span>
             </div>
-            {loadingTasks[boat._id] ? (
+            {loadingTasks[boat._id] || employeeLoading ? (
               <p>Loading tasks...</p>
             ) : boatTasks[boat._id]?.length > 0 ? (
               <>

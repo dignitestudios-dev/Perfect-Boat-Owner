@@ -77,7 +77,7 @@ const BoatAccess = () => {
         // setIsManagerDetailModalOpen(false)
         SetPassSelectedManagers(null);
         setIsManagerSuccess(true);
-        SuccessToast("Boat access assigned");
+        SuccessToast("Boat access changed");
         if (response?.data?.data?.boat) {
           navigate("/boat/assign-access-rights", {
             state: { boats: response?.data?.data?.boat },
