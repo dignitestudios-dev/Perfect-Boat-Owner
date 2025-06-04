@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FiLoader } from "react-icons/fi";
 import { TbCaretDownFilled } from "react-icons/tb";
 import ImportCSVModal from "../../components/global/ImportCSVModal";
@@ -279,6 +279,7 @@ const WelcomeAboard = () => {
       }
     }
   };
+
   const handleOtherValidation = (formIndex, key, value) => {
     if (value > 0 || value === "") {
       updateFormState(formIndex, key, value, undefined);
@@ -333,6 +334,10 @@ const WelcomeAboard = () => {
       setCsvUploaded(true);
     }
   };
+
+  useEffect(() => {
+    setUpdateDropDown((prev) => !prev);
+  }, []);
 
   return (
     <div className="w-full h-screen bg-[#1A293D] text-white p-4 overflow-auto">

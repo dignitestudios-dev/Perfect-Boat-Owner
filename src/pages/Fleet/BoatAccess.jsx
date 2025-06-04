@@ -72,6 +72,7 @@ const BoatAccess = () => {
       const obj = {
         managers: managers?.map((item) => item?.id),
       };
+      let managerName = managers?.map((item) => item?.name);
       const response = await axios.put(`/owner/boat/${boatId}/access`, obj);
       if (response.status === 200) {
         // setIsManagerDetailModalOpen(false)
@@ -80,7 +81,10 @@ const BoatAccess = () => {
         SuccessToast("Boat access changed");
         if (response?.data?.data?.boat) {
           navigate("/boat/assign-access-rights", {
-            state: { boats: response?.data?.data?.boat },
+            state: {
+              boats: response?.data?.data?.boat,
+              managerName: managerName,
+            },
           });
         }
       }

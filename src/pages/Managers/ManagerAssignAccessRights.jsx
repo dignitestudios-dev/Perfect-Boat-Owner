@@ -4,9 +4,10 @@ import ManagerDetailModal from "./ManagerDetailModal";
 import BoatAccessModal from "../Fleet/BoatAccessModal";
 import axios from "../../axios";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import EmployeeUnAssignModal from "../../components/employees/EmployeeUnAssignModal";
 import ManagerAccessRightModal from "../../components/managers/ManagerAccessRightModal";
+import BoatOrManagerAssignAccessModal from "../../components/tasks/modal/BoatOrManagerAssignAccessModal";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -43,6 +44,10 @@ const ManagerAssignAccessRights = () => {
   // const boatId = "67f79d3e25a9fc0bb742d7c3";
   const location = useLocation();
   const boats = location?.state?.boats;
+  const boatNames = boats?.map((b) => b.name).join(", ");
+
+  const manager = location?.state?.managerName;
+  const navigate = useNavigate();
 
   const [loadingTasks, setLoadingTasks] = useState({});
   const [isEmployee, setIsEmployee] = useState(false);
@@ -52,6 +57,7 @@ const ManagerAssignAccessRights = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
     useState(false);
+  const [messageModal, setMessageModal] = useState(false);
   const [selectedManagers, setSelectedManagers] = useState([]);
 
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
@@ -107,8 +113,9 @@ const ManagerAssignAccessRights = () => {
 
   const fetchTasksForBoats = async () => {
     const taskData = {};
+
     await Promise.all(
-      boats.map(async (boat) => {
+      boats.map(async (boat, index) => {
         try {
           setLoadingTasks((prev) => ({ ...prev, [boat._id]: true }));
           const response = await axios.get(
@@ -125,8 +132,13 @@ const ManagerAssignAccessRights = () => {
         }
       })
     );
-
     setBoatTasks(taskData);
+    const allEmpty = Object.values(taskData).every(
+      (tasks) => tasks.length === 0
+    );
+    if (allEmpty) {
+      setMessageModal(true);
+    }
   };
 
   useEffect(() => {
@@ -294,6 +306,16 @@ const ManagerAssignAccessRights = () => {
           SetPassSelectedEmployee={handleAssignTask}
           boatId={boatId}
           isEmployee={isEmployee}
+        />
+      )}
+      {messageModal && (
+        <BoatOrManagerAssignAccessModal
+          text={`You have successfully removed access to boat ${boatNames} from manager ${manager} `}
+          isOpen={messageModal}
+          onClose={() => {
+            setMessageModal(!messageModal);
+            navigate(-1);
+          }}
         />
       )}
     </div>

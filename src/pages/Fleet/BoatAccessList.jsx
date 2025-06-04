@@ -152,7 +152,7 @@ const BoatAccessList = ({ isOpen, setIsOpen, managerId, managerName }) => {
         const unSelectedBoats = response?.data?.data?.boat?.map((item) => item);
         if (unSelectedBoats.length > 0) {
           navigate("/managers/assign-boats-access-rights", {
-            state: { boats: unSelectedBoats },
+            state: { boats: unSelectedBoats, managerName: managerName },
           });
         }
       }

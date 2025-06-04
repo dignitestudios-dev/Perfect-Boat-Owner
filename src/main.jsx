@@ -11,14 +11,14 @@ import { BlogContextProvider } from "./contexts/BlogContext.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <GlobalContextProvider>
-        <BlogContextProvider>
-          <ToasterContainer />
-          <AuthProvider>
+      <AuthProvider>
+        <GlobalContextProvider>
+          <BlogContextProvider>
+            <ToasterContainer />
             <App />
-          </AuthProvider>
-        </BlogContextProvider>
-      </GlobalContextProvider>
+          </BlogContextProvider>
+        </GlobalContextProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

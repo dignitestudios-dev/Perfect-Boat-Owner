@@ -1,11 +1,12 @@
 import axios from "../../axios";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ErrorToast, SuccessToast } from "../../components/global/Toaster";
 import { getUnixDate } from "../../data/DateFormat";
 import BoatAccessModal from "./BoatAccessModal";
 import ManagerAccessRightModal from "../../components/managers/ManagerAccessRightModal";
 import EmployeeUnAssignModal from "../../components/employees/EmployeeUnAssignModal";
+import BoatOrManagerAssignAccessModal from "../../components/tasks/modal/BoatOrManagerAssignAccessModal";
 
 const statusColors = {
   newtask: "#FF007F",
@@ -43,6 +44,11 @@ const ManagerAssignAccessRights = () => {
   const location = useLocation();
   const boats = location?.state?.boats;
 
+  const boatNames = boats?.map((b) => b.name).join(", ");
+  console.log("🚀 ~ ManagerAssignAccessRights ~ boats:", boatNames);
+  const manager = location?.state?.managerName;
+  const navigate = useNavigate();
+
   const [loadingTasks, setLoadingTasks] = useState({});
   const [isEmployee, setIsEmployee] = useState(false);
   const [managerLoading, setManagerLoading] = useState(false);
@@ -51,6 +57,8 @@ const ManagerAssignAccessRights = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isManagerDetailModalOpen, setIsManagerDetailModalOpen] =
     useState(false);
+  const [messageModal, setMessageModal] = useState(false);
+
   const [selectedManagers, setSelectedManagers] = useState([]);
 
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
@@ -113,7 +121,13 @@ const ManagerAssignAccessRights = () => {
             `/owner/boat/${boat._id}/task/unassign`
           );
           if (response.status === 200) {
-            taskData[boat._id] = response?.data?.data || [];
+            console.log("what--> ", response?.data?.data.length);
+
+            if (response?.data?.data.length < 1) {
+              setMessageModal(true);
+            } else {
+              taskData[boat._id] = response?.data?.data || [];
+            }
           }
         } catch (err) {
           console.error(`Failed to fetch tasks for boat ${boat._id}`, err);
@@ -295,6 +309,16 @@ const ManagerAssignAccessRights = () => {
           SetPassSelectedEmployee={handleAssignTask}
           boatId={boatId}
           isEmployee={isEmployee}
+        />
+      )}
+      {messageModal && (
+        <BoatOrManagerAssignAccessModal
+          text={`You have successfully removed access to boat ${boatNames} from manager ${manager} `}
+          isOpen={messageModal}
+          onClose={() => {
+            setMessageModal(!messageModal);
+            navigate(-1);
+          }}
         />
       )}
     </div>
