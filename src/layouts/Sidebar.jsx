@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Logo, SideLogo } from "../assets/export";
 import { sidebarArr } from "../constants/sidebarArr";
 import SidebarLink from "./SidebarLink";
@@ -9,6 +9,7 @@ import { AuthContext } from "../contexts/AuthContext";
 const Sidebar = () => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -30,6 +31,7 @@ const Sidebar = () => {
       </button>
 
       {/* Sidebar Container */}
+
       <div
         className={`fixed lg:static top-0 left-0 w-[280px] bg-[#001229] py-4 px-6 flex flex-col justify-start items-start transition-transform duration-300 ${
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"

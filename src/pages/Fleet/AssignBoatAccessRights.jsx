@@ -149,6 +149,13 @@ const ManagerAssignAccessRights = () => {
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
+      <div className="bg-[#001229] border-l-4 border-yellow-500 text-white p-4 rounded-md text-sm">
+        <p className="font-semibold">🚫 Warning: Unassigned Tasks</p>
+        <p>
+          You have changed boat access. Please assign all tasks before
+          navigating away or closing the screen to prevent data loss.
+        </p>
+      </div>
       {boats?.map((boat, index) => (
         <div
           key={index}
