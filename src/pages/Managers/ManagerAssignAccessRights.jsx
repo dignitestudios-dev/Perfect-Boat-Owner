@@ -49,6 +49,8 @@ const ManagerAssignAccessRights = () => {
   const manager = location?.state?.managerName;
   const navigate = useNavigate();
 
+  const [isPopup, setIsPopup] = useState(true);
+
   const [loadingTasks, setLoadingTasks] = useState({});
   const [isEmployee, setIsEmployee] = useState(false);
   const [managerLoading, setManagerLoading] = useState(false);
@@ -149,10 +151,13 @@ const ManagerAssignAccessRights = () => {
 
   return (
     <div className="h-full overflow-y-auto w-full p-2 lg:p-6 flex flex-col gap-6 justify-start items-start">
-      <p>
-        You have changed boat access. Please assign all tasks before navigating
-        away or closing the screen to prevent data loss.
-      </p>
+      <div className="bg-[#001229] border-l-4 border-yellow-500 text-white p-4 rounded-md text-sm">
+        <p className="font-semibold">🚫 Warning: Unassigned Tasks</p>
+        <p>
+          You have changed boat access. Please assign all tasks before
+          navigating away or closing the screen to prevent data loss.
+        </p>
+      </div>
       {boats?.map((boat, index) => (
         <div
           key={index}
@@ -321,6 +326,46 @@ const ManagerAssignAccessRights = () => {
             navigate(-1);
           }}
         />
+      )}
+      {isPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <div className="bg-[#02203A] rounded-lg p-6 w-[518px] h-[247px] text-center relative">
+            {/* Close button */}
+            <button
+              onClick={() => setIsPopup(false)}
+              className="absolute top-2 right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
+            >
+              ✕
+            </button>
+
+            {/* Modal content */}
+            <div className="my-4">
+              {/* <span className="inline-block bg-[#1A293D] p-3 rounded-full mt-2">
+                <svg
+                  className="w-12 h-12 text-[#199BD1] font-bold"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+              </span> */}
+              <p className="text-[20px]">Disclaimer</p>
+            </div>
+            <p className="text-white mb-6 text-[16px]">
+              All hands on deck! Some tasks are about to go overboard. The
+              manager steering the boat(s) no longer has access. Time to toss
+              task(s) over to crew members under a captain who's still got the
+              wheel!
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -68,6 +68,7 @@ const ManagerAssignAccessRights = () => {
   const [taskId, setTaskId] = useState("");
   const [boatId, setBoatId] = useState("");
   const [checkedManagers, setCheckedManagers] = useState([]);
+  const [isPopup, setIsPopup] = useState(true);
 
   const handleAssignManager = async (managers) => {
     try {
@@ -327,6 +328,30 @@ const ManagerAssignAccessRights = () => {
             navigate(-1);
           }}
         />
+      )}
+      {isPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
+          <div className="bg-[#02203A] rounded-lg p-6 w-[518px] h-[247px] text-center relative">
+            {/* Close button */}
+            <button
+              onClick={() => setIsPopup(false)}
+              className="absolute top-2 right-2 text-[#199BD1] px-4 py-2 rounded-md text-xl mb-8"
+            >
+              ✕
+            </button>
+
+            {/* Modal content */}
+            <div className="my-4">
+              <p className="text-[20px]">Disclaimer</p>
+            </div>
+            <p className="text-white mb-6 text-[16px]">
+              All hands on deck! Some tasks are about to go overboard. The
+              manager steering the boat(s) no longer has access. Time to toss
+              task(s) over to crew members under a captain who's still got the
+              wheel!
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

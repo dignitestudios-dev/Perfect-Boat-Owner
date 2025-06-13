@@ -186,14 +186,14 @@ const BoatAccessModal = ({
                 )}
               </table>
             </div>
-            <div className="flex justify-end mt-4">
+            {/* <div className="flex justify-end mt-4">
               <button
                 onClick={() => setIsOpen(false)} // Close the modal when "Done" is clicked
                 className="bg-[#119bd1] text-white px-6 py-2 rounded-md"
               >
                 Done
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

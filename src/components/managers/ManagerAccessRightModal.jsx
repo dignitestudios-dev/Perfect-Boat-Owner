@@ -277,7 +277,7 @@ const ManagerAccessRightModal = ({
               )}
             </table>
           </div>
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <button
               type="button"
               onClick={() => setIsOpen(false)}
@@ -285,7 +285,7 @@ const ManagerAccessRightModal = ({
             >
               Done
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
