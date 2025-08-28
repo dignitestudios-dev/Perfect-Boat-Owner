@@ -1,5 +1,6 @@
 import SplashLogo from "./splash_logo_new.png";
-import QR from "./qr.png";
+import QR from "./qr-android.png";
+import QRIOS from "./qrIos.png";
 import AuthMockup from "./auth_mockup.png";
 import SuccessVector from "./success_vector.png";
 import MasterCardIcon from "./master_card_icon.png";
@@ -14,6 +15,7 @@ import BlogToolbar from "./blog_toolbar.png";
 export {
   SplashLogo,
   QR,
+  QRIOS,
   AuthMockup,
   SuccessVector,
   MasterCardIcon,
